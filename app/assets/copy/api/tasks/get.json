@@ -1,0 +1,46 @@
+{
+  "1": {
+    "id": "1",
+    "name": "ТЗ",
+    "description": "Добавить описание",
+    "urgency": true,
+    "deadline": "4 Фев, 2018",
+    "from": "1",
+    "to": "3",
+    "status": "В работе",
+    "files": []
+  },
+  "2": {
+    "id": "2",
+    "name": "Задача 3",
+    "description": "Задача 2",
+    "urgency": false,
+    "deadline": "12 Фев, 2018",
+    "from": "1",
+    "to": "4",
+    "status": "В работе",
+    "files": []
+  },
+  "3": {
+    "id": "3",
+    "name": "Задача 3",
+    "description": "Задача 3",
+    "urgency": false,
+    "deadline": "14 Фев, 2018",
+    "from": "1",
+    "to": "5",
+    "status": "В работе",
+    "files": []
+  },
+  "4": {
+    "id": "4",
+    "name": "Задача 3",
+    "description": "Задача 4",
+    "urgency": true,
+    "deadline": "24 Фев, 2018",
+    "from": "3",
+    "to": "1",
+    "status": "В работе",
+    "files": []
+  }
+}

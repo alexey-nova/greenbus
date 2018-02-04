@@ -1,0 +1,17 @@
+{
+  "title": {
+    "index": "Главная",
+    "about": "О нас"
+  },
+  "pages": {
+    "index": {
+      "seoTitle": "Главная",
+      "pageTitle": "Главная"
+    },
+    "about": "О нас"
+  },
+
+
+  "minus": "fa fa-minus",
+  "cross": "fa fa-times"
+}

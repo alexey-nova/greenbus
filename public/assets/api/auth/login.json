@@ -1,0 +1,15 @@
+{
+  "token": "S89SAD8ASD9ASDSAJDK_SDADAS0DASD",
+  "user": {
+    "id": 1,
+    "fullName": "dsad",
+    "position": "ASLDasd",
+    "department": "aup",
+    "phone": "+7 (707) 342-34-34",
+    "email": "sadasd@sd.sd",
+    "roles": {
+      "1": "login",
+      "2": "admin"
+    }
+  }
+}
