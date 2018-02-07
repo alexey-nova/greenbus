@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import {ClientTable} from 'vue-tables-2';
 import Notifications from 'vue-notification'
+import VeeValidate, { Validator } from 'vee-validate';
+import VeeValidateRu from 'vee-validate/dist/locale/ru';
 
 //
 Vue.use(ClientTable, {
@@ -37,3 +39,27 @@ const notify = {
 }
 Vue.use(Notifications)
 Vue.use(notify)
+
+//
+Validator.localize('ru', VeeValidateRu);
+Vue.use(VeeValidate, {
+  locale: 'ru',
+  dictionary: {
+    ru: {attributes: {
+      login: 'Логин',
+      email: 'Email',
+      fullname: 'Ф.И.О',
+      department: 'Отдел',
+      position: 'Должность',
+      phone: 'Телефон',
+      whatsapp: 'Whatsapp',
+      name: 'Название',
+      description: 'Описание',
+      text: 'Описание',
+      urgency: 'Важность',
+      to: 'Ответственный',
+      memoTo: 'Кому',
+      deadline: 'Срок сдачи',
+    }},
+  }
+})

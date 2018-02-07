@@ -3,17 +3,22 @@
     <PageTitle :title="'Задачи'"></PageTitle>
 
     <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('create', {urgency: false})"><i class="fa fa-plus"></i>&nbsp;&nbsp;Создать задачу</button>
+      <button class="btn btn-success" @click="toggleModal('create', {urgency: false})"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;Создать задачу</button>
     </PageButtons>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', props.row)"><i class="fa fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
         </div>
         <div slot="tools" slot-scope="props">
-          <a v-if="props.row.to === $auth().user._id" @click="toggleModal('end', props.row)">Завершить задачу</a>
+          <button class="btn btn-default" @click="toggleModal('show', props.row)">
+            <i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее
+          </button>
+          <!--<button v-if="props.row.to === $auth().user._id" class="btn btn-primary" @click="toggleModal('end', props.row)">-->
+            <!--<i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу-->
+          <!--</button>-->
         </div>
         <div slot="from" slot-scope="props">
           {{getUser(props.row.from).fullname}}
@@ -22,10 +27,14 @@
           {{getUser(props.row.to).fullname}}
         </div>
         <div slot="urgency" slot-scope="props">
-          {{props.row.urgency ? 'Важно' : ''}}
+          <span v-if="props.row.urgency" class="label label-danger">Важная</span>
+          <!--<span v-if="!props.row.urgency" class="label label-default">Обычная</span>-->
         </div>
         <div slot="status" slot-scope="props">
           {{statuses[props.row.status]}}
+        </div>
+        <div slot="deadline" slot-scope="props">
+          {{$dateFormat(props.row.deadline, 'd mmm yyyy')}}
         </div>
       </v-client-table>
     </Box>
@@ -33,7 +42,8 @@
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
-    <ModalEnd :model="modal.end" @onSubmit="endTask" @onClose="toggleModal('end')"></ModalEnd>
+    <!--<ModalEnd :model="modal.end" @onSubmit="endTask" @onClose="toggleModal('end')"></ModalEnd>-->
+    <ModalShow :model="modal.show" :users="users" @endTask="endTask" @rejectTask="endTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -45,6 +55,7 @@
   import ModalEdit from './tasks/ModalEditTask'
   import ModalDelete from './tasks/ModalDeleteTask'
   import ModalEnd from './tasks/ModalEndTask'
+  import ModalShow from './tasks/ModalShowTask'
 
   export default {
     components: {
@@ -55,6 +66,7 @@
       ModalEdit,
       ModalDelete,
       ModalEnd,
+      ModalShow,
     },
     data () {
       return {
@@ -65,23 +77,24 @@
           edit: false,
           deleted: false,
           end: false,
+          show: false,
         },
         statuses: [
-          'На согласовании',
+          'В работе',
           'Согласовано',
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'admin', 'name', 'description', 'urgency', 'status', 'deadline', 'from', 'to', 'tools'],
+          columns: ['id', 'admin', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools'],
           options: {
             headings: {
               id: 'ID',
               admin: '',
               name: 'Задача',
-              description: 'Комментарий',
-              urgency: 'Срочность',
+              description: 'Описание',
+              urgency: '',
               status: 'Статус',
-              deadline: 'Срок',
+              deadline: 'Срок до',
               from: 'От кого',
               to: 'Ответственный',
               tools: '',
@@ -105,10 +118,12 @@
                 }
               }
             },
-            rowClassCallback (row) {
-              return (row.urgency) ? 'bg-danger' : ''
+            columnsClasses: {
+              admin: 'admin',
             },
-            skin: 'table table-bordered',
+            rowClassCallback (row) {
+//              return (row.urgency) ? 'bg-danger' : ''
+            },
           },
         },
       }
@@ -124,16 +139,18 @@
           this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя создать задачу', 'info')
+          this.$log(e, 'danger')
         })
       },
       editTask (task) {
         this.$api('put', 'tasks/' + task._id, task).then(response => {
           this.modal.edit = false
-          this.$_.assign(this.users, user)
+          this.tasks = this.$_.assign(this.tasks, task)
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя редактировать задачу', 'info')
+          this.$log(e, 'danger')
         })
       },
       deleteTask (task) {
@@ -142,16 +159,37 @@
           this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя удалить задачу', 'info')
+          this.$log(e, 'danger')
         })
       },
       endTask (task) {
-        this.$api('post', 'tasks/perform/' + task._id).then(response => {
-          this.modal.end = false
+        console.log(task)
+        let data = {
+          comment: task.comment,
+          files: task.files,
+        }
+        this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
+//          this.modal.end = false
           this.$_.assign(this.users, user)
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя завершить задачу', 'info')
+          this.$log(e, 'danger')
+        })
+      },
+      rejectTask (task) {
+        let data = {
+          comment: task.comment,
+          files: task.files,
+        }
+        this.$api('post', 'tasks/reject/' + task._id, data).then(response => {
+//          this.modal.end = false
+          this.$_.assign(this.users, user)
+          this.notify(response.data.message)
+        }).catch(e => {
+          this.notify('Временно нельзя отменить задачу', 'info')
+          this.$log(e, 'danger')
         })
       },
       loadTasks () {
@@ -159,14 +197,14 @@
         this.$api('get', 'tasks' + filter).then(response => {
           this.tasks = response.data
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify(e, 'danger')
         })
       },
       loadUsers () {
         this.$api('get', 'users').then(response => {
           this.users = response.data
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify(e, 'danger')
         })
       },
       setSidebar () {
@@ -221,5 +259,8 @@
 </script>
 
 <style lang="scss">
-  tr.bg-danger { background-color: #ffebeb; }
+  /*tr.bg-danger { background-color: #ffebeb; }*/
+  .table .label { font-size: 0.8em; padding: 5px 10px;
+    /*&.label-default { background: #eee; }*/
+  }
 </style>

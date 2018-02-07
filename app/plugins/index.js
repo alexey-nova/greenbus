@@ -18,6 +18,7 @@ Vue.use({
     Vue.prototype.$mock = core.$mock
     Vue.prototype.$config = core.$config
     Vue.prototype.$log = core.$log
+    Vue.prototype.$dateFormat = core.$dateFormat
 
     Vue.prototype.$isRoute = plugins.app.isRoute
 

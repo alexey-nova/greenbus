@@ -20,7 +20,7 @@
     </li>
     <li :class="[{active: $isRoute(['documents', 'documentsByFilter'])}, 'nav-item']">
       <router-link class="nav-link" :to="{name: 'documents'}" :style="{color: colors['documents']}">
-        <i class="fa fa-calendar-check-o fa-2x"></i>
+        <i class="fa fa-file-text-o fa-2x"></i>
         <div>Документы</div>
       </router-link>
     </li>

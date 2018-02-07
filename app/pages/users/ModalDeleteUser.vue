@@ -8,8 +8,8 @@
     </div>
 
     <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">Отмена</button>
-      <button type="submit" class="btn btn-danger">Удалить</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
+      <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;&nbsp;Удалить</button>
     </div>
 
   </Modal>

@@ -1,32 +1,42 @@
 <template>
-  <Modal :isOpen="isOpen">
+  <Modal :isOpen="model" type="lg" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Редактировать задачу</h3>
+    <h3 slot="header" class="modal-title">Редактировать служебную записку</h3>
 
-    <form slot="content" ref="form" @submit="onSubmit($event)">
-      <div class="form-group">
-        <label for="name">Название *</label>
-        <input class="form-control" id="name" v-model="model.name">
+    <div slot="content" class="row">
+      <div class="col-lg-6">
+        <div :class="['form-group', {'has-error': errors.has('name')}]">
+          <label for="field-name">Тема *</label>
+          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
+          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+        </div>
+        <div :class="['form-group', {'has-error': errors.has('text')}]">
+          <label for="field-text">Описание *</label>
+          <textarea id="field-text" class="form-control" rows="4" v-validate="'required'" name="text" v-model="model.text"></textarea>
+          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="description">Описание *</label>
-        <input class="form-control" id="description" v-model="model.text">
+      <div class="col-lg-6">
+        <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
+          <label for="field-memoTo">Кому *</label><br />
+          <multiSelect
+            id="field-memoTo"
+            class="form-control"
+            :selectOptions="selectData"
+            :options="{btnLabel: 'Выберете из списка'}"
+          ></multiSelect>
+          <span v-show="errors.has('memoTo')" class="help-block">{{ errors.first('memoTo') }}</span>
+        </div>
+        <div class="form-group">
+          <label for="field-files">Прикрепить файл</label>
+          <input id="field-files" type="file">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="fieldResponsible">Ответственный *</label>
-        <select id="fieldResponsible" class="form-control" v-model="model.to">
-          <option v-for="u in users" :value="u.id">{{u.fullname}}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="fieldPhone">Прикрепить файл</label>
-        <input id="fieldPhone" type="file">
-      </div>
-    </form>
+    </div>
 
     <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="onClose">Отмена</button>
-      <button type="submit" class="btn btn-primary" @click="click($event)">Создать</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
+      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Сохранить</button>
     </div>
 
   </Modal>
@@ -35,30 +45,42 @@
 <script>
   import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
+  import MaskedInput from 'vue-masked-input'
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
+  import multiSelect from 'vue-multi-select/dist/vue-multi-select'
 
   export default {
     components: {
       Modal,
+      MaskedInput,
       Datepicker,
       'el-switch': Switch,
+      multiSelect,
     },
-    data () {
-      return {
-      }
-    },
-    props: ['isOpen', 'model', 'users'],
+    props: ['model', 'users', 'onSubmit', 'onClose'],
     methods: {
-      onClose () {
+      close () {
         this.$emit('onClose')
       },
-      onSubmit (event) {
-        event.preventDefault()
-        this.$emit('onSubmit', event, this.model)
+      submit () {
+        console.log(this.$props.model)
+        this.$validator.validateAll().then(() => {
+          if (!this.$_.size(this.errors.items)) {
+            this.$emit('onSubmit', this.model)
+          }
+        }).catch(() => {
+        })
       },
-      click (event) {
-        this.onSubmit(event)
+    },
+    computed: {
+      selectData () {
+        let list = this.$_.map(this.$props.users, u => {
+          return {name: u.fullname, value: u._id}
+        })
+        return [{
+          list: list,
+        }]
       }
     }
   }

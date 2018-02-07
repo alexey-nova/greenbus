@@ -3,13 +3,13 @@
     <PageTitle :title="'Служебные документы'"></PageTitle>
 
     <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('create')"><i class="fa fa-plus"></i>&nbsp;&nbsp;Создать</button>
+      <button class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать служебную записку</button>
     </PageButtons>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', props.row._id)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('edit', props.row)"><i class="fa fa-edit"></i></button>
           <!--<button class="btn btn-sm btn-danger" @click="toggleModal('reject', props.row._id)"><i class="fa fa-trash"></i></button>-->
         </div>
         <div slot="from" slot-scope="props">
@@ -23,17 +23,22 @@
         </div>
         <div slot="tools" slot-scope="props">
           <div v-if="props.row.status === 0">
-            <a @click="toggleModal('confirm', props.row._id)">Согласовать</a>
-            <a @click="toggleModal('reject', props.row._id)">Отказать</a>
+            <!--<a @click="toggleModal('confirm', props.row._id)">Согласовать</a>-->
+            <!--<a @click="toggleModal('reject', props.row._id)">Отказать</a>-->
           </div>
+
+          <button class="btn btn-default" @click="toggleModal('show', props.row)">
+            <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
+          </button>
         </div>
       </v-client-table>
     </Box>
 
-    <ModalCreate v-if="modalsIsOpen.create" :isOpen="true" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalEdit v-if="modalsData.edit" :isOpen="true" :model="modalsData.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalReject v-if="modalsData.reject" :isOpen="true" :model="modalsData.reject" @onSubmit="rejectMemo" @onClose="toggleModal('reject')"></ModalReject>
-    <ModalConfirm v-if="modalsData.confirm" :isOpen="true" :model="modalsData.confirm" @onSubmit="confirmMemo" @onClose="toggleModal('confirm')"></ModalConfirm>
+    <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
+    <ModalShow :model="modal.show" :users="users" @onClose="toggleModal('show')"></ModalShow>
+    <!--<ModalReject :model="modal.reject" @onSubmit="rejectMemo" @onClose="toggleModal('reject')"></ModalReject>-->
+    <!--<ModalConfirm :model="modal.confirm" @onSubmit="confirmMemo" @onClose="toggleModal('confirm')"></ModalConfirm>-->
   </div>
 </template>
 
@@ -43,6 +48,7 @@
   import Box from '@/Box'
   import ModalCreate from './memos/ModalCreate'
   import ModalEdit from './memos/ModalEdit'
+  import ModalShow from './memos/ModalShow'
   import ModalReject from './memos/ModalReject'
   import ModalConfirm from './memos/ModalConfirm'
 
@@ -55,20 +61,16 @@
       ModalEdit,
       ModalReject,
       ModalConfirm,
+      ModalShow,
     },
     data () {
       return {
         users: [],
         memos: [],
-        modalsData: {
+        modal: {
+          show: false,
           create: false,
           edit: false,
-          reject: false,
-          confirm: false,
-        },
-        modalsIsOpen: {
-          edit: false,
-          create: false,
           reject: false,
           confirm: false,
         },
@@ -78,24 +80,23 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'admin', 'name', 'text', 'status', 'from', 'to', 'tools'],
+          columns: ['id', 'admin', 'name', 'status', 'from', 'to', 'tools'],
           options: {
             headings: {
               id: 'ID',
               admin: '',
-              name: 'Задача',
-              text: 'Комментарий',
+              name: 'Тема',
               status: 'Статус',
-              from: 'От кого',
-              to: 'Исполнители',
+              from: 'Исполнитель',
+              to: 'Кому',
               tools: '',
             },
             orderBy: {
               column: 'id',
               ascending: false
             },
-            sortable: ['id', 'name', 'text', 'status', 'from', 'to',],
-            filterable: ['id', 'name', 'text', 'status', 'from', 'to',],
+            sortable: ['id', 'name', 'status', 'from', 'to',],
+            filterable: ['id', 'name', 'status', 'from', 'to',],
             customSorting: {
               id: function (ascending) {
                 return (a, b) => {
@@ -111,6 +112,9 @@
             },
             rowClassCallback (row) {
               return (row.urgency) ? 'bg-danger' : ''
+            },
+            columnsClasses: {
+              admin: 'admin',
             },
             skin: 'table table-bordered',
           },
@@ -132,63 +136,39 @@
 
             return memo
           })
-          if (this.filter !== false) {
-//            data = _.filter(data, o => {
-//              if (this.filter === 'in') {
-//                return o.to === '1'
-//              }
-//              if (this.filter === 'out') {
-//                return o.from === '1'
-//              }
-//              if (this.filter === 'warn') {
-//                return o.urgency
-//              }
-//              if (this.filter === 'warn') {
-//                return false
-//              }
-//            })
-          }
           return data
         }
       }
     },
 
     methods: {
-      toggleModal (name, id = 0) {
-        let memo = _.assign({}, _.find(this.memos, memo => id === memo._id))
-        let modal = this.modalsIsOpen[name]
-        if (name !== 'create' && !modal && memo) {
-          this.modalsData[name] = memo
-        } else {
-          this.modalsData[name] = false
-        }
-
-        this.modalsIsOpen[name] = !modal
+      toggleModal (name, model) {
+        this.modal[name] = model === undefined ? !this.modal[name] : model
       },
-      createMemo (event, memo) {
+      createMemo (memo) {
         this.$api('post', 'memos', memo).then(response => {
           this.loadMemos()
-          this.modalsIsOpen.create = false
+          this.modal.create = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e, 'danger')
+          this.notify('Временно нельзя создать служебную записку', 'info')
+          this.$log(e, 'danger')
         })
       },
-      editMemo (event, memo) {
+      editMemo (memo) {
         this.$api('put', 'memos/'+memo._id, memo).then(response => {
           this.loadMemos()
-          this.modalsIsOpen.edit = false
-          this.modalsData.edit = false
+          this.modal.edit = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e, 'danger')
+          this.notify('Временно нельзя редактировать служебную записку', 'info')
+          this.$log(e, 'danger')
         })
       },
-      rejectMemo (event, data) {
+      rejectMemo (data) {
         this.$api('post', 'memos/reject/'+data.memoId, data).then(response => {
           this.loadMemos()
-          this.modalsIsOpen.reject = false
-          this.modalsData.reject = false
+          this.modal.reject = false
           this.notify(response.data.message)
         }).catch(e => {
           this.notify(e, 'danger')
@@ -205,7 +185,8 @@
         })
       },
       loadMemos () {
-        this.$api('get', 'memos').then(response => {
+        let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
+        this.$api('get', 'memos' + filter).then(response => {
           this.memos = response.data
         }).catch(e => {
           this.notify(e, 'danger')
@@ -229,9 +210,9 @@
           isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
           children: [
             {
-              link: {name: 'documentsByFilter', params: {param1: 'all'}},
+              link: {name: 'documents'},
               name: 'Все',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'all'),
+              isActive: () => this.$isRoute('documents'),
             },
             {
               link: {name: 'documentsByFilter', params: {param1: 'in'}},
@@ -244,18 +225,26 @@
               isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
             },
             {
-              link: {name: 'documentsByFilter', params: {param1: 'warn'}},
+              link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
               name: 'На согласовании',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'warn'),
+              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
             },
           ],
         },
-        {
-          link: {name: 'documentsByFilter1', params: {param1: 'qweqw'}},
-          name: 'Документы',
-          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'qweqw'),
-        },
+//        {
+//          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
+//          name: 'Документы',
+//          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
+//        },
       ])
+    },
+    destroyed () {
+      this.$store.commit('app/setSidebar', {})
+    },
+    watch: {
+      '$route' (to, from) {
+        this.loadMemos()
+      }
     },
   }
 </script>

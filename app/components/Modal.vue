@@ -1,19 +1,19 @@
 <template>
   <Animation enter="fadeIn">
-    <div v-if="isOpen" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
+    <div v-if="isOpen" :class="['modal', 'show'].concat(typeClasses)" tabindex="-1" role="dialog" aria-hidden="true">
+      <div :class="['modal-dialog', 'modal-dialog-centered']" role="document">
         <div class="modal-content">
           <form @submit="submit">
 
-            <div class="modal-header">
+            <div v-if="$slots.header" class="modal-header">
               <slot name="header"></slot>
             </div>
 
-            <div class="modal-body">
+            <div v-if="$slots.content" class="modal-body">
               <slot name="content"></slot>
             </div>
 
-            <div class="modal-footer">
+            <div v-if="$slots.footer" class="modal-footer">
               <slot name="footer"></slot>
             </div>
 
@@ -31,11 +31,26 @@
     components: {
       Animation,
     },
-    props: [
-      'isOpen',
-      'onSubmit',
-      'onClose'
-    ],
+    props: {
+      isOpen: {},
+      type: {},
+      onSubmit: {
+        default: () => {}
+      },
+      onClose: {},
+    },
+    computed: {
+      typeClasses () {
+        let type = this.$props.type
+        let classes = []
+        if (this.$_.isArray(type)) {
+          classes = this.$_.map(type, t => 'type-' + t)
+        } else {
+          classes = (type) ? ['type-' + type] : []
+        }
+        return classes
+      },
+    },
     methods: {
       submit (event) {
         event.preventDefault()
@@ -45,5 +60,8 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+  .modal.type-lg .modal-dialog { max-width: 900px; width: auto; }
+
+  .modal.type-read-only .form-control[readonly] { background: #fff }
 </style>

@@ -1,15 +1,22 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Заавервишь задачу</h3>
+    <h3 slot="header" class="modal-title">Завершить задачу</h3>
 
     <div slot="content">
-      Вы действительно хотите завершить эту задачу?
+      <div class="form-group">
+        <label for="field-comment">Комментарий</label>
+        <textarea id="field-comment" class="form-control" v-model="model.comment"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="field-files">Прикрепить файл</label>
+        <input id="field-files" type="file">
+      </div>
     </div>
 
     <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">Отмена</button>
-      <button type="submit" class="btn btn-success">Завершить</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
+      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Завершить</button>
     </div>
 
   </Modal>

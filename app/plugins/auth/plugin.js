@@ -1,4 +1,5 @@
 import store from '#/store'
+import core from './../core'
 
 export default {
   auth () {
@@ -15,11 +16,16 @@ export default {
   },
   login (token) {
     if (token) {
-      let user = JSON.parse(atob(token.split('.')[1]))
-      user['fullname'] = unescape(user.fullname)
-      localStorage.setItem('jwt', token);
+      try {
+        let user = JSON.parse(atob(token.split('.')[1]))
+        user['fullname'] = unescape(user.fullname)
+        core.$setToken(token)
+        localStorage.setItem('jwt', token);
 
-      store.commit('auth/init', {token: token, user: user})
+        store.commit('auth/init', {token: token, user: user})
+      } catch (e) {
+        store.commit('auth/destroy')
+      }
     }
   },
 

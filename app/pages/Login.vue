@@ -41,7 +41,7 @@
         event.preventDefault()
         this.$api('post', 'auth/login', this.loginData).then(response => {
           this.$login(response.data.token)
-//          this.$router.push({name: 'index'})
+          this.$router.push({name: 'index'})
         }).catch(e => {
           this.$notify(e, 'danger')
         })

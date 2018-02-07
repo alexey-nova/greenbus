@@ -3,17 +3,23 @@
     <PageTitle :title="'Сотрудники'"></PageTitle>
 
     <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('createUser', {})"><i class="fa fa-plus"></i>&nbsp;&nbsp;Добавить сотрудника</button>
+      <button class="btn btn-success" @click="toggleModal('createDep', {})"><i class="fa fa-id-badge"></i>&nbsp;&nbsp;Добавить отдел</button>
+      <button class="btn btn-success" @click="toggleModal('createUser', {})"><i class="fa fa-user"></i>&nbsp;&nbsp;Добавить сотрудника</button>
     </PageButtons>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('editUser', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
         </div>
         <div slot="tools" slot-scope="props">
-          <button class="btn btn-primary" @click="toggleModal('createTask', {urgency: false, to: props.row._id})">Поставить задачу</button>
+          <button class="btn btn-default" @click="toggleModal('showUser', props.row)">
+            <i class="fa fa fa-user"></i>&nbsp;&nbsp;Подробнее
+          </button>
+          <button class="btn btn-primary" @click="toggleModal('createTask', {urgency: false, to: props.row._id})">
+            <i class="fa fa fa-calendar-check-o"></i>&nbsp;&nbsp;Поставить задачу
+          </button>
         </div>
         <div slot="email" slot-scope="props">
           <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
@@ -24,7 +30,9 @@
     <ModalCreateUser :model="modal.createUser" :departments="departments" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
     <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+    <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
+    <ModalCreateDep :model="modal.createDep" @onSubmit="createDep" @onClose="toggleModal('createDep')"></ModalCreateDep>
   </div>
 </template>
 
@@ -34,8 +42,10 @@
   import Box from '@/Box'
   import ModalCreateUser from './users/ModalCreateUser'
   import ModalEditUser from './users/ModalEditUser'
+  import ModalShowUser from './users/ModalShowUser'
   import ModalDeleteUser from './users/ModalDeleteUser'
   import ModalCreateTask from './tasks/ModalCreateTask'
+  import ModalCreateDep from './users/ModalCreateDep'
 
   export default {
     plugins: ['auth'],
@@ -47,6 +57,8 @@
       ModalDeleteUser,
       ModalEditUser,
       ModalCreateTask,
+      ModalShowUser,
+      ModalCreateDep,
     },
     data () {
       return {
@@ -54,6 +66,14 @@
         users: [],
         departments: [],
         filter: false,
+        modal: {
+          editUser: false,
+          showUser: false,
+          createTask: false,
+          createUser: false,
+          deleteUser: false,
+          createDep: false,
+        },
         tableData: {
           columns: ['id', 'admin', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
           options: {
@@ -86,13 +106,10 @@
                 }
               }
             },
+            columnsClasses: {
+              admin: 'admin',
+            },
           },
-        },
-        modal: {
-          editUser: false,
-          createTask: false,
-          createUser: false,
-          deleteUser: false,
         },
       }
     },
@@ -117,7 +134,8 @@
           this.modal.createUser = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя создать пользователя', 'info')
+          this.$log(e, 'danger')
         })
       },
       editUser (user) {
@@ -128,7 +146,7 @@
         }).catch(e => {
           this.notify('Временно нельзя редактировать пользователя', 'info')
           this.modal.editUser = false
-          this.log(e.response.data, 'danger')
+          this.$log(e, 'danger')
         })
       },
       deleteUser (user) {
@@ -139,7 +157,7 @@
         }).catch(e => {
           this.notify('Временно нельзя удалить пользователя', 'info')
           this.modal.deleteUser = false
-          this.log(e.response.data, 'danger')
+          this.$log(e, 'danger')
         })
       },
       createTask (task) {
@@ -147,14 +165,25 @@
           this.modal.createTask = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify('Временно нельзя создать задачу', 'info')
+          this.$log(e, 'danger')
+        })
+      },
+      createDep (dep) {
+        this.$api('post', 'departments', dep).then(response => {
+          this.loadDepartments()
+          this.modal.createDep = false
+          this.notify(response.data.message)
+        }).catch(e => {
+          this.notify('Временно нельзя создать отдел', 'info')
+          this.$log(e, 'danger')
         })
       },
       loadUsers () {
         this.$api('get', 'users').then(response => {
           this.users = response.data
         }).catch(e => {
-          this.notify(e.response.data, 'danger')
+          this.notify(e, 'danger')
         })
       },
       loadDepartments () {

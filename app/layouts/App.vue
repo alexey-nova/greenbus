@@ -54,8 +54,8 @@
 <style lang="scss">
   /*.wrapper { display: flex; min-height: calc(100em - 101px); flex-direction: column; }*/
   /*main { flex: 1; }*/
-  html { font-size: 62.5%; }
-  body { font-size: 150%; }
+  html { font-size: 62.5% !important; }
+  body { font-size: 150% !important; }
 
   // header
   body .wrapper .main-header { border-bottom: 4px solid #fff; max-height: none; }
@@ -110,6 +110,14 @@
 
 
 
+  a { cursor: pointer; }
+  body .wrapper .btn { border-radius: 5px; }
+  body .wrapper .form-group { margin-bottom: 20px; }
+  body .wrapper .form-group label { margin: 0 10px 5px 0; }
+  body .wrapper .form-control { border-width: 0 0 1px; border-radius: 0; padding-left: 5px; }
+  body .wrapper select.form-control { padding-left: 0; }
+  td.admin { width: 100px; }
+  input[type=file] { margin: 8px 0; }
 
 
 
@@ -118,19 +126,24 @@
   .modal-body { padding: 20px 20px; }
 
 
-  a { cursor: pointer; }
-  .btn { border-radius: 5px; }
-  .form-group { margin-bottom: 20px; }
-  .form-group label { margin: 0 10px 5px 0; }
-  .form-control { border-width: 0 0 1px; border-radius: 0; padding-left: 5px; }
-  select.form-control { padding-left: 0; }
+  .table th { position: relative; background: #eee; }
+  .table th>span:first-child { margin-right: 30px; white-space: nowrap; }
+  .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
+  .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td { border: 1px solid #ccc !important; }
+  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { padding: 10px !important; }
+
+  .label.label-default { background: #eee; }
 
   .vdp-datepicker .form-control { background: #fff; }
 
   .notifications { margin-top: 87px; margin-right: 10px; }
-  .vue-notification { padding: 17px 10px; margin: 5px 3px; font-size: 1.125em; box-shadow: 2px 2px 6px -3px #000;
+  .vue-notification { padding: 17px 10px; margin: 5px 3px; font-size: 16px !important; box-shadow: 2px 2px 6px -3px #000;
     color: #ffffff; background: #44A4FC; border-left: 5px solid #187FE7; cursor: pointer;
     &.warn { background: #ffb648; border-left-color: #f48a06; }
     &.error { background: #E54D42; border-left-color: #B82E24; }
     &.success { background: #68CD86; border-left-color: #42A85F; }}
+
+  // MultiSelect
+  .checkboxLayer .helperContainer>.line:first-child { display: none; }
+  .checkboxLayer .tab-block { display: none; }
 </style>
