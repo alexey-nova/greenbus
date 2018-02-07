@@ -34,13 +34,14 @@
           <input id="field-position" class="form-control" v-validate="'required'" name="position" v-model="model.position">
           <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
         </div>
-        <div class="form-group">
-          <label for="field-phone">Телефон</label>
-          <masked-input id="field-phone" class="form-control" mask="\+\7 (111) 111-11-11" v-model="model.phone"></masked-input>
+        <div :class="['form-group', {'has-error': errors.has('phone')}]">
+          <label for="field-phone">Телефон *</label>
+          <masked-input id="field-phone" class="form-control" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
+          <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
         </div>
         <div class="form-group">
           <label for="field-whatsapp">Whatsapp</label>
-          <masked-input id="field-whatsapp" class="form-control" mask="\+\7 (111) 111-11-11" v-model="model.whatsapp"></masked-input>
+          <masked-input id="field-whatsapp" class="form-control" mask="\+1 (111) 111-11-11" v-model="model.whatsapp"></masked-input>
         </div>
       </div>
     </div>
@@ -68,7 +69,30 @@
         this.$emit('onClose')
       },
       submit () {
-        this.$emit('onSubmit', this.model)
+        this.$validator.validateAll().then(() => {
+          if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
+            this.errors.items.push({
+              field: 'login',
+              scope: null,
+              msg: 'Пользователь с таким логином уже существует',
+            })
+          } else {
+            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'login')
+          }
+          if (this.$_.find(this.$props.users, u => u.email === this.$props.model.email)) {
+            this.errors.items.push({
+              field: 'email',
+              scope: null,
+              msg: 'Пользователь с такой почтой уже существует',
+            })
+          } else {
+            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'email')
+          }
+          if (!this.$_.size(this.errors.items)) {
+            this.$emit('onSubmit', this.model)
+          }
+        }).catch(() => {
+        })
       },
     }
   }

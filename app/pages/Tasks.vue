@@ -85,7 +85,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'admin', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools'],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools', 'admin',],
           options: {
             headings: {
               id: 'ID',

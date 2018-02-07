@@ -16,7 +16,7 @@
           {{props.row.nameFrom}}
         </div>
         <div slot="to" slot-scope="props">
-          {{props.row.nameTo}}
+          {{getUsersTo(props.row.to)}}
         </div>
         <div slot="status" slot-scope="props">
           {{statuses[props.row.status]}}
@@ -36,9 +36,7 @@
 
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalShow :model="modal.show" :users="users" @onClose="toggleModal('show')"></ModalShow>
-    <!--<ModalReject :model="modal.reject" @onSubmit="rejectMemo" @onClose="toggleModal('reject')"></ModalReject>-->
-    <!--<ModalConfirm :model="modal.confirm" @onSubmit="confirmMemo" @onClose="toggleModal('confirm')"></ModalConfirm>-->
+    <ModalShow :model="modal.show" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -80,7 +78,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'admin', 'name', 'status', 'from', 'to', 'tools'],
+          columns: ['id', 'name', 'status', 'from', 'to', 'tools', 'admin',],
           options: {
             headings: {
               id: 'ID',
@@ -156,7 +154,18 @@
         })
       },
       editMemo (memo) {
-        this.$api('put', 'memos/'+memo._id, memo).then(response => {
+        let data = new FormData()
+        this.$_.each(memo, (value, key) => {
+          if (key === 'files') {
+//            this.$_.each(value, (file, k) => {
+//              data.append('files['+k+']', value)
+//            })
+            data.append('files', value[0])
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
+        this.$api('put', 'memos/'+memo._id, data).then(response => {
           this.loadMemos()
           this.modal.edit = false
           this.notify(response.data.message)
@@ -166,22 +175,21 @@
         })
       },
       rejectMemo (data) {
-        this.$api('post', 'memos/reject/'+data.memoId, data).then(response => {
+        this.$api('post', 'memos/reject/'+data._id, data).then(response => {
           this.loadMemos()
-          this.modal.reject = false
+          this.modal.show  = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e, 'danger')
+//          this.notify(e, 'danger')
         })
       },
-      confirmMemo (event, data) {
-        this.$api('post', 'memos/confirm/'+data.memoId).then(response => {
+      confirmMemo (data) {
+        this.$api('post', 'memos/confirm/'+data._id).then(response => {
           this.loadMemos()
-          this.modalsIsOpen.confirm = false
-          this.modalsData.confirm = false
+          this.modal.show = false
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify(e, 'danger')
+//          this.notify(e, 'danger')
         })
       },
       loadMemos () {
@@ -198,6 +206,18 @@
         }).catch(e => {
           this.notify(e, 'danger')
         })
+      },
+      getUsersTo (to) {
+        let names = this.$_.reduce(to, (data, v) => {
+          if (v) {
+            let user = this.$_.find(this.users, u => u._id === v.user)
+            if (user) {
+              data.push(user.fullname)
+            }
+            return data
+          }
+        }, [])
+        return (this.$_.isArray(names)) ? names.join(', ') : ''
       }
     },
     mounted () {

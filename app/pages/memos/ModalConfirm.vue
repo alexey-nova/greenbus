@@ -1,46 +1,31 @@
 <template>
-  <Modal :isOpen="isOpen">
+  <Modal :isOpen="model" @onSubmit="submit">
 
     <h3 slot="header" class="modal-title">Согласовать служебную записку?</h3>
 
     <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="onClose">Отмена</button>
-      <button type="submit" class="btn btn-success" @click="click($event)">Согласовать</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
+      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Согласовать</button>
     </div>
 
   </Modal>
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
 
   export default {
     components: {
       Modal,
-      Datepicker,
-      'el-switch': Switch,
     },
-    data () {
-      return {
-      }
-    },
-    props: ['isOpen', 'model'],
+    props: ['model', 'onSubmit', 'onClose'],
     methods: {
-      onClose () {
+      close () {
         this.$emit('onClose')
       },
-      onSubmit (event) {
-        event.preventDefault()
-        this.$emit('onSubmit', event, {
-          memoId: this.$props.model._id,
-        })
+      submit () {
+        this.$emit('onSubmit', this.$props.model)
       },
-      click (event) {
-        this.onSubmit(event)
-      }
     }
   }
 </script>

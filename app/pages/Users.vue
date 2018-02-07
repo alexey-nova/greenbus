@@ -27,7 +27,7 @@
       </v-client-table>
     </Box>
 
-    <ModalCreateUser :model="modal.createUser" :departments="departments" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+    <ModalCreateUser :model="modal.createUser" :users="users" :departments="departments" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
     <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
     <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
@@ -75,7 +75,7 @@
           createDep: false,
         },
         tableData: {
-          columns: ['id', 'admin', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
+          columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools', 'admin'],
           options: {
             headings: {
               id: 'ID',
@@ -133,14 +133,14 @@
           this.loadUsers()
           this.modal.createUser = false
           this.notify(response.data.message)
-        }).catch(e => {
+        }).catch((e) => {
           this.notify('Временно нельзя создать пользователя', 'info')
           this.$log(e, 'danger')
         })
       },
       editUser (user) {
         this.$api('put', 'users/' + user._id, user).then(response => {
-          this.$_.assign(this.users, user)
+          this.loadUsers()
           this.modal.editUser = false
           this.notify(response.data.message)
         }).catch(e => {

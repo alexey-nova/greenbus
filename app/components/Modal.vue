@@ -1,7 +1,7 @@
 <template>
   <Animation enter="fadeIn">
     <div v-if="isOpen" :class="['modal', 'show'].concat(typeClasses)" tabindex="-1" role="dialog" aria-hidden="true">
-      <div :class="['modal-dialog', 'modal-dialog-centered']" role="document">
+      <div :class="['modal-dialog']" role="document">
         <div class="modal-content">
           <form @submit="submit">
 
@@ -55,6 +55,15 @@
       submit (event) {
         event.preventDefault()
         this.$emit('onSubmit')
+      }
+    },
+    watch: {
+      isOpen () {
+        if (this.$props.isOpen) {
+          document.body.classList.add('modal-open')
+        } else {
+          document.body.classList.remove('modal-open')
+        }
       }
     }
   }

@@ -1,55 +1,42 @@
 <template>
-  <Modal :isOpen="isOpen">
+  <Modal :isOpen="model" @onSubmit="submit">
 
     <h3 slot="header" class="modal-title">Отклонить служебную записку?</h3>
 
-    <form slot="content" ref="form" @submit="onSubmit($event)">
+    <div slot="content">
       <div class="form-group">
-        <label for="name">Комментарий *</label>
-        <input class="form-control" id="name" v-model="comment">
+        <label for="field-comment">Комментарий</label>
+        <textarea id="field-comment" class="form-control" v-model="model.comment"></textarea>
       </div>
-    </form>
+      <div class="form-group">
+        <label for="field-files">Прикрепить файл</label>
+        <input id="field-files" type="file">
+      </div>
+    </div>
 
     <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="onClose">Отмена</button>
-      <button type="submit" class="btn btn-danger" @click="click($event)">Отклонить</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
+      <button type="submit" class="btn btn-danger"><i class="fa fa-times"></i>&nbsp;&nbsp;Отклонить</button>
     </div>
 
   </Modal>
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
 
   export default {
     components: {
       Modal,
-      Datepicker,
-      'el-switch': Switch,
     },
-    data () {
-      return {
-        comment: '',
-      }
-    },
-    props: ['isOpen', 'model'],
+    props: ['model', 'onSubmit', 'onClose'],
     methods: {
-      onClose () {
+      close () {
         this.$emit('onClose')
       },
-      onSubmit (event) {
-        event.preventDefault()
-        this.$emit('onSubmit', event, {
-          memoId: this.$props.model._id,
-          comment: this.comment
-        })
+      submit () {
+        this.$emit('onSubmit', this.model)
       },
-      click (event) {
-        this.onSubmit(event)
-      }
     }
   }
 </script>

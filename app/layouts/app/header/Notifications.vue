@@ -38,14 +38,13 @@
           this.pending = response.data.pending
 //          console.log(this.pending)
         }).catch(e => {
-          this.notify(e, 'danger')
         })
       },
       listen () {
         this.loadNots()
         this.$_.delay(() => {
           this.listen()
-        }, 5000)
+        }, 15000)
       }
     },
     mounted () {
