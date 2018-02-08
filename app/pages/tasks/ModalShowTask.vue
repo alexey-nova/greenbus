@@ -25,8 +25,8 @@
         <i class="fa fa-clock-o"></i> Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
       </div>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', model)"><i class="fa fa-times"></i>&nbsp;&nbsp;Отменить задачу</button>
-      <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('endTask', model)"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу</button>
+      <button v-if="$auth().user._id === model.to" type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', model)"><i class="fa fa-times"></i>&nbsp;&nbsp;Отменить задачу</button>
+      <button v-if="$auth().user._id === model.to" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('endTask', model)"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу</button>
     </div>
   </Modal>
 

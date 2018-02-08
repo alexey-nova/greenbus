@@ -134,7 +134,17 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createTask (task) {
-        this.$api('post', 'tasks', task).then(response => {
+        let data = new FormData()
+        this.$_.each(task, (value, key) => {
+          if (key === 'files') {
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
+        this.$api('post', 'tasks', data).then(response => {
           this.modal.create = false
           this.loadTasks()
           this.notify(response.data.message)
@@ -144,9 +154,19 @@
         })
       },
       editTask (task) {
-        this.$api('put', 'tasks/' + task._id, task).then(response => {
+        let data = new FormData()
+        this.$_.each(task, (value, key) => {
+          if (key === 'files') {
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
+        this.$api('put', 'tasks/' + task._id, data).then(response => {
           this.modal.edit = false
-          this.tasks = this.$_.assign(this.tasks, task)
+          this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
           this.notify('Временно нельзя редактировать задачу', 'info')
@@ -164,14 +184,19 @@
         })
       },
       endTask (task) {
-        console.log(task)
-        let data = {
-          comment: task.comment,
-          files: task.files,
-        }
+        let data = new FormData()
+        this.$_.each(task, (value, key) => {
+          if (key === 'files') {
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
         this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
-//          this.modal.end = false
-          this.$_.assign(this.users, user)
+          this.modal.show = false
+          this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
           this.notify('Временно нельзя завершить задачу', 'info')
@@ -179,13 +204,19 @@
         })
       },
       rejectTask (task) {
-        let data = {
-          comment: task.comment,
-          files: task.files,
-        }
+        let data = new FormData()
+        this.$_.each(task, (value, key) => {
+          if (key === 'files') {
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
         this.$api('post', 'tasks/reject/' + task._id, data).then(response => {
-//          this.modal.end = false
-          this.$_.assign(this.users, user)
+          this.modal.show = false
+          this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
           this.notify('Временно нельзя отменить задачу', 'info')

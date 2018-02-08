@@ -9,8 +9,8 @@
         <textarea id="field-comment" class="form-control" v-model="model.comment"></textarea>
       </div>
       <div class="form-group">
-        <label for="field-files">Прикрепить файл</label>
-        <input id="field-files" type="file">
+        <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
+        <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
       </div>
     </div>
 
@@ -37,6 +37,12 @@
       submit () {
         this.$emit('onSubmit', this.model)
       },
+      addFiles (e) {
+        let files = e.target.files || e.dataTransfer.files
+        if (!files.length) return
+
+        this.$props.model.files = files
+      }
     }
   }
 </script>

@@ -36,8 +36,8 @@
           <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
         </div>
         <div class="form-group">
-          <label for="field-files">Прикрепить файл</label>
-          <input id="field-files" type="file">
+          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
+          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
         </div>
       </div>
     </div>
@@ -75,6 +75,12 @@
         }).catch(() => {
         })
       },
+      addFiles (e) {
+        let files = e.target.files || e.dataTransfer.files
+        if (!files.length) return
+
+        this.$props.model.files = files
+      }
     }
   }
 </script>

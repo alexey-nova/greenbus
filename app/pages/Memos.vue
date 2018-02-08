@@ -144,7 +144,17 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createMemo (memo) {
-        this.$api('post', 'memos', memo).then(response => {
+        let data = new FormData()
+        this.$_.each(memo, (value, key) => {
+          if (key === 'files') {
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
+          }
+          if (this.$_.isArray(value)) value = JSON.stringify(value)
+          data.append(key, value)
+        })
+        this.$api('post', 'memos', data).then(response => {
           this.loadMemos()
           this.modal.create = false
           this.notify(response.data.message)
@@ -157,10 +167,9 @@
         let data = new FormData()
         this.$_.each(memo, (value, key) => {
           if (key === 'files') {
-//            this.$_.each(value, (file, k) => {
-//              data.append('files['+k+']', value)
-//            })
-            data.append('files', value[0])
+            this.$_.each(value, (file, k) => {
+              data.append('files[]', value[k])
+            })
           }
           if (this.$_.isArray(value)) value = JSON.stringify(value)
           data.append(key, value)
@@ -174,8 +183,18 @@
           this.$log(e, 'danger')
         })
       },
-      rejectMemo (data) {
-        this.$api('post', 'memos/reject/'+data._id, data).then(response => {
+      rejectMemo (memo) {
+//        let data = new FormData()
+//        this.$_.each(memo, (value, key) => {
+//          if (key === 'files') {
+//            this.$_.each(value, (file, k) => {
+//              data.append('files[]', value[k])
+//            })
+//          }
+//          if (this.$_.isArray(value)) value = JSON.stringify(value)
+//          data.append(key, value)
+//        })
+        this.$api('post', 'memos/reject/'+model._id, memo).then(response => {
           this.loadMemos()
           this.modal.show  = false
           this.notify(response.data.message)
