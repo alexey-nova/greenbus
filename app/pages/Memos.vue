@@ -153,7 +153,6 @@
     methods: {
       getCommentsCount (model) {
         return this.$_.reduce(model.to, (result, m) => {
-          console.log(m)
           if (m.answer !== 'undefined') {
             result++
           }
@@ -207,7 +206,6 @@
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
         this.$api('get', 'memos' + filter).then(response => {
           this.memos = response.data
-          console.log(this.memos)
         }).catch(e => {
           this.notify(e, 'danger')
         })

@@ -5,21 +5,9 @@
 
     <div slot="content" class="row">
       <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('login')}]">
-          <label for="field-login">Логин *</label>
-          <input id="field-login" class="form-control" v-validate="'required'" name="login" v-model="model.login" />
-          <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('fullname')}]">
-          <label for="field-fullname">Ф.И.О *</label>
-          <input id="field-fullname" class="form-control" v-validate="'required'" name="fullname" v-model="model.fullname">
-          <span v-show="errors.has('fullname')" class="help-block">{{ errors.first('fullname') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('email')}]">
-          <label for="field-email">Email *</label>
-          <input id="field-email" class="form-control" v-validate="'required|email'" name="email" v-model="model.email">
-          <span v-show="errors.has('email')" class="help-block">{{ errors.first('email') }}</span>
-        </div>
+        <InputBase title="Логин" name="login" required :validate="'required'" v-model="model.login"></InputBase>
+        <InputBase title="Ф.И.О" name="fullname" required :validate="'required'" v-model="model.fullname"></InputBase>
+        <InputBase title="Email" name="email" required :validate="'required'" v-model="model.email"></InputBase>
       </div>
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('department')}]">
@@ -56,12 +44,14 @@
 
 <script>
   import Modal from '@/Modal'
+  import InputBase from '@/Input'
   import MaskedInput from 'vue-masked-input'
 
   export default {
     components: {
       Modal,
       MaskedInput,
+      InputBase,
     },
     props: ['isOpen', 'model', 'departments', 'onSubmit', 'onClose'],
     methods: {
