@@ -21,5 +21,18 @@ export default {
 
     return isName && isParam
   },
+  createFormData (model) {
+    let data = new FormData()
+    this.$_.each(model, (value, key) => {
+      if (key === 'files') {
+        this.$_.each(value, (file, k) => {
+          data.append('files[]', value[k])
+        })
+      }
+      if (this.$_.isArray(value)) value = JSON.stringify(value)
+      data.append(key, value)
+    })
+    return data
+  },
   mixin: {},
 }

@@ -21,6 +21,7 @@ Vue.use({
     Vue.prototype.$dateFormat = core.$dateFormat
 
     Vue.prototype.$isRoute = plugins.app.isRoute
+    Vue.prototype.$createFormData = plugins.app.createFormData
 
     Vue.prototype.$auth = plugins.auth.auth
     Vue.prototype.$login = plugins.auth.login

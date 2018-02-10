@@ -4,19 +4,29 @@
     <h3 slot="header" class="modal-title">Информация по задаче</h3>
 
     <div slot="content">
-      <h2>#{{model.id}}: {{model.name}}</h2>
-      <p style="line-height: 2em;">
-        {{model.description}}<br />
-        <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
-        Контроль: {{getUser(model.from).fullname}}<br />
-        Ответственный: {{getUser(model.to).fullname}}<br />
-        Приоритет:
-        <span v-if="model.urgency" class="label label-danger">Важная</span>
-        <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
-        Статус: {{statuses[model.status]}}<br />
-        <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.deadline, 'd mmm yyyy')}}<br />
-          </span>
-      </p>
+      <ul class="menu">
+        <li :class="{'active': tab === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
+        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Обсуждение</a></li>
+      </ul>
+
+      <div v-if="tab === 0">
+        <h2>#{{model.id}}: {{model.name}}</h2>
+        <p style="line-height: 2em;">
+          {{model.description}}<br />
+          <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
+          Контроль: {{getUser(model.from).fullname}}<br />
+          Ответственный: {{getUser(model.to).fullname}}<br />
+          Приоритет:
+          <span v-if="model.urgency" class="label label-danger">Важная</span>
+          <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
+          Статус: {{statuses[model.status]}}<br />
+          <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.deadline, 'd mmm yyyy')}}<br />
+            </span>
+        </p>
+      </div>
+      <div v-if="tab === 1">
+        Обсуждений нет
+      </div>
     </div>
 
     <div slot="footer">
@@ -63,10 +73,15 @@
           'В работе',
           'На согласовании'
         ],
+        tab: 0,
+        executions: [],
       }
     },
     props: ['model', 'users', 'onClose'],
     methods: {
+      toggleTab(tab) {
+        this.tab = tab
+      },
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
@@ -77,16 +92,32 @@
         this.$emit('rejectTask', task)
       },
       close () {
+        this.tab = 0
         this.$emit('onClose')
       },
       getUser (_id) {
         let user = this.$_.find(this.$props.users, u => u._id === _id)
         return user ? user : {}
       },
-    }
+    },
+    watch: {
+      model () {
+        if (this.$props.model._id)
+        this.$api('get', 'tasks/executions/' + this.$props.model._id).then(response => {
+          this.executions = response.data
+          console.log(this.executions)
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      },
+    },
   }
 </script>
 
 <style lang="scss" scoped>
   h2 { margin-top: 0 }
+
+  .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
+  .menu li { }
+  .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
 </style>

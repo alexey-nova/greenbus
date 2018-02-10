@@ -21,6 +21,16 @@
         <div slot="status" slot-scope="props">
           {{statuses[props.row.status]}}
         </div>
+        <div slot="info" slot-scope="props">
+          <span class="tools">
+            <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
+            <i class="fa fa-comment-o"></i>
+          </span>
+          <span class="tools">
+            <!--<span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>-->
+            <i class="fa fa-file-o"></i>
+          </span>
+        </div>
         <div slot="tools" slot-scope="props">
           <div v-if="props.row.status === 0">
             <!--<a @click="toggleModal('confirm', props.row._id)">Согласовать</a>-->
@@ -78,7 +88,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'status', 'from', 'to', 'tools', 'admin',],
+          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools', 'admin',],
           options: {
             headings: {
               id: 'ID',
@@ -87,6 +97,7 @@
               status: 'Статус',
               from: 'Исполнитель',
               to: 'Кому',
+              info: '',
               tools: '',
             },
             orderBy: {
@@ -140,20 +151,20 @@
     },
 
     methods: {
+      getCommentsCount (model) {
+        return this.$_.reduce(model.to, (result, m) => {
+          console.log(m)
+          if (m.answer !== 'undefined') {
+            result++
+          }
+          return result
+        }, 0)
+      },
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createMemo (memo) {
-        let data = new FormData()
-        this.$_.each(memo, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(memo)
         this.$api('post', 'memos', data).then(response => {
           this.loadMemos()
           this.modal.create = false
@@ -164,16 +175,7 @@
         })
       },
       editMemo (memo) {
-        let data = new FormData()
-        this.$_.each(memo, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(memo)
         this.$api('put', 'memos/'+memo._id, data).then(response => {
           this.loadMemos()
           this.modal.edit = false
@@ -184,16 +186,6 @@
         })
       },
       rejectMemo (memo) {
-//        let data = new FormData()
-//        this.$_.each(memo, (value, key) => {
-//          if (key === 'files') {
-//            this.$_.each(value, (file, k) => {
-//              data.append('files[]', value[k])
-//            })
-//          }
-//          if (this.$_.isArray(value)) value = JSON.stringify(value)
-//          data.append(key, value)
-//        })
         this.$api('post', 'memos/reject/'+model._id, memo).then(response => {
           this.loadMemos()
           this.modal.show  = false
@@ -215,6 +207,7 @@
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
         this.$api('get', 'memos' + filter).then(response => {
           this.memos = response.data
+          console.log(this.memos)
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -288,6 +281,8 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

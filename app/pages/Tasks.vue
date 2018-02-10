@@ -16,9 +16,16 @@
           <button class="btn btn-default" @click="toggleModal('show', props.row)">
             <i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее
           </button>
-          <!--<button v-if="props.row.to === $auth().user._id" class="btn btn-primary" @click="toggleModal('end', props.row)">-->
-            <!--<i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу-->
-          <!--</button>-->
+        </div>
+        <div slot="info" slot-scope="props">
+          <span class="tools">
+            <!--<span class="label label-success">3</span>-->
+            <i class="fa fa-comment-o"></i>
+          </span>
+          <span class="tools">
+            <!--<span class="label label-success">3</span>-->
+            <i class="fa fa-file-o"></i>
+          </span>
         </div>
         <div slot="from" slot-scope="props">
           {{getUser(props.row.from).fullname}}
@@ -27,7 +34,7 @@
           {{getUser(props.row.to).fullname}}
         </div>
         <div slot="urgency" slot-scope="props">
-          <span v-if="props.row.urgency" class="label label-danger">Важная</span>
+          <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
           <!--<span v-if="!props.row.urgency" class="label label-default">Обычная</span>-->
         </div>
         <div slot="status" slot-scope="props">
@@ -85,7 +92,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools', 'admin',],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools', 'admin',],
           options: {
             headings: {
               id: 'ID',
@@ -97,6 +104,7 @@
               deadline: 'Срок до',
               from: 'От кого',
               to: 'Ответственный',
+              info: '',
               tools: '',
             },
             orderBy: {
@@ -134,16 +142,7 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createTask (task) {
-        let data = new FormData()
-        this.$_.each(task, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(task)
         this.$api('post', 'tasks', data).then(response => {
           this.modal.create = false
           this.loadTasks()
@@ -154,16 +153,7 @@
         })
       },
       editTask (task) {
-        let data = new FormData()
-        this.$_.each(task, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(task)
         this.$api('put', 'tasks/' + task._id, data).then(response => {
           this.modal.edit = false
           this.loadTasks()
@@ -184,16 +174,7 @@
         })
       },
       endTask (task) {
-        let data = new FormData()
-        this.$_.each(task, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(task)
         this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
           this.modal.show = false
           this.loadTasks()
@@ -204,16 +185,7 @@
         })
       },
       rejectTask (task) {
-        let data = new FormData()
-        this.$_.each(task, (value, key) => {
-          if (key === 'files') {
-            this.$_.each(value, (file, k) => {
-              data.append('files[]', value[k])
-            })
-          }
-          if (this.$_.isArray(value)) value = JSON.stringify(value)
-          data.append(key, value)
-        })
+        let data = this.$createFormData(task)
         this.$api('post', 'tasks/reject/' + task._id, data).then(response => {
           this.modal.show = false
           this.loadTasks()
@@ -291,7 +263,10 @@
 
 <style lang="scss">
   /*tr.bg-danger { background-color: #ffebeb; }*/
-  .table .label { font-size: 0.8em; padding: 5px 10px;
+  .table .urgency { font-size: 0.8em; padding: 5px 10px;
     /*&.label-default { background: #eee; }*/
   }
+
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>
