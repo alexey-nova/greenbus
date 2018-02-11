@@ -5,20 +5,15 @@
 
     <div slot="content" class="row">
       <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('name')}]">
-          <label for="field-name">Тема *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
-          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">Описание *</label>
-          <textarea id="field-text" class="form-control" rows="4" v-validate="'required'" name="text" v-model="model.text"></textarea>
-          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
-        </div>
+
+        <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
+
+        <TextareaBase title="Описание" name="text" required :validate="'required'" v-model="model.text"></TextareaBase>
+
       </div>
       <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
-          <label for="field-memoTo">Кому *</label><br />
+
+        <FormInput title="Кому" name="memoTo" required>
           <Multiselect
             id="field-memoTo"
             v-model="selectedUsers"
@@ -28,15 +23,16 @@
             :clear-on-select="false"
             :multiple="true"
             track-by="name"
-            label="name"
-          >
+            label="name">
           </Multiselect>
-          <span v-show="errors.has('memoTo')" class="help-block">{{ errors.first('memoTo') }}</span>
-        </div>
+        </FormInput>
+
+
         <div class="form-group">
           <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
           <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
         </div>
+        
       </div>
     </div>
 
@@ -51,6 +47,9 @@
 <script>
   import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
+  import FormInput from '@/FormInput'
+  import InputBase from '@/Input'
+  import TextareaBase from '@/Textarea'
   import MaskedInput from 'vue-masked-input'
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
@@ -62,7 +61,10 @@
       MaskedInput,
       Datepicker,
       'el-switch': Switch,
-      Multiselect
+      Multiselect,
+      FormInput,
+      InputBase,
+      TextareaBase,
     },
     data () {
       return {

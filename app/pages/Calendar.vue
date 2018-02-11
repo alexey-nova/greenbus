@@ -54,6 +54,7 @@
             :events="eventsForComponent"/>
     </Box>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
 
   </div>
 </template>
@@ -82,6 +83,7 @@
                 meetings: [],
                 modal: {
                     create: false,
+                    edit: false,
                 },
                 showDate: this.thisMonth(1),
                 message: "Click a date or event...",
@@ -173,6 +175,7 @@
 
                 let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate:endDate}
                 console.log(newDate)
+
                 this.$api('post', 'meetings', data).then(response => {
                     this.modal.createMeeting = false
                     this.notify(response.data.message)
@@ -184,13 +187,12 @@
                 })
             },
             editMeeting (meeting) {
+                console.log("good")
                 this.$api('put', 'meetings/' + meeting._id, meeting).then(response => {
                     this.loadMeetings()
-                    //this.modal.editUser = false
                     this.notify(response.data.message)
                 }).catch(e => {
                     this.notify('Временно нельзя редактировать событие', 'info')
-                    //this.modal.editUser = false
                     this.$log(e, 'danger')
                 })
             },
@@ -211,41 +213,39 @@
             },
             onDrop(event, date) {
                 this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
-                // Before handling drag/drop date math, need to convert string dates to
-                // local dates and coalesce endDate to startDate.
                 const fixedStartDate = CalendarMathMixin.methods.toLocalDate(
                     event.startDate
                 )
                 const fixedEndDate = CalendarMathMixin.methods.toLocalDate(
                     event.endDate || fixedStartDate
                 )
-                // Determine the delta between the old start date and the date chosen,
-                // and apply that delta to both the start and end date to move the event.
                 const eLength = CalendarMathMixin.methods.dayDiff(fixedStartDate, date)
                 event.startDate = CalendarMathMixin.methods.addDays(
                     fixedStartDate,
                     eLength
                 )
                 event.endDate = CalendarMathMixin.methods.addDays(fixedEndDate, eLength)
-                //const newDate = new Date(2018, 1, 4, 2, 0, 0, 0);
                 this.dropMeeting(event.id, date.getDate(), date.getMonth(), date.getFullYear())
-                //console.log(date.getDate() + "/" + date.getMonth() + "/" + date.getFullYear())
             },
             dropMeeting (id, newDay, newMonth, newYear) {
 
                 this.$api('get', 'meetings/' + id).then(response => {
-                    var oldDate = new Date(response.data.startDate);
+                    let oldDate = new Date(response.data.startDate);
+                    let endDate = new Date(response.data.endDate);
 
                     oldDate.setUTCDate(newDay)
                     oldDate.setUTCMonth(newMonth)
                     oldDate.setUTCFullYear(newYear)
-                    console.log(oldDate)
-                    const data = {"id":id, "startDate":oldDate};
+
+                    endDate.setUTCDate(newDay)
+                    endDate.setUTCMonth(newMonth)
+                    endDate.setUTCFullYear(newYear)
+                    const data = {"id":id, "startDate":oldDate, "endDate":endDate};
                     this.$api('put', 'meetings/' + id, data).then(response => {
                         this.loadMeetings()
                         this.notify(response.data.message)
                     }).catch(e => {
-                        this.notify('Временно нельзя переносить событие', 'info')
+                        this.notify('Вы не можете переносить чужие встречи', 'info')
                         this.$log(e, 'danger')
                     })
                 }).catch(e => {
@@ -303,7 +303,7 @@
                     }
                     response.data['startTime'] = sHours + ":" + sMinutes
                     response.data['endTime'] = eHours + ":" + eMinutes
-                    this.toggleModal('create', response.data, 'edit')
+                    this.toggleModal('edit', response.data, 'edit')
                 }).catch(e => {
                     this.notify(e, 'danger')
                 })
@@ -375,4 +375,7 @@
     content: "\1F382";
     margin-right: 0.5em;
   }*/
+  .calendar-view .event.span1 {
+    cursor:pointer;
+  }
 </style>
