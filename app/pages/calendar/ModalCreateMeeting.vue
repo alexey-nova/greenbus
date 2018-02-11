@@ -60,6 +60,29 @@
           <span v-show="errors.has('participants')" class="help-block">{{ errors.first('participants') }}</span>
         </div>
       </div>
+      <div class="col-lg-12">
+        <div v-for="m in selectedUsers" class="row user">
+          <div class="col-md-9">
+            <div class="to">
+              <strong>{{getUser(m._id).fullname}}</strong> ({{getUser(m._id).position}})
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="to-name"></div>
+          </div>
+          <div class="col-md-3">
+            <div class="to-status">
+              <div v-if="!(m.user !== $auth().user._id || m.answer !== 'undefined')">
+                <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
+                <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
+              </div>
+              <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
+              {{statuses[m.answer]}}
+            </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div slot="footer">
@@ -114,6 +137,11 @@
                     confirmed: false,
                     reject: false,
                 },
+                statuses: {
+                    'undefined': 'На согласовании',
+                    'confirmed': 'Согласовано',
+                    'rejected': 'Отклонено',
+                }
             }
         },
         props: ['model', 'users', 'type','onSubmit', 'onClose',],
@@ -169,6 +197,10 @@
                     this.notify('Временно нельзя отказать во встречи', 'info')
                     this.$log(e, 'danger')
                 })
+            },
+            getUser (_id) {
+                let user = this.$_.find(this.$props.users, u => u._id === _id)
+                return user ? user : {}
             },
         },
         computed: {
