@@ -24,6 +24,13 @@
         <div>Документы</div>
       </router-link>
     </li>
+    <li :class="[{active: $isRoute(['calendar', 'calendar'])}, 'nav-item']">
+      <router-link class="nav-link" :to="{name: 'calendar'}" :style="{color: colors['documents']}">
+        <i class="fa fa-calendar fa-2x"></i>
+        <div>Ежедневник</div>
+      </router-link>
+    </li>
+
   </ul>
 </template>
 
