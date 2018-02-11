@@ -2,9 +2,15 @@
   <Modal :isOpen="model" :type="['lg']">
 
     <div slot="content" id="memo" class="memo">
+      <ul class="menu">
+        <li :class="{'active': tab === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
+        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
+        <li :class="{'active': tab === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
+      </ul>
+
+      <div v-if="tab === 0">
       <div class="logo"><img src="./../../assets/design/logo.png"/></div>
       <h3>Служебная записка №{{model.id}}</h3>
-
 
       <div v-for="m in model.to" class="row user">
         <div class="col-md-5">
@@ -28,50 +34,69 @@
             <!--<span class="date">14 Февраля 2018</span>-->
           </div>
         </div>
-      </div>
-
-      <div class="row theme">
-        <div class="col-md-5">
-          <div class="to">
-            <strong>Тема:</strong>
-            {{model.name}}
-          </div>
         </div>
-      </div>
 
-      <!--<div class="row user">-->
-        <!--<div class="col-md-5">-->
-          <!--<div class="to">-->
-            <!--<strong>Дата:</strong>-->
-            <!--{{$dateFormat(model, 'd mmm yyyy')}}-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-
-      <div class="description">
-        {{model.text}}
-      </div>
-
-      <div class="from-wrapper">
-        <div class="from-title"><strong>Исполнитель</strong></div>
-
-        <div class="row from">
+        <div class="row theme">
           <div class="col-md-5">
             <div class="to">
-              {{getUser(model.from).position}}:
+              <strong>Тема:</strong>
+              {{model.name}}
             </div>
           </div>
-          <div class="col-md-3">
-            <div class="to-name">{{getUser(model.from).fullname}}</div>
+        </div>
+
+        <!--<div class="row user">-->
+          <!--<div class="col-md-5">-->
+            <!--<div class="to">-->
+              <!--<strong>Дата:</strong>-->
+              <!--{{$dateFormat(model, 'd mmm yyyy')}}-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <div class="description">
+          {{model.text}}
+        </div>
+
+        <div class="from-wrapper">
+          <div class="from-title"><strong>Исполнитель</strong></div>
+
+          <div class="row from">
+            <div class="col-md-5">
+              <div class="to">
+                {{getUser(model.from).position}}:
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="to-name">{{getUser(model.from).fullname}}</div>
+            </div>
           </div>
         </div>
       </div>
 
+
+      <div v-if="tab === 1">
+        <div v-for="file in model.files">
+          <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+        </div>
+      </div>
+      <div v-if="tab === 2">
+        <div v-if="!$_.size(comments)">
+          Обсуждений нет
+        </div>
+        <div v-for="comment in comments">
+          <div class="author">{{getUser(comment.from).fullname}}</div>
+          <div class="comment">{{comment.comment}}</div>
+          <div v-for="file in comment.files">
+            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <!--<button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>-->
+      <button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>
     </div>
 
   </Modal>
@@ -84,7 +109,9 @@
   import Modal from '@/Modal'
   import ModalConfirm from './ModalConfirm'
   import ModalReject from './ModalReject'
-  import jspdf from 'jspdf'
+  import 'pdfmake/build/pdfmake.js'
+  import 'pdfmake/build/vfs_fonts.js'
+//  import '#/assets/pdfmake/vfs_fonts.js'
 
   export default {
     components: {
@@ -94,6 +121,7 @@
     },
     data () {
       return {
+        comments: [],
         modal: {
           confirm: false,
           reject: false,
@@ -102,11 +130,21 @@
           'undefined': 'На согласовании',
           'confirm': 'Согласовано',
           'reject': 'Отклонено',
-        }
+        },
+        tab: 0,
       }
     },
     props: ['model', 'users', 'onConfirm', 'onReject', 'onClose'],
+    watch: {
+      model () {
+        if (this.$props.model)
+          this.loadMemo()
+      }
+    },
     methods: {
+      toggleTab(tab) {
+        this.tab = tab
+      },
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
@@ -122,22 +160,45 @@
         this.$emit('onClose')
       },
       pdf () {
-        let doc = new jspdf()
-        doc.fromHTML(document.getElementById('memo'), 15, 15, {
-          'width': 170,
-        }, (a) => {
+//        let doc = new jspdf()
+//        doc.fromHTML(document.getElementById('memo'), 15, 15, {
+//          'width': 170,
+//        }, (a) => {
 //          doc.save(this.$props.model.name + '.pdf')
-        })
+//        })
+        let docDefinition = {
+          content: [
+            'Русский текст',
+            {
+              image: ''
+            }
+          ],
+        }
+        pdfMake.createPdf(docDefinition).download()
       },
       getUser (_id) {
         let user = this.$_.find(this.$props.users, u => u._id === _id)
         return user ? user : {}
+      },
+      loadMemo () {
+        this.$api('get', 'memos/' + this.model._id).then(response => {
+          this.comments = response.data.replies
+          console.log(this.comments)
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
       },
     },
   }
 </script>
 
 <style lang="scss" scoped>
+  .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
+  .menu li { }
+  .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
+
+  .author { font-weight: bold; margin-top: 10px; }
+
   .memo { padding: 50px; }
   .logo { text-align: center; }
   h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }

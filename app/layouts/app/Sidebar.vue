@@ -8,7 +8,7 @@
         </div>
         <div class="info">
           <p class="name">{{$auth().user.fullname}}</p>
-          <p>Администратор</p>
+          <p>{{$auth().user.position}}</p>
         </div>
       </div>
       <div class="profile-toggler" @click="toggle">

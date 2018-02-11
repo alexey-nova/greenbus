@@ -18,7 +18,7 @@
 
 <script>
   import '#/assets/jquery/jquery.min'
-  import '#/assets/bootstrap/bootstrap.min'
+//  import '#/assets/bootstrap/bootstrap.min'
   import '#/assets/adminlte/js/adminlte.min'
 //  import 'vue-flash-message/dist/vue-flash-message.min.css'
 //  import 'bootstrap/dist/css/bootstrap.css'

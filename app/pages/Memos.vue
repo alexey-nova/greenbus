@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageTitle :title="'Служебные документы'"></PageTitle>
+    <PageTitle :title="'Служебные записки'"></PageTitle>
 
     <PageButtons>
       <button class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать служебную записку</button>
@@ -9,7 +9,7 @@
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', props.row)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <!--<button class="btn btn-sm btn-danger" @click="toggleModal('reject', props.row._id)"><i class="fa fa-trash"></i></button>-->
         </div>
         <div slot="from" slot-scope="props">
@@ -27,7 +27,7 @@
             <i class="fa fa-comment-o"></i>
           </span>
           <span class="tools">
-            <!--<span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>-->
+            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
         </div>
@@ -153,7 +153,6 @@
     methods: {
       getCommentsCount (model) {
         return this.$_.reduce(model.to, (result, m) => {
-          console.log(m)
           if (m.answer !== 'undefined') {
             result++
           }
@@ -186,7 +185,7 @@
         })
       },
       rejectMemo (memo) {
-        this.$api('post', 'memos/reject/'+model._id, memo).then(response => {
+        this.$api('post', 'memos/reject/'+memo._id, memo).then(response => {
           this.loadMemos()
           this.modal.show  = false
           this.notify(response.data.message)
@@ -207,7 +206,6 @@
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
         this.$api('get', 'memos' + filter).then(response => {
           this.memos = response.data
-          console.log(this.memos)
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -236,39 +234,7 @@
       this.loadMemos()
       this.loadUsers()
 
-      this.$store.commit('app/setSidebar', [
-        {
-          name: 'Служебные записки',
-          isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
-          children: [
-            {
-              link: {name: 'documents'},
-              name: 'Все',
-              isActive: () => this.$isRoute('documents'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'in'}},
-              name: 'Входящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'out'}},
-              name: 'Исходящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
-              name: 'На согласовании',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
-            },
-          ],
-        },
-//        {
-//          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
-//          name: 'Документы',
-//          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
-//        },
-      ])
+      this.$store.commit('app/setSidebar', 'documents')
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})

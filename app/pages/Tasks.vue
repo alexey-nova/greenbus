@@ -23,7 +23,7 @@
             <i class="fa fa-comment-o"></i>
           </span>
           <span class="tools">
-            <!--<span class="label label-success">3</span>-->
+            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
         </div>
@@ -49,8 +49,7 @@
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
-    <!--<ModalEnd :model="modal.end" @onSubmit="endTask" @onClose="toggleModal('end')"></ModalEnd>-->
-    <ModalShow :model="modal.show" :users="users" @endTask="endTask" @rejectTask="endTask" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -61,7 +60,6 @@
   import ModalCreate from './tasks/ModalCreateTask'
   import ModalEdit from './tasks/ModalEditTask'
   import ModalDelete from './tasks/ModalDeleteTask'
-  import ModalEnd from './tasks/ModalEndTask'
   import ModalShow from './tasks/ModalShowTask'
 
   export default {
@@ -72,7 +70,6 @@
       ModalCreate,
       ModalEdit,
       ModalDelete,
-      ModalEnd,
       ModalShow,
     },
     data () {
@@ -88,6 +85,7 @@
         },
         statuses: [
           'В работе',
+          'На согласовании',
           'Согласовано',
           'Отказано',
         ],
@@ -128,9 +126,6 @@
             },
             columnsClasses: {
               admin: 'admin',
-            },
-            rowClassCallback (row) {
-//              return (row.urgency) ? 'bg-danger' : ''
             },
           },
         },
@@ -173,7 +168,7 @@
           this.$log(e, 'danger')
         })
       },
-      endTask (task) {
+      performTask (task) {
         let data = this.$createFormData(task)
         this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
           this.modal.show = false
@@ -184,9 +179,19 @@
           this.$log(e, 'danger')
         })
       },
-      rejectTask (task) {
-        let data = this.$createFormData(task)
-        this.$api('post', 'tasks/reject/' + task._id, data).then(response => {
+      confirmTask (model) {
+        this.$api('post', 'tasks/confirm/' + model._id).then(response => {
+          this.modal.show = false
+          this.loadTasks()
+          this.notify(response.data.message)
+        }).catch(e => {
+          this.notify('Временно нельзя согласовать задачу', 'info')
+          this.$log(e, 'danger')
+        })
+      },
+      rejectTask (data) {
+        let formData = this.$createFormData(data)
+        this.$api('post', 'tasks/reject/' + data._id, formData).then(response => {
           this.modal.show = false
           this.loadTasks()
           this.notify(response.data.message)
@@ -198,7 +203,7 @@
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
         this.$api('get', 'tasks' + filter).then(response => {
-          this.tasks = response.data
+          this.tasks = response.data.tasks
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -211,33 +216,7 @@
         })
       },
       setSidebar () {
-        this.$store.commit('app/setSidebar', [
-          {
-            link: {name: 'tasks'},
-            name: 'Все',
-            isActive: () => this.$isRoute('tasks'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'in'}},
-            name: 'Входящие',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'in'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'out'}},
-            name: 'Исходящие',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'out'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'urgent'}},
-            name: 'Срочные',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'urgent'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'confirmation'}},
-            name: 'Завершенные',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'confirmation'),
-          },
-        ])
+        this.$store.commit('app/setSidebar', 'tasks')
       },
       getUser (_id) {
         let user = this.$_.find(this.users, u => u._id === _id)
