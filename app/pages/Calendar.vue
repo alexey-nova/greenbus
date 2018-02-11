@@ -161,9 +161,9 @@
               })
             },
             createMeeting (meeting) {
-                var newDate = new Date(meeting.startDate)
-                var endDate = new Date(meeting.endDate)
-                var startTime = meeting.startTime.split(':')
+                let newDate = new Date(meeting.startDate)
+                let endDate = new Date(meeting.endDate)
+                let startTime = meeting.startTime.split(':')
                 newDate.setUTCHours(startTime[0])
                 newDate.setUTCMinutes(startTime[1])
 
