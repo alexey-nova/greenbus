@@ -43,7 +43,7 @@
         <div class="col-lg-12">
           <TextareaBase title="Описание" name="description" required :validate="'required'" v-model="model.description"></TextareaBase>
         </div>
-        <div v-if="(type === 'create' || type === 'edit') && model.createdBy === this.$auth().user._id" class="col-lg-12">
+        <div v-if="(type === 'create' || type === 'edit') || model.createdBy === this.$auth().user._id" class="col-lg-12">
           <div :class="['form-group', {'has-error': errors.has('participants')}]">
             <label for="field-participants">Участники *</label><br />
             <Multiselect
