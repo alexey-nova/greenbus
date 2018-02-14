@@ -8,6 +8,7 @@ import Users from '#/pages/Users'
 import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
 import Contragents from '#/pages/Contragents'
+import Calendar from '#/pages/Calendar'
 
 import Auth from '#/layouts/Auth'
 import Login from '#/pages/Login'
@@ -70,7 +71,12 @@ var router = new Router({
           path: '/ca/:folderId',
           name: 'folder',
           component: Contragents
-        }
+        },
+        {
+          path: '/calendar',
+          name: 'calendar',
+          component: Calendar,
+        },
       ]
     },
     {

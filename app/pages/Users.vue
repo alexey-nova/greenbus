@@ -9,7 +9,7 @@
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-        <div slot="admin" slot-scope="props">
+        <div v-if="$auth().hasRole('admin')" slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('editUser', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
         </div>
@@ -75,7 +75,7 @@
           createDep: false,
         },
         tableData: {
-          columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools', 'admin'],
+          columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
           options: {
             headings: {
               id: 'ID',
@@ -220,6 +220,10 @@
     },
 
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
+
       this.loadUsers()
       this.loadDepartments()
 

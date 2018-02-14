@@ -3,7 +3,6 @@
 import plugin from './plugin'
 
 export default {
-  // config,
   // store,
   plugin,
 }

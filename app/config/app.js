@@ -4,6 +4,6 @@ path += (process.env.NODE_ENV === 'development') ? 'app/assets/copy/api/' : 'ass
 
 export default {
   apiUrl: 'http://195.93.152.79:3333/api/',
-  // apiUrl: 'http://localhost:3333/api/',
+  soketUrl: 'http://195.93.152.79:3333/',
   mockApiUrl:  path,
 }

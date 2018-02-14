@@ -7,7 +7,7 @@ export default {
       user: store.state.auth.user,
       token: store.state.auth.token,
       hasRole (role) {
-        store.getters.hasRole(role)
+        return core.$_.get(store.state.auth.user, role)
       },
       logout () {
         store.commit('auth/destroy')

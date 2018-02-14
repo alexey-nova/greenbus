@@ -6,7 +6,8 @@
     <div slot="content">
       <ul class="menu">
         <li :class="{'active': tab === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
-        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Обсуждение</a></li>
+        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
+        <li :class="{'active': tab === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
       </ul>
 
       <div v-if="tab === 0">
@@ -25,7 +26,26 @@
         </p>
       </div>
       <div v-if="tab === 1">
-        Обсуждений нет
+        <div v-for="file in model.files">
+          <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+        </div>
+      </div>
+      <div v-if="tab === 2">
+        <div v-if="!$_.size(comments)">
+          Обсуждений нет
+        </div>
+        <div v-for="comment in comments">
+          <div class="comment">{{comment.comment}}</div>
+          <div v-for="file in comment.files">
+            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          </div>
+        </div>
+
+        <div v-if="$auth().user._id === model.from && model.status === 1">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[0]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', comments[0])"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
+        </div>
+        <div v-if="model.status !== 1">{{statuses[model.status]}}</div>
       </div>
     </div>
 
@@ -35,20 +55,23 @@
         <i class="fa fa-clock-o"></i> Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
       </div>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <button v-if="$auth().user._id === model.to" type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', model)"><i class="fa fa-times"></i>&nbsp;&nbsp;Отменить задачу</button>
-      <button v-if="$auth().user._id === model.to" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('endTask', model)"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу</button>
+      <button v-if="$auth().user._id === model.to && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
+        <i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу
+      </button>
     </div>
   </Modal>
 
-  <ModalEnd :model="modal.endTask" @onSubmit="endTask" @onClose="toggleModal('endTask')"></ModalEnd>
+  <ModalPerform :model="modal.performTask" @onSubmit="performTask" @onClose="toggleModal('performTask')"></ModalPerform>
   <ModalReject :model="modal.rejectTask" @onSubmit="rejectTask" @onClose="toggleModal('rejectTask')"></ModalReject>
+  <ModalConfirm :model="modal.confirmTask" @onSubmit="confirmTask" @onClose="toggleModal('confirmTask')"></ModalConfirm>
 
 </div></template>
 
 <script>
   import Modal from '@/Modal'
-  import ModalEnd from './ModalEndTask'
+  import ModalPerform from './ModalPerform'
   import ModalReject from './ModalRejectTask'
+  import ModalConfirm from './ModalConfirm'
   import ModalShowUser from './../users/ModalShowUser'
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
@@ -57,27 +80,37 @@
   export default {
     components: {
       Modal,
-      ModalEnd,
+      ModalPerform,
       ModalReject,
+      ModalConfirm,
       ModalShowUser,
       Datepicker,
       'el-switch': Switch,
     },
     data () {
       return {
+        comments: [],
         modal: {
-          endTask: false,
+          performTask: false,
           rejectTask: false,
+          confirmTask: false,
         },
         statuses: [
           'В работе',
-          'На согласовании'
+          'На согласовании',
+          'Согласовано',
+          'Отказано',
         ],
         tab: 0,
-        executions: [],
       }
     },
     props: ['model', 'users', 'onClose'],
+    watch: {
+      model () {
+        if (this.$props.model)
+        this.loadTask()
+      }
+    },
     methods: {
       toggleTab(tab) {
         this.tab = tab
@@ -85,11 +118,17 @@
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
-      endTask (task) {
-        this.$emit('endTask', task)
+      performTask (task) {
+        this.$emit('performTask', task)
+        this.toggleModal('performTask')
       },
       rejectTask (task) {
         this.$emit('rejectTask', task)
+        this.toggleModal('rejectTask')
+      },
+      confirmTask (model) {
+        this.$emit('confirmTask', model)
+        this.toggleModal('confirmTask')
       },
       close () {
         this.tab = 0
@@ -99,13 +138,9 @@
         let user = this.$_.find(this.$props.users, u => u._id === _id)
         return user ? user : {}
       },
-    },
-    watch: {
-      model () {
-        if (this.$props.model._id)
-        this.$api('get', 'tasks/executions/' + this.$props.model._id).then(response => {
-          this.executions = response.data
-          console.log(this.executions)
+      loadTask () {
+        this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
+          this.comments = response.data
         }).catch(e => {
           this.notify(e, 'danger')
         })

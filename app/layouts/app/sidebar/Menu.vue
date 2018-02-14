@@ -22,9 +22,80 @@
 
 <script>
   export default {
+    data () {
+      return {
+        sidebarData: {
+          users: [],
+          tasks: [
+            {
+              link: {name: 'tasks'},
+              name: 'Все',
+              isActive: () => this.$isRoute('tasks'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'in'}},
+              name: 'Входящие',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'in'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'out'}},
+              name: 'Исходящие',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'out'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'urgent'}},
+              name: 'Срочные',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'urgent'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'confirmation'}},
+              name: 'Завершенные',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'confirmation'),
+            },
+          ],
+          documents: [
+            {
+              name: 'Служебные записки',
+              isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
+              children: [
+                {
+                  link: {name: 'documents'},
+                  name: 'Все',
+                  isActive: () => this.$isRoute('documents'),
+                },
+                {
+                  link: {name: 'documentsByFilter', params: {param1: 'in'}},
+                  name: 'Входящие',
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
+                },
+                {
+                  link: {name: 'documentsByFilter', params: {param1: 'out'}},
+                  name: 'Исходящие',
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
+                },
+                {
+                  link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
+                  name: 'На согласовании',
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
+                },
+              ],
+            },
+  //        {
+  //          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
+  //          name: 'Документы',
+  //          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
+  //        },
+          ],
+        }
+      }
+    },
     computed: {
       sidebar () {
-        return this.$store.state.app.sidebar
+        let sidebar = this.$store.state.app.sidebar
+        if (!this.$_.isArray(sidebar)) {
+          sidebar = this.sidebarData[sidebar]
+        }
+        return sidebar
       }
     }
   }

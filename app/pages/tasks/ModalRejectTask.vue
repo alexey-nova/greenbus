@@ -1,7 +1,7 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Отменить задачу</h3>
+    <h3 slot="header" class="modal-title">Отказать</h3>
 
     <div slot="content">
       <div class="form-group">
@@ -16,7 +16,7 @@
 
     <div slot="footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-danger"><i class="fa fa-times"></i>&nbsp;&nbsp;Отменить задачу</button>
+      <button type="submit" class="btn btn-success"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
     </div>
 
   </Modal>
