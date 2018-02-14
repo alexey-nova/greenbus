@@ -207,7 +207,6 @@
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
         this.$api('get', 'memos' + filter).then(response => {
           this.memos = response.data
-          console.log(this.memos)
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -235,40 +234,6 @@
     mounted () {
       this.loadMemos()
       this.loadUsers()
-
-      this.$store.commit('app/setSidebar', [
-        {
-          name: 'Служебные записки',
-          isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
-          children: [
-            {
-              link: {name: 'documents'},
-              name: 'Все',
-              isActive: () => this.$isRoute('documents'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'in'}},
-              name: 'Входящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'out'}},
-              name: 'Исходящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
-              name: 'На согласовании',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
-            },
-          ],
-        },
-//        {
-//          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
-//          name: 'Документы',
-//          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
-//        },
-      ])
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})
