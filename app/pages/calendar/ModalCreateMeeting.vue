@@ -5,63 +5,105 @@
     <h3 slot="header" class="modal-title">Создать событие</h3>
 
     <div slot="content" class="row">
-      <div class="col-lg-6">
-        <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
-      </div>
-      <div class="col-lg-6">
-        <InputBase title="Место" name="place" required :validate="'required'" v-model="model.place"></InputBase>
-      </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('startDate')}]">
-          <label>Начало встречи *</label>
-          <Datepicker input-class="form-control" language="ru" name="startDate" v-validate="'required'" v-model="model.startDate"></Datepicker>
-          <span v-show="errors.has('startDate')" class="help-block">{{ errors.first('startDate') }}</span>
+      <div v-if = "type === 'create' || model.createdBy === this.$auth().user._id">
+        <div class="col-lg-6">
+          <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
+        </div>
+        <div class="col-lg-6">
+          <InputBase title="Место" name="place" required :validate="'required'" v-model="model.place"></InputBase>
+        </div>
+        <div class="col-lg-6">
+          <div :class="['form-group', {'has-error': errors.has('startDate')}]">
+            <label>Начало встречи *</label>
+            <Datepicker readonly input-class="form-control" language="ru" name="startDate" v-validate="'required'" v-model="model.startDate"></Datepicker>
+            <span v-show="errors.has('startDate')" class="help-block">{{ errors.first('startDate') }}</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div :class="['form-group', {'has-error': errors.has('startTime')}]">
+            <label for="field-startTime">Время начала встречи *</label>
+            <masked-input id="field-startTime" class="form-control" mask="11:11" name="startTime" v-validate="'required'" v-model="model.startTime"></masked-input>
+            <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div :class="['form-group', {'has-error': errors.has('endDate')}]">
+            <label>Конец встречи *</label>
+            <Datepicker input-class="form-control" language="ru" name="endDate" v-validate="'required'" v-model="model.endDate"></Datepicker>
+            <span v-show="errors.has('endDate')" class="help-block">{{ errors.first('endDate') }}</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div :class="['form-group', {'has-error': errors.has('endTune')}]">
+            <label for="field-endTime">Время конца встречи *</label>
+            <masked-input id="field-endTime" class="form-control" mask="11:11" name="endTime" v-validate="'required'" v-model="model.endTime"></masked-input>
+            <span v-show="errors.has('endTime')" class="help-block">{{ errors.first('endTime') }}</span>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <TextareaBase title="Описание" name="description" required :validate="'required'" v-model="model.description"></TextareaBase>
+        </div>
+        <div v-if="(type === 'create' || type === 'edit') || model.createdBy === this.$auth().user._id" class="col-lg-12">
+          <div :class="['form-group', {'has-error': errors.has('participants')}]">
+            <label for="field-participants">Участники *</label><br />
+            <Multiselect
+                    id="field-participants"
+                    v-model="selectedUsers"
+                    :options="usersForSelect"
+                    :close-on-select="false"
+                    :hide-selected="true"
+                    :clear-on-select="false"
+                    :multiple="true"
+                    track-by="name"
+                    label="name"
+            >
+            </Multiselect>
+            <span v-show="errors.has('participants')" class="help-block">{{ errors.first('participants') }}</span>
+          </div>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('startTime')}]">
-          <label for="field-startTime">Время начала встречи *</label>
-          <masked-input id="field-startTime" class="form-control" mask="11:11" name="startTime" v-validate="'required'" v-model="model.startTime"></masked-input>
-          <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
+      <div v-if="model.createdBy !== this.$auth().user._id && type !== 'create'">
+
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Тема</label>
+            <div>{{model.name}}</div>
+          </div>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('endDate')}]">
-          <label>Конец встречи *</label>
-          <Datepicker input-class="form-control" language="ru" name="endDate" v-validate="'required'" v-model="model.endDate"></Datepicker>
-          <span v-show="errors.has('endDate')" class="help-block">{{ errors.first('endDate') }}</span>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Место</label>
+            <div>{{model.place}}</div>
+          </div>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('endTune')}]">
-          <label for="field-endTime">Время конца встречи *</label>
-          <masked-input id="field-endTime" class="form-control" mask="11:11" name="endTime" v-validate="'required'" v-model="model.endTime"></masked-input>
-          <span v-show="errors.has('endTime')" class="help-block">{{ errors.first('endTime') }}</span>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Начало встречи</label>
+            <div>{{setStartDate()}}</div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Время начала встречи</label>
+            <div>{{model.startTime}}</div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Конец встречи</label>
+            <div>{{setEndDate()}}</div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label>Время конца встречи</label>
+            <div>{{model.endTime}}</div>
+          </div>
         </div>
       </div>
       <div class="col-lg-12">
-        <TextareaBase title="Описание" name="description" required :validate="'required'" v-model="model.description"></TextareaBase>
-      </div>
-      <div v-if="type === 'create' || type === 'edit'" class="col-lg-12">
-        <div :class="['form-group', {'has-error': errors.has('participants')}]">
-          <label for="field-participants">Участники *</label><br />
-          <Multiselect
-                  id="field-participants"
-                  v-model="selectedUsers"
-                  :options="usersForSelect"
-                  :close-on-select="false"
-                  :hide-selected="true"
-                  :clear-on-select="false"
-                  :multiple="true"
-                  track-by="name"
-                  label="name"
-          >
-          </Multiselect>
-          <span v-show="errors.has('participants')" class="help-block">{{ errors.first('participants') }}</span>
-        </div>
-      </div>
-      <div class="col-lg-12">
-        <div v-for="m in selectedUsers" class="row user">
+        <label>Участники встречи:</label>
+        <div v-if="type !== 'create'" v-for="(m, index) in selectedUsers"  class="row user">
           <div class="col-md-9">
             <div class="to">
               <strong>{{getUser(m._id).fullname}}</strong> ({{getUser(m._id).position}})
@@ -77,7 +119,7 @@
                 <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
               </div>
               <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
-              {{statuses[m.answer]}}
+              {{statuses[model.participants[index].answer]}}
             </span>
             </div>
           </div>
@@ -86,11 +128,12 @@
     </div>
 
     <div slot="footer">
+
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-
-      <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmed', {id:model._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Согласовать</button>
-      <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})"><i class="fa fa-times"></i>&nbsp;Отказать</button>
-
+      <span>
+        <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmed', {id:model._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Согласовать</button>
+        <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})"><i class="fa fa-times"></i>&nbsp;Отказать</button>
+      </span>
       <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="btn btn-danger" @click="toggleModal('delete', {id:model._id})"><i class="fa fa-check"></i>&nbsp;Удалить</button>
       <button v-if="type === 'create'" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Создать</button>
       <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Изменить</button>
@@ -139,12 +182,12 @@
                 },
                 statuses: {
                     'undefined': 'На согласовании',
-                    'confirmed': 'Согласовано',
-                    'rejected': 'Отклонено',
-                }
+                    'confirm': 'Согласовано',
+                    'reject': 'Отклонено',
+                },
             }
         },
-        props: ['model', 'users', 'type','onSubmit', 'onClose',],
+        props: ['model', 'users', 'type', 'onSubmit', 'onClose'],
         methods: {
             toggleModal (name, model) {
                 this.modal[name] = model === undefined ? !this.modal[name] : model
@@ -182,7 +225,7 @@
                 this.$api('post', 'meetings/confirm/' + meeting.id).then(response => {
                     this.$emit('onUpdate')
                     this.toggleModal('confirmed')
-                    this.notify(response.data.message)
+                    this.notify(response.data.message, 'success')
                 }).catch(e => {
                     this.notify('Временно нельзя согласовать событие', 'info')
                     this.$log(e, 'danger')
@@ -192,7 +235,7 @@
                 this.$api('post', 'meetings/reject/' + meeting.id).then(response => {
                     this.$emit('onUpdate')
                     this.toggleModal('reject')
-                    this.notify(response.data.message)
+                    this.notify(response.data.message, 'error')
                 }).catch(e => {
                     this.notify('Временно нельзя отказать во встречи', 'info')
                     this.$log(e, 'danger')
@@ -202,8 +245,24 @@
                 let user = this.$_.find(this.$props.users, u => u._id === _id)
                 return user ? user : {}
             },
+            setStartDate() {
+                let date = new Date(this.model.startDate)
+                let ret = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return ret
+            },
+            setEndDate() {
+                let date = new Date(this.model.endDate)
+                let ret = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear()
+                return ret
+            },
+            /*getStatus1 () {
+                //let check = this.$_.find(this.model.participants, ['user', this.$auth().user._id])
+                console.log(check)
+                //return check
+            }*/
         },
         computed: {
+
             usersForSelect () {
                 return this.$_.map(this.$props.users, u => {
                     return {name: u.fullname, _id: u._id}
@@ -229,7 +288,7 @@
 //                  console.log('this.$props.model.participants')
 //                  console.log(this.$props.model.participants)
                     this.$props.model.participants = this.$_.map(newValue, m => {
-                        return m._id
+                        return {_id:m._id, user:m._id}
                     })
                 }
             }
@@ -239,5 +298,4 @@
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss" scoped>
-
 </style>
