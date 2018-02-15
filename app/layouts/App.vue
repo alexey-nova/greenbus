@@ -9,6 +9,10 @@
     <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
       <section class="content">
         <router-view/>
+        <div>
+          <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
+          <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button>
+        </div>
       </section>
     </main>
 
@@ -26,6 +30,7 @@
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'
   import AppSidebar from './app/Sidebar.vue'
+  import MessageBox from '../components/MessageBox.vue'
   import Alert from '@/Alert.vue'
   import VueFlashMessage from 'vue-flash-message';
 
@@ -37,14 +42,37 @@
       AppSidebar,
       Alert,
       VueFlashMessage,
+      MessageBox
     },
     data () {
       return {
         height: 0,
+        showMessageBox: false,
+        users: []
+      }
+    },
+    methods: {
+      loadUsers () {
+        this.$api('get', 'users').then(response => {
+          this.users = response.data
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      }
+    },
+    beforeMount () {
+      if (this.$auth().user) {
+        this.$socket.emit('joinroom', this.$auth().user._id)
       }
     },
     mounted () {
       this.height = window.innerHeight - 101
+      this.loadUsers()
+    },
+    sockets: {
+      newMessage (data) {
+        this.$store.commit('newUnreadMsg', data)
+      }
     }
   }
 </script>
@@ -146,4 +174,15 @@
   // MultiSelect
   .checkboxLayer .helperContainer>.line:first-child { display: none; }
   .checkboxLayer .tab-block { display: none; }
+
+  body .wrapper .content-wrapper .content .messenger-button {
+    border: none;
+    padding: 10px;
+    color: white;
+    background-color: cornflowerblue;
+    border-radius: 3px;
+    position: fixed;
+    right: 100px;
+    bottom: 100px;
+  }
 </style>
