@@ -25,7 +25,7 @@
       </router-link>
     </li>
     <li :class="[{active: $isRoute(['calendar', 'calendar'])}, 'nav-item']">
-      <router-link class="nav-link" :to="{name: 'calendar'}" :style="{color: colors['documents']}">
+      <router-link class="nav-link" :to="{name: 'calendar'}" :style="{color: colors['calendar']}">
         <i class="fa fa-calendar fa-2x"></i>
         <div>Ежедневник</div>
       </router-link>
@@ -46,6 +46,7 @@
           tasksByFilter: '#9b340c',
           documents: '#a5a52f',
           documentsByFilter: '#a5a52f',
+          calendar: '#1b73c9'
         }
       }
     },

@@ -3,7 +3,7 @@
     <PageTitle :title="'Сотрудники'"></PageTitle>
 
     <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('createDep', {})"><i class="fa fa-id-badge"></i>&nbsp;&nbsp;Добавить отдел</button>
+      <button class="btn btn-success" @click="toggleModal('showDep', {})"><i class="fa fa-id-badge"></i>&nbsp;&nbsp;Управление отделами</button>
       <button class="btn btn-success" @click="toggleModal('createUser', {})"><i class="fa fa-user"></i>&nbsp;&nbsp;Добавить сотрудника</button>
     </PageButtons>
 
@@ -24,6 +24,9 @@
         <div slot="email" slot-scope="props">
           <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
         </div>
+        <div slot="phone" slot-scope="props">
+          <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
+        </div>
       </v-client-table>
     </Box>
 
@@ -32,7 +35,7 @@
     <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
     <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
-    <ModalCreateDep :model="modal.createDep" @onSubmit="createDep" @onClose="toggleModal('createDep')"></ModalCreateDep>
+    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
   </div>
 </template>
 
@@ -45,7 +48,7 @@
   import ModalShowUser from './users/ModalShowUser'
   import ModalDeleteUser from './users/ModalDeleteUser'
   import ModalCreateTask from './tasks/ModalCreateTask'
-  import ModalCreateDep from './users/ModalCreateDep'
+  import ModalShowDep from './users/ModalShowDep'
 
   export default {
     plugins: ['auth'],
@@ -58,7 +61,7 @@
       ModalEditUser,
       ModalCreateTask,
       ModalShowUser,
-      ModalCreateDep,
+      ModalShowDep,
     },
     data () {
       return {
@@ -72,7 +75,7 @@
           createTask: false,
           createUser: false,
           deleteUser: false,
-          createDep: false,
+          showDep: false,
         },
         tableData: {
           columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
@@ -85,7 +88,7 @@
               department: 'Отдел',
               phone: 'Телефон',
               email: 'Email',
-              tools: '',
+              tools: 'Доп. информация',
             },
             orderBy: {
               column: 'id',
@@ -166,16 +169,6 @@
           this.notify(response.data.message)
         }).catch(e => {
           this.notify('Временно нельзя создать задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      createDep (dep) {
-        this.$api('post', 'departments', dep).then(response => {
-          this.loadDepartments()
-          this.modal.createDep = false
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя создать отдел', 'info')
           this.$log(e, 'danger')
         })
       },

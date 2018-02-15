@@ -211,6 +211,8 @@
             },
             selectedUsers: {
                 get: function () {
+                  console.log('this.$props.model.participants')
+                  console.log(this.$props.model.participants)
                     if (this.$_.size(this.$props.model.participants) > 10) {
                         this.errors.items.push({
                             field: 'participants',
@@ -223,7 +225,9 @@
                     })
                 },
                 set: function (newValue) {
-                    this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'participants')
+//                    this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'participants')
+//                  console.log('this.$props.model.participants')
+//                  console.log(this.$props.model.participants)
                     this.$props.model.participants = this.$_.map(newValue, m => {
                         return m._id
                     })

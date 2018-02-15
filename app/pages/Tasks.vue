@@ -12,20 +12,18 @@
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
         </div>
-        <div slot="tools" slot-scope="props">
-          <button class="btn btn-default" @click="toggleModal('show', props.row)">
-            <i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее
-          </button>
-        </div>
         <div slot="info" slot-scope="props">
-          <span class="tools">
-            <!--<span class="label label-success">3</span>-->
+          <span class="tools" @click="toggleModal('show', props.row, 2)">
+            <span v-if="$_.size(props.row.executions)" class="label label-success">{{$_.size(props.row.executions)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 1)">
             <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
+        </div>
+        <div slot="tools" slot-scope="props">
+          <button class="btn btn-default" @click="toggleModal('show', props.row)"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее</button>
         </div>
         <div slot="from" slot-scope="props">
           {{getUser(props.row.from).fullname}}
@@ -49,7 +47,7 @@
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
-    <ModalShow :model="modal.show" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -82,11 +80,12 @@
           deleted: false,
           end: false,
           show: false,
+          tab: 0,
         },
         statuses: [
           'В работе',
           'На согласовании',
-          'Согласовано',
+          'Завершена',
           'Отказано',
         ],
         tableData: {
@@ -97,13 +96,13 @@
               admin: '',
               name: 'Задача',
               description: 'Описание',
-              urgency: '',
+              urgency: 'Приоритет',
               status: 'Статус',
               deadline: 'Срок до',
               from: 'От кого',
               to: 'Ответственный',
-              info: '',
-              tools: '',
+              info: 'Инфо',
+              tools: 'Доп. информация',
             },
             orderBy: {
               column: 'id',
@@ -133,8 +132,9 @@
     },
 
     methods: {
-      toggleModal (name, model) {
+      toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
       },
       createTask (task) {
         let data = this.$createFormData(task)
@@ -246,6 +246,6 @@
     /*&.label-default { background: #eee; }*/
   }
 
-  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

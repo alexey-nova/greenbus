@@ -17,7 +17,7 @@
         </div>
         <div class="form-group">
           <label for="field-department">Отдел</label>
-          <input id="field-department" class="form-control" readonly :value="departmentName">
+          <input id="field-department" class="form-control" readonly :value="model.department">
         </div>
         <div class="form-group">
           <label for="field-email">Email</label>
@@ -35,8 +35,7 @@
     </div>
 
     <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно
-      </button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
     </div>
 
   </Modal>
@@ -56,10 +55,11 @@
       },
     },
     computed: {
-      departmentName () {
-        let dep = this.$_.find(this.$props.departments, 'name', this.$props.model.department)
-        return dep ? dep.name : ''
-      }
+//      departmentName () {
+//        console.log(this.$props.model.department)
+//        let dep = this.$_.find(this.$props.departments, 'id', this.$props.model.department)
+//        return dep ? dep.name : ''
+//      }
     }
   }
 </script>

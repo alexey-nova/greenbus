@@ -6,7 +6,7 @@
 
 <script>
 //  import './assets/jquery/jquery.min'
-  //  import './assets/bootstrap/bootstrap.min'
+//  import './assets/bootstrap/bootstrap.min'
 //  import './assets/AdminLTE/js/adminlte.min'
 
   export default {
