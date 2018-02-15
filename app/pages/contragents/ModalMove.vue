@@ -1,5 +1,5 @@
 <template>
-  <Modal :isOpen="model" type="lg" @onSubmit="submit">
+  <Modal :isOpen="model" @onSubmit="submit">
 
     <h3 slot="header" class="modal-title">Создать папку</h3>
 

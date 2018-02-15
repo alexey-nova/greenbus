@@ -1,10 +1,10 @@
 <template>
-  <Modal :isOpen="model" type="lg" @onSubmit="submit">
+  <Modal :isOpen="model" @onSubmit="submit">
 
     <h3 slot="header" class="modal-title">Создать контрагент</h3>
 
     <div slot="content" class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-12">
         <div :class="['form-group', {'has-error': errors.has('name')}]">
           <label for="field-name">Название *</label>
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
