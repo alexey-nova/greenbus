@@ -1,6 +1,8 @@
 <template>
   <div>
-    <PageTitle :title="$trans('pages.index.pageTitle')"></PageTitle>
+    <div style="font-size: 1.3em;">
+      <PageTitle :title="$trans('pages.index.pageTitle')"></PageTitle>
+    </div>
       <div class="indexWrapper">
         <div class="left">
           <div class="top">

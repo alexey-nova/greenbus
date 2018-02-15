@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import store from '#/store'
 
 import App from '#/layouts/App'
+import Profile from '#/pages/Profile'
 import Index from '#/pages/Index'
 import Users from '#/pages/Users'
 import Tasks from '#/pages/Tasks'
@@ -26,6 +27,11 @@ var router = new Router({
           path: '/',
           name: 'index',
           component: Index
+        },
+        {
+          path: '/profile',
+          name: 'profile',
+          component: Profile
         },
         {
           path: '/users',

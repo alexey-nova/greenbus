@@ -209,6 +209,8 @@
     },
     mounted () {
       this.$route.params.folderId ? this.getFolderContent() : this.getCA()
+
+      this.$store.commit('app/setSidebar', 'documents')
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})
