@@ -254,7 +254,8 @@
   }
   .indexWrapper {
     display: flex;
-    align-content: top
+    align-content: top;
+    flex-wrap: wrap;
   }
   .left {
     display: inline-block;
