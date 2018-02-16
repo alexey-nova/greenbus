@@ -1,101 +1,106 @@
 <template>
   <div>
-    <div style="font-size: 1.3em;">
-      <PageTitle :title="$trans('pages.index.pageTitle')"></PageTitle>
-    </div>
+    <PageTitle :title="$trans('pages.index.pageTitle')"></PageTitle>
       <div class="indexWrapper">
         <div class="left">
-          <div class="top">
-            <span>
-              <p>Ваши Задачи</p>
-            </span>
-            <div class="innerLeft">
-              <span>
-                <p>Просроченные</p>
+          <div class="topWrapper">
+            <div class="top">
+              <span class="fontSize">
+                <p>Ваши Задачи</p>
               </span>
-              <div id="circle">
-                <span class="centered">{{deadlined.length}}</span>
-              </div>
-            </div>
-            <div class="innerRight">
-              <span>
-                <p>Предстоящие</p>
-              </span>
-              <div>
-                <table border="1">
-                  <tr class="firstRow">
-                    <th>Сегодня</th>
-                    <td>{{today.length}}</td>
-                  </tr>
-                  <tr class="secondRow">
-                    <th>Завтра</th>
-                    <td>{{tomorrow.length}}</td>
-                  </tr>
-                  <tr class="thirdRow">
-                    <th>Неделя</th>
-                    <td>{{week.length}}</td>
-                  </tr>
-                </table> 
+              <div style="display: flex">
+                <div class="innerLeft">
+                  <span class="fontSize">
+                    <p>Просроченные</p>
+                  </span>
+                  <div class="deadlinedWraper">
+                    <table border="1">
+                      <tr v-for="dl in deadlined">
+                        <th>{{dl.name}}</th>
+                        <td>{{dateFormat(dl.deadline)}}</td>
+                      </tr>
+                    </table> 
+                  </div>
+                </div>
+                <div class="innerRight">
+                  <span class="fontSize">
+                    <p>Предстоящие</p>
+                  </span>
+                  <div>
+                    <table border="1">
+                      <tr class="firstRow">
+                        <th>Сегодня</th>
+                        <td>{{today.length}}</td>
+                      </tr>
+                      <tr class="secondRow">
+                        <th>Завтра</th>
+                        <td>{{tomorrow.length}}</td>
+                      </tr>
+                      <tr class="thirdRow">
+                        <th>Неделя</th>
+                        <td>{{week.length}}</td>
+                      </tr>
+                    </table> 
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="bottom">
-            <span>
-              <p>Ваши Задачи</p>
-            </span>
-            <div class="tasksWrapper">
-                <table border="1">
-                  <tr v-for="(task, index) in tasks" v-if="index%3==0" class="firstRow centered_border">
-                    <th>{{task.name}}</th>
-                    <td>{{dateFormat(task.deadline)}}</td>
-                  </tr>
-                  <tr v-else-if="index%3==1" class="secondRow centered_border">
-                    <th>{{task.name}}</th>
-                    <td>{{dateFormat(task.deadline)}}</td>
-                  </tr>
-                  <tr v-else class="thirdRow centered_border">
-                    <th>{{task.name}}</th>
-                    <td>{{dateFormat(task.deadline)}}</td>
-                  </tr>
-                </table> 
+          <div class="bottomWrapper">
+            <div class="bottom">
+              <span class="fontSize">
+                <p>Ваши Задачи</p>
+              </span>
+              <div class="tasksWrapper">
+                  <table border="1">
+                    <tr v-for="(task, index) in tasks" class="">
+                      <th>{{task.name}}</th>
+                      <td>{{dateFormat(task.deadline)}}</td>
+                    </tr>
+                  </table> 
+              </div>
             </div>
           </div>
         </div>
         <div class="right">
+          <div class="dayTaskWrapper">
+            <div class="dayTask">
+              <div class="todayDate">
+                <div class="spansWrapper">
+                  <span style="font-size: 1.5em">
+                    {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
+                  </span>
+                  <span style="font-size: 5em">
+                    {{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}
+                  </span>                            
+                  <span style="font-size: 1.5em">
+                    {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
+                  </span>
+                </div>
+              </div>
+              <div class="info">
+                 <table border="1" v-if="dateTasks.length > 0">
+                    <tr>
+                      <td>Время</td>
+                      <td>Название</td>
+                      <td>Описание</td>
+                    </tr>
+                    <tr v-for="task in dateTasks">
+                      <td>{{dateFormatForSec(task.deadline)}}</td>
+                      <td>{{task.name}}</td>
+                      <td>{{task.description}}</td>
+                    </tr>
+                  </table>
+                  <table border="1" v-else>
+                    <tr class="centered_border">
+                      <th>На эту дату нет задач</th>
+                    </tr>
+                  </table>
+              </div>
+            </div>
+          </div>
           <div class="calendarWrapper">
             <full-calendar :events="events" :config="config" :header="header"></full-calendar>
-          </div>
-          <div class="dayTask">
-            <div class="todayDate">
-              <span style="font-size: 1.5em">
-                {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
-              </span>
-              <span style="font-size: 7em">
-                {{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}
-              </span>                            
-              <span style="font-size: 1.5em">
-                {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
-              </span>
-            </div>
-            <div class="info">
-               <table class="infoTable" border="1" v-if="dateTasks.length > 0">
-                <tr>
-                  <td>Время</td>
-                  <td>Название</td>
-                  <td>Описание</td>
-                </tr>
-                <tr v-for="task in dateTasks">
-                  <td>{{dateFormatForSec(task.deadline)}}</td>
-                  <td>{{task.name}}</td>
-                  <td>{{task.description}}</td>
-                </tr>
-              </table>
-              <table border="1" v-else>
-                <tr class="centered_border">
-                  <th>На эту дату нет задач</th>
-                </tr>
-              </table>
-            </div>
           </div>
         </div>
       </div>
@@ -114,7 +119,7 @@
       return {
         seoTitle: this.$trans('pages.index.seoTitle'),
         dateTasks: [],
-        deadlined: '',
+        deadlined: [],
         today: '',
         tomorrow: '',
         week: '',
@@ -144,15 +149,22 @@
     async beforeMount () {
       try {
         const response = await this.$api('get', 'tasks')
-        this.deadlined = response.data.deadlines.deadlined
         this.today = response.data.deadlines.today
         this.tomorrow = response.data.deadlines.tomorrow
         this.week = response.data.deadlines.week
-        this.tasks = response.data.tasks.sort(function(a, b) {
+        this.tasks = await response.data.tasks.sort(function(a, b) {
           var dateA = new Date(a.deadline), dateB = new Date(b.deadline)
           return dateA - dateB
         })
+        await this.tasks.map((task) => {
+          response.data.deadlines.deadlined.map((dl) => {
+            if (task._id === dl._id) {
+              this.deadlined.push(task)
+            }
+          })
+        })
       } catch (error) {
+          console.log(error)
           this.notify('Произошла ошибка!', 'error')
       }
     },
@@ -202,7 +214,6 @@
         return dayName
       },
       getMonthName (date) {
-        console.log(date)
         var month=new Date(date).getMonth();
         var arr=[
            'Январь',
@@ -232,9 +243,6 @@
   }
   span {
     display: block;
-    color: white;
-    border: 4px ridge white;
-    background: black;
     margin: 0 auto;
   }
   p {
@@ -247,32 +255,48 @@
   }
   table {
     width: 100%;
+    border: 1px solid #ccc;
+    font-size: 12px;
   }
   th {
-    padding: 10px 55px;
+    padding: 5px;
   }
   td {
-    padding: 10px 28px;
+    padding: 5px;
   }
   .indexWrapper {
     display: flex;
-    align-content: top;
-    flex-wrap: wrap;
+    align-content: top
   }
   .left {
     display: inline-block;
-    background: transparent;
     min-height: 150px;
-    width: calc((100% / 2) - 5px);
+    padding: 5px;
+    width: calc((100% / 1.5) - 5px);
+  }
+  .topWrapper {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 1px black;
+    padding: 15px;
   }
   .top {
-    margin-top: 15px;
+    border-radius: 3px;
     width: 100%;
     min-height: 150px;
+    background: #f2f2f2;
+  }
+  .top > span {
+    margin-bottom: 5px;
+    padding-top: 5px;
   }
   .innerLeft {
     display: inline-block;
     width: calc((100% / 2 - 4px));
+  }
+  .deadlinedWraper {
+    height: 95px;
+    overflow-y: auto;
   }
   .innerRight {
     display: inline-block;
@@ -280,82 +304,95 @@
     margin-left: 4px;
   }
   .bottom {
-    margin-top: 15px;
     width: 100%;
     min-height: 150px;
     text-align: center;
+    background: #f2f2f2;
+    border-radius: 3px;
+  }
+  .bottomWrapper {
+    margin-top: 15px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 1px black;
+    padding: 15px;
+  }
+  .bottom > span {
+    margin-bottom: 5px;
+    padding-top: 5px;
   }
   .tasksWrapper {
-    height: 300px;
+    height: 266px;
     overflow-y: auto;
   }
   .right {
     display: inline-block;
     background: transparent;
     margin-top: 5px;
+    margin-left: 15px;
     min-height: 150px;
-    width: calc((100% / 2) - 5px);
+    width: calc((100% / 2.5) - 5px);
+  }
+  .calendarWrapper {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 1px black;
+    padding: 15px;
+    margin-top: 15px;
+  }
+  #calendar {
+    background: #f1f1f1;
+    border-radius: 3px;
   }
   .dayTask {
-    height: 150px;
-    display: flex;
-    align-content: top;
+    display: block;
+    align-content: top;   
+  }
+  .dayTaskWrapper {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 1px black;
+    padding: 15px;
   }
   .todayDate {
-    color: white;
-    width: 30%;
-    background: #000;
-    background: linear-gradient(to top right, #000, #025092);
+    width: 100%;
+    background: #8487b7;
+    padding-top: 8px;
+    border-radius: 5px;
   }
-  .todayDate > span {
-    margin-top: 5px;
+  .spansWrapper {
+    width: 70%;
+    height: 100%;
     text-align: center;
-    border: 0px solid transparent;
-    background: transparent;
+    position: relative;
+    color: white;
+  }
+  .spansWrapper > span:nth-child(1){
+    position: absolute;
+    top:45%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+  .spansWrapper > span:nth-child(2n){
+    padding: 0;
+    margin: 0;
+  }
+  .spansWrapper > span:nth-child(3){
+    position: absolute;
+    top: 45%;
+    right: 0;
+    transform: translateY(-50%);
   }
   .info {
+    margin-top: 5px; 
+    height: 85px;
     overflow-y: auto;
-    height: 200px;
-    width: 70%;
+    background: #f1f1f1;
+    border-radius: 3px;
   }
-  #circle {
-    width: 100px;
-    height: 100px;
-    background: #86aed4;
-    position: relative;
-    -moz-border-radius: 50px;
-    -webkit-border-radius: 50px;
-    border-radius: 50px;
-    border: 2px solid #4182bc;
+  .fontSize {
+    font-size: 12px;
   }
-  .centered {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    border: 1px solid #86aed4;
-    background: transparent;
-    font-size: 2em;
-  }
-  .firstRow {
-    background-color: black;
-    color: white;
-  }
-  .secondRow {
-    background-color: #848484;
-    color: black;
-  }
-  .thirdRow {
-    background-color: #b3b3b3;
-    color: black;
-  }
-  .centered_border > td {
-    padding: 10px 55px;
-  }
-  .centered_border > th {
-    padding: 10px 55px;
-  }
-
   @media screen and (max-width: 800px) {
     .left {
       width: 100%;
