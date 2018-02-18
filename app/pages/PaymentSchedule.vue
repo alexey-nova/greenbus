@@ -15,6 +15,9 @@
         <div slot="to" slot-scope="props">
           {{getUsersTo(props.row.to)}}
         </div>
+        <div slot="createdAt" slot-scope="props">
+          {{ getDate(props.row.createdAt) }}
+        </div>
         <div slot="info" slot-scope="props">
           <span class="tools">
             <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
@@ -147,15 +150,20 @@
           return data
         }
       },
-      isOwner (ps) {
-        if (this.$auth().user._id === ps) {
-          return true
-        }
-        return false
-      }
+      // isOwner (ps) {
+      //   if (this.$auth().user._id === ps) {
+      //     return true
+      //   }
+      //   return false
+      // },
     },
 
     methods: {
+      getDate (date) {
+        const newDate = new Date(date)
+        const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+        return `${newDate.getDate()} ${dates[newDate.getMonth()]} ${newDate.getFullYear()} ${newDate.getHours()}:${newDate.getMinutes()}`
+      },
       loadPS () {
         this.$api('get', 'paymentSchedules').then(response => {
           this.ps = response.data
@@ -213,24 +221,6 @@
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
-
-      rejectMemo (memo) {
-        this.$api('post', 'memos/reject/'+memo._id, memo).then(response => {
-          this.modal.show  = false
-          this.notify(response.data.message)
-        }).catch(e => {
-//          this.notify(e, 'danger')
-        })
-      },
-      confirmMemo (data) {
-        this.$api('post', 'memos/confirm/'+data._id).then(response => {
-          this.modal.show = false
-          this.notify(response.data.message)
-        }).catch(e => {
-//          this.notify(e, 'danger')
-        })
-      },
-
       loadUsers () {
         this.$api('get', 'users').then(response => {
           this.users = response.data

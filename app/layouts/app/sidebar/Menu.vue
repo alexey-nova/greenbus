@@ -85,6 +85,11 @@
             name: 'Контрагенты',
             isActive: () => this.$isRoute(['folder', 'contragents']),
           },
+          {
+            link: { name: 'ps' },
+            name: 'Платежный календарь',
+            isActive: () => this.$isRoute(['folder', 'paymentSchedules'])
+          }
           ],
         }
       }

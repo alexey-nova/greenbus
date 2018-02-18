@@ -168,7 +168,7 @@
       getDate () {
         const date = new Date(this.model.createdAt)
         const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-        return `${date.getDay()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+        return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
       },
     },
     methods: {
