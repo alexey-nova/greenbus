@@ -10,8 +10,8 @@
       <section class="content">
         <router-view/>
         <div>
-          <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
-          <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button>
+          <!-- <MessageBox :users="users" v-if="showMessageBox"></MessageBox> -->
+          <!-- <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button> -->
         </div>
       </section>
     </main>
