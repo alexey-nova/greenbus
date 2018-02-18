@@ -327,11 +327,24 @@
 <style lang="scss" scoped>
 </style>
 <style>
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-  }
+  .calendar-view .event { border: none !important; border-radius: 0; padding: 10px !important; }
+
+  .calendar-view .event.red { background: #c34040; color: #fff; }
+  .calendar-view .event.red .endTime, .calendar-view .event.red .startTime { color: #fff; }
+  .calendar-view .event.green { background: #00a65a; color: #fff; }
+  .calendar-view .event.green .endTime, .calendar-view .event.green .startTime { color: #fff; }
+
+  .calendar-view .event.grey { background: #e3e3e3; color: #333; }
+  .calendar-view .event.grey .endTime { background: #e3e3e3; color: #333; }
+
+  .weeks .week .content { padding: 0; min-height: 0; }
+
+  .event.eventRow2 { top: calc(2 * 35px) !important; }
+  .event.eventRow3 { top: calc(3 * 35px + 15px) !important; }
+  .event.eventRow4 { top: calc(4 * 35px + 15px * 2) !important; }
+  .event.eventRow5 { top: calc(5 * 35px + 15px * 3) !important; }
+  .event.eventRow6 { top: calc(6 * 35px + 15px * 4) !important; }
+
   .app-description {
     flex: 0 1 auto;
   }
@@ -348,11 +361,7 @@
     height: 150vw;
   }
   .calendar-view.period-year {
-    height: 500vw;
-  }
-
-  .calendar-view .event .startTime, .calendar-view .event .endTime {
-    color:#fff!important;
+    height: 100vw;
   }
   /*
       These styles are optional, added for the demo only, to illustrate the flexbility

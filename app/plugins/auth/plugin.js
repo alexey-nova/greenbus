@@ -7,7 +7,7 @@ export default {
       user: store.state.auth.user,
       token: store.state.auth.token,
       hasRole (role) {
-        return core.$_.get(store.state.auth.user, role)
+        return store.state.auth.user.login
       },
       logout () {
         store.commit('auth/destroy')
@@ -36,5 +36,11 @@ export default {
     let token = localStorage.getItem('jwt')
     this.login(token)
   },
-  mixin: {},
+  mixin: {
+    computed: {
+      admin () {
+        return this.$store.state.auth.user.login
+      }
+    }
+  },
 }

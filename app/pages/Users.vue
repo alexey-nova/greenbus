@@ -9,6 +9,7 @@
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
+        {{$store.state.}}
         <div v-if="$auth().hasRole('admin')" slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('editUser', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>

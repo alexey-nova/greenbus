@@ -2,37 +2,67 @@
   <div>
     <PageTitle :title="'Контрагенты'"></PageTitle>
 
-    <PageButtons>
-      <button v-if="!$route.params.folderId" class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать контрагента</button>
-      <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>
-      <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('createFolder', {})"><i class="fa fa-folder-o"></i>&nbsp;&nbsp;Создать папку</button>
-    </PageButtons>
-    <form v-if="$route.params.folderId" @submit.prevent="uploadFiles">
-      <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
-      <button type="submit">Загрузить</button>
-    </form>
-    <form @submit.prevent="search">
-      <input type="text" v-model="query">
-      <button>Найти</button>
-    </form>
-    <Box>
-      <button v-if="chosenIds.length > 0" type="button" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
-      <div v-if="!$route.params.folderId" v-for="folder in mainFolders"><div class="ca-item">
-        <router-link :to="{ name: 'folder', params: { folderId: folder._id }}"><i class="fa fa-folder fa-2x"></i> {{ folder.name }}</router-link>
-      </div></div>
-      <div v-if="$route.params.folderId" v-for="item in content.childFolders"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
-        <router-link :to="{ name: 'folder', params: { folderId: item._id }}"><i class="fa fa-folder fa-2x"></i> {{ item.name }}</router-link>
-        <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-        <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
-        <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFolder', item)"><i class="fa fa-pencil"></i></button>
-      </div></div>
-      <div v-if="$route.params.folderId" v-for="item in content.files"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
-        <a :href="`http://195.93.152.79:3333/${item.path}`" target="_blank"><i class="fa fa-file-text-o fa-2x"></i> {{item.name}}</a>
-        <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-        <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
-        <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFile', item)"><i class="fa fa-pencil"></i></button>
-      </div></div>
-    </Box>
+    <div class="row">
+      <div class="col-lg-9">
+        <Box>
+          <button v-if="chosenIds.length > 0" type="button" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
+
+          <!-- root folders -->
+          <div class="ca-items">
+            <div v-if="!$route.params.folderId" v-for="folder in mainFolders">
+              <div class="ca-item">
+                <router-link :to="{ name: 'folder', params: { folderId: folder._id }}">
+                  <div><i class="fa fa-folder main-icon"></i></div>
+                </router-link>
+                <div class="title">{{ folder.name }}</div>
+              </div>
+            </div>
+
+            <!-- subfolders -->
+            <div v-if="$route.params.folderId" v-for="item in content.childFolders"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+              <router-link :to="{ name: 'folder', params: { folderId: item._id }}">
+                <div><i class="fa fa-folder main-icon"></i></div>
+              </router-link>
+              <div class="buttons">
+                <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFolder', item)"><i class="fa fa-pencil"></i></button>
+              </div>
+              <div class="title">{{ item.name }}</div>
+            </div></div>
+
+            <!-- files -->
+            <div v-if="$route.params.folderId" v-for="item in content.files"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+              <a :href="`http://195.93.152.79:3333/${item.path}`" target="_blank">
+                <div><i class="fa fa-file-text-o main-icon document"></i></div>
+              </a>
+              <div class="buttons">
+                <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFile', item)"><i class="fa fa-pencil"></i></button>
+              </div>
+              <div class="title">{{item.name}}</div>
+            </div></div>
+          </div>
+        </Box>
+      </div>
+      <div class="col-lg-3">
+        <Box>
+          <button v-if="!$route.params.folderId" class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать контрагента</button>
+          <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>
+          <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('createFolder', {})"><i class="fa fa-folder-o"></i>&nbsp;&nbsp;Создать папку</button>
+
+          <form v-if="$route.params.folderId" @submit.prevent="uploadFiles">
+            <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+            <button type="submit">Загрузить</button>
+          </form>
+          <form @submit.prevent="search">
+            <input type="text" v-model="query">
+            <button>Найти</button>
+          </form>
+        </Box>
+      </div>
+    </div>
 
     <ModalCreate :model="modal.create" @onSubmit="createCA" @onClose="toggleModal('create')"></ModalCreate>
     <ModalCreateFolder :model="modal.createFolder" @onSubmit="createFolder" @onClose="toggleModal('createFolder')"></ModalCreateFolder>
@@ -41,6 +71,19 @@
     <ModalRenameFile v-if="modal.renameFile" :model="modal.renameFile" @onSubmit="renameFile" @onClose="toggleModal('renameFile')"></ModalRenameFile>
   </div>
 </template>
+
+<style lang="scss">
+
+  .ca-items { display: flex; flex-wrap: wrap; }
+  .ca-item { margin: 5px 20px; padding: 10px; display: inline-flex; flex-direction: column; align-items: center; }
+  .ca-item.selected { background: #ecf0f5; }
+  .ca-item>a { display: flex; width: 130px; align-items: center; flex-direction: column; padding: 5px 10px; }
+  .ca-item .main-icon { font-size: 120px; width: 120px; height: 100px; color: #dcb31c; display: flex; justify-content: center; align-items: center; }
+  .ca-item .main-icon.document { font-size: 90px; }
+  .ca-item .buttons { margin: 5px 0 10px; }
+  .ca-item .title { color: #333; word-wrap: break-word; text-align: center; width: 160px; }
+  .ca-item .btn { margin: 0 3px; }
+</style>
 
 <script>
   import PageTitle from '@/PageTitle'
@@ -229,12 +272,3 @@
     },
   }
 </script>
-
-<style lang="scss">
-
-  .ca-item { margin: 5px 0; padding-right: 10px; display: inline-flex; align-items: center; }
-  .ca-item a { display: flex; align-items: center; padding: 5px 10px; }
-  .ca-item a .fa { margin-right: 10px; }
-  .ca-item.selected { background: #ecf0f5; }
-  .ca-item .btn { margin: 0 3px; }
-</style>

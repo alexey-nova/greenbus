@@ -1,7 +1,7 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Создать папку</h3>
+    <h3 slot="header" class="modal-title">Переименовать папку</h3>
 
     <div slot="content" class="row">
       <div class="col-lg-6">
