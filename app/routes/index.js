@@ -9,6 +9,7 @@ import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
 import Contragents from '#/pages/Contragents'
 import Calendar from '#/pages/Calendar'
+import PaymentSchedule from '#/pages/PaymentSchedule'
 
 import Auth from '#/layouts/Auth'
 import Login from '#/pages/Login'
@@ -76,6 +77,11 @@ var router = new Router({
           path: '/calendar',
           name: 'calendar',
           component: Calendar,
+        },
+        {
+          path: '/ps',
+          name: 'ps',
+          component: PaymentSchedule,
         },
       ]
     },
