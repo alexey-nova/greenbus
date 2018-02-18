@@ -15,8 +15,8 @@
                   <!--<i class="fa fa-users text-aqua"></i> 5 new members joined today-->
                   {{n.description}}
                 </a>
-                <a v-if="$_.size(pending)" class="read-all" href="#" @click="readNots">Прочитать все уведомления</a>
               </li>
+              <li v-if="$_.size(pending)"><a class="read-all" href="#" @click="readNots">Прочитать все уведомления</a></li>
               <li v-if="!$_.size(pending)"><a href="#">У вас нет уведомлений</a></li>
             </ul>
           </li>

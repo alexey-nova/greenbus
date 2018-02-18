@@ -17,6 +17,11 @@
       </div>
 
       <div v-if="isOpen" class="profile-tools">
+        <router-link :to="{name: 'profile'}">
+          <div class="item">
+            <i class="fa fa-user"></i>&nbsp;&nbsp;Профиль
+          </div>
+        </router-link>
         <router-link :to="{name: 'logout'}">
           <div class="item">
             <i class="fa fa-power-off"></i>&nbsp;&nbsp;Выход
@@ -56,6 +61,6 @@
 
   .profile-toggler { background: #09101a; padding: 10px 15px; color: #ddd; font-size: .9em; cursor: pointer; }
 
-  .profile-tools .item { padding: 20px 15px; border-bottom: 1px solid #09101a; box-shadow: 0 2px 10px -7px #fff; }
+  .profile-tools .item { padding: 15px 15px; border-bottom: 1px solid #09101a; box-shadow: 0 2px 10px -7px #fff; }
   .profile-tools a { color: #ddd; }
 </style>

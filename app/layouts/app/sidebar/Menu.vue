@@ -80,11 +80,11 @@
                 },
               ],
             },
-  //        {
-  //          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
-  //          name: 'Документы',
-  //          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
-  //        },
+          {
+            link: {name: 'contragents'},
+            name: 'Контрагенты',
+            isActive: () => this.$isRoute(['folder', 'contragents']),
+          },
           ],
         }
       }

@@ -22,11 +22,11 @@
           {{statuses[props.row.status]}}
         </div>
         <div slot="info" slot-scope="props">
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 2)">
             <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 1)">
             <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
@@ -46,7 +46,7 @@
 
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalShow :model="modal.show" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -81,6 +81,7 @@
           edit: false,
           reject: false,
           confirm: false,
+          tab: 0,
         },
         statuses: [
           'На согласовании',
@@ -97,8 +98,8 @@
               status: 'Статус',
               from: 'Исполнитель',
               to: 'Кому',
-              info: '',
-              tools: '',
+              info: 'Инфо',
+              tools: 'Подробнее',
             },
             orderBy: {
               column: 'id',
@@ -159,8 +160,9 @@
           return result
         }, 0)
       },
-      toggleModal (name, model) {
+      toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
       },
       createMemo (memo) {
         let data = this.$createFormData(memo)
@@ -249,6 +251,6 @@
 
 <style lang="scss">
 
-  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

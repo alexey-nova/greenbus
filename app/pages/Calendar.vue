@@ -54,7 +54,7 @@
             :events="eventsForComponent"/>
     </Box>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
+    <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
 
   </div>
 </template>
@@ -136,10 +136,7 @@
                             name: event.title,
                             startDate: event.startDate,
                             endDate: event.endDate,
-                            // title: "Multi-day event",
-                             classes: "purple",
                         }
-                        //this.setShowDate(event.id)
                     })
                 }
             }
@@ -147,7 +144,6 @@
         mounted () {
             this.loadMeetings()
             this.loadUsers()
-            console.log(this.$auth().token)
         },
         methods: {
             toggleModal (name, model, type) {
@@ -157,7 +153,6 @@
             loadMeetings() {
               this.$api('get', 'meetings').then(response => {
                 this.events = response.data
-                console.log(this.$auth().user._id)
               }).catch(e => {
                       this.notify(e, 'danger')
               })
@@ -174,8 +169,6 @@
                 endDate.setUTCMinutes(endTime[1])
 
                 let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate:endDate}
-                console.log(newDate)
-
                 this.$api('post', 'meetings', data).then(response => {
                     this.modal.createMeeting = false
                     this.notify(response.data.message)
@@ -187,9 +180,12 @@
                 })
             },
             editMeeting (meeting) {
-                console.log("good")
+                meeting.participants = this.$_.map(meeting.participants, p => {
+                    return p.user
+                })
                 this.$api('put', 'meetings/' + meeting._id, meeting).then(response => {
                     this.loadMeetings()
+                    this.toggleModal('edit')
                     this.notify(response.data.message)
                 }).catch(e => {
                     this.notify('Временно нельзя редактировать событие', 'info')
@@ -303,6 +299,7 @@
                     }
                     response.data['startTime'] = sHours + ":" + sMinutes
                     response.data['endTime'] = eHours + ":" + eMinutes
+
                     this.toggleModal('edit', response.data, 'edit')
                 }).catch(e => {
                     this.notify(e, 'danger')
@@ -310,6 +307,10 @@
             },
             updateMeeting() {
                 this.toggleModal('create')
+                this.loadMeetings()
+            },
+            updateEditMeeting() {
+                this.toggleModal('edit')
                 this.loadMeetings()
             },
             /* ----- Форма -------*/

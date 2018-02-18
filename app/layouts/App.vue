@@ -86,7 +86,7 @@
   body { font-size: 150% !important; }
 
   // header
-  body .wrapper .main-header { border-bottom: 4px solid #fff; max-height: none; }
+  body .wrapper .main-header { border-bottom: 4px solid #bdbdbd; max-height: none; }
   body .wrapper .main-header .logo { background-color: #fff; text-align: left; height: 81px; }
   body .wrapper .main-header .logo img { height: 50px; margin-top: 15px; }
   body .wrapper .main-header .navbar { background: #fff; }
@@ -155,8 +155,8 @@
 
 
   .table th { position: relative; background: #eee; }
-  .table th>span:first-child { margin-right: 30px; white-space: nowrap; }
   .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
+  .table th>span:first-child { margin-right: 30px; white-space: nowrap; position: static; }
   .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td { border: 1px solid #ccc !important; }
   .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { padding: 10px !important; }
 

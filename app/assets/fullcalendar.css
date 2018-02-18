@@ -900,7 +900,7 @@ NOTE: use percentage font sizes or else old IE chokes
   min-width: 1.5em;
   text-align: center;
   background-color: #f2f2f2;
-  color: #808080; }
+  color: black; }
 
 /* when week/day number have own column */
 .fc-basic-view td.fc-week-number {

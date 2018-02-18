@@ -5,32 +5,32 @@
 
     <div slot="content">
       <ul class="menu">
-        <li :class="{'active': tab === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
-        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
-        <li :class="{'active': tab === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
+        <li :class="{'active': tabs === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
+        <li :class="{'active': tabs === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
+        <li :class="{'active': tabs === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
       </ul>
 
-      <div v-if="tab === 0">
+      <div v-if="tabs === 0">
         <h2>#{{model.id}}: {{model.name}}</h2>
         <p style="line-height: 2em;">
           {{model.description}}<br />
           <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
-          Контроль: {{getUser(model.from).fullname}}<br />
-          Ответственный: {{getUser(model.to).fullname}}<br />
-          Приоритет:
-          <span v-if="model.urgency" class="label label-danger">Важная</span>
-          <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
-          Статус: {{statuses[model.status]}}<br />
-          <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.deadline, 'd mmm yyyy')}}<br />
-            </span>
+            Контроль: {{getUser(model.from).fullname}}<br />
+            Ответственный: {{getUser(model.to).fullname}}<br />
+            Приоритет:
+            <span v-if="model.urgency" class="label label-danger">Важная</span>
+            <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
+            Статус: {{statuses[model.status]}}<br />
+            <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy')}}<br />
+          </span>
         </p>
       </div>
-      <div v-if="tab === 1">
+      <div v-if="tabs === 1">
         <div v-for="file in model.files">
           <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
         </div>
       </div>
-      <div v-if="tab === 2">
+      <div v-if="tabs === 2">
         <div v-if="!$_.size(comments)">
           Обсуждений нет
         </div>
@@ -53,6 +53,9 @@
 
       <div class="time" style="float: left; text-align: left; padding-top: 5px;">
         <i class="fa fa-clock-o"></i> Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
+      </div>
+      <div v-if="model.updatedAt" class="time" style="float: left; text-align: left; padding-top: 5px; margin-left: 20px;">
+        <i class="fa fa-clock-o"></i> Завершена: {{$dateFormat(model.updatedAt, 'd mmm yyyy')}}
       </div>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
       <button v-if="$auth().user._id === model.to && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
@@ -95,25 +98,28 @@
           rejectTask: false,
           confirmTask: false,
         },
+        tabs: 0,
         statuses: [
           'В работе',
           'На согласовании',
           'Согласовано',
           'Отказано',
         ],
-        tab: 0,
       }
     },
-    props: ['model', 'users', 'onClose'],
+    props: ['model', 'users', 'tab'],
     watch: {
       model () {
         if (this.$props.model)
         this.loadTask()
+      },
+      tab () {
+        this.tabs = this.$props.tab
       }
     },
     methods: {
       toggleTab(tab) {
-        this.tab = tab
+        this.tabs = tab
       },
       toggleModal (name, model) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
@@ -131,7 +137,7 @@
         this.toggleModal('confirmTask')
       },
       close () {
-        this.tab = 0
+        this.tabs = 0
         this.$emit('onClose')
       },
       getUser (_id) {

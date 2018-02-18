@@ -17,12 +17,15 @@ export default {
   login (token) {
     if (token) {
       try {
-        let user = JSON.parse(atob(token.split('.')[1]))
-        user['fullname'] = unescape(user.fullname)
+        let userId = JSON.parse(atob(token.split('.')[1]))._id
         core.$setToken(token)
-        localStorage.setItem('jwt', token);
-
-        store.commit('auth/init', {token: token, user: user})
+        localStorage.setItem('jwt', token)
+        core.$api('get', 'users').then(response => {
+          let user = core.$_.find(response.data, ['_id', userId])
+          store.commit('auth/init', {token: token, user: user})
+        }).catch(e => {
+          this.notify(e.response.data, 'danger')
+        })
       } catch (e) {
         store.commit('auth/destroy')
       }
