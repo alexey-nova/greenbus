@@ -65,12 +65,17 @@
 
 
           <button v-if="!$route.params.folderId" class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать контрагента</button>
-          <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>
+          <!--<button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>-->
           <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('createFolder', {})"><i class="fa fa-folder-o"></i>&nbsp;&nbsp;Создать папку</button>
 
+          <hr>
+
           <form v-if="$route.params.folderId" @submit.prevent="uploadFiles">
+            <h4>Загрузить файлы</h4>
             <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
-            <button type="submit">Загрузить</button>
+            <div style="text-align: right">
+              <button type="submit" class="btn btn-light">Загрузить</button>
+            </div>
           </form>
 
           <hr>
