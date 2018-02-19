@@ -17,11 +17,14 @@ export default {
   login (token) {
     if (token) {
       try {
-        let userId = JSON.parse(atob(token.split('.')[1]))._id
+        let user = JSON.parse(atob(token.split('.')[1]))
+        let userId = user._id
         core.$setToken(token)
-        localStorage.setItem('jwt', token)
+        localStorage.setItem('jwt', token);
+        store.commit('auth/init', {token: token, user: user})
+
         core.$api('get', 'users').then(response => {
-          let user = core.$_.find(response.data, ['_id', userId])
+          user = core.$_.find(response.data, ['_id', userId])
           store.commit('auth/init', {token: token, user: user})
         }).catch(e => {
           this.notify(e.response.data, 'danger')
@@ -36,11 +39,5 @@ export default {
     let token = localStorage.getItem('jwt')
     this.login(token)
   },
-  mixin: {
-    computed: {
-      admin () {
-        return this.$store.state.auth.user.login
-      }
-    }
-  },
+  mixin: {},
 }

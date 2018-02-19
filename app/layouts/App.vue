@@ -86,7 +86,7 @@
   body { font-size: 150% !important; }
 
   // header
-  body .wrapper .main-header { border-bottom: 4px solid #bdbdbd; max-height: none; }
+  body .wrapper .main-header { border-bottom: 7px solid #bdbdbd; max-height: none; }
   body .wrapper .main-header .logo { background-color: #fff; text-align: left; height: 81px; }
   body .wrapper .main-header .logo img { height: 50px; margin-top: 15px; }
   body .wrapper .main-header .navbar { background: #fff; }
