@@ -89,7 +89,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools', 'admin',],
+          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools',],
           options: {
             headings: {
               id: 'ID',
@@ -233,6 +233,9 @@
       }
     },
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
       this.loadMemos()
       this.loadUsers()
 

@@ -2,7 +2,8 @@
   <div>
     <Modal :isOpen="model" type="lg" @onSubmit="submit">
 
-      <h3 slot="header" class="modal-title">Создать событие</h3>
+      <h3 v-if="type !== 'edit'" slot="header" class="modal-title">Создать событие</h3>
+      <h3 v-if="type === 'edit'" slot="header" class="modal-title">Редактировать событие</h3>
 
       <div slot="content" class="row">
         <div v-if="type === 'create' || model.createdBy === this.$auth().user._id">
@@ -119,13 +120,14 @@
             </div>
             <div class="col-md-3">
               <div class="to-status">
-                <div v-if="!(m.user !== $auth().user._id || m.answer !== 'undefined')">
+                <div v-if="m._id === $auth().user._id && !model.participants[index].answer">
                   <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
                   <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
                 </div>
-                <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
-              {{statuses[model.participants[index].answer]}}
-            </span>
+                <span class="title" v-if="!(m._id === $auth().user._id && !model.participants[index].answer)">
+                  {{statuses[model.participants[index].answer]}}
+                </span>
+                <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy')}}</span>
               </div>
             </div>
           </div>

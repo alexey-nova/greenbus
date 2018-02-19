@@ -5,7 +5,6 @@
     <div class="row">
       <div class="col-lg-9">
         <Box>
-          <button v-if="chosenIds.length > 0" type="button" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
 
           <!-- root folders -->
           <div class="ca-items">
@@ -16,6 +15,16 @@
                 </router-link>
                 <div class="title">{{ folder.name }}</div>
               </div>
+            </div>
+
+            <div v-if="$route.params.folderId" class="ca-item">
+              <router-link v-if="content.parentFolder" :to="{ name: 'folder', params: { folderId: content.parentFolder._id }}">
+                <div><i class="fa fa-folder main-icon"></i></div>
+              </router-link>
+              <router-link v-if="!content.parentFolder" :to="{ name: 'contragents'}">
+                <div><i class="fa fa-folder main-icon"></i></div>
+              </router-link>
+              <div class="title">Назад</div>
             </div>
 
             <!-- subfolders -->
@@ -48,6 +57,13 @@
       </div>
       <div class="col-lg-3">
         <Box>
+
+          <div v-if="chosenIds.length > 0">
+            <button type="button" class="btn btn-success" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
+            <hr>
+          </div>
+
+
           <button v-if="!$route.params.folderId" class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать контрагента</button>
           <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>
           <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('createFolder', {})"><i class="fa fa-folder-o"></i>&nbsp;&nbsp;Создать папку</button>
@@ -56,10 +72,15 @@
             <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
             <button type="submit">Загрузить</button>
           </form>
+
+          <hr>
           <form @submit.prevent="search">
-            <input type="text" v-model="query">
-            <button>Найти</button>
+            <input class="form-control" type="text" placeholder="Поиск" v-model="query">
+            <div style="text-align: right">
+              <button class="btn btn-light" style="margin: 10px 0 0;">Найти</button>
+            </div>
           </form>
+
         </Box>
       </div>
     </div>

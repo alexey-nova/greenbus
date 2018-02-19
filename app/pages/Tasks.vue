@@ -89,7 +89,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools', 'admin',],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools',],
           options: {
             headings: {
               id: 'ID',
@@ -225,6 +225,9 @@
     },
 
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()

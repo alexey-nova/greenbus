@@ -2,14 +2,14 @@
   <div>
     <PageTitle :title="'Сотрудники'"></PageTitle>
 
-    <PageButtons>
+    <PageButtons v-if="$auth().hasRole('admin')">
       <button class="btn btn-success" @click="toggleModal('showDep', {})"><i class="fa fa-id-badge"></i>&nbsp;&nbsp;Управление отделами</button>
       <button class="btn btn-success" @click="toggleModal('createUser', {})"><i class="fa fa-user"></i>&nbsp;&nbsp;Добавить сотрудника</button>
     </PageButtons>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-        <div v-if="$store.state.auth.user.login" slot="admin" slot-scope="props">
+        <div v-if="$auth().hasRole('admin')" slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('editUser', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
         </div>
