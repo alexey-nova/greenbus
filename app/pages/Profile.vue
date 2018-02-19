@@ -22,7 +22,7 @@
           </div>
           <div class="form-group">
             <label class="custom-file-label" for="field-files">Аватар</label>
-            <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+            <input type="file" id="field-files" lang="ru" @change="addFiles">
           </div>
         </div>
         <div class="col-lg-6">
@@ -96,6 +96,8 @@
         let formData = this.$createFormData(data)
         this.$api('put', 'users/' + data._id, formData).then(response => {
           this.notify(response.data.message)
+
+          this.$store.commit('auth/init', {token: this.$auth().token, user: response.user})
         }).catch(e => {
           this.notify('Временно нельзя сохранить', 'info')
           this.$log(e, 'danger')
@@ -112,7 +114,7 @@
         let files = e.target.files || e.dataTransfer.files
         if (!files.length) return
 
-        this.model.avatar = files
+        this.model.avatar = files[0]
       },
     }
   }
