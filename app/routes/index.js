@@ -89,6 +89,11 @@ var router = new Router({
           name: 'ps',
           component: PaymentSchedule,
         },
+        {
+          path: '/ps/:param1',
+          name: 'psByFilter',
+          component: PaymentSchedule
+        }
       ]
     },
     {

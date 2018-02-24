@@ -23,7 +23,7 @@ export default {
         localStorage.setItem('jwt', token);
         store.commit('auth/init', {token: token, user: _.clone(user)})
 
-        core.$api('get', 'users').then(response => {
+        core.$api('get', `users`).then(response => {
           let newUser = core.$_.find(response.data, ['_id', userId])
           user.position = newUser.position
           user.department = newUser.department

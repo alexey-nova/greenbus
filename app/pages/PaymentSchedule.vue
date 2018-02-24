@@ -165,7 +165,8 @@
         return `${newDate.getDate()} ${dates[newDate.getMonth()]} ${newDate.getFullYear()} ${newDate.getHours()}:${newDate.getMinutes()}`
       },
       loadPS () {
-        this.$api('get', 'paymentSchedules').then(response => {
+        const filter = this.$route.params.param1 ? `?f=${this.$route.params.param1}` : ''
+        this.$api('get', `paymentSchedules/${filter}`).then(response => {
           this.ps = response.data
         }).catch(e => {
           this.notify(e, 'danger')
@@ -202,7 +203,6 @@
         })
       },
       rejectPS (ps) {
-        // const data = this.$createFormData(ps)
         this.$api('post', `paymentSchedules/reject/${ps._id}`, ps).then(response => {
           this.modal.show = false
           this.notify(response.data.message)

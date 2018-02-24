@@ -92,7 +92,7 @@
         })
       },
       editDep (dep) {
-        this.$api('put', 'departments/'+dep._id, dep).then(response => {
+        this.$api('put', `departments/${dep._id}`, { name: dep.name }).then(response => {
           this.loadDeps()
           this.modal.edit = false
           this.notify(response.data.message)

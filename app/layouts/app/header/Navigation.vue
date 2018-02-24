@@ -18,7 +18,7 @@
         <div>Задачи</div>
       </router-link>
     </li>
-    <li :class="[{active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents'])}, 'nav-item']">
+    <li :class="[{active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents', 'ps', 'psByFilter'])}, 'nav-item']">
       <router-link class="nav-link" :to="{name: 'documents'}" :style="{color: colors['documents']}">
         <i class="fa fa-file-text-o fa-2x"></i>
         <div>Документы</div>
@@ -49,6 +49,8 @@
           calendar: '#1b73c9',
           folder: '#a5a52f',
           contragents: '#a5a52f',
+          ps: '#a5a52f',
+          psByFilter: '#a5a52f',
         }
       }
     },
