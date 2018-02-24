@@ -21,6 +21,7 @@
     "text-encoder-lite": "^1.0.1",
     "vee-validate": "^2.0.3",
     "vue": "^2.5.2",
+    "vue-click-outside": "^1.0.7",
     "vue-flash-message": "^0.4.1",
     "vue-full-calendar": "^2.5.2",
     "vue-masked-input": "^0.5.2",

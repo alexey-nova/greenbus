@@ -21,7 +21,7 @@
             <span v-if="model.urgency" class="label label-danger">Важная</span>
             <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
             Статус: {{statuses[model.status]}}<br />
-            <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy')}}<br />
+            <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}<br />
           </span>
         </p>
       </div>
@@ -31,21 +31,19 @@
         </div>
       </div>
       <div v-if="tabs === 2">
-        <div v-if="!$_.size(comments)">
-          Обсуждений нет
-        </div>
-        <div v-for="comment in comments">
+        <p v-if="!$_.size(comments)">Обсуждений нет</p>
+        <div v-for="comment in comments" style="padding: 5px 0">
           <div class="comment">{{comment.comment}}</div>
           <div v-for="file in comment.files">
             <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
           </div>
         </div>
-
+        <div style="padding: 5px 0"></div>
         <div v-if="$auth().user._id === model.from && model.status === 1">
           <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[0]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', comments[0])"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
         </div>
-        <div v-if="model.status !== 1">{{statuses[model.status]}}</div>
+        <div v-if="model.status !== 1"><strong>{{statuses[model.status]}}</strong></div>
       </div>
     </div>
 
@@ -54,8 +52,8 @@
       <div class="time" style="float: left; text-align: left; padding-top: 5px;">
         <i class="fa fa-clock-o"></i> Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
       </div>
-      <div v-if="model.updatedAt" class="time" style="float: left; text-align: left; padding-top: 5px; margin-left: 20px;">
-        <i class="fa fa-clock-o"></i> Завершена: {{$dateFormat(model.updatedAt, 'd mmm yyyy')}}
+      <div v-if="model.status === 2" class="time" style="float: left; text-align: left; padding-top: 5px; margin-left: 20px;">
+        <i class="fa fa-clock-o"></i> Завершена: {{$dateFormat(model.updatedAt, 'd mmm yyyy, hh:MM')}}
       </div>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
       <button v-if="$auth().user._id === model.to && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
@@ -145,6 +143,7 @@
         return user ? user : {}
       },
       loadTask () {
+        console.log(this.model)
         this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
           this.comments = response.data
         }).catch(e => {

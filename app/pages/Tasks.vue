@@ -202,15 +202,15 @@
       },
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-        this.$api('get', 'tasks' + filter).then(response => {
-          this.tasks = response.data.tasks
+        return this.$api('get', 'tasks' + filter).then(response => {
+          return this.tasks = response.data.tasks
         }).catch(e => {
           this.notify(e, 'danger')
         })
       },
       loadUsers () {
-        this.$api('get', 'users').then(response => {
-          this.users = response.data
+        return this.$api('get', 'users').then(response => {
+          return this.users = response.data
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -222,6 +222,15 @@
         let user = this.$_.find(this.users, u => u._id === _id)
         return user ? user : {}
       },
+      showTaskFromQuery () {
+        let type = this.$_.get(this.$route, 'query.type', '')
+        let taskId = this.$_.get(this.$route, 'query.task', '')
+        if (type && taskId) {
+          this.loadTasks().then((tasks) => {
+            this.toggleModal(type, (this.$_.find(tasks, ['id', taskId*1])))
+          })
+        }
+      }
     },
 
     mounted () {
@@ -231,6 +240,7 @@
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()
+      this.showTaskFromQuery()
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})
@@ -238,6 +248,7 @@
     watch: {
       '$route' (to, from) {
         this.loadTasks()
+        this.showTaskFromQuery()
       }
     },
   }

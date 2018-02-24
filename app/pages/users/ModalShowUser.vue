@@ -12,24 +12,24 @@
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <label for="field-position">Должность</label>
-          <input id="field-position" class="form-control" readonly v-model="model.position">
+          <label>Должность</label>
+          <span class="form-control">{{model.position}}</span>
         </div>
         <div class="form-group">
-          <label for="field-department">Отдел</label>
-          <input id="field-department" class="form-control" readonly :value="model.department">
+          <label>Отдел</label>
+          <span class="form-control">{{model.department}}</span>
         </div>
         <div class="form-group">
-          <label for="field-email">Email</label>
-          <input id="field-email" class="form-control" readonly v-model="model.email">
+          <label>Email</label>
+          <a :href="'mailto:'+model.email" class="form-control">{{model.email}}</a>
         </div>
-        <div class="form-group">
-          <label for="field-phone">Телефон</label>
-          <input id="field-phone" class="form-control" readonly v-model="model.phone">
+        <div v-if="model.phone" class="form-group">
+          <label>Телефон</label>
+          <a :href="'tel:+'+parseInt(model.phone.replace(/\D+/g,''))" class="form-control">{{model.phone}}</a>
         </div>
-        <div class="form-group">
-          <label for="field-whatsapp">Whatsapp</label>
-          <input id="field-whatsapp" class="form-control" readonly v-model="model.whatsapp">
+        <div v-if="model.whatsapp" class="form-group">
+          <label>Telegram</label>
+          <a :href="'tel:+'+parseInt(model.whatsapp.replace(/\D+/g,''))" class="form-control">{{model.whatsapp}}</a>
         </div>
       </div>
     </div>
@@ -66,4 +66,5 @@
 
 <style lang="scss" scoped>
   .avatar { height: 300px; max-width: 300px; }
+  a.form-control { color: #337ab7; }
 </style>

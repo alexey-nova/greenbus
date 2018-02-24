@@ -1,7 +1,7 @@
 <template>
   <div class="navbar-custom-menu">
     <ul class="nav navbar-nav">
-      <li class="dropdown notifications-menu">
+      <li class="dropdown notifications-menu" v-click-outside="close">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" @click="toggle">
           <i class="fa fa-bell-o fa-2x"></i>
           <span v-if="$_.size(pending)" class="label label-warning">{{$_.size(pending)}}</span>
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+  import ClickOutside from 'vue-click-outside'
+
   export default {
     data () {
       return {
@@ -47,8 +49,10 @@
     },
     methods: {
       toggle () {
-        console.log('asdsa')
         this.isOpen = !this.isOpen
+      },
+      close () {
+        this.isOpen = false
       },
       loadNots () {
         this.$api('get', 'notifications').then(response => {
@@ -63,6 +67,9 @@
     },
     mounted () {
       this.loadNots()
+    },
+    directives: {
+      ClickOutside
     }
   }
 </script>

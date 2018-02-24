@@ -327,6 +327,8 @@
 <style lang="scss" scoped>
 </style>
 <style>
+  .calendar-view.holiday-us-official .date::before { content: none !important; }
+
   .calendar-view .event { border: none !important; border-radius: 0; padding: 10px !important; }
 
   .calendar-view .event.red { background: #c34040; color: #fff; }

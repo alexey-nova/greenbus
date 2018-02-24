@@ -7,7 +7,7 @@
         <div class="col-lg-6">
           <div :class="['form-group', {'has-error': errors.has('login')}]">
             <label for="field-login">Логин *</label>
-            <input id="field-login" class="form-control" v-validate="'required'" name="login" v-model="model.login">
+            <input id="field-login" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="login" v-model="model.login">
             <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
           </div>
           <div :class="['form-group', {'has-error': errors.has('fullname')}]">
@@ -17,7 +17,7 @@
           </div>
           <div :class="['form-group', {'has-error': errors.has('email')}]">
             <label for="field-email">Email *</label>
-            <input id="field-email" class="form-control" v-validate="'required|email'" name="email" v-model="model.email">
+            <input id="field-email" class="form-control" :readonly="!$auth().user.admin" v-validate="'required|email'" name="email" v-model="model.email">
             <span v-show="errors.has('email')" class="help-block">{{ errors.first('email') }}</span>
           </div>
           <div class="form-group">
@@ -28,14 +28,14 @@
         <div class="col-lg-6">
           <div :class="['form-group', {'has-error': errors.has('department')}]">
             <label for="field-department">Отдел *</label>
-            <select id="field-department" class="form-control" v-validate="'required'" name="department" v-model="model.department">
+            <select id="field-department" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="department" v-model="model.department">
               <option v-for="dep in departments" :value="dep.name">{{dep.name}}</option>
             </select>
             <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
           </div>
           <div :class="['form-group', {'has-error': errors.has('position')}]">
             <label for="field-position">Должность *</label>
-            <input id="field-position" class="form-control" v-validate="'required'" name="position" v-model="model.position">
+            <input id="field-position" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.position">
             <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
           </div>
           <div :class="['form-group', {'has-error': errors.has('phone')}]">
@@ -44,8 +44,8 @@
             <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
           </div>
           <div class="form-group">
-            <label for="field-whatsapp">Whatsapp</label>
-            <masked-input id="field-whatsapp" class="form-control" mask="\+1 (111) 111-11-11" v-model="model.whatsapp"></masked-input>
+            <label for="field-telegram">Уведомления</label>
+            <SwitchInput id="field-telegram" type="checkbox" mask="\+1 (111) 111-11-11" v-model="model.telegram"></SwitchInput>
           </div>
         </div>
 
@@ -61,12 +61,14 @@
   import PageTitle from '@/PageTitle'
   import Box from '@/Box'
   import MaskedInput from 'vue-masked-input'
+  import { Switch } from 'element-ui'
 
   export default {
     components: {
       PageTitle,
       Box,
       MaskedInput,
+      SwitchInput: Switch,
     },
     data () {
       return {
@@ -97,7 +99,9 @@
         this.$api('put', 'users/' + data._id, formData).then(response => {
           this.notify(response.data.message)
 
-          this.$store.commit('auth/init', {token: this.$auth().token, user: response.user})
+          let user = response.data.user
+          user.avatar = user.avatar + '?' + Math.random()
+          this.$auth().editUser(user)
         }).catch(e => {
           this.notify('Временно нельзя сохранить', 'info')
           this.$log(e, 'danger')

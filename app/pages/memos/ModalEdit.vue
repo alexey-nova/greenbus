@@ -22,6 +22,7 @@
             :hide-selected="true"
             :clear-on-select="false"
             :multiple="true"
+            :allow-empty="false"
             track-by="name"
             label="name">
           </Multiselect>

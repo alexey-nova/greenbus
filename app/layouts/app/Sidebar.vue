@@ -5,6 +5,7 @@
       <div class="user-panel">
         <div class="image">
           <img v-if="!$auth().user.avatar" src="./../../assets/design/avatar.jpg" class="img-circle" alt="User Image">
+          <img v-if="$auth().user.avatar" :src="'http://195.93.152.79:3333/' + $auth().user.avatar" class="img-circle" alt="User Image">
           <!--<img :src="avatar" class="img-circle" alt="User Image">-->
         </div>
         <div class="info">
@@ -64,7 +65,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+  .sidebar .user-panel .info .name { white-space: normal; }
   .profile-toggler { background: #09101a; padding: 10px 15px; color: #ddd; font-size: .9em; cursor: pointer; }
 
   .profile-tools .item { padding: 15px 15px; border-bottom: 1px solid #09101a; box-shadow: 0 2px 10px -7px #fff; }

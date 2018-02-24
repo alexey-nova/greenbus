@@ -58,7 +58,7 @@
           columns: ['name', 'createdAt', 'tools'],
           options: {
             headings: {
-              id: 'Название',
+              name: 'Название',
               createdAt: 'Создан',
               tools: '',
             },

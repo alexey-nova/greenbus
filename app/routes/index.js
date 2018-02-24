@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '#/store'
+import core from './../plugins/core'
 
 import App from '#/layouts/App'
 import Profile from '#/pages/Profile'
@@ -110,11 +111,15 @@ var router = new Router({
   ]
 })
 router.beforeEach(function (to, from, next) {
-  if (!localStorage.getItem('jwt') && to.name !== 'login') {
+  console.log('beforeEach')
+  console.log(core.$session.get('jwt'))
+  console.log(core.$session.get('user'))
+  if (core.$session.get('jwt') === null && to.name !== 'login') {
+    console.log('login')
     next({name: 'login'})
-  } else if (localStorage.getItem('jwt') && to.name === 'login') {
+  } else if (core.$session.get('jwt') && to.name === 'login') {
+    console.log('index')
     next({name: 'index'})
-    next()
   } else {
     next()
   }

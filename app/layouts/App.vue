@@ -26,6 +26,7 @@
   import '#/assets/adminlte/js/adminlte.min'
 //  import 'vue-flash-message/dist/vue-flash-message.min.css'
 //  import 'bootstrap/dist/css/bootstrap.css'
+  import 'element-ui/lib/theme-chalk/index.css'
 
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'

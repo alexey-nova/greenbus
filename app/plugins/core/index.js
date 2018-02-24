@@ -22,6 +22,24 @@ dateFormat.i18n = {
 
 export default {
   $_: _,
+  $session: {
+    get (key) {
+      try {
+        return JSON.parse(localStorage.getItem(key))
+      } catch (e) {
+        return null
+      }
+    },
+    set (key, data) {
+      localStorage.setItem(key, JSON.stringify(data))
+    },
+    remove (key) {
+      console.log('remove')
+      console.log(localStorage.getItem(key))
+      localStorage.removeItem(key)
+      console.log(localStorage.getItem(key))
+    },
+  },
 
   $http (type, url, data = {}, options = {}) {
     return _.get(axios, type)(url, data, options)
@@ -60,5 +78,5 @@ export default {
   },
   $dateFormat(date, format) {
     return dateFormat(date, format)
-  }
+  },
 }

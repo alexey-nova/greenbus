@@ -33,7 +33,7 @@
                   <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
               {{statuses[m.answer]}}
             </span>
-                  <span class="date" v-if="m.answer !== 'undefined'">{{$dateFormat(m.updatedAt, 'd mmm yyyy')}}</span>
+                  <span class="date" v-if="m.answer !== 'undefined'">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
                 </div>
               </div>
             </div>
@@ -52,7 +52,7 @@
             <div class="col-md-5">
               <div class="to">
                 <strong>Дата:</strong>
-                {{$dateFormat(model.createdAt, 'd mmm yyyy')}}
+                {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}
               </div>
             </div>
           </div>

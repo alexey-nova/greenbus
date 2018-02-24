@@ -16,7 +16,11 @@
                   <div class="deadlinedWraper">
                     <table border="1">
                       <tr v-for="dl in deadlined">
-                        <th>{{dl.name}}</th>
+                        <th>
+                          <router-link :to="{name: 'tasks', query: {type: 'show', task: dl.id}}">
+                            {{dl.name}}
+                          </router-link>
+                        </th>
                         <td>{{dateFormat(dl.deadline)}}</td>
                       </tr>
                     </table> 
@@ -54,7 +58,11 @@
               <div class="tasksWrapper">
                   <table border="1">
                     <tr v-for="(task, index) in tasks" class="">
-                      <th>{{task.name}}</th>
+                      <th>
+                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">
+                          {{task.name}}
+                        </router-link>
+                      </th>
                       <td>{{dateFormat(task.deadline)}}</td>
                     </tr>
                   </table> 
@@ -87,7 +95,11 @@
                     </tr>
                     <tr v-for="task in dateTasks">
                       <td>{{dateFormatForSec(task.deadline)}}</td>
-                      <td>{{task.name}}</td>
+                      <td>
+                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">
+                          {{task.name}}
+                        </router-link>
+                      </td>
                       <td>{{task.description}}</td>
                     </tr>
                   </table>
