@@ -53,7 +53,7 @@
           <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
-                <p>Ваши Задачи</p>
+                <p>Все Задачи</p>
               </span>
               <div class="tasksWrapper">
                   <table border="1">
@@ -143,7 +143,7 @@
           locale: 'ru',
           defaultView: 'month',
           themeSystem: 'bootstrap3',
-          contentHeight: 250,
+          contentHeight: 400,
           selectable: true,
           dayClick: (date, jsEvent, view) => {
             this.selectedDate = date._d
@@ -270,26 +270,26 @@
   td { padding: 5px; }
   .indexWrapper { display: flex; align-content: flex-start; }
   .left { display: inline-block; min-height: 150px; padding: 5px; width: calc((100% / 1.5) - 5px); }
-  .topWrapper { background: white; border-radius: 3px; box-shadow: 0 0 1px black; padding: 15px; }
-  .top { border-radius: 3px; width: 100%; min-height: 150px; background: #f2f2f2; }
+  .topWrapper { background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }
+  .top { border-radius: 3px; width: 100%; min-height: 150px; }
   .top > span { margin-bottom: 5px; padding-top: 5px; }
   .innerLeft { display: inline-block; width: calc((100% / 2 - 4px)); }
-  .deadlinedWraper { height: 95px; overflow-y: auto; }
+  .deadlinedWraper { min-height: 95px; overflow-y: auto; }
   .innerRight { display: inline-block; width: calc((100% / 2 - 4px)); margin-left: 4px; }
-  .bottom { width: 100%; min-height: 150px; text-align: center; background: #f2f2f2; border-radius: 3px; }
-  .bottomWrapper { margin-top: 15px; background: white; border-radius: 3px; box-shadow: 0 0 1px black; padding: 15px; }
+  .bottom { width: 100%; min-height: 150px; text-align: center; border-radius: 3px; }
+  .bottomWrapper { margin-top: 15px; background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }
   .bottom > span { margin-bottom: 5px; padding-top: 5px; }
-  .tasksWrapper { height: 266px; overflow-y: auto; }
+  .tasksWrapper { min-height: 266px; overflow-y: auto; }
   .right { display: inline-block; background: transparent; margin-top: 5px; margin-left: 15px; min-height: 150px; width: calc((100% / 2.5) - 5px); }
-  .calendarWrapper { background: white; border-radius: 3px; box-shadow: 0 0 1px black; padding: 15px; margin-top: 15px; }
-  #calendar { background: #f1f1f1; border-radius: 3px; }
+  .calendarWrapper { background: white; border-radius: 3px; box-shadow:0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; margin-top: 15px; }
+  #calendar {  border-radius: 3px; }
   .dayTask { display: block; align-content: flex-start; }
-  .dayTaskWrapper { background: white; border-radius: 3px; box-shadow: 0 0 1px black; padding: 15px; }
+  .dayTaskWrapper { background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }
   .todayDate { width: 100%; background: #8487b7; padding-top: 8px; border-radius: 5px; }
   .spansWrapper { width: 70%; height: 100%; text-align: center; position: relative; color: white; }
   .spansWrapper > span:nth-child(1){ position: absolute; top:45%; left: 0; transform: translateY(-50%); }
   .spansWrapper > span:nth-child(2n){ padding: 0; margin: 0; }
   .spansWrapper > span:nth-child(3){ position: absolute; top: 45%; right: 0; transform: translateY(-50%); }
-  .info { margin-top: 5px; height: 85px; overflow-y: auto; background: #f1f1f1; border-radius: 3px; }
+  .info { margin-top: 5px; min-height: 85px; overflow-y: auto; border-radius: 3px; }
   .fontSize { font-size: 12px; }
 </style>

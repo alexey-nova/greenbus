@@ -137,6 +137,7 @@
         this.modal.tab = tab ? tab : 0
       },
       createTask (task) {
+        task.files = this.$_.map(task.files, (f) => f.file)
         let data = this.$createFormData(task)
         this.$api('post', 'tasks', data).then(response => {
           this.modal.create = false
@@ -148,6 +149,12 @@
         })
       },
       editTask (task) {
+        task.files = this.$_.reduce(task.files, (result, f) => {
+          if (f.file) {
+            result.push(f.file)
+          }
+          return result
+        }, [])
         let data = this.$createFormData(task)
         this.$api('put', 'tasks/' + task._id, data).then(response => {
           this.modal.edit = false

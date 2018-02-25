@@ -78,6 +78,7 @@
   }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
 <style src="#/assets/adminlte/css/adminlte.min.css"></style>
 <style lang="scss">

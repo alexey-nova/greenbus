@@ -42,8 +42,21 @@
           <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
         </div>
         <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+          <label class="custom-file-label">Прикрепить файлы</label>
+          <br />
+          <file-upload
+            class="btn btn-default"
+            :multiple="true"
+            v-model="model.files"
+            ref="upload">
+            <i class="fa fa-plus"></i>
+            Выбрать файлы
+          </file-upload>
+          <ul style="list-style: none; padding: 0;">
+            <li v-for="(file, index) in model.files" :key="file.id">
+              <span>{{file.name}}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -60,8 +73,8 @@
   import Modal from '@/Modal'
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
-  import 'element-ui/lib/theme-chalk/index.css'
   import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
@@ -69,6 +82,7 @@
       Datepicker,
       'el-switch': Switch,
       Multiselect,
+      FileUpload,
     },
     props: ['model', 'users', 'onSubmit', 'onClose'],
     computed: {
@@ -111,12 +125,12 @@
         }).catch(() => {
         })
       },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
-
-        this.$props.model.files = files
-      }
+//      addFiles (e) {
+//        let files = e.target.files || e.dataTransfer.files
+//        if (!files.length) return
+//
+//        this.$props.model.files = files
+//      }
     }
   }
 </script>

@@ -43,7 +43,7 @@
           this.$login(response.data.token)
           this.$router.push({name: 'index'})
         }).catch(e => {
-          this.$notify(e, 'danger')
+          this.notify('Неверный логин или пароль', 'danger')
         })
       }
     },

@@ -62,6 +62,9 @@ Vue.use(VeeValidate, {
       to: 'Ответственный',
       memoTo: 'Кому',
       deadline: 'Срок сдачи',
+      currentPassword: 'Текущий пароль',
+      password: 'Новый пароль',
+      confirmPassword: 'Новый пароль еще раз',
     }},
   }
 })

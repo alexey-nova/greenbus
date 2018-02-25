@@ -111,14 +111,9 @@ var router = new Router({
   ]
 })
 router.beforeEach(function (to, from, next) {
-  console.log('beforeEach')
-  console.log(core.$session.get('jwt'))
-  console.log(core.$session.get('user'))
   if (core.$session.get('jwt') === null && to.name !== 'login') {
-    console.log('login')
     next({name: 'login'})
   } else if (core.$session.get('jwt') && to.name === 'login') {
-    console.log('index')
     next({name: 'index'})
   } else {
     next()

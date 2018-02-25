@@ -168,7 +168,7 @@
                 endDate.setUTCHours(endTime[0])
                 endDate.setUTCMinutes(endTime[1])
 
-                let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate:endDate}
+                let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate:endDate, place: meeting.place, description: meeting.description}
                 this.$api('post', 'meetings', data).then(response => {
                     this.modal.createMeeting = false
                     this.notify(response.data.message)

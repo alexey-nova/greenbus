@@ -3,7 +3,7 @@
     <PageTitle title="Профиль"></PageTitle>
 
     <Box>
-      <form @submit="submit">
+      <form @submit="submit" data-vv-scope="user">
         <div class="col-lg-6">
           <div :class="['form-group', {'has-error': errors.has('login')}]">
             <label for="field-login">Логин *</label>
@@ -54,6 +54,32 @@
         </div>
       </form>
     </Box>
+    <div class="row">
+      <div class="col-lg-12">
+        <Box>
+          <form @submit="changePassword">
+            <div :class="['form-group', {'has-error': errors.has('currentPassword')}]">
+              <label for="field-currentPassword">Текущий пароль *</label>
+              <input id="field-currentPassword" class="form-control" type="password" v-validate="'required'" name="currentPassword" v-model="model.currentPassword">
+              <span v-show="errors.has('currentPassword')" class="help-block">{{ errors.first('currentPassword') }}</span>
+            </div>
+            <div :class="['form-group', {'has-error': errors.has('password')}]">
+              <label for="field-password">Новый пароль *</label>
+              <input id="field-password" class="form-control" type="password" v-validate="'required|min:5'" name="password" v-model="model.password">
+              <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
+            </div>
+            <div :class="['form-group', {'has-error': errors.has('confirmPassword')}]">
+              <label for="field-confirmPassword">Повторите новый пароль *</label>
+              <input id="field-confirmPassword" class="form-control" type="password" v-validate="'required|confirmed:password'" name="confirmPassword" v-model="model.confirmPassword">
+              <span v-show="errors.has('confirmPassword')" class="help-block">{{ errors.first('confirmPassword') }}</span>
+            </div>
+            <div class="buttons">
+              <button class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Сменить пароль</button>
+            </div>
+          </form>
+        </Box>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -85,10 +111,33 @@
       this.loadDepartments()
     },
     methods: {
+      changePassword (event) {
+        event.preventDefault()
+
+        this.$validator.validateAll(['password', 'currentPassword', 'confirmPassword']).then(() => {
+          if (!(this.fields.password.invalid || this.fields.currentPassword.invalid || this.fields.confirmPassword.invalid)) {
+            let data = {
+              password: this.model.password,
+              currentPassword: this.model.currentPassword,
+            }
+            let formData = this.$createFormData(data)
+            this.$api('put', 'users/' + this.model._id, formData).then(response => {
+              this.notify(response.data.message)
+              this.model.password = ''
+              this.model.currentPassword = ''
+              this.model.confirmPassword = ''
+            }).catch((e) => {
+              this.notify('Неверный пароль', 'danger')
+              this.$log(e, 'danger')
+            })
+          }
+        }).catch((e) => {})
+      },
       submit (event) {
         event.preventDefault()
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
+        this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position', 'phone').then(() => {
+          if (!(this.fields.$user.login.invalid || this.fields.$user.fullname.invalid || this.fields.$user.email.invalid
+              || this.fields.$user.department.invalid || this.fields.$user.position.invalid || this.fields.$user.phone.invalid)) {
             this.save(this.model)
           }
         }).catch(() => {
@@ -100,7 +149,6 @@
           this.notify(response.data.message)
 
           let user = response.data.user
-          user.avatar = user.avatar + '?' + Math.random()
           this.$auth().editUser(user)
         }).catch(e => {
           this.notify('Временно нельзя сохранить', 'info')

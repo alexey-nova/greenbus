@@ -8,10 +8,18 @@
       <div slot="content" class="row">
         <div v-if="type === 'create' || model.createdBy === this.$auth().user._id">
           <div class="col-lg-6">
-            <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
+            <div :class="['form-group', {'has-error': errors.has('name')}]">
+              <label for="field-name">Тема *</label>
+              <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name" />
+              <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+            </div>
           </div>
           <div class="col-lg-6">
-            <InputBase title="Место" name="place" required :validate="'required'" v-model="model.place"></InputBase>
+            <div :class="['form-group', {'has-error': errors.has('place')}]">
+              <label for="field-place">Место *</label>
+              <input id="field-place" class="form-control" v-validate="'required'" name="place" v-model="model.place" />
+              <span v-show="errors.has('place')" class="help-block">{{ errors.first('place') }}</span>
+            </div>
           </div>
           <div class="col-lg-6">
             <div :class="['form-group', {'has-error': errors.has('startDate')}]">
@@ -46,8 +54,11 @@
             </div>
           </div>
           <div class="col-lg-12">
-            <TextareaBase title="Описание" name="description" required :validate="'required'"
-                          v-model="model.description"></TextareaBase>
+            <div :class="['form-group', {'has-error': errors.has('description')}]">
+              <label for="field-description">Описание *</label>
+              <textarea id="field-description" class="form-control" rows="4" v-validate="'required'" name="place" v-model="model.description"></textarea>
+              <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
+            </div>
           </div>
           <div v-if="(type === 'create' || type === 'edit') || model.createdBy === this.$auth().user._id" class="col-lg-12">
             <div :class="['form-group', {'has-error': errors.has('participants')}]">
@@ -110,24 +121,21 @@
         <div class="col-lg-12">
           <label>Участники встречи:</label>
           <div v-if="type !== 'create'" v-for="(m, index) in selectedUsers" class="row user">
-            <div class="col-md-9">
+            <div class="col-md-8">
               <div class="to">
                 <strong>{{getUser(m._id).fullname}}</strong> ({{getUser(m._id).position}})
               </div>
             </div>
-            <div class="col-md-3">
-              <div class="to-name"></div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div class="to-status">
                 <div v-if="m._id === $auth().user._id && !model.participants[index].answer">
-                  <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
-                  <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
+                  <button class="btn btn-sm btn-success" type="button" @click="toggleModal('confirmed', model)">Согласовать</button>
+                  <button class="btn btn-sm btn-danger" type="button" @click="toggleModal('reject', model)">Отклонить</button>
                 </div>
                 <span class="title" v-if="!(m._id === $auth().user._id && !model.participants[index].answer)">
                   {{statuses[model.participants[index].answer]}}
                 </span>
-                <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy')}}</span>
+                <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
               </div>
             </div>
           </div>
@@ -136,13 +144,12 @@
 
       <div slot="footer">
 
-        <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена
-        </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
         <span v-if="isAnswered">
           <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmed', {id:model._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Согласовать</button>
           <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})"><i class="fa fa-times"></i>&nbsp;Отказать</button>
         </span>
-        <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="btn btn-danger" @click="toggleModal('delete', {id:model._id})"><i class="fa fa-check"></i>&nbsp;Удалить</button>
+        <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="btn btn-danger" @click="toggleModal('delete', {id:model._id})"><i class="fa fa-trash"></i>&nbsp;Удалить</button>
         <button v-if="type === 'create'" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Создать</button>
         <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="submit" class="btn btn-success"><i class="fa fa-check"></i> Изменить</button>
       </div>
@@ -230,7 +237,7 @@
       },
 
       confirmedMeeting (meeting) {
-        this.$api('post', 'meetings/confirm/' + meeting.id).then(response => {
+        this.$api('post', 'meetings/confirm/' + meeting._id).then(response => {
           this.$emit('onUpdate')
           this.toggleModal('confirmed')
           this.notify(response.data.message, 'success')
@@ -240,7 +247,7 @@
         })
       },
       rejectMeeting (meeting) {
-        this.$api('post', 'meetings/reject/' + meeting.id).then(response => {
+        this.$api('post', 'meetings/reject/' + meeting._id).then(response => {
           this.$emit('onUpdate')
           this.toggleModal('reject')
           this.notify(response.data.message, 'error')

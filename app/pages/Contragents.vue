@@ -19,10 +19,10 @@
 
             <div v-if="$route.params.folderId" class="ca-item">
               <router-link v-if="content.parentFolder" :to="{ name: 'folder', params: { folderId: content.parentFolder._id }}">
-                <div><i class="fa fa-folder main-icon"></i></div>
+                <div><i class="fa fa-arrow-left main-icon" style="font-size: 60px; color: #7d7d7d;"></i></div>
               </router-link>
               <router-link v-if="!content.parentFolder" :to="{ name: 'contragents'}">
-                <div><i class="fa fa-folder main-icon"></i></div>
+                <div><i class="fa fa-arrow-left main-icon" style="font-size: 60px; color: #7d7d7d;"></i></div>
               </router-link>
               <div class="title">Назад</div>
             </div>

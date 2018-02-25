@@ -71,10 +71,14 @@ export default {
     }
     return cfg ? cfg : false
   },
-  $log (message, color = 'black') {
-    if (color === 'success') color = 'green'
-    if (color === 'danger') color = 'red'
-    console.log('%c' + 'Core: ' + message, 'color: ' + color)
+  $log (message, color = false) {
+    if (color) {
+      if (color === 'success') color = 'green'
+      if (color === 'danger') color = 'red'
+      console.log('%c' + 'Core: ' + message, 'color: ' + color)
+    } else {
+      console.log(message)
+    }
   },
   $dateFormat(date, format) {
     return dateFormat(date, format)

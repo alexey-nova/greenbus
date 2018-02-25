@@ -10,7 +10,6 @@ export default {
         return store.state.auth.user.admin
       },
       editUser (user) {
-        console.log(user)
         return editUser(user)
       },
       logout () {
@@ -52,7 +51,6 @@ export default {
 }
 
 let editUser = (user) => {
-  console.log(user.fullname)
   install(core.$session.get('jwt'), user)
 }
 let install = (token, user) => {

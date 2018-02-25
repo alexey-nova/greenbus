@@ -38,9 +38,6 @@
     },
     sockets: {
       notification: function (val) {
-        console.log(val)
-        console.log(this.$auth().user._id)
-        console.log(this.$_.indexOf(val.to, this.$auth().user._id))
         if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
           this.pending.push(val)
           this.$notify(val.description, 'info')

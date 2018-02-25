@@ -33,6 +33,13 @@
       <div v-if="tabs === 2">
         <p v-if="!$_.size(comments)">Обсуждений нет</p>
         <div v-for="comment in comments" style="padding: 5px 0">
+          <div class="user"><strong>{{getUser(model.to).fullname}}</strong></div>
+          <div class="comment">{{comment.comment}}</div>
+          <div v-for="file in comment.files">
+            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          </div>
+
+          <div class="user"><strong>{{$log('comment')}}{{$log(comment)}}</strong></div>
           <div class="comment">{{comment.comment}}</div>
           <div v-for="file in comment.files">
             <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
@@ -143,7 +150,6 @@
         return user ? user : {}
       },
       loadTask () {
-        console.log(this.model)
         this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
           this.comments = response.data
         }).catch(e => {

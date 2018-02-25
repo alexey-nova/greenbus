@@ -4,9 +4,9 @@
 
       <div class="user-panel">
         <div class="image">
-          <img v-if="!$auth().user.avatar" src="./../../assets/design/avatar.jpg" class="img-circle" alt="User Image">
-          <img v-if="$auth().user.avatar" :src="'http://195.93.152.79:3333/' + $auth().user.avatar" class="img-circle" alt="User Image">
-          <!--<img :src="avatar" class="img-circle" alt="User Image">-->
+          <img v-if="!avatar" src="./../../assets/design/avatar.jpg" class="img-circle" alt="User Image">
+          <!--<img v-if="$auth().user.avatar != undefined" :src="'http://195.93.152.79:3333/' + $auth().user.avatar" class="img-circle" alt="User Image">-->
+          <img v-if="avatar" :src="avatar" class="img-circle" alt="User Image">
         </div>
         <div class="info">
           <p class="name">{{$auth().user.fullname}}</p>
@@ -53,7 +53,7 @@
     },
     computed: {
       avatar () {
-        return this.$store.state.auth.user.avatar ? 'http://195.93.152.79:3333/' + $auth().user.avatar : './../../assets/design/avatar.jpg'
+        return this.$store.state.auth.user.avatar ? 'http://195.93.152.79:3333/' + this.$auth().user.avatar + '?' + Math.random() : false
       },
     },
     methods: {

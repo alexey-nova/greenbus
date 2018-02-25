@@ -49,8 +49,18 @@
             },
             {
               link: {name: 'tasksByFilter', params: {param1: 'confirmation'}},
-              name: 'Завершенные',
+              name: 'На согласовании',
               isActive: () => this.$isRoute('tasksByFilter', 'param1', 'confirmation'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'complete'}},
+              name: 'Завершенные',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'complete'),
+            },
+            {
+              link: {name: 'tasksByFilter', params: {param1: 'deadlined'}},
+              name: 'Просроченные',
+              isActive: () => this.$isRoute('tasksByFilter', 'param1', 'deadlined'),
             },
           ],
           documents: [
