@@ -52,7 +52,31 @@
             <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
               {{statuses[m.answer]}}
             </span>
-            <!--<span class="date">14 Февраля 2018</span>-->
+            <span class="date">{{ comments[0] && getDate(comments.filter(comment => comment.from === m.user)[0].createdAt) }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row user" v-if="model.head">
+        <div class="col-md-5">
+          <div class="to">
+            {{ getUser(model.head.user).position }}:
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="to-name">{{ model.head && getUser(model.head.user).fullname }}</div>
+        </div>
+        <div class="col-md-4">
+          <div class="to-status">
+            <div v-if="!((model.head.user !== $auth().user._id || model.head.answer !== 'undefined'))">
+              <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
+              <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
+            </div>
+            <span class="title" v-if="(model.head.user === $auth().user._id || model.head.answer !== 'undefined')">
+              {{statuses[model.head.answer]}}
+            </span>
+            <span class="date">
+              {{ comments[0] && getDate(comments.filter(comment => comment.from === model.head.user)[0].createdAt) }}
+            </span>
           </div>
         </div>
       </div>
@@ -67,7 +91,7 @@
         <div class="col-md-5">
           <div class="to">
             <strong>Дата:</strong>
-            {{ getDate }}
+            {{ model.createdAt && getDate(model.createdAt) }}
           </div>
         </div>
       </div>
@@ -155,6 +179,7 @@
           'reject': 'Отклонено',
         },
         tab: 0,
+        controlUser: {}
       }
     },
     props: ['model', 'users', 'onConfirm', 'onReject', 'onClose'],
@@ -165,13 +190,18 @@
       }
     },
     computed: {
-      getDate () {
-        const date = new Date(this.model.createdAt)
+      // getDate () {
+      //   const date = new Date(this.model.createdAt)
+      //   const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+      //   return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+      // },
+    },
+    methods: {
+      getDate (date) {
+        date = new Date(date)
         const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
         return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
       },
-    },
-    methods: {
       toggleTab(tab) {
         this.tab = tab
       },
@@ -211,13 +241,15 @@
         return user ? user : {}
       },
       loadPS () {
-        this.$api('get', 'paymentSchedules/' + this.model._id).then(response => {
-          this.comments = response.data.replies
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
+        if (this.model._id) {
+          this.$api('get', 'paymentSchedules/' + this.model._id).then(response => {
+            this.comments = response.data.replies
+          }).catch(e => {
+            this.notify(e, 'danger')
+          })
+        }
       },
-    },
+    }
   }
 </script>
 

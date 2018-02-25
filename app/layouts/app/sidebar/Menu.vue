@@ -90,16 +90,37 @@
                 },
               ],
             },
-          {
-            link: {name: 'contragents'},
-            name: 'Контрагенты',
-            isActive: () => this.$isRoute(['folder', 'contragents']),
-          },
-          {
-            link: { name: 'ps' },
-            name: 'Платежный календарь',
-            isActive: () => this.$isRoute(['folder', 'paymentSchedules'])
-          }
+            {
+              link: {name: 'contragents'},
+              name: 'Контрагенты',
+              isActive: () => this.$isRoute(['folder', 'contragents']),
+            },
+            {
+              name: 'Платежный календарь',
+              isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
+              children: [
+                {
+                  link: { name: 'ps' },
+                  name: 'Все',
+                  isActive: () => this.$isRoute('ps'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'in' }},
+                  name: 'Входящие',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'in'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'out' }},
+                  name: 'Исходящие',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'out'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'confirmation' }},
+                  name: 'На согласовании',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmation'),
+                }
+              ]
+            }
           ],
         }
       }
