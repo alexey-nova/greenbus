@@ -6,30 +6,30 @@
     <div slot="content" class="row">
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('provider')}]">
-          <label for="field-name">Наименование поставщика *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.provider">
+          <label for="field-provider">Наименование поставщика *</label>
+          <input id="field-provider" class="form-control" v-validate="'required'" name="provider" v-model="model.provider">
           <span v-show="errors.has('provider')" class="help-block">{{ errors.first('provider') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('contractNo')}]">
-          <label for="field-name">Контракт/Дата *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.contractNo">
+          <label for="field-contractNo">Контракт/Дата *</label>
+          <input id="field-contractNo" class="form-control" v-validate="'required'" name="contractNo" v-model="model.contractNo">
           <span v-show="errors.has('contractNo')" class="help-block">{{ errors.first('contractNo') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('description')}]">
-          <label for="field-name">Описание услуг *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.description">
+          <label for="field-description">Описание услуг *</label>
+          <input id="field-description" class="form-control" v-validate="'required'" name="description" v-model="model.description">
           <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
         </div>
       </div>
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('totalAmount')}]">
-          <label for="field-name">Общая сумма контракта/инвойса *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.totalAmount">
+          <label for="field-totalAmount">Общая сумма контракта/инвойса *</label>
+          <input id="field-totalAmount" class="form-control" v-validate="'required'" name="totalAmount" v-model="model.totalAmount">
           <span v-show="errors.has('totalAmount')" class="help-block">{{ errors.first('totalAmount') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('prepayment')}]">
-          <label for="field-name">Сумма предоплаты *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.prepayment">
+          <label for="field-prepayment">Сумма предоплаты *</label>
+          <input id="field-prepayment" class="form-control" v-validate="'required'" name="prepayment" v-model="model.prepayment">
           <span v-show="errors.has('prepayment')" class="help-block">{{ errors.first('prepayment') }}</span>
         </div>
       </div>
@@ -51,13 +51,27 @@
           <span v-show="errors.has('memoTo')" class="help-block">{{ errors.first('memoTo') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('comment')}]">
-          <label for="field-text">Описание *</label>
-          <textarea id="field-text" class="form-control" rows="4" v-validate="'required'" name="text" v-model="model.comment"></textarea>
+          <label for="field-comment">Описание *</label>
+          <textarea id="field-comment" class="form-control" rows="4" v-validate="'required'" name="comment" v-model="model.comment"></textarea>
           <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
         </div>
         <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+          <label class="custom-file-label">Прикрепить файлы</label>
+          <br />
+          <file-upload
+            class="btn btn-default"
+            :multiple="true"
+            v-model="model.files"
+            ref="upload">
+            <i class="fa fa-plus"></i>
+            Выбрать файлы
+          </file-upload>
+          <ul style="list-style: none; padding: 0;">
+            <li v-for="(file, index) in model.files" :key="file.id">
+              <span>{{file.name}}</span> -
+              <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -77,6 +91,7 @@
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
@@ -84,7 +99,8 @@
       MaskedInput,
       Datepicker,
       'el-switch': Switch,
-      Multiselect
+      Multiselect,
+      FileUpload,
     },
     data () {
       return {

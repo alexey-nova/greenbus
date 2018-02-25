@@ -27,7 +27,7 @@
       </div>
       <div v-if="tabs === 1">
         <div v-for="file in model.files">
-          <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
         </div>
       </div>
       <div v-if="tabs === 2">
@@ -36,19 +36,21 @@
           <div class="user"><strong>{{getUser(model.to).fullname}}</strong></div>
           <div class="comment">{{comment.comment}}</div>
           <div v-for="file in comment.files">
-            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+            <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
           </div>
-
-          <div class="user"><strong>{{$log('comment')}}{{$log(comment)}}</strong></div>
-          <div class="comment">{{comment.comment}}</div>
-          <div v-for="file in comment.files">
-            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          {{$log(comment)}}
+          <div v-if="comment.replies[0]">
+            <div class="user" style="margin-top: 15px;"><strong>{{getUser(model.from).fullname}}</strong></div>
+            <div class="comment">{{comment.replies[0].comment}}</div>
+            <div v-for="file in comment.replies[0].files">
+              <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+            </div>
           </div>
         </div>
         <div style="padding: 5px 0"></div>
         <div v-if="$auth().user._id === model.from && model.status === 1">
-          <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[0]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', comments[0])"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', comments[$_.size(comments) -1])"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
         </div>
         <div v-if="model.status !== 1"><strong>{{statuses[model.status]}}</strong></div>
       </div>
@@ -153,7 +155,7 @@
         this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
           this.comments = response.data
         }).catch(e => {
-          this.notify(e, 'danger')
+//          this.notify(e, 'danger')
         })
       },
     },

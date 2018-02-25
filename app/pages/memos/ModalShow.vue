@@ -15,13 +15,13 @@
 
           <div class="users">
             <div v-for="m in model.to" class="row user">
-              <div class="col-md-5">
+              <div class="col-md-4">
                 <div class="to">
                   <strong class="to-title">Кому:</strong>
                   {{getUser(m.user).position}}:
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="to-name">{{getUser(m.user).fullname}}</div>
               </div>
               <div class="col-md-4">
@@ -80,7 +80,7 @@
 
         <div v-if="tabs === 1">
           <div v-for="file in model.files">
-            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+            <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
           </div>
         </div>
         <div v-if="tabs === 2">
@@ -91,7 +91,7 @@
             <div class="author">{{getUser(comment.from).fullname}}</div>
             <div class="comment">{{comment.comment}}</div>
             <div v-for="file in comment.files">
-              <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+              <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <Modal :isOpen="model" type="lg" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Создать платежный календарь</h3>
+    <h3 slot="header" class="modal-title">Изменить платежный календарь</h3>
 
     <div slot="content" class="row">
       <div class="col-lg-6">
@@ -56,8 +56,21 @@
           <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
         </div>
         <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+          <label class="custom-file-label">Прикрепить файлы</label>
+          <br />
+          <file-upload
+            class="btn btn-default"
+            :multiple="true"
+            v-model="model.files"
+            ref="upload">
+            <i class="fa fa-plus"></i>
+            Выбрать файлы
+          </file-upload>
+          <ul style="list-style: none; padding: 0;">
+            <li v-for="(file, index) in model.files" :key="file.id">
+              <span>{{file.name}}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -77,6 +90,7 @@
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
@@ -84,7 +98,8 @@
       MaskedInput,
       Datepicker,
       'el-switch': Switch,
-      Multiselect
+      Multiselect,
+      FileUpload,
     },
     data () {
       return {

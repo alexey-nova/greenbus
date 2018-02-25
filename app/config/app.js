@@ -7,5 +7,6 @@ export default {
   // apiUrl: 'http://localhost:3333/api/',
   // soketUrl: 'http://localhost:3333/',
   soketUrl: 'http://195.93.152.79:3333/',
+  fileUrl: 'http://195.93.152.79:3333/',
   mockApiUrl:  path,
 }

@@ -53,7 +53,7 @@
     },
     computed: {
       avatar () {
-        return this.$store.state.auth.user.avatar ? 'http://195.93.152.79:3333/' + this.$auth().user.avatar + '?' + Math.random() : false
+        return this.$store.state.auth.user.avatar ? $config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
       },
     },
     methods: {

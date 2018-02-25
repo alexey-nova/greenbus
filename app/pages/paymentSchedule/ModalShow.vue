@@ -3,12 +3,12 @@
 
     <div slot="content" id="memo" class="memo">
       <ul class="menu">
-        <li :class="{'active': tab === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
-        <li :class="{'active': tab === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
-        <li :class="{'active': tab === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
+        <li :class="{'active': tabs === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
+        <li :class="{'active': tabs === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
+        <li :class="{'active': tabs === 2}" @click="toggleTab(2)"><a>Обсуждение</a></li>
       </ul>
 
-      <div v-if="tab === 0">
+      <div v-if="tabs === 0">
       <div class="logo"><img src="./../../assets/design/logo.png"/></div>
       <h3>Платежный календарь № {{model.id}}</h3>
       <table class="table table-bordered">
@@ -122,12 +122,12 @@
       </div>
 
 
-      <div v-if="tab === 1">
+      <div v-if="tabs === 1">
         <div v-for="file in model.files">
-          <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+          <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
         </div>
       </div>
-      <div v-if="tab === 2">
+      <div v-if="tabs === 2">
         <div v-if="!$_.size(comments)">
           Обсуждений нет
         </div>
@@ -135,7 +135,7 @@
           <div class="author">{{getUser(comment.from).fullname}}</div>
           <div class="comment">{{comment.comment}}</div>
           <div v-for="file in comment.files">
-            <div><a :href="'http://195.93.152.79:3333/' + file.path" target="_blank">{{file.name}}</a></div>
+            <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
           </div>
         </div>
       </div>
@@ -143,7 +143,7 @@
 
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>
+      <!--<button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>-->
     </div>
 
   </Modal>
@@ -178,15 +178,18 @@
           'confirm': 'Согласовано',
           'reject': 'Отклонено',
         },
-        tab: 0,
+        tabs: 0,
         controlUser: {}
       }
     },
-    props: ['model', 'users', 'onConfirm', 'onReject', 'onClose'],
+    props: ['model', 'users', 'onConfirm', 'onReject', 'onClose', 'tab'],
     watch: {
       model () {
         if (this.$props.model)
           this.loadPS()
+      },
+      tab () {
+        this.tabs = this.$props.tab
       }
     },
     computed: {

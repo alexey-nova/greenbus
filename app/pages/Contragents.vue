@@ -34,7 +34,7 @@
               </router-link>
               <div class="buttons">
                 <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-                <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
+                <!--<button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>-->
                 <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFolder', item)"><i class="fa fa-pencil"></i></button>
               </div>
               <div class="title">{{ item.name }}</div>
@@ -42,12 +42,12 @@
 
             <!-- files -->
             <div v-if="$route.params.folderId" v-for="item in content.files"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
-              <a :href="`http://195.93.152.79:3333/${item.path}`" target="_blank">
+              <a :href="$config('app.fileUrl') + item.path" target="_blank">
                 <div><i class="fa fa-file-text-o main-icon document"></i></div>
               </a>
               <div class="buttons">
                 <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-                <button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>
+                <!--<button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>-->
                 <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFile', item)"><i class="fa fa-pencil"></i></button>
               </div>
               <div class="title">{{item.name}}</div>
@@ -233,10 +233,16 @@
         })
       },
       chooseId (id) {
-        if (!this.chosenIds.includes(id)) this.chosenIds.push(id)
-      },
-      removeId (id) {
-        if (this.chosenIds.includes(id)) _.remove(this.chosenIds, chosenId => chosenId === id)
+        if (!this.chosenIds.includes(id)) {
+          this.chosenIds.push(id)
+        } else {
+          this.chosenIds = _.reduce(this.chosenIds, (result, cid) => {
+            if (cid !== id) {
+              result.push(cid)
+            }
+            return result
+          }, [])
+        }
       },
       moveFilesAndFolders (model) {
         this.$api('post', `ca/${this.$route.params.folderId}/move`, {

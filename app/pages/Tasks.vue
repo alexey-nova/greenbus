@@ -14,7 +14,7 @@
         </div>
         <div slot="info" slot-scope="props">
           <span class="tools" @click="toggleModal('show', props.row, 2)">
-            <span v-if="$_.size(props.row.executions)" class="label label-success">{{$_.size(props.row.executions)}}</span>
+            <span v-if="$_.size(props.row.comments)" class="label label-success">{{$_.size(props.row.comments)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
           <span class="tools" @click="toggleModal('show', props.row, 1)">

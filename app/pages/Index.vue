@@ -75,14 +75,22 @@
             <div class="dayTask">
               <div class="todayDate">
                 <div class="spansWrapper">
+                  <div class="row" style="font-size: 1.3em; padding: 15px 0 20px; ">
+                    <div class="col-lg-5" style="padding-top: 10px;">
+                      {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
+                    </div>
+                    <div class="col-lg-2" style="font-size: 2em">
+                      {{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}
+                    </div>
+                    <div class="col-lg-5" style="padding-top: 10px;">
+                      {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
+                    </div>
+                  </div>
                   <span style="font-size: 1.5em">
-                    {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
                   </span>
                   <span style="font-size: 5em">
-                    {{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}
                   </span>                            
                   <span style="font-size: 1.5em">
-                    {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
                   </span>
                 </div>
               </div>
@@ -286,7 +294,7 @@
   .dayTask { display: block; align-content: flex-start; }
   .dayTaskWrapper { background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }
   .todayDate { width: 100%; background: #8487b7; padding-top: 8px; border-radius: 5px; }
-  .spansWrapper { width: 70%; height: 100%; text-align: center; position: relative; color: white; }
+  .spansWrapper { width: 90%; height: 100%; text-align: center; position: relative; color: white; }
   .spansWrapper > span:nth-child(1){ position: absolute; top:45%; left: 0; transform: translateY(-50%); }
   .spansWrapper > span:nth-child(2n){ padding: 0; margin: 0; }
   .spansWrapper > span:nth-child(3){ position: absolute; top: 45%; right: 0; transform: translateY(-50%); }

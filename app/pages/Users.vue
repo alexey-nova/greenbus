@@ -14,12 +14,14 @@
           <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
         </div>
         <div slot="tools" slot-scope="props">
-          <button class="btn btn-default" @click="toggleModal('showUser', props.row)">
-            <i class="fa fa fa-user"></i>&nbsp;&nbsp;Подробнее
-          </button>
-          <button class="btn btn-primary" @click="toggleModal('createTask', {urgency: false, to: props.row._id})">
-            <i class="fa fa fa-calendar-check-o"></i>&nbsp;&nbsp;Поставить задачу
-          </button>
+          <div class="buttons">
+            <button class="btn btn-default" @click="toggleModal('showUser', props.row)">
+              <i class="fa fa fa-user"></i>&nbsp;&nbsp;Подробнее
+            </button>
+            <button class="btn btn-primary" @click="toggleModal('createTask', {urgency: false, to: props.row._id})">
+              <i class="fa fa fa-calendar-check-o"></i>&nbsp;&nbsp;Поставить задачу
+            </button>
+          </div>
         </div>
         <div slot="email" slot-scope="props">
           <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
@@ -234,4 +236,6 @@
 </script>
 
 <style lang="scss" scoped>
+
+
 </style>

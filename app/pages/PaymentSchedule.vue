@@ -19,11 +19,11 @@
           {{ getDate(props.row.createdAt) }}
         </div>
         <div slot="info" slot-scope="props">
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 2)">
             <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 1)">
             <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
@@ -43,7 +43,7 @@
 
     <ModalCreate :model="modal.create" :users="users" @onSubmit="addPS" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editPS" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalShow :model="modal.show" :users="users" @onConfirm="confirmPS" @onReject="rejectPS" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmPS" @onReject="rejectPS" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -79,6 +79,7 @@
           edit: false,
           reject: false,
           confirm: false,
+          tab: 0,
         },
         statuses: [
           'На согласовании',
@@ -86,7 +87,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'provider', 'to', 'createdAt', 'contractNo', 'totalAmount', 'prepayment', 'info', 'tools', 'admin',],
+          columns: ['id', 'provider', 'to', 'createdAt', 'contractNo', 'totalAmount', 'prepayment', 'info', 'tools',],
           options: {
             headings: {
               id: 'ID',
@@ -126,6 +127,7 @@
             },
             columnsClasses: {
               admin: 'admin',
+              info: 'td-tools',
             },
             skin: 'table table-bordered',
           },
@@ -173,6 +175,12 @@
         })
       },
       addPS (ps) {
+        ps.files = this.$_.reduce(ps.files, (result, f) => {
+          if (f.file) {
+            result.push(f.file)
+          }
+          return result
+        }, [])
         const data = this.$createFormData(ps)
         this.$api('post', 'paymentSchedules', data).then(response => {
           if (response.data.paymentSchedule) {
@@ -185,6 +193,12 @@
         })
       },
       editPS (ps) {
+        ps.files = this.$_.reduce(ps.files, (result, f) => {
+          if (f.file) {
+            result.push(f.file)
+          }
+          return result
+        }, [])
         const data = this.$createFormData(ps)
         this.$api('put', 'paymentSchedules/'+ps._id, data).then(response => {
             this.loadPS()
@@ -218,8 +232,9 @@
           return result
         }, 0)
       },
-      toggleModal (name, model) {
+      toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
       },
       loadUsers () {
         this.$api('get', 'users').then(response => {
@@ -242,6 +257,9 @@
       }
     },
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
       this.loadUsers()
       this.loadPS()
       this.$store.commit('app/setSidebar', 'documents')
@@ -258,6 +276,7 @@
 </script>
 
 <style lang="scss">
+  .table .td-tools { min-width: 80px; }
 
   .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }

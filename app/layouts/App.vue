@@ -177,6 +177,9 @@
   .checkboxLayer .helperContainer>.line:first-child { display: none; }
   .checkboxLayer .tab-block { display: none; }
 
+  .buttons { margin: -4px 0; }
+  .buttons .btn { margin: 4px 0; }
+
   body .wrapper .content-wrapper .content .messenger-button {
     border: none;
     padding: 10px;
