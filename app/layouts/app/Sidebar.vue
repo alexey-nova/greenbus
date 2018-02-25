@@ -53,7 +53,7 @@
     },
     computed: {
       avatar () {
-        return this.$store.state.auth.user.avatar ? $config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
+        return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
       },
     },
     methods: {

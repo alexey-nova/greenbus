@@ -34,10 +34,7 @@ export default {
       localStorage.setItem(key, JSON.stringify(data))
     },
     remove (key) {
-      console.log('remove')
-      console.log(localStorage.getItem(key))
       localStorage.removeItem(key)
-      console.log(localStorage.getItem(key))
     },
   },
 
