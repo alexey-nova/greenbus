@@ -52,7 +52,7 @@
             <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
               {{statuses[m.answer]}}
             </span>
-            <span class="date">{{ comments[0] && getDate(comments.filter(comment => comment.from === m.user)[0].createdAt) }}</span>
+            <span class="date" v-if="m.answer !== 'undefined'">{{ comments[0] && getDate(getCreatedAt(comments.filter(comment => comment.from === m.user)[0])) }}</span>
           </div>
         </div>
       </div>
@@ -71,11 +71,11 @@
               <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
               <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
             </div>
-            <span class="title" v-if="(model.head.user === $auth().user._id || model.head.answer !== 'undefined')">
+            <span class="title" v-if="(model.head.user !== $auth().user._id || model.head.answer !== 'undefined')">
               {{statuses[model.head.answer]}}
             </span>
-            <span class="date">
-              {{ comments[0] && getDate(comments.filter(comment => comment.from === model.head.user)[0].createdAt) }}
+            <span class="date" v-if="model.head.answer !== 'undefined'">
+              {{ comments[0] && getDate(getCreatedAt(comments.filter(comment => comment.from === model.head.user)[0])) }}
             </span>
           </div>
         </div>
@@ -206,6 +206,9 @@
         date = new Date(date)
         const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
         return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+      },
+      getCreatedAt (comment) {
+        return comment && comment.createdAt ? comment.createdAt : null
       },
       toggleTab(tab) {
         this.tab = tab

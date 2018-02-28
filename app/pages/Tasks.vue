@@ -209,6 +209,7 @@
       },
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
+        this.tasks = []
         return this.$api('get', 'tasks' + filter).then(response => {
           return this.tasks = response.data.tasks
         }).catch(e => {
