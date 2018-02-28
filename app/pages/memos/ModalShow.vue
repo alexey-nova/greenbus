@@ -31,8 +31,8 @@
                     <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
                   </div>
                   <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
-              {{statuses[m.answer]}}
-            </span>
+                    {{statuses[m.answer]}}
+                  </span>
                   <span class="date" v-if="m.answer !== 'undefined'">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
                 </div>
               </div>
@@ -100,7 +100,7 @@
       <div slot="footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно
         </button>
-        <!--<button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>-->
+        <button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>
       </div>
 
     </Modal>
@@ -116,7 +116,7 @@
   import ModalReject from './ModalReject'
   import 'pdfmake/build/pdfmake.js'
   import 'pdfmake/build/vfs_fonts.js'
-  //  import '#/assets/pdfmake/vfs_fonts.js'
+  import pdf from './pdf'
   import logo from '#/assets/design/logo.png'
 
   export default {
@@ -169,38 +169,7 @@
         this.$emit('onClose')
       },
       pdf () {
-//        let doc = new jspdf()
-//        doc.fromHTML(document.getElementById('memo'), 15, 15, {
-//          'width': 170,
-//        }, (a) => {
-//          doc.save(this.$props.model.name + '.pdf')
-//        })
-        let docDefinition = {
-          content: [
-            'Русский текст',
-            {
-              image: logo,
-              margin: [150, 10, 0, 0]
-            },
-            {
-              table: {
-                headerRows: 1,
-                widths: ['*', 100, '*'],
-
-                body: [
-                  ['', '', ''],
-                ],
-
-              }
-            }
-          ],
-          styles: {
-            hr: {
-              borderBottom: '1px solid red',
-              bold: true
-            },
-          }
-        }
+        let docDefinition = pdf.create(logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
         pdfMake.createPdf(docDefinition).download()
       },
       getUser (_id) {

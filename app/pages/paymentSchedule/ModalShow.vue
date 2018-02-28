@@ -143,7 +143,7 @@
 
     <div slot="footer">
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <!--<button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>-->
+      <button type="button" class="btn btn-success" @click="pdf"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;Скачать</button>
     </div>
 
   </Modal>
@@ -158,6 +158,8 @@
   import ModalReject from './ModalReject'
   import 'pdfmake/build/pdfmake.js'
   import 'pdfmake/build/vfs_fonts.js'
+  import pdf from './pdf'
+  import logo from '#/assets/design/logo.png'
 //  import '#/assets/pdfmake/vfs_fonts.js'
 
   export default {
@@ -223,20 +225,7 @@
         this.$emit('onClose')
       },
       pdf () {
-//        let doc = new jspdf()
-//        doc.fromHTML(document.getElementById('memo'), 15, 15, {
-//          'width': 170,
-//        }, (a) => {
-//          doc.save(this.$props.model.name + '.pdf')
-//        })
-        let docDefinition = {
-          content: [
-            'Русский текст',
-            {
-              image: ''
-            }
-          ],
-        }
+        let docDefinition = pdf.create(logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
         pdfMake.createPdf(docDefinition).download()
       },
       getUser (_id) {
