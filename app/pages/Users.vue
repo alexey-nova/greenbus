@@ -166,7 +166,9 @@
         })
       },
       createTask (task) {
-        this.$api('post', 'tasks', task).then(response => {
+        task.files = this.$_.map(task.files, (f) => f.file)
+        let data = this.$createFormData(task)
+        this.$api('post', 'tasks', data).then(response => {
           this.modal.createTask = false
           this.notify(response.data.message)
         }).catch(e => {

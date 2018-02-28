@@ -212,6 +212,7 @@
         this.$api('post', `paymentSchedules/confirm/${ps._id}`).then(response => {
           this.modal.show = false
           this.notify(response.data.message)
+          this.loadPS()
         }).catch(e => {
           this.notify(e, 'danger')
         })
