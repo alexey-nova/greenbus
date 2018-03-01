@@ -239,7 +239,12 @@
       },
       loadUsers () {
         this.$api('get', 'users').then(response => {
-          this.users = response.data
+          this.$api('get', 'users/psHead').then(psResponse => {
+            if (response.data && response.data.length > 0) {
+            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin' && user._id !== psResponse.data.user.currentHead)
+          }
+          })
+
         }).catch(e => {
           this.notify(e, 'danger')
         })

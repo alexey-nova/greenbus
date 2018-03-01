@@ -218,7 +218,9 @@
       },
       loadUsers () {
         return this.$api('get', 'users').then(response => {
-          return this.users = response.data
+          if (response.data && response.data.length > 0) {
+            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
+          }
         }).catch(e => {
           this.notify(e, 'danger')
         })

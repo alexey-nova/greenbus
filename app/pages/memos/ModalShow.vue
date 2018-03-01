@@ -33,7 +33,7 @@
                   <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
                     {{statuses[m.answer]}}
                   </span>
-                  <span class="date" v-if="m.answer !== 'undefined'">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
+                  <span class="date" v-if="m.answer !== 'undefined'">{{getDate(m.createdAt)}}</span>
                 </div>
               </div>
             </div>
@@ -152,6 +152,14 @@
       }
     },
     methods: {
+      getDate (date) {
+        date = new Date(date)
+        const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+        return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+      },
+      getCreatedAt (comment) {
+        return comment && comment.createdAt ? comment.createdAt : null
+      },
       toggleTab (tab) {
         this.tabs = tab
       },

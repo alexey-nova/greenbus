@@ -10,6 +10,11 @@
           <input id="field-login" class="form-control" v-validate="'required'" name="login" v-model="model.login">
           <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
         </div>
+        <div :class="['form-group', {'has-error': errors.has('password')}]">
+          <label for="field-password">Пароль *</label>
+          <input id="field-password" class="form-control" v-validate="'required'" name="password" type="password" v-model="model.password">
+          <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
+        </div>
         <div :class="['form-group', {'has-error': errors.has('fullname')}]">
           <label for="field-fullname">Ф.И.О *</label>
           <input id="field-fullname" class="form-control" v-validate="'required'" name="fullname" v-model="model.fullname">
