@@ -157,7 +157,8 @@
   import ModalConfirm from './ModalConfirm'
   import ModalReject from './ModalReject'
   import 'pdfmake/build/pdfmake.js'
-  import 'pdfmake/build/vfs_fonts.js'
+  import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+  pdfMake.vfs = pdfFonts.pdfMake.vfs
   import pdf from './pdf'
   import logo from '#/assets/design/logo.png'
 //  import '#/assets/pdfmake/vfs_fonts.js'
