@@ -187,7 +187,8 @@
         })
       },
       rejectMemo (memo) {
-        this.$api('post', 'memos/reject/'+memo._id, memo).then(response => {
+        let data = this.$createFormData(memo)
+        this.$api('post', 'memos/reject/'+memo._id, data).then(response => {
           this.loadMemos()
           this.modal.show  = false
           this.notify(response.data.message)
