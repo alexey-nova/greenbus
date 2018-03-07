@@ -41,8 +41,8 @@
       </v-client-table>
     </Box>
 
-    <ModalCreate :model="modal.create" :users="users" @onSubmit="addPS" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalEdit :model="modal.edit" :users="users" @onSubmit="editPS" @onClose="toggleModal('edit')"></ModalEdit>
+    <ModalCreate :model="modal.create" :users="computedUsers" @onSubmit="addPS" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalEdit :model="modal.edit" :users="computedUsers" @onSubmit="editPS" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmPS" @onReject="rejectPS" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
@@ -73,6 +73,7 @@
         users: [],
         memos: [],
         ps: [],
+        currentHead: '',
         modal: {
           show: false,
           create: false,
@@ -152,12 +153,11 @@
           return data
         }
       },
-      // isOwner (ps) {
-      //   if (this.$auth().user._id === ps) {
-      //     return true
-      //   }
-      //   return false
-      // },
+      computedUsers () {
+        return this.users.filter(user => {
+          if (user._id !== this.$auth().user._id && user._id !== this.currentHead && user.login !== 'admin') return true
+        })
+      }
     },
 
     methods: {
@@ -241,7 +241,8 @@
         this.$api('get', 'users').then(response => {
           this.$api('get', 'users/psHead').then(psResponse => {
             if (response.data && response.data.length > 0) {
-              this.users = response.data.filter(user => user._id !== psResponse.data.user.currentHead)
+              this.currentHead = psResponse.data.user.currentHead
+              this.users = response.data
             }
           })
 

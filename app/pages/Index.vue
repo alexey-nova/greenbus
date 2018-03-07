@@ -147,7 +147,7 @@
         selectedDate: new Date(),
         events: [],
         config: {
-          weekends: false,
+          weekends: true,
           locale: 'ru',
           defaultView: 'month',
           themeSystem: 'bootstrap3',

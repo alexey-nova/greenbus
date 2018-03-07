@@ -9,10 +9,10 @@
     <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
       <section class="content">
         <router-view/>
-        <div>
-          <!-- <MessageBox :users="users" v-if="showMessageBox"></MessageBox> -->
-          <!-- <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button> -->
-        </div>
+        <!-- <div>
+          <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
+          <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button>
+        </div> -->
       </section>
     </main>
 
@@ -31,7 +31,7 @@
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'
   import AppSidebar from './app/Sidebar.vue'
-  import MessageBox from '../components/MessageBox.vue'
+  // import MessageBox from '../components/MessageBox.vue'
   import Alert from '@/Alert.vue'
   import VueFlashMessage from 'vue-flash-message';
 

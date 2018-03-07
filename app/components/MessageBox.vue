@@ -33,7 +33,6 @@
       }
     },
     beforeMount () {
-      // var temp = this.$store.getters.filterProducts(55)
       console.log(this.$store.getters['message/getUnreadMessages']('5a7d7sds72ffda86e8c25fd0d'))
     },
     methods: {

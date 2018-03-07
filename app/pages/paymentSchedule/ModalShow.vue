@@ -21,8 +21,8 @@
           <td>{{ model.contractNo }}</td>
         </tr>
         <tr>
-          <td>Описание услуг: </td>
-          <td>{{ model.comment }}</td>
+          <td>Описание: </td>
+          <td>{{ model.description }}</td>
         </tr>
         <tr>
           <td>Общая сумма контракта/инвойса: </td>
@@ -84,7 +84,7 @@
       <div class="row theme">
         <div class="col-md-5">
           <div class="to">
-            <strong>Комментарий:</strong>
+            <strong>Описание заявки:</strong>
             {{model.comment}}
           </div>
         </div>
