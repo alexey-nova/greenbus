@@ -8,12 +8,8 @@
 
     <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
       <section class="content">
-        <!-- <Chat></Chat> -->
+        <Chat :users="users"></Chat>
         <router-view/>
-        <!-- <div>
-          <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
-          <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button>
-        </div> -->
       </section>
     </main>
 

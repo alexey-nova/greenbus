@@ -8,10 +8,10 @@
       <div id="chat" v-click-outside="closeChat">
         <div class="sidebar">
           <!--<card :user="users[me]"></card>-->
-          <list :users="users" :current="current" @changeCurrent="changeCurrent"></list>
+          <list :users="users" :current="currentUser" @changeCurrent="changeCurrent"></list>
         </div>
         <div class="main">
-          <message :messages="messages[current]" :users="users" :me="me"></message>
+          <message :messages="messages[currentChat]" :users="users" :me="me"></message>
           <CText @sendMessage="sendMessage"></CText>
         </div>
       </div>
@@ -34,89 +34,14 @@
       CText,
       Message,
     },
+    props: ['users'],
     data () {
       return {
         isOpen: false,
-        me: 1,
-        current: 2,
-        users: {
-          1: {
-            id: 1,
-            fullname: 'Alexey',
-            position: 'Programmer',
-          },
-          2: {
-            id: 2,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-          3: {
-            id: 3,
-            fullname: 'Админ Админов',
-            position: 'Programmer2',
-          },
-          4: {
-            id: 4,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-          5: {
-            id: 5,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-          6: {
-            id: 6,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-          7: {
-            id: 7,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-          8: {
-            id: 8,
-            fullname: 'Alexey2',
-            position: 'Programmer2',
-          },
-        },
-        messages: {
-          2: [
-            {
-              id: 1,
-              author: 1,
-              text: 'asdasdasd',
-            },
-            {
-              id: 2,
-              author: 2,
-              text: 'asdasdasd',
-            },
-            {
-              id: 3,
-              author: 1,
-              text: 'asdasdasd',
-            },
-            {
-              id: 3,
-              author: 1,
-              text: 'asdasdasd',
-            },
-            {
-              id: 3,
-              author: 1,
-              text: 'asdasdasd',
-            },
-          ],
-          1: [],
-          3: [],
-          4: [],
-          5: [],
-          6: [],
-          7: [],
-          8: [],
-        },
+        me: this.$auth().user._id,
+        currentUser: -1,
+        currentChat: 0,
+        messages: {}
       }
     },
     directives: {
@@ -130,16 +55,32 @@
         this.isOpen = false
       },
       changeCurrent (id) {
-        this.current = id
+        this.$api('post', 'conversations', { to: id }).then(response => {
+          this.currentUser = id
+          this.currentChat = response.data.conversation._id
+          this.messages[response.data.conversation._id] = response.data.messages
+        }).catch(err => {
+          if (err) console.log(err.response, 'qwe')
+        })
       },
       sendMessage (message) {
         message = message.trim().replace(/\r\n|\r|\n/g,"<br />")
-        this.messages[this.current].push({
-          id: 123,
-          author: this.me,
-          text: message,
+        if (this.currentChat === 0 || this.currentChat.length !== 24) {
+          return
+        }
+        this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
+          if (this.messages.hasOwnProperty(response.data.message.conversationId)) {
+            this.messages[response.data.message.conversationId].push(response.data.message)
+          } else {
+            this.messages[response.data.conversation._id] = response.data.messages
+          }
+        }).catch(err => {
+          console.log(err.response)
         })
       }
+    },
+    beforeMount () {
+
     }
   }
 </script>

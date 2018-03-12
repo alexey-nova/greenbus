@@ -3,7 +3,7 @@
     props: ['messages', 'users', 'me'],
     filters: {
       time (date) {
-        date = new Date()
+        date = new Date(date)
         if (typeof date === 'string') {
           date = new Date(date)
         }
@@ -25,11 +25,11 @@
     <ul v-if="messages">
       <li v-for="message in messages">
         <p class="time">
-          <span>{{ '' | time }}</span>
+          <span>{{ message.createdAt | time }}</span>
         </p>
         <div class="main" :class="{ self: me === message.author }">
           <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
-          <div class="text" v-html="message.text"></div>
+          <div class="text" v-html="message.body"></div>
         </div>
       </li>
     </ul>
