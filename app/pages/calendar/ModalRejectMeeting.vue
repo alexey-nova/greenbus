@@ -28,8 +28,7 @@
                 this.$emit('onClose')
             },
             submit () {
-                console.log('submit')
-                this.$emit('onSubmit', this.model)
+                this.$emit('onSubmit', this.$props.model)
             },
         }
     }

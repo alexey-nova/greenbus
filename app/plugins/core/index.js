@@ -22,6 +22,21 @@ dateFormat.i18n = {
 
 export default {
   $_: _,
+  $session: {
+    get (key) {
+      try {
+        return JSON.parse(localStorage.getItem(key))
+      } catch (e) {
+        return null
+      }
+    },
+    set (key, data) {
+      localStorage.setItem(key, JSON.stringify(data))
+    },
+    remove (key) {
+      localStorage.removeItem(key)
+    },
+  },
 
   $http (type, url, data = {}, options = {}) {
     return _.get(axios, type)(url, data, options)
@@ -53,12 +68,16 @@ export default {
     }
     return cfg ? cfg : false
   },
-  $log (message, color = 'black') {
-    if (color === 'success') color = 'green'
-    if (color === 'danger') color = 'red'
-    console.log('%c' + 'Core: ' + message, 'color: ' + color)
+  $log (message, color = false) {
+    if (color) {
+      if (color === 'success') color = 'green'
+      if (color === 'danger') color = 'red'
+      console.log('%c' + 'Core: ' + message, 'color: ' + color)
+    } else {
+      console.log(message)
+    }
   },
   $dateFormat(date, format) {
     return dateFormat(date, format)
-  }
+  },
 }

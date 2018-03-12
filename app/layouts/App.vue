@@ -10,6 +10,10 @@
       <section class="content">
         <Chat></Chat>
         <router-view/>
+        <!-- <div>
+          <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
+          <button type="button" name="button" class="messenger-button" @click="showMessageBox = !showMessageBox">Hello</button>
+        </div> -->
       </section>
     </main>
 
@@ -19,15 +23,17 @@
 
 <script>
   import '#/assets/jquery/jquery.min'
-  import '#/assets/bootstrap/bootstrap.min'
+//  import '#/assets/bootstrap/bootstrap.min'
   import '#/assets/adminlte/js/adminlte.min'
   import Chat from '@/Chat'
 //  import 'vue-flash-message/dist/vue-flash-message.min.css'
 //  import 'bootstrap/dist/css/bootstrap.css'
+  import 'element-ui/lib/theme-chalk/index.css'
 
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'
   import AppSidebar from './app/Sidebar.vue'
+  // import MessageBox from '../components/MessageBox.vue'
   import Alert from '@/Alert.vue'
   import VueFlashMessage from 'vue-flash-message';
 
@@ -44,14 +50,37 @@
     data () {
       return {
         height: 0,
+        showMessageBox: false,
+        users: []
+      }
+    },
+    methods: {
+      loadUsers () {
+        this.$api('get', 'users').then(response => {
+          this.users = response.data
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      }
+    },
+    beforeMount () {
+      if (this.$auth().user) {
+        this.$socket.emit('joinroom', this.$auth().user._id)
       }
     },
     mounted () {
       this.height = window.innerHeight - 101
+      this.loadUsers()
+    },
+    sockets: {
+      newMessage (data) {
+        this.$store.commit('newUnreadMsg', data)
+      }
     }
   }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
 <style src="#/assets/adminlte/css/adminlte.min.css"></style>
 <style lang="scss">
@@ -61,7 +90,7 @@
   body { font-size: 150% !important; }
 
   // header
-  body .wrapper .main-header { border-bottom: 4px solid #fff; max-height: none; }
+  body .wrapper .main-header { border-bottom: 7px solid #bdbdbd; max-height: none; }
   body .wrapper .main-header .logo { background-color: #fff; text-align: left; height: 81px; }
   body .wrapper .main-header .logo img { height: 50px; margin-top: 15px; }
   body .wrapper .main-header .navbar { background: #fff; }
@@ -130,8 +159,8 @@
 
 
   .table th { position: relative; background: #eee; }
-  .table th>span:first-child { margin-right: 30px; white-space: nowrap; }
   .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
+  .table th>span:first-child { margin-right: 30px; white-space: nowrap; position: static; }
   .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td { border: 1px solid #ccc !important; }
   .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { padding: 10px !important; }
 
@@ -149,4 +178,18 @@
   // MultiSelect
   .checkboxLayer .helperContainer>.line:first-child { display: none; }
   .checkboxLayer .tab-block { display: none; }
+
+  .buttons { margin: -4px 0; }
+  .buttons .btn { margin: 4px 0; }
+
+  body .wrapper .content-wrapper .content .messenger-button {
+    border: none;
+    padding: 10px;
+    color: white;
+    background-color: cornflowerblue;
+    border-radius: 3px;
+    position: fixed;
+    right: 100px;
+    bottom: 100px;
+  }
 </style>

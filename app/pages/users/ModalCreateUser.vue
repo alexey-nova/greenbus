@@ -81,7 +81,7 @@
               scope: null,
               msg: 'Пользователь с таким логином уже существует',
             })
-          } else {
+          } else if (!this.errors.has('login')) {
             this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'login')
           }
           if (this.$_.find(this.$props.users, u => u.email === this.$props.model.email)) {
@@ -90,7 +90,7 @@
               scope: null,
               msg: 'Пользователь с такой почтой уже существует',
             })
-          } else {
+          } else if (!this.errors.has('login')) {
             this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'email')
           }
           if (!this.$_.size(this.errors.items)) {

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+// import core from './plugins/core'
 import store from './store/index'
 import router from './routes'
 import './plugins'
@@ -7,6 +8,7 @@ import './plugins'
 * Config
 */
 Vue.config.productionTip = false
+
 
 /*
 * Init Vue

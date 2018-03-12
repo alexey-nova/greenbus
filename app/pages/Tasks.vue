@@ -12,20 +12,18 @@
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
         </div>
-        <div slot="tools" slot-scope="props">
-          <button class="btn btn-default" @click="toggleModal('show', props.row)">
-            <i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее
-          </button>
-        </div>
         <div slot="info" slot-scope="props">
-          <span class="tools">
-            <!--<span class="label label-success">3</span>-->
+          <span class="tools" @click="toggleModal('show', props.row, 2)">
+            <span v-if="$_.size(props.row.comments)" class="label label-success">{{$_.size(props.row.comments)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
-          <span class="tools">
-            <!--<span class="label label-success">3</span>-->
+          <span class="tools" @click="toggleModal('show', props.row, 1)">
+            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
+        </div>
+        <div slot="tools" slot-scope="props">
+          <button class="btn btn-default" @click="toggleModal('show', props.row)"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее</button>
         </div>
         <div slot="from" slot-scope="props">
           {{getUser(props.row.from).fullname}}
@@ -49,8 +47,7 @@
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
-    <!--<ModalEnd :model="modal.end" @onSubmit="endTask" @onClose="toggleModal('end')"></ModalEnd>-->
-    <ModalShow :model="modal.show" :users="users" @endTask="endTask" @rejectTask="endTask" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -61,7 +58,6 @@
   import ModalCreate from './tasks/ModalCreateTask'
   import ModalEdit from './tasks/ModalEditTask'
   import ModalDelete from './tasks/ModalDeleteTask'
-  import ModalEnd from './tasks/ModalEndTask'
   import ModalShow from './tasks/ModalShowTask'
 
   export default {
@@ -72,7 +68,6 @@
       ModalCreate,
       ModalEdit,
       ModalDelete,
-      ModalEnd,
       ModalShow,
     },
     data () {
@@ -85,27 +80,29 @@
           deleted: false,
           end: false,
           show: false,
+          tab: 0,
         },
         statuses: [
           'В работе',
-          'Согласовано',
+          'На согласовании',
+          'Завершена',
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools', 'admin',],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools',],
           options: {
             headings: {
               id: 'ID',
               admin: '',
               name: 'Задача',
               description: 'Описание',
-              urgency: '',
+              urgency: 'Приоритет',
               status: 'Статус',
               deadline: 'Срок до',
               from: 'От кого',
               to: 'Ответственный',
-              info: '',
-              tools: '',
+              info: 'Инфо',
+              tools: 'Доп. информация',
             },
             orderBy: {
               column: 'id',
@@ -129,19 +126,18 @@
             columnsClasses: {
               admin: 'admin',
             },
-            rowClassCallback (row) {
-//              return (row.urgency) ? 'bg-danger' : ''
-            },
           },
         },
       }
     },
 
     methods: {
-      toggleModal (name, model) {
+      toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
       },
       createTask (task) {
+        task.files = this.$_.map(task.files, (f) => f.file)
         let data = this.$createFormData(task)
         this.$api('post', 'tasks', data).then(response => {
           this.modal.create = false
@@ -153,6 +149,12 @@
         })
       },
       editTask (task) {
+        task.files = this.$_.reduce(task.files, (result, f) => {
+          if (f.file) {
+            result.push(f.file)
+          }
+          return result
+        }, [])
         let data = this.$createFormData(task)
         this.$api('put', 'tasks/' + task._id, data).then(response => {
           this.modal.edit = false
@@ -173,7 +175,7 @@
           this.$log(e, 'danger')
         })
       },
-      endTask (task) {
+      performTask (task) {
         let data = this.$createFormData(task)
         this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
           this.modal.show = false
@@ -184,9 +186,19 @@
           this.$log(e, 'danger')
         })
       },
-      rejectTask (task) {
-        let data = this.$createFormData(task)
-        this.$api('post', 'tasks/reject/' + task._id, data).then(response => {
+      confirmTask (model) {
+        this.$api('post', 'tasks/confirm/' + model._id).then(response => {
+          this.modal.show = false
+          this.loadTasks()
+          this.notify(response.data.message)
+        }).catch(e => {
+          this.notify('Временно нельзя согласовать задачу', 'info')
+          this.$log(e, 'danger')
+        })
+      },
+      rejectTask (data) {
+        let formData = this.$createFormData(data)
+        this.$api('post', 'tasks/reject/' + data._id, formData).then(response => {
           this.modal.show = false
           this.loadTasks()
           this.notify(response.data.message)
@@ -197,58 +209,48 @@
       },
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-        this.$api('get', 'tasks' + filter).then(response => {
-          this.tasks = response.data
+        this.tasks = []
+        return this.$api('get', 'tasks' + filter).then(response => {
+          return this.tasks = response.data.tasks
         }).catch(e => {
           this.notify(e, 'danger')
         })
       },
       loadUsers () {
-        this.$api('get', 'users').then(response => {
-          this.users = response.data
+        return this.$api('get', 'users').then(response => {
+          if (response.data && response.data.length > 0) {
+            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
+          }
         }).catch(e => {
           this.notify(e, 'danger')
         })
       },
       setSidebar () {
-        this.$store.commit('app/setSidebar', [
-          {
-            link: {name: 'tasks'},
-            name: 'Все',
-            isActive: () => this.$isRoute('tasks'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'in'}},
-            name: 'Входящие',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'in'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'out'}},
-            name: 'Исходящие',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'out'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'urgent'}},
-            name: 'Срочные',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'urgent'),
-          },
-          {
-            link: {name: 'tasksByFilter', params: {param1: 'confirmation'}},
-            name: 'Завершенные',
-            isActive: () => this.$isRoute('tasksByFilter', 'param1', 'confirmation'),
-          },
-        ])
+        this.$store.commit('app/setSidebar', 'tasks')
       },
       getUser (_id) {
         let user = this.$_.find(this.users, u => u._id === _id)
         return user ? user : {}
       },
+      showTaskFromQuery () {
+        let type = this.$_.get(this.$route, 'query.type', '')
+        let taskId = this.$_.get(this.$route, 'query.task', '')
+        if (type && taskId) {
+          this.loadTasks().then((tasks) => {
+            this.toggleModal(type, (this.$_.find(tasks, ['id', taskId*1])))
+          })
+        }
+      }
     },
 
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()
+      this.showTaskFromQuery()
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})
@@ -256,6 +258,7 @@
     watch: {
       '$route' (to, from) {
         this.loadTasks()
+        this.showTaskFromQuery()
       }
     },
   }
@@ -267,6 +270,6 @@
     /*&.label-default { background: #eee; }*/
   }
 
-  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

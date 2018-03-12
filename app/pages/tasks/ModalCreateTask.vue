@@ -25,9 +25,15 @@
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('to')}]">
           <label for="field-to">Ответственный *</label>
-          <select id="field-to" class="form-control" v-validate="'required'" name="to" v-model="model.to">
-            <option v-for="u in users" :value="u._id">{{u.fullname}}</option>
-          </select>
+          <Multiselect
+            id="field-to"
+            name="to"
+            v-validate="'required'"
+            v-model="selectedUser"
+            :options="usersForSelect"
+            track-by="name"
+            label="name">
+          </Multiselect>
           <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('deadline')}]">
@@ -36,8 +42,22 @@
           <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
         </div>
         <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+          <label class="custom-file-label">Прикрепить файлы</label>
+          <br />
+          <file-upload
+            class="btn btn-default"
+            :multiple="true"
+            v-model="model.files"
+            ref="upload">
+            <i class="fa fa-plus"></i>
+            Выбрать файлы
+          </file-upload>
+          <ul style="list-style: none; padding: 0;">
+            <li v-for="(file, index) in model.files" :key="file.id">
+              <span>{{file.name}}</span> -
+              <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -54,33 +74,65 @@
   import Modal from '@/Modal'
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
-  import 'element-ui/lib/theme-chalk/index.css'
+  import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
       Modal,
       Datepicker,
       'el-switch': Switch,
+      Multiselect,
+      FileUpload,
+    },
+    data () {
+      return {
+        dropzoneOptions: {
+          url: 'https://httpbin.org/post',
+          thumbnailWidth: 150,
+        }
+      }
     },
     props: ['model', 'users', 'onSubmit', 'onClose'],
+    computed: {
+      usersForSelect () {
+        return this.$_.map(this.$props.users, u => {
+          return {name: u.fullname, _id: u._id}
+        })
+      },
+      selectedUser: {
+        get: function () {
+          return {name: this.getUser(this.$props.model.to).fullname, _id: this.$props.model.to}
+        },
+        set: function (newValue) {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
+          this.$props.model.to = newValue ? newValue._id : ''
+        }
+      }
+    },
     methods: {
       close () {
         this.$emit('onClose')
       },
+      getUser (_id) {
+        let user = this.$_.find(this.$props.users, u => u._id === _id)
+        return user ? user : {}
+      },
       submit () {
+        if (!this.model.to) {
+          this.errors.items.push({
+            id: '100',
+            field: 'to',
+            scope: null,
+            msg: 'Поле Кому обязательно для заполнения',
+          })
+        }
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             this.$emit('onSubmit', this.model)
           }
-        }).catch(() => {
-        })
+        }).catch(() => {})
       },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
-
-        this.$props.model.files = files
-      }
     }
   }
 </script>

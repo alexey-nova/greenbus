@@ -15,8 +15,6 @@ export default {
     destroy (state) {
       state.user = {}
       state.token = ''
-      localStorage.removeItem('jwt')
-      location.reload()
     }
   },
 }

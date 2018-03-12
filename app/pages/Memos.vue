@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageTitle :title="'Служебные документы'"></PageTitle>
+    <PageTitle :title="'Служебные записки'"></PageTitle>
 
     <PageButtons>
       <button class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать служебную записку</button>
@@ -9,7 +9,7 @@
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', props.row)"><i class="fa fa-edit"></i></button>
+          <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <!--<button class="btn btn-sm btn-danger" @click="toggleModal('reject', props.row._id)"><i class="fa fa-trash"></i></button>-->
         </div>
         <div slot="from" slot-scope="props">
@@ -22,12 +22,12 @@
           {{statuses[props.row.status]}}
         </div>
         <div slot="info" slot-scope="props">
-          <span class="tools">
+          <span class="tools" @click="toggleModal('show', props.row, 2)">
             <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
             <i class="fa fa-comment-o"></i>
           </span>
-          <span class="tools">
-            <!--<span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>-->
+          <span class="tools" @click="toggleModal('show', props.row, 1)">
+            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
             <i class="fa fa-file-o"></i>
           </span>
         </div>
@@ -46,7 +46,7 @@
 
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalShow :model="modal.show" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
+    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
   </div>
 </template>
 
@@ -81,6 +81,7 @@
           edit: false,
           reject: false,
           confirm: false,
+          tab: 0,
         },
         statuses: [
           'На согласовании',
@@ -88,7 +89,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools', 'admin',],
+          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools',],
           options: {
             headings: {
               id: 'ID',
@@ -97,8 +98,8 @@
               status: 'Статус',
               from: 'Исполнитель',
               to: 'Кому',
-              info: '',
-              tools: '',
+              info: 'Инфо',
+              tools: 'Подробнее',
             },
             orderBy: {
               column: 'id',
@@ -159,8 +160,9 @@
           return result
         }, 0)
       },
-      toggleModal (name, model) {
+      toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
       },
       createMemo (memo) {
         let data = this.$createFormData(memo)
@@ -185,7 +187,8 @@
         })
       },
       rejectMemo (memo) {
-        this.$api('post', 'memos/reject/'+model._id, memo).then(response => {
+        let data = this.$createFormData(memo)
+        this.$api('post', 'memos/reject/'+memo._id, data).then(response => {
           this.loadMemos()
           this.modal.show  = false
           this.notify(response.data.message)
@@ -231,42 +234,13 @@
       }
     },
     mounted () {
+      if (this.$auth().hasRole('admin')) {
+        this.tableData.columns.push('admin')
+      }
       this.loadMemos()
       this.loadUsers()
 
-      this.$store.commit('app/setSidebar', [
-        {
-          name: 'Служебные записки',
-          isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
-          children: [
-            {
-              link: {name: 'documents'},
-              name: 'Все',
-              isActive: () => this.$isRoute('documents'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'in'}},
-              name: 'Входящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'out'}},
-              name: 'Исходящие',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
-            },
-            {
-              link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
-              name: 'На согласовании',
-              isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
-            },
-          ],
-        },
-//        {
-//          link: {name: 'documentsByFilter1', params: {param1: 'doc'}},
-//          name: 'Документы',
-//          isActive: () => this.$isRoute('documentsByFilter1', 'param1', 'doc'),
-//        },
-      ])
+      this.$store.commit('app/setSidebar', 'documents')
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})
@@ -281,6 +255,6 @@
 
 <style lang="scss">
 
-  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

@@ -1,8 +1,10 @@
+import core from './core'
 import Vue from 'vue'
-import {ClientTable} from 'vue-tables-2';
+import {ClientTable} from 'vue-tables-2'
 import Notifications from 'vue-notification'
-import VeeValidate, { Validator } from 'vee-validate';
-import VeeValidateRu from 'vee-validate/dist/locale/ru';
+import VeeValidate, { Validator } from 'vee-validate'
+import VeeValidateRu from 'vee-validate/dist/locale/ru'
+import VueSocketio from 'vue-socket.io'
 
 //
 Vue.use(ClientTable, {
@@ -60,6 +62,11 @@ Vue.use(VeeValidate, {
       to: 'Ответственный',
       memoTo: 'Кому',
       deadline: 'Срок сдачи',
+      currentPassword: 'Текущий пароль',
+      password: 'Новый пароль',
+      confirmPassword: 'Новый пароль еще раз',
     }},
   }
 })
+
+Vue.use(VueSocketio, core.$config('app.soketUrl'))

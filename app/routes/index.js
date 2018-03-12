@@ -1,13 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '#/store'
+import core from './../plugins/core'
 
 import App from '#/layouts/App'
+import Profile from '#/pages/Profile'
 import Index from '#/pages/Index'
 import Users from '#/pages/Users'
 import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
+import Contragents from '#/pages/Contragents'
 import Calendar from '#/pages/Calendar'
+import PaymentSchedule from '#/pages/PaymentSchedule'
 
 import Auth from '#/layouts/Auth'
 import Login from '#/pages/Login'
@@ -25,6 +29,11 @@ var router = new Router({
           path: '/',
           name: 'index',
           component: Index
+        },
+        {
+          path: '/profile',
+          name: 'profile',
+          component: Profile
         },
         {
           path: '/users',
@@ -61,11 +70,31 @@ var router = new Router({
           name: 'documentsByFilter1',
           component: Memos,
         },
-	{
+        {
+          path: '/ca',
+          name: 'contragents',
+          component: Contragents
+        },
+        {
+          path: '/ca/:folderId',
+          name: 'folder',
+          component: Contragents
+        },
+        {
           path: '/calendar',
           name: 'calendar',
           component: Calendar,
         },
+        {
+          path: '/ps',
+          name: 'ps',
+          component: PaymentSchedule,
+        },
+        {
+          path: '/ps/:param1',
+          name: 'psByFilter',
+          component: PaymentSchedule
+        }
       ]
     },
     {
@@ -87,11 +116,10 @@ var router = new Router({
   ]
 })
 router.beforeEach(function (to, from, next) {
-  if (!localStorage.getItem('jwt') && to.name !== 'login') {
+  if (core.$session.get('jwt') === null && to.name !== 'login') {
     next({name: 'login'})
-  } else if (localStorage.getItem('jwt') && to.name === 'login') {
+  } else if (core.$session.get('jwt') && to.name === 'login') {
     next({name: 'index'})
-    next()
   } else {
     next()
   }

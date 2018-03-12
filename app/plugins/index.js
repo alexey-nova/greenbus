@@ -30,6 +30,7 @@ Vue.use({
 
 
     // mixins
+    // Vue.mixin(plugins.auth.mixin)
     Vue.mixin(plugins.seo.mixin)
   }
 })

@@ -1,17 +1,19 @@
 <template>
   <div>
-    <div v-if="!isOpen" id="chatButton" @click="toggleChat">
+    <div v-if="!isOpen" id="chatButton" @click="openChat">
       <i class="fa fa-comments"></i>
     </div>
 
-    <div v-if="isOpen" id="chat">
-      <div class="sidebar">
-        <!--<card :user="users[me]"></card>-->
-        <list :users="users" :current="current" @changeCurrent="changeCurrent"></list>
-      </div>
-      <div class="main">
-        <message :messages="messages[current]" :users="users" :me="me"></message>
-        <CText @sendMessage="sendMessage"></CText>
+    <div v-if="isOpen">
+      <div id="chat" v-click-outside="closeChat">
+        <div class="sidebar">
+          <!--<card :user="users[me]"></card>-->
+          <list :users="users" :current="current" @changeCurrent="changeCurrent"></list>
+        </div>
+        <div class="main">
+          <message :messages="messages[current]" :users="users" :me="me"></message>
+          <CText @sendMessage="sendMessage"></CText>
+        </div>
       </div>
     </div>
   </div>
@@ -23,6 +25,7 @@
   import List from './chat/list'
   import CText from './chat/text'
   import Message from './chat/message'
+  import ClickOutside from 'vue-click-outside'
 
   export default {
     components: {
@@ -49,7 +52,7 @@
           },
           3: {
             id: 3,
-            fullname: 'Эркинбаев Данияр Болотбекович',
+            fullname: 'Админ Админов',
             position: 'Programmer2',
           },
           4: {
@@ -116,9 +119,15 @@
         },
       }
     },
+    directives: {
+      ClickOutside
+    },
     methods: {
-      toggleChat () {
-        this.isOpen = !this.isOpen
+      openChat () {
+        this.isOpen = true
+      },
+      closeChat () {
+        this.isOpen = false
       },
       changeCurrent (id) {
         this.current = id
