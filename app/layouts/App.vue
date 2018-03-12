@@ -8,7 +8,7 @@
 
     <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
       <section class="content">
-        <Chat></Chat>
+        <!-- <Chat></Chat> -->
         <router-view/>
         <!-- <div>
           <MessageBox :users="users" v-if="showMessageBox"></MessageBox>
