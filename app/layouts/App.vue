@@ -8,6 +8,7 @@
 
     <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
       <section class="content">
+        <Chat></Chat>
         <router-view/>
       </section>
     </main>
@@ -20,6 +21,7 @@
   import '#/assets/jquery/jquery.min'
   import '#/assets/bootstrap/bootstrap.min'
   import '#/assets/adminlte/js/adminlte.min'
+  import Chat from '@/Chat'
 //  import 'vue-flash-message/dist/vue-flash-message.min.css'
 //  import 'bootstrap/dist/css/bootstrap.css'
 
@@ -37,6 +39,7 @@
       AppSidebar,
       Alert,
       VueFlashMessage,
+      Chat,
     },
     data () {
       return {

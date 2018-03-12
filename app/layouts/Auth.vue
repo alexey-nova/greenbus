@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    <Chat></Chat>
     <router-view/>
   </div>
 </template>
@@ -8,10 +10,13 @@
 //  import './assets/jquery/jquery.min'
   //  import './assets/bootstrap/bootstrap.min'
 //  import './assets/AdminLTE/js/adminlte.min'
+import Chat from '@/Chat'
 
   export default {
     name: 'auth',
-    components: {},
+    components: {
+      Chat,
+    },
     created () {
     }
   }
