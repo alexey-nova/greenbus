@@ -11,7 +11,7 @@
           <list :users="users" :current="currentUser" @changeCurrent="changeCurrent"></list>
         </div>
         <div class="main">
-          <message :messages="messages[currentChat]" :users="users" :me="me"></message>
+          <message :messages="messages" :users="users" :me="me"></message>
           <CText @sendMessage="sendMessage"></CText>
         </div>
       </div>
@@ -41,7 +41,7 @@
         me: this.$auth().user._id,
         currentUser: -1,
         currentChat: 0,
-        messages: {}
+        messages: []
       }
     },
     directives: {
@@ -62,7 +62,7 @@
         this.$api('post', 'conversations', { to: id }).then(response => {
           this.currentUser = id
           this.currentChat = response.data.conversation._id
-          this.messages[response.data.conversation._id] = this.$_.clone(response.data.messages)
+          this.messages = response.data.messages || []
         }).catch(err => {
           if (err) console.log(err.response, 'qwe')
         })
@@ -73,13 +73,9 @@
           return
         }
         this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
-          if (this.messages.hasOwnProperty(response.data.message.conversationId)) {
-            this.messages[response.data.message.conversationId].push(response.data.message)
-          } else {
-            this.messages[response.data.conversation._id] = [response.data.message]
-          }
+          this.messages.push(response.data.message)
         }).catch(err => {
-          console.log(err.response)
+          console.log(err)
         })
       }
     },
