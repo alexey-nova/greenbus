@@ -4,8 +4,11 @@
     methods: {
       changeCurrent (id) {
         this.$emit('changeCurrent', id)
-      }
-    }
+      },
+      avatar (user) {
+        return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
+      },
+    },
   }
 </script>
 
@@ -15,7 +18,8 @@
       <li v-for="user in users" :class="{ active: user._id === current }" @click="changeCurrent(user._id)">
         <div class="avatar">
           <!-- <span class="badge badge-success">4</span> -->
-          <img width="30" height="30" :src="$auth().user.avatar">
+          <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
+          <img v-if="avatar(user)" class="avatar" width="40" height="40" :src="avatar(user)">
         </div>
         <div class="name">
           <p>{{user.fullname}}</p>
@@ -30,7 +34,7 @@
 <style scoped lang="scss">
   .list {
 
-    height: 398px;
+    height: 292px;
     width: 220px;
     overflow-y: scroll;
     overflow-x: hidden;

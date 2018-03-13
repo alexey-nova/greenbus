@@ -7,8 +7,8 @@
     <div v-if="isOpen">
       <div id="chat" v-click-outside="closeChat">
         <div class="sidebar">
-          <!--<card :user="users[me]"></card>-->
-          <list :users="users" :current="currentUser" @changeCurrent="changeCurrent"></list>
+          <card :user="users[me]" v-model="search"></card>
+          <list :users="filteredUsers" :current="currentUser" @changeCurrent="changeCurrent"></list>
         </div>
         <div class="main">
           <message :messages="messages" :users="users" :me="me"></message>
@@ -37,6 +37,7 @@
     props: ['users'],
     data () {
       return {
+        search: '',
         isOpen: false,
         me: this.$auth().user._id,
         currentUser: -1,
@@ -46,6 +47,19 @@
     },
     directives: {
       ClickOutside
+    },
+    computed: {
+      filteredUsers () {
+        if (this.search) {
+          return this.$_.filter(this.$props.users, (user) => {
+            if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1) {
+              return user
+            }
+          })
+        } else {
+          return this.$props.users
+        }
+      },
     },
     methods: {
       openChat () {
@@ -77,12 +91,16 @@
         }).catch(err => {
           if (err) console.log(err, 'asd')
         })
-      }
+      },
     },
     sockets: {
       newMessage (data) {
-        this.notify('У вас новое сообщение')
-        this.messages.push(data)
+        console.log(data)
+        if (data.author === this.currentUser) {
+          this.messages.push(data)
+        } else {
+          this.notify('У вас новое сообщение')
+        }
       }
     }
   }
