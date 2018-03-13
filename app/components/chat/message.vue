@@ -7,7 +7,7 @@
         if (typeof date === 'string') {
           date = new Date(date)
         }
-        return date.getHours() + ':' + date.getMinutes()
+        return `${date.getDate()} ${date.getMonth()}, ${date.getHours()}:${date.getMinutes()}` 
       }
     },
     directives: {
@@ -17,6 +17,14 @@
         })
       }
     },
+    watch: {
+      // messages: {
+      //   handler: (newVal, oldVal) => {
+      //     messages = newVal
+      //   },
+      //   deep: true
+      // }
+    }
   }
 </script>
 
@@ -27,7 +35,7 @@
         <p class="time">
           <span>{{ message.createdAt | time }}</span>
         </p>
-        <div class="main" :class="{ self: me === message.author }">
+        <div class="main" :class="{ self: me === message.author._id }">
           <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
           <div class="text" v-html="message.body"></div>
         </div>

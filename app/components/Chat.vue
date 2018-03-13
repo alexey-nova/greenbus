@@ -50,6 +50,10 @@
     methods: {
       openChat () {
         this.isOpen = true
+        // this.$api('get', 'conversations').then(response => {
+        // }).catch(err => {
+        //   console.log(err)
+        // })
       },
       closeChat () {
         this.isOpen = false
@@ -58,7 +62,7 @@
         this.$api('post', 'conversations', { to: id }).then(response => {
           this.currentUser = id
           this.currentChat = response.data.conversation._id
-          this.messages[response.data.conversation._id] = response.data.messages
+          this.messages[response.data.conversation._id] = this.$_.clone(response.data.messages)
         }).catch(err => {
           if (err) console.log(err.response, 'qwe')
         })
@@ -72,16 +76,13 @@
           if (this.messages.hasOwnProperty(response.data.message.conversationId)) {
             this.messages[response.data.message.conversationId].push(response.data.message)
           } else {
-            this.messages[response.data.conversation._id] = response.data.messages
+            this.messages[response.data.conversation._id] = [response.data.message]
           }
         }).catch(err => {
           console.log(err.response)
         })
       }
     },
-    beforeMount () {
-
-    }
   }
 </script>
 

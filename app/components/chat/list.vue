@@ -14,7 +14,7 @@
     <ul>
       <li v-for="user in users" :class="{ active: user._id === current }" @click="changeCurrent(user._id)">
         <div class="avatar">
-          <span class="badge badge-success">4</span>
+          <!-- <span class="badge badge-success">4</span> -->
           <img width="30" height="30" :src="$auth().user.avatar">
         </div>
         <div class="name">

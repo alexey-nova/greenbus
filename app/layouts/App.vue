@@ -70,7 +70,7 @@
     },
     sockets: {
       newMessage (data) {
-        this.$store.commit('newUnreadMsg', data)
+        this.notify('У вас новое сообщение')
       }
     }
   }
