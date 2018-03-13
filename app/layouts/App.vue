@@ -67,11 +67,6 @@
     mounted () {
       this.height = window.innerHeight - 101
       this.loadUsers()
-    },
-    sockets: {
-      newMessage (data) {
-        this.notify('У вас новое сообщение')
-      }
     }
   }
 </script>

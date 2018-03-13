@@ -16,14 +16,6 @@
           el.scrollTop = el.scrollHeight - el.clientHeight
         })
       }
-    },
-    watch: {
-      // messages: {
-      //   handler: (newVal, oldVal) => {
-      //     messages = newVal
-      //   },
-      //   deep: true
-      // }
     }
   }
 </script>
@@ -35,7 +27,7 @@
         <p class="time">
           <span>{{ message.createdAt | time }}</span>
         </p>
-        <div class="main" :class="{ self: me === message.author._id }">
+        <div class="main" :class="{ self: me === (message.author._id ? message.author._id : message.author) }">
           <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
           <div class="text" v-html="message.body"></div>
         </div>

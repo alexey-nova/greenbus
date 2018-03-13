@@ -75,10 +75,16 @@
         this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
           this.messages.push(response.data.message)
         }).catch(err => {
-          console.log(err)
+          if (err) console.log(err, 'asd')
         })
       }
     },
+    sockets: {
+      newMessage (data) {
+        this.notify('У вас новое сообщение')
+        this.messages.push(data)
+      }
+    }
   }
 </script>
 
