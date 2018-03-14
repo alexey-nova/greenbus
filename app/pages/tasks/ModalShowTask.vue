@@ -38,10 +38,9 @@
           <div v-for="file in comment.files">
             <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
           </div>
-          {{$log(comment)}}
           <div v-if="comment.replies[0]">
             <div class="user" style="margin-top: 15px;"><strong>{{getUser(model.from).fullname}}</strong></div>
-            <div class="comment">{{comment.replies[0].comment}}</div>
+            <div class="comment">{{comment.replies[0].comment && comment.replies[0].comment}}</div>
             <div v-for="file in comment.replies[0].files">
               <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
             </div>
@@ -50,7 +49,7 @@
         <div style="padding: 5px 0"></div>
         <div v-if="$auth().user._id === model.from && model.status === 1">
           <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', comments[$_.size(comments) -1])"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
         </div>
         <div v-if="model.status !== 1"><strong>{{statuses[model.status]}}</strong></div>
       </div>

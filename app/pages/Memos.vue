@@ -197,7 +197,8 @@
         })
       },
       confirmMemo (data) {
-        this.$api('post', 'memos/confirm/'+data._id).then(response => {
+        let formData = this.$createFormData(data)
+        this.$api('post', 'memos/confirm/'+data._id, formData).then(response => {
           this.loadMemos()
           this.modal.show = false
           this.notify(response.data.message)

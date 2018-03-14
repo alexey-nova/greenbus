@@ -209,7 +209,8 @@
         })
       },
       confirmPS (ps) {
-        this.$api('post', `paymentSchedules/confirm/${ps._id}`).then(response => {
+        let data = this.$createFormData(ps)
+        this.$api('post', `paymentSchedules/confirm/${ps._id}`, data).then(response => {
           this.modal.show = false
           this.notify(response.data.message)
           this.loadPS()
@@ -218,7 +219,8 @@
         })
       },
       rejectPS (ps) {
-        this.$api('post', `paymentSchedules/reject/${ps._id}`, ps).then(response => {
+        let data = this.$createFormData(ps)
+        this.$api('post', `paymentSchedules/reject/${ps._id}`, data).then(response => {
           this.modal.show = false
           this.notify(response.data.message)
         }).catch(e => {

@@ -187,7 +187,8 @@
         })
       },
       confirmTask (model) {
-        this.$api('post', 'tasks/confirm/' + model._id).then(response => {
+        let formData = this.$createFormData(model)
+        this.$api('post', 'tasks/confirm/' + model._id, formData).then(response => {
           this.modal.show = false
           this.loadTasks()
           this.notify(response.data.message)
