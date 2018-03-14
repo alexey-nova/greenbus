@@ -2,9 +2,10 @@
   <ul class="sidebar-menu" data-widget="tree">
     <li v-for="item in sidebar" :class="[{active: item.isActive(), 'menu-open': item.isActive() && item.children, 'treeview': item.children,}]">
 
-      <a v-if="item.children">
+      <router-link v-if="item.children" :to="item.link">
         <i class="fa fa-folder"></i> <span>{{item.name}}</span>
-      </a>
+      </router-link>
+
       <ul v-if="item.children" class="treeview-menu">
         <li v-for="child in item.children" :class="[{active: child.isActive(), 'menu-open': child.isActive() && child.children}]">
           <router-link :to="child.link">
@@ -66,6 +67,7 @@
           documents: [
             {
               name: 'Служебные записки',
+              link: {name: 'documents'},
               isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
               children: [
                 {
@@ -97,6 +99,7 @@
             },
             {
               name: 'Платежный календарь',
+              link: { name: 'ps' },
               isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
               children: [
                 {

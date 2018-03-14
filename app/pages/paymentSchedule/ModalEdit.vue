@@ -24,12 +24,12 @@
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('totalAmount')}]">
           <label for="field-name">Общая сумма контракта/инвойса *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.totalAmount">
+          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="totalAmount">
           <span v-show="errors.has('totalAmount')" class="help-block">{{ errors.first('totalAmount') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('prepayment')}]">
           <label for="field-name">Сумма предоплаты *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.prepayment">
+          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="prepayment">
           <span v-show="errors.has('prepayment')" class="help-block">{{ errors.first('prepayment') }}</span>
         </div>
       </div>
@@ -104,14 +104,32 @@
     data () {
       return {
         to: null,
+        prepayment: '',
+        totalAmount: '',
       }
     },
     props: ['model', 'users', 'onSubmit', 'onClose',],
+    watch: {
+      prepayment (value) {
+        value = value.replace(/(\s|\D)/g, '')
+        this.prepayment = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
+      },
+      totalAmount (value) {
+        value = value.replace(/(\s|\D)/g, '')
+        this.totalAmount = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
+      },
+    },
+    mounted () {
+      this.prepayment = this.model.prepayment || ''
+      this.totalAmount = this.model.totalAmount || ''
+    },
     methods: {
       close () {
         this.$emit('onClose')
       },
       submit () {
+        this.model.prepayment = this.prepayment.replace(/\s/g, '')
+        this.model.totalAmount = this.totalAmount.replace(/\s/g, '')
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             let model = this.$_.clone(this.$props.model)

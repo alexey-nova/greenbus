@@ -9,7 +9,14 @@
       </ul>
 
       <div v-if="tabs === 0">
-      <div class="logo"><img src="./../../assets/design/logo.png"/></div>
+        <center>
+          <select class="select-logo" name="logo" v-model="selectedLogo">
+            <option value="logo1">GreenBus</option>
+            <option value="logo2">Nike</option>
+            <option value="logo3">Amazon</option>
+          </select>
+        </center>
+      <div class="logo"><img :src="logo"/></div>
       <h3>Платежный календарь № {{model.id}}</h3>
       <table class="table table-bordered">
         <tr>
@@ -122,11 +129,11 @@
       </div>
 
 
-      <div v-if="tabs === 1">
-        <div v-for="file in model.files">
+      <ul v-if="tabs === 1">
+        <li v-for="file in model.files">
           <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
-        </div>
-      </div>
+        </li>
+      </ul>
       <div v-if="tabs === 2">
         <div v-if="!$_.size(comments)">
           Обсуждений нет
@@ -160,7 +167,9 @@
   import pdfFonts from 'pdfmake/build/vfs_fonts.js'
   pdfMake.vfs = pdfFonts.pdfMake.vfs
   import pdf from './pdf'
-  import logo from '#/assets/design/logo.png'
+  import logo1 from '#/assets/design/logos/logo1.png'
+  import logo2 from '#/assets/design/logos/logo2.jpg'
+  import logo3 from '#/assets/design/logos/logo3.jpg'
 //  import '#/assets/pdfmake/vfs_fonts.js'
 
   export default {
@@ -171,6 +180,7 @@
     },
     data () {
       return {
+        selectedLogo: 'logo1',
         comments: [],
         modal: {
           confirm: false,
@@ -196,11 +206,16 @@
       }
     },
     computed: {
-      // getDate () {
-      //   const date = new Date(this.model.createdAt)
-      //   const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-      //   return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
-      // },
+      logo () {
+        let logo = logo1
+        if (this.selectedLogo === 'logo2') {
+          logo = logo2
+        }
+        if (this.selectedLogo === 'logo3') {
+          logo = logo3
+        }
+        return logo
+      },
     },
     methods: {
       getDate (date) {
@@ -229,7 +244,7 @@
         this.$emit('onClose')
       },
       pdf () {
-        let docDefinition = pdf.create(logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
+        let docDefinition = pdf.create(this.logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
         pdfMake.createPdf(docDefinition).download()
       },
       getUser (_id) {
@@ -250,6 +265,7 @@
 </script>
 
 <style lang="scss" scoped>
+  .select-logo { margin: 0 0 25px; }
   .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
   .menu li { }
   .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
