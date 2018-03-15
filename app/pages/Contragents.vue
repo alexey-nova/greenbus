@@ -28,14 +28,13 @@
             </div>
 
             <!-- subfolders -->
-            <div v-if="$route.params.folderId" v-for="item in content.childFolders"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+            <div v-if="$route.params.folderId" v-for="item in content.childFolders"><div :key="item._id" :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
               <router-link :to="{ name: 'folder', params: { folderId: item._id }}">
                 <div><i class="fa fa-folder main-icon"></i></div>
               </router-link>
               <div class="buttons">
                 <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-                <!--<button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>-->
-                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFolder', item)"><i class="fa fa-pencil"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFolder', $_.clone(item))"><i class="fa fa-pencil"></i></button>
               </div>
               <div class="title">{{ item.name }}</div>
             </div></div>
@@ -47,8 +46,7 @@
               </a>
               <div class="buttons">
                 <button type="button" class="btn btn-xs btn-default" @click="chooseId(item._id)"><i class="fa fa-ellipsis-h"></i></button>
-                <!--<button type="button" class="btn btn-xs btn-default" @click="removeId(item._id)"><i class="fa fa-trash"></i></button>-->
-                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFile', item)"><i class="fa fa-pencil"></i></button>
+                <button type="button" class="btn btn-xs btn-default" @click="toggleModal('renameFile', $_.clone(item))"><i class="fa fa-pencil"></i></button>
               </div>
               <div class="title">{{item.name}}</div>
             </div></div>
@@ -57,15 +55,12 @@
       </div>
       <div class="col-lg-3">
         <Box>
-
           <div v-if="chosenIds.length > 0">
             <button type="button" class="btn btn-success" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
             <hr>
           </div>
 
-
           <button v-if="!$route.params.folderId" class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать контрагента</button>
-          <!--<button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('uploadFile', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Загрузить файлы</button>-->
           <button v-if="$route.params.folderId" class="btn btn-success" @click="toggleModal('createFolder', {})"><i class="fa fa-folder-o"></i>&nbsp;&nbsp;Создать папку</button>
 
           <hr>
@@ -261,19 +256,23 @@
         this.$api('put', `ca/${model._id}`, { name: model.name }).then(response => {
           this.modal.renameFolder = false
           this.notify(response.data.message)
+          this.getFolderContent()
+        }).catch(err => {
+          this.notify(err.response.data.errors.folder.msg, 'danger')
         })
       },
       renameFile (model) {
         this.$api('put', `ca/files/${model._id}`, { name: model.name }).then(response => {
           this.modal.renameFile = false
           this.notify(response.data.message)
+          this.getFolderContent()          
+        }).catch(err => {
+          this.notify(err.response.data.errors.file.msg, 'danger')
         })
       },
       search () {
         if (this.query) {
           this.$api('get', `ca/search?search=${this.query}`).then(response => {
-            console.log(this.content, 'content')
-            console.log(response.data)
             this.content.childFolders = response.data.folders
             this.content.files = response.data.files
           })
