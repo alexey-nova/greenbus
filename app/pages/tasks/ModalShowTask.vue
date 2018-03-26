@@ -16,7 +16,11 @@
           {{model.description}}<br />
           <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
             Контроль: {{getUser(model.from).fullname}}<br />
-            Ответственный: {{getUser(model.to).fullname}}<br />
+            Ответственный: {{model.to && getUser(model.to.user).fullname}}&nbsp;{{(model.to && model.to.read.status) ? `(Просмотрено: ${$dateFormat(model.to.read.date, 'd mmm yyyy, hh:MM')})` : ''}}<br />
+            <span v-if="model.coExecutives && model.coExecutives.length > 0">Соисполнители: </span>
+            <ul v-if="model.coExecutives && model.coExecutives.length > 0">
+              <li v-for="user in model.coExecutives">{{user && getUser(user.user).fullname}}&nbsp;{{user.read.status ? `(Просмотрено: ${$dateFormat(user.read.date, 'd mmm yyyy, hh:MM')})` : ''}}</li>
+            </ul>
             Приоритет:
             <span v-if="model.urgency" class="label label-danger">Важная</span>
             <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
@@ -33,7 +37,7 @@
       <div v-if="tabs === 2">
         <p v-if="!$_.size(comments)">Обсуждений нет</p>
         <div v-for="comment in comments" style="padding: 5px 0">
-          <div class="user"><strong>{{getUser(model.to).fullname}}</strong></div>
+          <div class="user"><strong>{{getUser(comment.performedBy).fullname}}</strong></div>
           <div class="comment">{{comment.comment}}</div>
           <div v-for="file in comment.files">
             <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
@@ -51,7 +55,7 @@
           <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
         </div>
-        <div v-if="model.status !== 1"><strong>{{statuses[model.status]}}</strong></div>
+        <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
       </div>
     </div>
 
@@ -64,7 +68,7 @@
         <i class="fa fa-clock-o"></i> Завершена: {{$dateFormat(model.updatedAt, 'd mmm yyyy, hh:MM')}}
       </div>
       <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <button v-if="$auth().user._id === model.to && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
+      <button v-if="((model.to && $auth().user._id === model.to.user) || (model.coExecutives && model.coExecutives.filter(user => user.user === $auth().user._id)[0])) && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
         <i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу
       </button>
     </div>
@@ -116,8 +120,9 @@
     props: ['model', 'users', 'tab'],
     watch: {
       model () {
-        if (this.$props.model)
-        this.loadTask()
+        if (this.$props.model) {
+          this.loadTask()
+        }
       },
       tab () {
         this.tabs = this.$props.tab
@@ -152,12 +157,12 @@
       },
       loadTask () {
         this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
-          this.comments = response.data
+          this.comments = response.data.executions
         }).catch(e => {
 //          this.notify(e, 'danger')
         })
       },
-    },
+    }
   }
 </script>
 

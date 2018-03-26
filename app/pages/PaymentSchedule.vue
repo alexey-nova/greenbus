@@ -10,7 +10,7 @@
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <!--<button class="btn btn-sm btn-danger" @click="toggleModal('reject', props.row._id)"><i class="fa fa-trash"></i></button>-->
+          <button class="btn btn-sm btn-danger" @click="toggleModal('delete', props.row._id)"><i class="fa fa-trash"></i></button>
         </div>
         <div slot="to" slot-scope="props">
           {{getUsersTo(props.row.to)}}
@@ -44,6 +44,7 @@
     <ModalCreate :model="modal.create" :users="computedUsers" @onSubmit="addPS" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="computedUsers" @onSubmit="editPS" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmPS" @onReject="rejectPS" @onClose="toggleModal('show')"></ModalShow>
+    <ModalDelete :model="modal.delete" @onSubmit="deletePS" @onClose="toggleModal('delete')"></ModalDelete>
   </div>
 </template>
 
@@ -56,6 +57,7 @@
   import ModalShow from './paymentSchedule/ModalShow'
   import ModalReject from './memos/ModalReject'
   import ModalConfirm from './memos/ModalConfirm'
+  import ModalDelete from './memos/ModalDelete'
 
   export default {
     components: {
@@ -67,6 +69,7 @@
       ModalReject,
       ModalConfirm,
       ModalShow,
+      ModalDelete
     },
     data () {
       return {
@@ -80,6 +83,7 @@
           edit: false,
           reject: false,
           confirm: false,
+          delete: false,
           tab: 0,
         },
         statuses: [
@@ -226,6 +230,20 @@
         }).catch(e => {
           this.notify(e, 'danger')
         })
+      },
+      deletePS (psId) {
+        this.$api('delete', `paymentSchedules/${psId}`).then(response => {
+          this.notify(response.data.message)
+          this.ps = this.ps.filter(p => p._id !== response.data.psId)
+          this.modal.delete = false
+        }).catch(error => {
+          console.log(error.response.data)
+          Object.keys(error.response.data.errors).forEach(err => {
+            this.notify(error.response.data.errors[err].msg, 'danger')
+          })
+          this.modal.delete = false
+        })
+        
       },
       getCommentsCount (model) {
         return this.$_.reduce(model.to, (result, m) => {

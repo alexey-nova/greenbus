@@ -29,7 +29,6 @@
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'
   import AppSidebar from './app/Sidebar.vue'
-  // import MessageBox from '../components/MessageBox.vue'
   import Alert from '@/Alert.vue'
   import VueFlashMessage from 'vue-flash-message';
 

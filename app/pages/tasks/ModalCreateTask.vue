@@ -36,6 +36,22 @@
           </Multiselect>
           <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
         </div>
+        <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
+          <label for="field-to">Соисполнители *</label>
+          <Multiselect
+            id="field-coExecutives"
+            name="coExecutives"
+            v-model="model.coExecutives"
+            :options="usersForSelect"
+            :close-on-select="false"
+            :hide-selected="true"
+            :clear-on-select="false"
+            :multiple="true"
+            track-by="name"
+            label="name">
+          </Multiselect>
+          <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
+        </div>
         <div :class="['form-group', {'has-error': errors.has('deadline')}]">
           <label>Срок сдачи *</label>
           <Datepicker input-class="form-control" language="ru" name="deadline" v-validate="'required'" v-model="model.deadline"></Datepicker>
@@ -96,8 +112,10 @@
     props: ['model', 'users', 'onSubmit', 'onClose'],
     computed: {
       usersForSelect () {
-        return this.$_.map(this.$props.users, u => {
-          return {name: u.fullname, _id: u._id}
+        return this.$props.users.filter(user => {
+          return !user.admin && user._id !== this.$auth().user._id
+        }).map(user => {
+          return {name: user.fullname, _id:user._id}
         })
       },
       selectedUser: {

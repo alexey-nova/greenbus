@@ -10,7 +10,7 @@
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
         <div slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <!--<button class="btn btn-sm btn-danger" @click="toggleModal('reject', props.row._id)"><i class="fa fa-trash"></i></button>-->
+          <button class="btn btn-sm btn-danger" @click="toggleModal('delete', props.row._id)"><i class="fa fa-trash"></i></button>
         </div>
         <div slot="from" slot-scope="props">
           {{props.row.nameFrom}}
@@ -47,6 +47,7 @@
     <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
+    <ModalDelete :model="modal.delete" @onSubmit="deleteMemo" @onClose="toggleModal('delete')"></ModalDelete>
   </div>
 </template>
 
@@ -59,6 +60,7 @@
   import ModalShow from './memos/ModalShow'
   import ModalReject from './memos/ModalReject'
   import ModalConfirm from './memos/ModalConfirm'
+  import ModalDelete from './memos/ModalDelete'
 
   export default {
     components: {
@@ -70,6 +72,7 @@
       ModalReject,
       ModalConfirm,
       ModalShow,
+      ModalDelete
     },
     data () {
       return {
@@ -82,6 +85,7 @@
           reject: false,
           confirm: false,
           tab: 0,
+          delete: false
         },
         statuses: [
           'На согласовании',
@@ -204,6 +208,18 @@
           this.notify(response.data.message)
         }).catch(e => {
 //          this.notify(e, 'danger')
+        })
+      },
+      deleteMemo (data) {
+        this.$api('delete', `memos/${data}`).then(response => {
+          this.modal.delete = false
+          this.notify(response.data.message)
+          this.memos = this.memos.filter(memo => memo._id != response.data.memoId)
+        }).catch(error => {
+          Object.keys(error.response.data.errors).forEach(err => {
+            this.notify(error.response.data.errors[err].msg, 'danger')
+          })
+          this.modal.delete = false
         })
       },
       loadMemos () {

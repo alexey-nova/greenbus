@@ -65,12 +65,12 @@
       </div>
       <div class="row user" v-if="model.head">
         <div class="col-md-5">
-          <div class="to">
-            {{ getUser(model.head.user).position }}:
-          </div>
+          <em class="to">
+            <strong>{{ getUser(model.head.user).position }}:</strong>
+          </em>
         </div>
         <div class="col-md-3">
-          <div class="to-name">{{ model.head && getUser(model.head.user).fullname }}</div>
+          <em class="to-name"><strong>{{ model.head && getUser(model.head.user).fullname }}</strong></em>
         </div>
         <div class="col-md-4">
           <div class="to-status">
@@ -78,9 +78,9 @@
               <button class="btn btn-sm btn-success" @click="toggleModal('confirm', model)">Согласовать</button>
               <button class="btn btn-sm btn-danger" @click="toggleModal('reject', model)">Отклонить</button>
             </div>
-            <span class="title" v-if="(model.head.user !== $auth().user._id || model.head.answer !== 'undefined')">
-              {{statuses[model.head.answer]}}
-            </span>
+            <em class="title" v-if="(model.head.user !== $auth().user._id || model.head.answer !== 'undefined')">
+              <strong>{{statuses[model.head.answer]}}</strong>
+            </em>
             <span class="date" v-if="model.head.answer !== 'undefined'">
               {{ comments[0] && getDate(getCreatedAt(comments.filter(comment => comment.from === model.head.user)[0])) }}
             </span>

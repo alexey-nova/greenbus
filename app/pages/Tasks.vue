@@ -8,7 +8,7 @@
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
-        <div slot="admin" slot-scope="props">
+        <div slot="admin" slot-scope="props" v-if="props.row.from === $auth().user._id">
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-default" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
         </div>
@@ -29,7 +29,7 @@
           {{getUser(props.row.from).fullname}}
         </div>
         <div slot="to" slot-scope="props">
-          {{getUser(props.row.to).fullname}}
+          {{getUser(props.row.to.user).fullname}}
         </div>
         <div slot="urgency" slot-scope="props">
           <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
@@ -89,7 +89,7 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools',],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools', 'admin'],
           options: {
             headings: {
               id: 'ID',
@@ -140,6 +140,7 @@
         task.files = this.$_.map(task.files, (f) => f.file)
         let data = this.$createFormData(task)
         this.$api('post', 'tasks', data).then(response => {
+
           this.modal.create = false
           this.loadTasks()
           this.notify(response.data.message)
@@ -148,7 +149,7 @@
           this.$log(e, 'danger')
         })
       },
-      editTask (task) {
+      editTask (task) {admin
         task.files = this.$_.reduce(task.files, (result, f) => {
           if (f.file) {
             result.push(f.file)
@@ -220,7 +221,7 @@
       loadUsers () {
         return this.$api('get', 'users').then(response => {
           if (response.data && response.data.length > 0) {
-            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
+            this.users = response.data
           }
         }).catch(e => {
           this.notify(e, 'danger')
@@ -245,9 +246,9 @@
     },
 
     mounted () {
-      if (this.$auth().hasRole('admin')) {
-        this.tableData.columns.push('admin')
-      }
+      // if (this.$auth().hasRole('admin')) {
+      //   this.tableData.columns.push('admin')
+      // }
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()
