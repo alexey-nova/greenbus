@@ -8,11 +8,12 @@
 
           <!-- root folders -->
           <div class="ca-items">
-            <div v-if="!$route.params.folderId" v-for="folder in mainFolders">
+            <div v-if="!$route.params.folderId" v-for="folder in mainFolders" :key="folder._id">
               <div class="ca-item">
                 <router-link :to="{ name: 'folder', params: { folderId: folder._id }}">
                   <div><i class="fa fa-folder main-icon"></i></div>
                 </router-link>
+                <button class="btn btn-danger" @click="toggleModal('delete', folder.contragent)"><i class="fa fa-trash-o"></i></button>
                 <div class="title">{{ folder.name }}</div>
               </div>
             </div>
@@ -90,6 +91,7 @@
     <ModalMove v-if="modal.moveFilesAndFolders" :ids="chosenIds" :model="modal.moveFilesAndFolders" @onSubmit="moveFilesAndFolders" @onClose="toggleModal('moveFilesAndFolders')"></ModalMove>
     <ModalRenameFolder v-if="modal.renameFolder" :model="modal.renameFolder" @onSubmit="renameFolder" @onClose="toggleModal('renameFolder')"></ModalRenameFolder>
     <ModalRenameFile v-if="modal.renameFile" :model="modal.renameFile" @onSubmit="renameFile" @onClose="toggleModal('renameFile')"></ModalRenameFile>
+    <ModalDelete :model="modal.delete" @onSubmit="deleteCA" @onClose="toggleModal('delete')"></ModalDelete>
   </div>
 </template>
 
@@ -115,6 +117,7 @@
   import ModalMove from './contragents/ModalMove'
   import ModalRenameFolder from './contragents/ModalRenameFolder'
   import ModalRenameFile from './contragents/ModalRenameFile'
+  import ModalDelete from './contragents/ModalDelete'
 
   export default {
     components: {
@@ -125,7 +128,8 @@
       ModalCreateFolder,
       ModalMove,
       ModalRenameFolder,
-      ModalRenameFile
+      ModalRenameFile,
+      ModalDelete
     },
     data () {
       return {
@@ -136,7 +140,8 @@
           createFolder: false,
           moveFilesAndFolders: false,
           renameFolder: false,
-          renameFile: false
+          renameFile: false,
+          delete: false
         },
         contragents: [],
         content: {}, // для отображения содержимого папки: файлы, подпапки
@@ -163,8 +168,19 @@
           return data
         }
       },
-      mainFolders () {
-        return this.contragents.map(contragent =>  contragent.mainFolder)
+      mainFolders: {
+        get: function () {
+          return this.contragents.map(contragent =>  {
+            return {
+              ...contragent.mainFolder,
+              contragent: contragent._id
+            }
+          })
+        },
+        set: newValue => {
+          this.mainFolders = newValue
+        }
+        
       }
     },
 
@@ -277,6 +293,16 @@
             this.content.files = response.data.files
           })
         }
+      },
+      deleteCA (_id) {
+        this.$api('delete', `ca/${_id}`).then(response => {
+          this.modal.delete = false
+          this.mainFolders = this.mainFolders.filter(folder => folder.contragent !== _id)
+          this.notify(response.data.message)
+        }).catch(err => {
+          this.modal.delete = false
+          this.notify(err.response.data.message)
+        })
       }
     },
     mounted () {
