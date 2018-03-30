@@ -246,9 +246,6 @@
     },
 
     mounted () {
-      // if (this.$auth().hasRole('admin')) {
-      //   this.tableData.columns.push('admin')
-      // }
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()

@@ -13,15 +13,15 @@
           <center>
             <select class="select-logo" name="logo" v-model="selectedLogo">
               <option value="logo1">GreenBus</option>
-              <option value="logo2">Nike</option>
-              <option value="logo3">Amazon</option>
+              <option value="logo2">АТГ</option>
+              <option value="logo3">КИ 2</option>
             </select>
           </center>
           <div class="logo"><img :src="logo"/></div>
           <h3>Служебная записка №{{model.id}}</h3>
 
           <div class="users">
-            <div v-for="m in model.to" class="row user">
+            <div v-for="(m, index) in model.to" class="row user" :key="index">
               <div class="col-md-4">
                 <div class="to">
                   <strong class="to-title">Кому:</strong>
@@ -126,8 +126,8 @@
   pdfMake.vfs = pdfFonts.pdfMake.vfs
   import pdf from './pdf'
   import logo1 from '#/assets/design/logos/logo1.png'
-  import logo2 from '#/assets/design/logos/logo2.jpg'
-  import logo3 from '#/assets/design/logos/logo3.jpg'
+  import logo2 from '#/assets/design/logos/atg.png'
+  import logo3 from '#/assets/design/logos/ki.png' 
 
   export default {
     components: {

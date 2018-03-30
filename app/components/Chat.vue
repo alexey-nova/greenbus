@@ -17,7 +17,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -52,22 +51,18 @@
       filteredUsers () {
         if (this.search) {
           return this.$_.filter(this.$props.users, (user) => {
-            if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1) {
+            if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1 && user._id !== this.$auth().user._id) {
               return user
             }
           })
         } else {
-          return this.$props.users
+          return this.$props.users.filter(user => user._id !== this.$auth().user._id)
         }
       },
     },
     methods: {
       openChat () {
         this.isOpen = true
-        // this.$api('get', 'conversations').then(response => {
-        // }).catch(err => {
-        //   console.log(err)
-        // })
       },
       closeChat () {
         this.isOpen = false
@@ -77,6 +72,7 @@
           this.currentUser = id
           this.currentChat = response.data.conversation._id
           this.messages = response.data.messages || []
+          this.messages.authorName = this.$props.users.filter(user => user._id === id)[0].fullname
         }).catch(err => {
           if (err) console.log(err.response, 'qwe')
         })

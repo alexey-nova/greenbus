@@ -29,7 +29,7 @@
             </div>
 
             <!-- subfolders -->
-            <div v-if="$route.params.folderId" v-for="item in content.childFolders"><div :key="item._id" :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+            <div v-if="$route.params.folderId" v-for="(item, index) in content.childFolders" :key="index"><div :key="item._id" :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
               <router-link :to="{ name: 'folder', params: { folderId: item._id }}">
                 <div><i class="fa fa-folder main-icon"></i></div>
               </router-link>
@@ -41,7 +41,7 @@
             </div></div>
 
             <!-- files -->
-            <div v-if="$route.params.folderId" v-for="item in content.files"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+            <div v-if="$route.params.folderId" v-for="item in content.files" :key="item._id"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
               <a :href="$config('app.fileUrl') + item.path" target="_blank">
                 <div><i class="fa fa-file-text-o main-icon document"></i></div>
               </a>
@@ -57,7 +57,8 @@
       <div class="col-lg-3">
         <Box>
           <div v-if="chosenIds.length > 0">
-            <button type="button" class="btn btn-success" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
+            <button type="button" class="btn btn-success" @click="toggleModal('moveFilesAndFolders', {})"><i class="fa fa-arrows"></i>&nbsp;&nbsp;Переместить</button>
+            <button type="button" class="btn btn-danger" @click="toggleModal('deleteFilesAndFolders')"><i class="fa fa-trash-o"></i>&nbsp;&nbsp;Удалить</button>
             <hr>
           </div>
 
@@ -92,6 +93,7 @@
     <ModalRenameFolder v-if="modal.renameFolder" :model="modal.renameFolder" @onSubmit="renameFolder" @onClose="toggleModal('renameFolder')"></ModalRenameFolder>
     <ModalRenameFile v-if="modal.renameFile" :model="modal.renameFile" @onSubmit="renameFile" @onClose="toggleModal('renameFile')"></ModalRenameFile>
     <ModalDelete :model="modal.delete" @onSubmit="deleteCA" @onClose="toggleModal('delete')"></ModalDelete>
+    <ModalDeleteFilesAndFolders :model="modal.deleteFilesAndFolders" @onSubmit="deleteFilesAndFolders" @onClose="toggleModal('deleteFilesAndFolders')"></ModalDeleteFilesAndFolders>
   </div>
 </template>
 
@@ -118,6 +120,7 @@
   import ModalRenameFolder from './contragents/ModalRenameFolder'
   import ModalRenameFile from './contragents/ModalRenameFile'
   import ModalDelete from './contragents/ModalDelete'
+  import ModalDeleteFilesAndFolders from './contragents/ModalDeleteFilesAndFolders'
 
   export default {
     components: {
@@ -129,7 +132,8 @@
       ModalMove,
       ModalRenameFolder,
       ModalRenameFile,
-      ModalDelete
+      ModalDelete,
+      ModalDeleteFilesAndFolders
     },
     data () {
       return {
@@ -141,7 +145,8 @@
           moveFilesAndFolders: false,
           renameFolder: false,
           renameFile: false,
-          delete: false
+          delete: false,
+          deleteFilesAndFolders: false
         },
         contragents: [],
         content: {}, // для отображения содержимого папки: файлы, подпапки
@@ -263,6 +268,16 @@
           this.modal.moveFilesAndFolders = false
           this.notify(response.data.message)
           this.getFolderContent()
+        })
+      },
+      deleteFilesAndFolders () {
+        this.$api('post', 'ca/delete', { ids: this.chosenIds }).then(response => {
+          this.modal.deleteFilesAndFolders = false
+          this.notify(response.data.message)
+          this.getFolderContent()
+        }).catch(err => {
+          this.modal.moveFilesAndFolders = false
+          this.notify(err.response.data.message)
         })
       },
       toggleModal (name, model) {

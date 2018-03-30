@@ -57,13 +57,55 @@
               </span>
               <div class="tasksWrapper">
                   <table border="1">
-                    <tr v-for="(task, index) in tasks" class="">
+                    <tr v-for="task in tasks" :key="task._id">
                       <th>
                         <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">
                           {{task.name}}
                         </router-link>
                       </th>
                       <td>{{dateFormat(task.deadline)}}</td>
+                    </tr>
+                  </table> 
+              </div>
+            </div>
+          </div>
+          <div class="bottomWrapper">
+            <div class="bottom">
+              <span class="fontSize">
+                <p>Служебные записки на согласовании</p>
+              </span>
+              <div class="tasksWrapper">
+                  <table border="1">
+                    <tr v-for="memo in filteredMemos" :key="memo._id">
+                      <td>{{memo.id}}</td>
+                      <td>{{memo.name}}</td>
+                      <td>{{memo.nameFrom}}</td>
+                      <td>
+                        <button class="btn btn-default" type="button" @click="goTo('documentsByFilter', { param1: 'confirmation' }, {type: 'show', memo: memo._id})">
+                          <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
+                        </button>
+                      </td>
+                    </tr>
+                  </table> 
+              </div>
+            </div>
+          </div>
+          <div class="bottomWrapper">
+            <div class="bottom">
+              <span class="fontSize">
+                <p>Платежные календари на согласовании</p>
+              </span>
+              <div class="tasksWrapper">
+                  <table border="1">
+                    <tr v-for="p in ps" :key="p._id">
+                      <td>{{p.id}}</td>
+                      <td>{{p.provider}}</td>
+                      <td>{{p.contractNo}}</td>
+                      <td>
+                        <button class="btn btn-default" type="button" @click="goTo('psByFilter', { param1: 'confirmation' }, {type: 'show', p: p._id})">
+                          <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
+                        </button>
+                      </td>
                     </tr>
                   </table> 
               </div>
@@ -163,9 +205,26 @@
             center: 'title',
             right:  'next'
         },
+        ps: [],
+        memos: [],
+        users: []
       }
     },
-    computed: {},
+    computed: {
+      filteredMemos: {
+        get: function () {
+          let data = _.merge([], this.memos)
+
+          _.map(data, memo => {
+            let userFrom = _.find(this.users, u => u._id === memo.from)
+            memo.nameFrom = userFrom ? userFrom.fullname : ''
+
+            return memo
+          })
+          return data
+        }
+      }
+    },
     async beforeMount () {
       try {
         const response = await this.$api('get', 'tasks')
@@ -184,11 +243,31 @@
           })
         })
       } catch (error) {
-          console.log(error)
-          this.notify('Произошла ошибка!', 'error')
+        console.log(error)
+        this.notify('Произошла ошибка!', 'error')
       }
+      
+    },
+    mounted () {
+      this.loadUsers()
+      this.$api('get', 'memos?f=confirmation').then(response => {
+        this.memos = response.data
+      })
+      this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
+        this.ps = response.data
+      })
     },
     methods: {
+      loadUsers () {
+        this.$api('get', 'users').then(response => {
+          this.users = response.data
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      },
+      goTo (name, params, query) {
+        this.$router.push({ name, params, query })
+      },
       renderTasks (date) {
         this.dateTasks = []
         this.tasks.map((task) => {
@@ -287,7 +366,7 @@
   .bottom { width: 100%; min-height: 150px; text-align: center; border-radius: 3px; }
   .bottomWrapper { margin-top: 15px; background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }
   .bottom > span { margin-bottom: 5px; padding-top: 5px; }
-  .tasksWrapper { min-height: 266px; overflow-y: auto; }
+  .tasksWrapper { overflow-y: auto; }
   .right { display: inline-block; background: transparent; margin-top: 5px; margin-left: 15px; min-height: 150px; width: calc((100% / 2.5) - 5px); }
   .calendarWrapper { background: white; border-radius: 3px; box-shadow:0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; margin-top: 15px; }
   #calendar {  border-radius: 3px; }

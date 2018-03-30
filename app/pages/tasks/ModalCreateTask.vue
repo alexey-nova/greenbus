@@ -69,7 +69,7 @@
             Выбрать файлы
           </file-upload>
           <ul style="list-style: none; padding: 0;">
-            <li v-for="(file, index) in model.files" :key="file.id">
+            <li v-for="(file, index) in model.files" :key="index">
               <span>{{file.name}}</span> -
               <span>{{Math.ceil(file.size / 1024)}} КБ</span>
             </li>
@@ -113,7 +113,7 @@
     computed: {
       usersForSelect () {
         return this.$props.users.filter(user => {
-          return !user.admin && user._id !== this.$auth().user._id
+          return (!user.admin && user.login !== 'admin') && user._id !== this.$auth().user._id
         }).map(user => {
           return {name: user.fullname, _id:user._id}
         })

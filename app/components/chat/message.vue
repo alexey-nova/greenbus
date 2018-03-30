@@ -21,22 +21,30 @@
 </script>
 
 <template>
-  <div class="message" v-scroll-bottom="messages">
-    <ul v-if="messages">
-      <li v-for="message in messages">
-        <p class="time">
-          <span>{{ message.createdAt | time }}</span>
-        </p>
-        <div class="main" :class="{ self: me === (message.author._id ? message.author._id : message.author) }">
-          <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
-          <div class="text" v-html="message.body"></div>
-        </div>
-      </li>
-    </ul>
+  <div>
+    <p class="authorName">{{$props.messages.authorName}}</p>
+    <div class="message" v-scroll-bottom="messages">
+      <ul v-if="messages">
+        <li v-for="message in messages">
+          <p class="time">
+            <span>{{ message.createdAt | time }}</span>
+          </p>
+          <div class="main" :class="{ self: me === (message.author._id ? message.author._id : message.author) }">
+            <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
+            <div class="text" v-html="message.body"></div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+  .authorName {
+    padding: 10px;
+    font-weight: 700;
+    border-bottom: 1px solid #d7d7d7;
+  }
   .message {
     padding: 10px 15px;
     overflow-y: scroll;

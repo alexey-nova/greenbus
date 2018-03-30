@@ -8,14 +8,14 @@
       avatar (user) {
         return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
       },
-    },
+    }
   }
 </script>
 
 <template>
   <div class="list">
     <ul>
-      <li v-for="user in users" :class="{ active: user._id === current }" @click="changeCurrent(user._id)">
+      <li v-for="user in users" :key="user._id" :class="{ active: user._id === current }" @click="changeCurrent(user._id)">
         <div class="avatar">
           <!-- <span class="badge badge-success">4</span> -->
           <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">

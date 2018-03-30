@@ -172,8 +172,8 @@
       },
       loadPS () {
         const filter = this.$route.params.param1 ? `?f=${this.$route.params.param1}` : ''
-        this.$api('get', `paymentSchedules/${filter}`).then(response => {
-          this.ps = response.data
+        return this.$api('get', `paymentSchedules/${filter}`).then(response => {
+          return this.ps = response.data
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -237,7 +237,6 @@
           this.ps = this.ps.filter(p => p._id !== response.data.psId)
           this.modal.delete = false
         }).catch(error => {
-          console.log(error.response.data)
           Object.keys(error.response.data.errors).forEach(err => {
             this.notify(error.response.data.errors[err].msg, 'danger')
           })
@@ -281,12 +280,22 @@
           }
         }, [])
         return (this.$_.isArray(names)) ? names.join(', ') : ''
+      },
+      showPSFromQuery () {
+        let type = this.$_.get(this.$route, 'query.type', '')
+        let pId = this.$_.get(this.$route, 'query.p', '')
+        if (type && pId) {
+          this.loadPS().then(ps => {
+            this.toggleModal(type, (this.$_.find(ps, ['_id', pId])))
+          })
+        }
       }
     },
     mounted () {
       if (this.$auth().hasRole('admin')) {
         this.tableData.columns.push('admin')
       }
+      this.showPSFromQuery()
       this.loadUsers()
       this.loadPS()
       this.$store.commit('app/setSidebar', 'documents')

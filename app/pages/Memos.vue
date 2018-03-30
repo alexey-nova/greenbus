@@ -224,8 +224,8 @@
       },
       loadMemos () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-        this.$api('get', 'memos' + filter).then(response => {
-          this.memos = response.data
+        return this.$api('get', 'memos' + filter).then(response => {
+          return this.memos = response.data
         }).catch(e => {
           this.notify(e, 'danger')
         })
@@ -248,6 +248,15 @@
           }
         }, [])
         return (this.$_.isArray(names)) ? names.join(', ') : ''
+      },
+      showMemoFromQuery () {
+        let type = this.$_.get(this.$route, 'query.type', '')
+        let memoId = this.$_.get(this.$route, 'query.memo', '')
+        if (type && memoId) {
+          this.loadMemos().then(memos => {
+            this.toggleModal(type, (this.$_.find(memos, ['_id', memoId])))
+          })
+        }
       }
     },
     mounted () {
@@ -256,6 +265,7 @@
       }
       this.loadMemos()
       this.loadUsers()
+      this.showMemoFromQuery()
 
       this.$store.commit('app/setSidebar', 'documents')
     },
