@@ -44,10 +44,6 @@
           <masked-input id="field-phone" class="form-control" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
           <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
         </div>
-        <div class="form-group">
-          <label for="field-whatsapp">Whatsapp</label>
-          <masked-input id="field-whatsapp" class="form-control" mask="\+1 (111) 111-11-11" v-model="model.whatsapp"></masked-input>
-        </div>
       </div>
     </div>
 
