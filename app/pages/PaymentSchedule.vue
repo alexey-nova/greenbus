@@ -4,10 +4,21 @@
 
     <PageButtons>
       <button class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать платежный календарь</button>
+      <download-excel
+        v-if="chosenPS.length > 0"
+        class = "btn btn-default"
+        :data = "chosenPS"
+        :fields = "jsonFields"
+        :name = "$dateFormat(new Date(), 'dd-mm-yyyy-hhmm') + `.xls`">
+        Скачать Excel файл
+      </download-excel>
     </PageButtons>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
+        <div slot="choose" slot-scope="props">
+          <input type="checkbox" @change="toggleChosenIds($_.clone(props.row), $event)">
+        </div>
         <div slot="admin" slot-scope="props">
           <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
           <button class="btn btn-sm btn-danger" @click="toggleModal('delete', props.row._id)"><i class="fa fa-trash"></i></button>
@@ -76,6 +87,16 @@
         users: [],
         memos: [],
         ps: [],
+        chosenPS: [],
+        chosenTotalAmount: 0,
+        jsonFields: {
+          'ID': 'id',
+          'Поставщик': 'provider',
+          'Контракт #/Дата': 'contractNo',
+          'Кому': 'to', 
+          'Общая сумма контракта, инвойса': 'totalAmount',
+          'Сумма предоплаты': 'prepayment'
+        },
         currentHead: '',
         modal: {
           show: false,
@@ -97,8 +118,6 @@
             headings: {
               id: 'ID',
               admin: '',
-              // name: 'Тема',
-              // status: 'Статус',
               provider: 'Поставщик',
               createdAt: 'Дата',
               contractNo: 'Контракт #/Дата',
@@ -107,6 +126,7 @@
               to: 'Кому',
               info: '',
               tools: '',
+              choose: 'Выбрать'
             },
             orderBy: {
               column: 'id',
@@ -172,7 +192,7 @@
       },
       loadPS () {
         const filter = this.$route.params.param1 ? `?f=${this.$route.params.param1}` : ''
-        return this.$api('get', `paymentSchedules/${filter}`).then(response => {
+        return this.$api('get', `paymentSchedules${filter}`).then(response => {
           return this.ps = response.data
         }).catch(e => {
           this.notify(e, 'danger')
@@ -257,11 +277,11 @@
         this.modal.tab = tab ? tab : 0
       },
       loadUsers () {
-        this.$api('get', 'users').then(response => {
-          this.$api('get', 'users/psHead').then(psResponse => {
+        return this.$api('get', 'users').then(response => {
+          return this.$api('get', 'users/psHead').then(psResponse => {
             if (response.data && response.data.length > 0) {
               this.currentHead = psResponse.data.user.currentHead
-              this.users = response.data
+              return this.users = response.data
             }
           })
 
@@ -289,15 +309,30 @@
             this.toggleModal(type, (this.$_.find(ps, ['_id', pId])))
           })
         }
+      },
+      toggleChosenIds (ps, event) {
+        ps.to = ps.to.map(to => this.$_.find(this.users, u => u._id === to.user).fullname)
+        if (event.target.checked) {
+          this.chosenPS.push(ps)
+          this.chosenTotalAmount = this.chosenPS.map(p => p.totalAmount).reduce((a, b) => a + b)
+          return
+        }
+        this.chosenPS = this.chosenPS.filter(p => p._id !== ps._id)
+        this.chosenTotalAmount = this.chosenPS.map(p => p.totalAmount).reduce((a, b) => a + b)
       }
     },
     mounted () {
       if (this.$auth().hasRole('admin')) {
         this.tableData.columns.push('admin')
       }
+      
       this.showPSFromQuery()
       this.loadUsers()
-      this.loadPS()
+      this.loadPS().then(() => {
+        if (this.$store.getters['app/excelUsers'].includes(this.$auth().user._id) && (this.$route.params.param1 === 'confirmed')) {
+          this.tableData.columns.unshift('choose')
+        }
+      })
       this.$store.commit('app/setSidebar', 'documents')
     },
     destroyed () {
@@ -305,7 +340,13 @@
     },
     watch: {
       '$route' (to, from) {
-        this.loadPS()
+        this.loadPS().then(() => {
+          if (this.$store.getters['app/excelUsers'].includes(this.$auth().user._id) && (this.$route.params.param1 === 'confirmed')) {
+            this.tableData.columns.unshift('choose')
+          } else {
+            this.tableData.columns[0] === 'choose' && this.tableData.columns.splice(0, 1)
+          }
+        })
       }
     },
   }
@@ -313,6 +354,8 @@
 
 <style lang="scss">
   .table .td-tools { min-width: 80px; }
+
+  .table tr {  }
 
   .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }

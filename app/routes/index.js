@@ -5,6 +5,7 @@ import core from './../plugins/core'
 
 import App from '#/layouts/App'
 import Profile from '#/pages/Profile'
+import Panel from '#/pages/Panel'
 import Index from '#/pages/Index'
 import Users from '#/pages/Users'
 import Tasks from '#/pages/Tasks'
@@ -34,6 +35,11 @@ var router = new Router({
           path: '/profile',
           name: 'profile',
           component: Profile
+        },
+        {
+          path: '/panel',
+          name: 'panel',
+          component: Panel
         },
         {
           path: '/users',

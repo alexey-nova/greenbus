@@ -71,7 +71,7 @@
             <h4>Загрузить файлы</h4>
             <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
             <div style="text-align: right">
-              <button type="submit" class="btn btn-light">Загрузить</button>
+              <button type="submit" class="btn btn-light" :disabled="!this.uploadingFiles || this.uploadingFiles.length === 0">Загрузить</button>
             </div>
           </form>
 
@@ -181,9 +181,6 @@
               contragent: contragent._id
             }
           })
-        },
-        set: newValue => {
-          this.mainFolders = newValue
         }
         
       }
@@ -203,6 +200,7 @@
           this.modal.create = false
           this.notify(response.data.message)
         }).catch(e => {
+          console.log(e.response.data)
           this.notify('Временно нельзя создать контрагент', 'info')
           this.$log(e, 'danger')
         })
@@ -215,18 +213,21 @@
         })
       },
       createFolder (model) {
+        this.chosenIds = []
         if (this.$route.params.folderId) {
           this.$api('post', `ca/${this.$route.params.folderId}`, model).then(response => {
             this.getFolderContent()
             this.modal.createFolder = false
             this.notify(response.data.message)
           }).catch(e => {
-            this.notify('Временно нельзя создать контрагент', 'info')
+            console.log(e.response.data)
+            this.notify('Временно нельзя создать папку', 'info')
             this.$log(e, 'danger')
           })
         }
       },
       addFiles (e) {
+        this.chosenIds = []
         let files = e.target.files || e.dataTransfer.files
         if (!files.length) return
 
@@ -235,7 +236,8 @@
       uploadFiles () {
         const files = this.$createFormData({ files: this.uploadingFiles })
         this.$api('post', `ca/${this.$route.params.folderId}/files`, files).then(response => {
-
+          this.uploadingFiles = []
+          
           if (this.content.files) {
             response.data.files.forEach(file => {
               this.content.files.push(file)
@@ -244,7 +246,8 @@
             this.content.files = response.data.files
           }
         }).catch(e => {
-          this.notify('Временно нельзя создать контрагент', 'info')
+          console.log(e.response.data)
+          this.notify('Временно нельзя загрузить файлы', 'info')
           this.$log(e, 'danger')
         })
       },
@@ -261,6 +264,7 @@
         }
       },
       moveFilesAndFolders (model) {
+        this.chosenIds = []
         this.$api('post', `ca/${this.$route.params.folderId}/move`, {
           dest: model.dest,
           ids: this.chosenIds
@@ -271,6 +275,7 @@
         })
       },
       deleteFilesAndFolders () {
+        this.chosenIds = []
         this.$api('post', 'ca/delete', { ids: this.chosenIds }).then(response => {
           this.modal.deleteFilesAndFolders = false
           this.notify(response.data.message)
@@ -284,6 +289,7 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       renameFolder (model) {
+        this.chosenIds = []
         this.$api('put', `ca/${model._id}`, { name: model.name }).then(response => {
           this.modal.renameFolder = false
           this.notify(response.data.message)
@@ -293,6 +299,7 @@
         })
       },
       renameFile (model) {
+        this.chosenIds = []
         this.$api('put', `ca/files/${model._id}`, { name: model.name }).then(response => {
           this.modal.renameFile = false
           this.notify(response.data.message)
@@ -302,6 +309,7 @@
         })
       },
       search () {
+        this.chosenIds = []
         if (this.query) {
           this.$api('get', `ca/search?search=${this.query}`).then(response => {
             this.content.childFolders = response.data.folders
@@ -312,7 +320,7 @@
       deleteCA (_id) {
         this.$api('delete', `ca/${_id}`).then(response => {
           this.modal.delete = false
-          this.mainFolders = this.mainFolders.filter(folder => folder.contragent !== _id)
+          this.getCA()
           this.notify(response.data.message)
         }).catch(err => {
           this.modal.delete = false
@@ -330,6 +338,7 @@
     },
     watch: {
       '$route' (to, from) {
+        this.chosenIds = []
         this.$route.params.folderId ? this.getFolderContent() : this.getCA()
       },
       content: val => {

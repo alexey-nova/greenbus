@@ -121,6 +121,11 @@
                   link: { name: 'psByFilter', params: { param1: 'confirmation' }},
                   name: 'На согласовании',
                   isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmation'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'confirmed' }},
+                  name: 'Согласованные',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmed'),
                 }
               ]
             }

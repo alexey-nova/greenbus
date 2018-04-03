@@ -24,6 +24,7 @@
     "vue-click-outside": "^1.0.7",
     "vue-flash-message": "^0.4.1",
     "vue-full-calendar": "^2.5.2",
+    "vue-json-excel": "^0.2.4",
     "vue-masked-input": "^0.5.2",
     "vue-multi-select": "^1.0.3",
     "vue-multiselect": "^2.0.8",

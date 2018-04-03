@@ -16,10 +16,10 @@
           {{model.description}}<br />
           <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
             Контроль: {{getUser(model.from).fullname}}<br />
-            Ответственный: {{model.to && getUser(model.to.user).fullname}}&nbsp;{{(model.to && model.to.read.status) ? `(Просмотрено: ${$dateFormat(model.to.read.date, 'd mmm yyyy, hh:MM')})` : ''}}<br />
+            Ответственный: {{model.to && getUser(model.to.user).fullname}}&nbsp;{{(model.to && model.to.read.status) ? `(Просмотрено: ${$dateFormat(model.to.read.date, 'd mmm yyyy, HH:MM')})` : ''}}<br />
             <span v-if="model.coExecutives && model.coExecutives.length > 0">Соисполнители: </span>
             <ul v-if="model.coExecutives && model.coExecutives.length > 0">
-              <li v-for="user in model.coExecutives">{{user && getUser(user.user).fullname}}&nbsp;{{user.read.status ? `(Просмотрено: ${$dateFormat(user.read.date, 'd mmm yyyy, hh:MM')})` : ''}}</li>
+              <li v-for="user in model.coExecutives">{{user && getUser(user.user).fullname}}&nbsp;{{user.read.status ? `(Просмотрено: ${$dateFormat(user.read.date, 'd mmm yyyy, HH:MM')})` : ''}}</li>
             </ul>
             Приоритет:
             <span v-if="model.urgency" class="label label-danger">Важная</span>

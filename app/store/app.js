@@ -13,9 +13,12 @@ export default {
       type: '',
       isShowed: false,
     },
+    excelUsers: []
   },
   getters: {
-
+    excelUsers: state => {
+      return state.excelUsers
+    }
   },
   mutations: {
     setSidebar (state, data) {
@@ -40,5 +43,8 @@ export default {
         isShowed: false,
       }
     },
+    setExcelUsers (state, data) {
+      state.excelUsers = data
+    }
   },
 }

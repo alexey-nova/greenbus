@@ -4,11 +4,14 @@ import store from './store/index'
 import router from './routes'
 import './plugins'
 
+import JsonExcel from 'vue-json-excel'
+
+Vue.component('downloadExcel', JsonExcel)
+
 /*
 * Config
 */
 Vue.config.productionTip = false
-
 
 /*
 * Init Vue

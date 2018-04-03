@@ -15,7 +15,7 @@
                   </span>
                   <div class="deadlinedWraper">
                     <table border="1">
-                      <tr v-for="dl in deadlined">
+                      <tr v-for="dl in deadlined" :key="dl.id">
                         <th>
                           <router-link :to="{name: 'tasks', query: {type: 'show', task: dl.id}}">
                             {{dl.name}}
@@ -143,7 +143,7 @@
                       <td>Название</td>
                       <td>Описание</td>
                     </tr>
-                    <tr v-for="task in dateTasks">
+                    <tr v-for="task in dateTasks" :key="task.id">
                       <td>{{dateFormatForSec(task.deadline)}}</td>
                       <td>
                         <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">

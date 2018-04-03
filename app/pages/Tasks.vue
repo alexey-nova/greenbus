@@ -172,7 +172,12 @@
           this.loadTasks()
           this.notify(response.data.message)
         }).catch(e => {
-          this.notify('Временно нельзя удалить задачу', 'info')
+          if (e.response.data && e.response.data.errors) {
+            Object.keys(e.response.data.errors).forEach(key => {
+              this.notify(e.response.data.errors[key].msg, 'danger')
+            })
+          }
+          this.modal.deleted = false
           this.$log(e, 'danger')
         })
       },
