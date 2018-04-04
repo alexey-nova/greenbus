@@ -7,7 +7,7 @@
 
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('name')}]">
-          <label for="field-name">Название *</label>
+          <label for="field-name">Тема *</label>
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name" />
           <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
         </div>

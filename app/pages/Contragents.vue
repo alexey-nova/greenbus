@@ -8,6 +8,9 @@
 
           <!-- root folders -->
           <div class="ca-items">
+            <div v-if="!$route.params.folderId && (!mainFolders || mainFolders.length === 0)">
+              Контрагентов нет
+            </div>
             <div v-if="!$route.params.folderId" v-for="folder in mainFolders" :key="folder._id">
               <div class="ca-item">
                 <router-link :to="{ name: 'folder', params: { folderId: folder._id }}">
@@ -29,7 +32,7 @@
             </div>
 
             <!-- subfolders -->
-            <div v-if="$route.params.folderId" v-for="(item, index) in content.childFolders" :key="index"><div :key="item._id" :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
+            <div v-if="$route.params.folderId" v-for="(item, index) in content.childFolders" :key="index"><div :class="['ca-item', {'selected': chosenIds.includes(item._id)}]">
               <router-link :to="{ name: 'folder', params: { folderId: item._id }}">
                 <div><i class="fa fa-folder main-icon"></i></div>
               </router-link>
@@ -151,7 +154,7 @@
         contragents: [],
         content: {}, // для отображения содержимого папки: файлы, подпапки
         uploadingFiles: [], // файлы для загрузки
-        chosenIds: [], // выбранные папки и файлы, для перемещения
+        chosenIds: [], // выбранные папки и файлы, для перемещения или удаления
         query: '' // модель для поиска
       }
     },
@@ -237,7 +240,7 @@
         const files = this.$createFormData({ files: this.uploadingFiles })
         this.$api('post', `ca/${this.$route.params.folderId}/files`, files).then(response => {
           this.uploadingFiles = []
-          
+          this.notify(response.data.message)
           if (this.content.files) {
             response.data.files.forEach(file => {
               this.content.files.push(file)
@@ -275,10 +278,10 @@
         })
       },
       deleteFilesAndFolders () {
-        this.chosenIds = []
         this.$api('post', 'ca/delete', { ids: this.chosenIds }).then(response => {
           this.modal.deleteFilesAndFolders = false
           this.notify(response.data.message)
+          this.chosenIds = []
           this.getFolderContent()
         }).catch(err => {
           this.modal.moveFilesAndFolders = false
