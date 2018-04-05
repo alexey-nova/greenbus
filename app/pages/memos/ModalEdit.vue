@@ -8,7 +8,16 @@
 
         <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
 
-        <TextareaBase title="Описание" name="text" required :validate="'required'" v-model="model.text"></TextareaBase>
+        <div :class="['form-group', {'has-error': errors.has('text')}]">
+          <label for="field-text">Описание *</label>
+          <ckeditor
+            id="field-text"
+            v-model="model.text"
+            v-validate="'required'"
+            :config="ckEditorConfig">
+          </ckeditor>
+          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
+        </div>
 
       </div>
       <div class="col-lg-6">
@@ -55,6 +64,7 @@
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
+  import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
@@ -66,10 +76,17 @@
       FormInput,
       InputBase,
       TextareaBase,
+      Ckeditor
     },
     data () {
       return {
         to: null,
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
+        }
       }
     },
     props: ['model', 'users', 'onSubmit', 'onClose',],

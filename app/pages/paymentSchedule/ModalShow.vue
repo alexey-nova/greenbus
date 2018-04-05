@@ -20,11 +20,11 @@
       <h3>Платежный календарь № {{model.id}}</h3>
       <table class="table table-bordered">
         <tr>
-          <td>Наименование поставщика: </td>
+          <td class="fixed-width">Наименование&nbsp;поставщика: </td>
           <td>{{ model.provider }}</td>
         </tr>
         <tr>
-          <td>Контракт №/Дата: </td>
+          <td>Контракт&nbsp;№/Дата: </td>
           <td>{{ model.contractNo }}</td>
         </tr>
         <tr>
@@ -32,11 +32,11 @@
           <td>{{ model.description }}</td>
         </tr>
         <tr>
-          <td>Общая сумма контракта/инвойса: </td>
+          <td>Общая&nbsp;сумма&nbsp;контракта/инвойса: </td>
           <td>{{ model.totalAmount }}</td>
         </tr>
         <tr>
-          <td>Сумма предоплаты: </td>
+          <td>Сумма&nbsp;предоплаты: </td>
           <td>{{ model.prepayment }}</td>
         </tr>
       </table>
@@ -92,7 +92,7 @@
         <div class="col-md-5">
           <div class="to">
             <strong>Описание заявки:</strong>
-            {{model.comment}}
+            <div v-html="model.comment"></div>
           </div>
         </div>
         <div class="col-md-5">
@@ -267,7 +267,6 @@
 <style lang="scss" scoped>
   .select-logo { margin: 0 0 25px; }
   .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
-  .menu li { }
   .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
 
   .author { font-weight: bold; margin-top: 10px; }
@@ -282,4 +281,5 @@
 
   .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; }
   .from-wrapper { margin-top: 100px; }
+  .fixed-width { min-width: 300px; vertical-align: baseline; }
 </style>

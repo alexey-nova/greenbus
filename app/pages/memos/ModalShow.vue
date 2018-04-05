@@ -40,7 +40,7 @@
                   <span class="title" v-if="m.user !== $auth().user._id || m.answer !== 'undefined'">
                     {{statuses[m.answer]}}
                   </span>
-                  <span class="date" v-if="m.answer !== 'undefined'">{{getDate(m.createdAt)}}</span>
+                  <span class="date" v-if="m.answer !== 'undefined'">{{ $dateFormat(comments && comments.filter(reply => reply.from === m.user)[0].createdAt, 'd mmm yyyy, HH:MM') }}</span>
                 </div>
               </div>
             </div>
@@ -59,14 +59,12 @@
             <div class="col-md-5">
               <div class="to">
                 <strong>Дата:</strong>
-                {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}
+                {{$dateFormat(model.createdAt, 'd mmm yyyy, HH:MM')}}
               </div>
             </div>
           </div>
 
-          <div class="description">
-            {{model.text}}
-          </div>
+          <div class="description" v-html="model.text"></div>
 
           <div class="from-wrapper">
             <div class="from-title"><strong>Исполнитель</strong></div>
@@ -86,7 +84,7 @@
 
 
         <ul v-if="tabs === 1">
-          <li v-for="file in model.files">
+          <li v-for="(file, fileIndex) in model.files" :key="fileIndex">
             <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
           </li>
         </ul>
@@ -94,10 +92,10 @@
           <div v-if="!$_.size(comments)">
             Обсуждений нет
           </div>
-          <div v-for="comment in comments">
+          <div v-for="comment in comments" :key="comment._id">
             <div class="author">{{getUser(comment.from).fullname}}</div>
             <div class="comment">{{comment.comment}}</div>
-            <div v-for="file in comment.files">
+            <div v-for="(file, index) in comment.files" :key="index">
               <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
             </div>
           </div>
@@ -174,11 +172,6 @@
       },
     },
     methods: {
-      getDate (date) {
-        date = new Date(date)
-        const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-        return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
-      },
       getCreatedAt (comment) {
         return comment && comment.createdAt ? comment.createdAt : null
       },

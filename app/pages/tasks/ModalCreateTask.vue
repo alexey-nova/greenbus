@@ -13,7 +13,12 @@
         </div>
         <div :class="['form-group', {'has-error': errors.has('description')}]">
           <label for="field-description">Описание *</label>
-          <textarea id="field-description" class="form-control" rows="4" v-validate="'required'" name="description" type="password" v-model="model.description"></textarea>
+          <ckeditor
+            id="field-description"
+            v-model="model.description"
+            v-validate="'required'"
+            :config="ckEditorConfig">
+          </ckeditor>
           <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('urgency')}]">
@@ -92,6 +97,7 @@
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
   import FileUpload from 'vue-upload-component'
+  import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
@@ -100,12 +106,15 @@
       'el-switch': Switch,
       Multiselect,
       FileUpload,
+      Ckeditor
     },
     data () {
       return {
-        dropzoneOptions: {
-          url: 'https://httpbin.org/post',
-          thumbnailWidth: 150,
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
         }
       }
     },
@@ -113,7 +122,7 @@
     computed: {
       usersForSelect () {
         return this.$props.users.filter(user => {
-          return (!user.admin && user.login !== 'admin') && user._id !== this.$auth().user._id
+          return (!user.admin || user.login !== 'admin') && user._id !== this.$auth().user._id
         }).map(user => {
           return {name: user.fullname, _id:user._id}
         })

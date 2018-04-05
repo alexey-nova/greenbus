@@ -6,12 +6,12 @@
           <div class="topWrapper">
             <div class="top">
               <span class="fontSize">
-                <p>Ваши Задачи</p>
+                <h4>Ваши Задачи</h4>
               </span>
               <div style="display: flex">
                 <div class="innerLeft">
                   <span class="fontSize">
-                    <p>Просроченные</p>
+                    <h5>Просроченные</h5>
                   </span>
                   <div class="deadlinedWraper">
                     <table border="1">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="innerRight">
                   <span class="fontSize">
-                    <p>Предстоящие</p>
+                    <h5>Предстоящие</h5>
                   </span>
                   <div>
                     <table border="1">
@@ -50,7 +50,7 @@
               </div>
             </div>
           </div>
-          <div class="bottomWrapper">
+          <!-- <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
                 <p>Все Задачи</p>
@@ -68,11 +68,11 @@
                   </table> 
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
-                <p>Служебные записки на согласовании</p>
+                <h4>Служебные записки на согласовании</h4>
               </span>
               <div class="tasksWrapper">
                   <table border="1">
@@ -93,7 +93,7 @@
           <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
-                <p>Платежные календари на согласовании</p>
+                <h4>Платежные календари на согласовании</h4>
               </span>
               <div class="tasksWrapper">
                   <table border="1">
@@ -344,7 +344,7 @@
     display: block;
     margin: 0 auto;
   }
-  p {
+  p, h4, h5 {
     margin: 0;
     padding: 5px 0 5px 0;
     height: 100%;

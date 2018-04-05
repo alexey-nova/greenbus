@@ -23,29 +23,35 @@
           </div>
           <div class="col-lg-6">
             <div :class="['form-group', {'has-error': errors.has('startDate')}]">
-              <label>Начало встречи *</label>
-              <Datepicker readonly input-class="form-control" language="ru" name="startDate" v-validate="'required'"
-                          v-model="model.startDate"></Datepicker>
+              <label>Дата всртечи</label>
+              <Datepicker
+                readonly
+                input-class="form-control"
+                language="ru"
+                :monday-first="true"
+                :disabled="datepickerState.disabled"
+                :highlighted="datepickerState.highlighted"
+                name="startDate"
+                v-validate="'required'"
+                v-model="model.startDate"></Datepicker>
               <span v-show="errors.has('startDate')" class="help-block">{{ errors.first('startDate') }}</span>
             </div>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <div :class="['form-group', {'has-error': errors.has('startTime')}]">
               <label for="field-startTime">Время начала встречи *</label>
               <masked-input id="field-startTime" class="form-control" mask="11:11" name="startTime"
                             v-validate="'required'" v-model="model.startTime"></masked-input>
               <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
             </div>
+            <!-- <div :class="['form-group', {'has-error': errors.has('endTune')}]">
+              <label for="field-endTime">Время конца встречи *</label>
+              <masked-input id="field-endTime" class="form-control" mask="11:11" name="endTime" v-validate="'required'"
+                            v-model="model.endTime"></masked-input>
+              <span v-show="errors.has('endTime')" class="help-block">{{ errors.first('endTime') }}</span>
+            </div> -->
           </div>
-          <div class="col-lg-6">
-            <div :class="['form-group', {'has-error': errors.has('endDate')}]">
-              <label>Конец встречи *</label>
-              <Datepicker input-class="form-control" language="ru" name="endDate" v-validate="'required'"
-                          v-model="model.endDate"></Datepicker>
-              <span v-show="errors.has('endDate')" class="help-block">{{ errors.first('endDate') }}</span>
-            </div>
-          </div>
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <div :class="['form-group', {'has-error': errors.has('endTune')}]">
               <label for="field-endTime">Время конца встречи *</label>
               <masked-input id="field-endTime" class="form-control" mask="11:11" name="endTime" v-validate="'required'"
@@ -56,7 +62,12 @@
           <div class="col-lg-12">
             <div :class="['form-group', {'has-error': errors.has('description')}]">
               <label for="field-description">Описание *</label>
-              <textarea id="field-description" class="form-control" rows="4" v-validate="'required'" name="place" v-model="model.description"></textarea>
+              <ckeditor
+                id="field-description"
+                v-model="model.description"
+                v-validate="'required'"
+                :config="ckEditorConfig">
+              </ckeditor>
               <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
             </div>
           </div>
@@ -95,23 +106,17 @@
           </div>
           <div class="col-lg-6">
             <div class="form-group">
-              <label>Начало встречи</label>
+              <label>Дата встречи</label>
               <div>{{setStartDate()}}</div>
             </div>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <div class="form-group">
               <label>Время начала встречи</label>
               <div>{{model.startTime}}</div>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="form-group">
-              <label>Конец встречи</label>
-              <div>{{setEndDate()}}</div>
-            </div>
-          </div>
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <div class="form-group">
               <label>Время конца встречи</label>
               <div>{{model.endTime}}</div>
@@ -120,7 +125,7 @@
         </div>
         <div class="col-lg-12">
           <label>Участники встречи:</label>
-          <div v-if="type !== 'create'" v-for="(m, index) in selectedUsers" class="row user">
+          <div v-if="type !== 'create'" v-for="(m, index) in selectedUsers" class="row user" :key="index">
             <div class="col-md-8">
               <div class="to">
                 <strong>{{getUser(m._id).fullname}}</strong> ({{getUser(m._id).position}})
@@ -173,6 +178,7 @@
   import ModalDelete from './ModalDeleteMeeting'
   import ModalConfirmed from './ModalConfirmedMeeting'
   import ModalReject from './ModalRejectMeeting'
+  import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
@@ -185,7 +191,8 @@
       TextareaBase,
       ModalDelete,
       ModalConfirmed,
-      ModalReject
+      ModalReject,
+      Ckeditor
     },
     data () {
       return {
@@ -200,6 +207,20 @@
           'confirm': 'Согласовано',
           'reject': 'Отклонено',
         },
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
+        },
+        datepickerState: {
+          disabled: {
+            to: new Date((new Date()).setDate((new Date()).getDate() - 1))
+          },
+          highlighted: {
+            dates: [ new Date() ]
+          }
+        }
       }
     },
     props: ['model', 'users', 'type', 'onSubmit', 'onClose'],

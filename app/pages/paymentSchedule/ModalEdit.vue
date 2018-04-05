@@ -20,8 +20,6 @@
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.description">
           <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
         </div>
-      </div>
-      <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('totalAmount')}]">
           <label for="field-name">Общая сумма контракта/инвойса *</label>
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="totalAmount">
@@ -32,6 +30,9 @@
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="prepayment">
           <span v-show="errors.has('prepayment')" class="help-block">{{ errors.first('prepayment') }}</span>
         </div>
+      </div>
+      <div class="col-lg-6">
+        
       </div>
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
@@ -52,7 +53,12 @@
         </div>
         <div :class="['form-group', {'has-error': errors.has('comment')}]">
           <label for="field-text">Описание *</label>
-          <textarea id="field-text" class="form-control" rows="4" v-validate="'required'" name="text" v-model="model.comment"></textarea>
+          <ckeditor
+            id="field-text"
+            v-model="model.comment"
+            v-validate="'required'"
+            :config="ckEditorConfig">
+          </ckeditor>
           <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
         </div>
         <div class="form-group">
@@ -67,7 +73,7 @@
             Выбрать файлы
           </file-upload>
           <ul style="list-style: none; padding: 0;">
-            <li v-for="(file, index) in model.files" :key="file.id">
+            <li v-for="file in model.files" :key="file.id">
               <span>{{file.name}}</span>
             </li>
           </ul>
@@ -91,6 +97,7 @@
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
   import FileUpload from 'vue-upload-component'
+  import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
@@ -100,12 +107,19 @@
       'el-switch': Switch,
       Multiselect,
       FileUpload,
+      Ckeditor
     },
     data () {
       return {
         to: null,
         prepayment: '',
         totalAmount: '',
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
+        }
       }
     },
     props: ['model', 'users', 'onSubmit', 'onClose',],

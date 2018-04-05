@@ -11,9 +11,8 @@
           <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
         </div>
         <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">БИН *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="bin" v-model="model.bin">
-          <span v-show="errors.has('bin')" class="help-block">{{ errors.first('bin') }}</span>
+          <label for="field-text">БИН</label>
+          <input id="field-name" class="form-control" name="bin" v-model="model.bin">
         </div>
       </div>
     </div>

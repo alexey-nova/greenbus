@@ -30,7 +30,7 @@
         <div :class="['form-group', {'has-error': errors.has('department')}]">
           <label for="field-department">Отдел *</label>
           <select id="field-department" class="form-control" v-validate="'required'" name="department" v-model="model.department">
-            <option v-for="dep in departments" :value="dep.name">{{dep.name}}</option>
+            <option v-for="dep in departments" :value="dep.name" :key="dep.name">{{dep.name}}</option>
           </select>
           <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
         </div>
@@ -43,10 +43,6 @@
           <label for="field-phone">Телефон *</label>
           <masked-input id="field-phone" class="form-control" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
           <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
-        </div>
-        <div class="form-group">
-          <label for="field-whatsapp">Whatsapp</label>
-          <masked-input id="field-whatsapp" class="form-control" mask="\+1 (111) 111-11-11" v-model="model.whatsapp"></masked-input>
         </div>
       </div>
     </div>

@@ -16,7 +16,6 @@
     <AppFooter></AppFooter>
   </div>
 </template>
-
 <script>
   import '#/assets/jquery/jquery.min'
 //  import '#/assets/bootstrap/bootstrap.min'

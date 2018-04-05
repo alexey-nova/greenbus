@@ -12,8 +12,8 @@
 
       <div v-if="tabs === 0">
         <h2>#{{model.id}}: {{model.name}}</h2>
-        <p style="line-height: 2em;">
-          {{model.description}}<br />
+        <div style="line-height: 2em;">
+          <div v-html="model.description"></div>
           <span style="font-size: 0.9em; color: #666; line-height: 1.4em">
             Контроль: {{getUser(model.from).fullname}}<br />
             Ответственный: {{model.to && getUser(model.to.user).fullname}}&nbsp;{{(model.to && model.to.read.status) ? `(Просмотрено: ${$dateFormat(model.to.read.date, 'd mmm yyyy, HH:MM')})` : ''}}<br />
@@ -27,7 +27,7 @@
             Статус: {{statuses[model.status]}}<br />
             <i class="fa fa-clock-o"></i> Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}<br />
           </span>
-        </p>
+        </div>
       </div>
       <div v-if="tabs === 1">
         <div v-for="file in model.files">
@@ -170,6 +170,5 @@
   h2 { margin-top: 0 }
 
   .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
-  .menu li { }
   .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
 </style>

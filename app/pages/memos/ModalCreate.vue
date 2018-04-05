@@ -10,13 +10,6 @@
           <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
           <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
         </div>
-        <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">Описание *</label>
-          <textarea id="field-text" class="form-control" rows="4" v-validate="'required'" name="text" v-model="model.text"></textarea>
-          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
-        </div>
-      </div>
-      <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
           <label for="field-memoTo">Кому *</label><br />
           <Multiselect
@@ -38,6 +31,18 @@
           <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
         </div>
       </div>
+      <div class="col-lg-6">
+        <div :class="['form-group', {'has-error': errors.has('text')}]">
+          <label for="field-text">Описание *</label>
+          <ckeditor 
+            v-model="model.text"
+            v-validate="'required'"
+            :config="ckEditorConfig">
+          </ckeditor>
+          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
+        </div>
+        
+      </div>
     </div>
 
     <div slot="footer">
@@ -55,6 +60,7 @@
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
   import Multiselect from 'vue-multiselect'
+  import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
@@ -62,11 +68,18 @@
       MaskedInput,
       Datepicker,
       'el-switch': Switch,
-      Multiselect
+      Multiselect,
+      Ckeditor
     },
     data () {
       return {
         to: null,
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
+        }
       }
     },
     props: ['model', 'users', 'onSubmit', 'onClose',],

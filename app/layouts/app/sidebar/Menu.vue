@@ -1,13 +1,13 @@
 <template>
   <ul class="sidebar-menu" data-widget="tree">
-    <li v-for="item in sidebar" :class="[{active: item.isActive(), 'menu-open': item.isActive() && item.children, 'treeview': item.children,}]">
+    <li v-for="item in sidebar" :key="item.name" :class="[{active: item.isActive(), 'menu-open': item.isActive() && item.children, 'treeview': item.children,}]">
 
       <router-link v-if="item.children" :to="item.link">
         <i class="fa fa-folder"></i> <span>{{item.name}}</span>
       </router-link>
 
-      <ul v-if="item.children" class="treeview-menu">
-        <li v-for="child in item.children" :class="[{active: child.isActive(), 'menu-open': child.isActive() && child.children}]">
+      <ul v-if="item.children" :key="item.name" class="treeview-menu">
+        <li v-for="(child, index) in item.children" :key="index" :class="[{active: child.isActive(), 'menu-open': child.isActive() && child.children}]">
           <router-link :to="child.link">
             <i class="fa fa-folder"></i> <span>{{child.name}}</span>
           </router-link>
@@ -93,11 +93,6 @@
               ],
             },
             {
-              link: {name: 'contragents'},
-              name: 'Контрагенты',
-              isActive: () => this.$isRoute(['folder', 'contragents']),
-            },
-            {
               name: 'Платежный календарь',
               link: { name: 'ps' },
               isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
@@ -128,6 +123,11 @@
                   isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmed'),
                 }
               ]
+            },
+            {
+              link: {name: 'contragents'},
+              name: 'Контрагенты',
+              isActive: () => this.$isRoute(['folder', 'contragents']),
             }
           ],
         }
