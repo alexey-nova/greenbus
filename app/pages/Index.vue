@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div class="bottomWrapper">
+          <!-- <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
                 <h4>Платежные календари на согласовании</h4>
@@ -110,7 +110,7 @@
                   </table> 
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="right">
           <div class="dayTaskWrapper">
@@ -205,7 +205,7 @@
             center: 'title',
             right:  'next'
         },
-        ps: [],
+        // ps: [],
         memos: [],
         users: []
       }
@@ -253,9 +253,9 @@
       this.$api('get', 'memos?f=confirmation').then(response => {
         this.memos = response.data
       })
-      this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
-        this.ps = response.data
-      })
+      // this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
+      //   this.ps = response.data
+      // })
     },
     methods: {
       loadUsers () {
