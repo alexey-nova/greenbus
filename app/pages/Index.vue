@@ -50,7 +50,7 @@
               </div>
             </div>
           </div>
-          <!-- <div class="bottomWrapper">
+          <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
                 <p>Все Задачи</p>
@@ -68,7 +68,7 @@
                   </table> 
               </div>
             </div>
-          </div> -->
+          </div>
           <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
@@ -253,9 +253,9 @@
       this.$api('get', 'memos?f=confirmation').then(response => {
         this.memos = response.data
       })
-      // this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
-      //   this.ps = response.data
-      // })
+      this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
+        this.ps = response.data
+      })
     },
     methods: {
       loadUsers () {

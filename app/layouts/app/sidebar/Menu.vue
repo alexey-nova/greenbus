@@ -92,38 +92,38 @@
                 },
               ],
             },
-            // {
-            //   name: 'Платежный календарь',
-            //   link: { name: 'ps' },
-            //   isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
-            //   children: [
-            //     {
-            //       link: { name: 'ps' },
-            //       name: 'Все',
-            //       isActive: () => this.$isRoute('ps'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'in' }},
-            //       name: 'Входящие',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'in'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'out' }},
-            //       name: 'Исходящие',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'out'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'confirmation' }},
-            //       name: 'На согласовании',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmation'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'confirmed' }},
-            //       name: 'Согласованные',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmed'),
-            //     }
-            //   ]
-            // },
+            {
+              name: 'Платежный календарь',
+              link: { name: 'ps' },
+              isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
+              children: [
+                {
+                  link: { name: 'ps' },
+                  name: 'Все',
+                  isActive: () => this.$isRoute('ps'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'in' }},
+                  name: 'Входящие',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'in'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'out' }},
+                  name: 'Исходящие',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'out'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'confirmation' }},
+                  name: 'На согласовании',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmation'),
+                },
+                {
+                  link: { name: 'psByFilter', params: { param1: 'confirmed' }},
+                  name: 'Согласованные',
+                  isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmed'),
+                }
+              ]
+            },
             {
               link: {name: 'contragents'},
               name: 'Контрагенты',

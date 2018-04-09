@@ -24,11 +24,11 @@
             <i class="fa fa-user"></i>&nbsp;&nbsp;Профиль
           </div>
         </router-link>
-        <!-- <router-link :to="{name: 'panel'}" v-if="$auth().user.admin">
+        <router-link :to="{name: 'panel'}" v-if="$auth().user.admin">
           <div class="item">
             <i class="fa fa-columns"></i>&nbsp;&nbsp;Панель управления
           </div>
-        </router-link> -->
+        </router-link>
         <router-link :to="{name: 'logout'}">
           <div class="item">
             <i class="fa fa-power-off"></i>&nbsp;&nbsp;Выход
