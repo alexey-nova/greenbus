@@ -21,7 +21,7 @@
                             {{dl.name}}
                           </router-link>
                         </th>
-                        <td>{{dateFormat(dl.deadline)}}</td>
+                        <td>{{$dateFormat(dl.deadline)}}</td>
                       </tr>
                     </table> 
                   </div>
