@@ -2,7 +2,7 @@
   <div class="login-box">
 
     <div class="login-logo">
-      <b>GreenBus</b>
+      <b>СУЗ</b>
     </div>
 
     <div class="login-box-body">

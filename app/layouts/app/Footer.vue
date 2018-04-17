@@ -3,7 +3,7 @@
     <!--<div class="pull-right hidden-xs">-->
       <!--<b>Version</b> 1.0.1-->
     <!--</div>-->
-    <strong>&copy; 2018 <a href="http://greenbus.kz">GreenBus</a>.</strong> Все права защищены.
+    <strong>&copy; 2018 <a href="#">СУЗ</a>.</strong> Все права защищены.
   </footer>
 </template>
 

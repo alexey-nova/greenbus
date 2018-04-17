@@ -3,7 +3,8 @@
   <header class="main-header" :style="{borderColor: $store.state.app.header.color}">
     <!-- Logo -->
     <router-link :to="{name: 'index'}" class="logo">
-      <img src="./../../assets/design/logo.png">
+      <h1>СУЗ</h1>
+      <!-- <img src="./../../assets/design/logo.png"> -->
     </router-link>
 
     <nav class="navbar">
