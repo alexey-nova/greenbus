@@ -10,7 +10,7 @@
           <li class="header"><strong>Уведомления</strong></li>
           <li>
             <ul class="menu">
-              <li v-for="n in pending">
+              <li v-for="n in pending" :key="n._id">
                 <a href="#">
                   <!--<i class="fa fa-users text-aqua"></i> 5 new members joined today-->
                   {{n.description}}
@@ -53,6 +53,7 @@
       },
       loadNots () {
         this.$api('get', 'notifications').then(response => {
+          console.log(response.data)
           this.pending = response.data.pending
         }).catch(e => {})
       },

@@ -5,6 +5,11 @@
       changeCurrent (id) {
         this.$emit('changeCurrent', id)
       },
+      readChat (chatId) {
+        if (chatId) {
+          this.$api('post', `conversations/read/${chatId}`).then(response => {})
+        }
+      },
       avatar (user) {
         return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
       },
@@ -15,17 +20,16 @@
 <template>
   <div class="list">
     <ul>
-      <li v-for="user in users" :key="user._id" :class="{ active: user._id === current }" @click="changeCurrent(user._id)">
+      <li v-for="user in users" :key="user._id" :class="{ active: user._id === current }" @click="changeCurrent(user._id); readChat(user.unreadMessages.chatId)">
         <div class="avatar">
-          <!-- <span class="badge badge-success">4</span> -->
+          <span v-if="user.unreadMessages && user.unreadMessages.count" class="badge badge-success">{{ user.unreadMessages.count }}</span>
           <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
           <img v-if="avatar(user)" class="avatar" width="40" height="40" :src="avatar(user)">
         </div>
         <div class="name">
           <p>{{user.fullname}}</p>
-          <span>{{user.fullname}}</span>
+          <span>{{ user.unreadMessages && user.unreadMessages.lastMessage }}</span>
         </div>
-        <!--<p>3</p>-->
       </li>
     </ul>
   </div>

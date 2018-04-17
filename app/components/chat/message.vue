@@ -25,7 +25,7 @@
     <p class="authorName">{{$props.messages.authorName}}</p>
     <div class="message" v-scroll-bottom="messages">
       <ul v-if="messages">
-        <li v-for="message in messages">
+        <li v-for="message in messages" :key="message._id">
           <p class="time">
             <span>{{ message.createdAt | time }}</span>
           </p>
@@ -48,6 +48,7 @@
   .message {
     padding: 10px 15px;
     overflow-y: scroll;
+    height: 240px;
 
     ul {
       list-style: none;

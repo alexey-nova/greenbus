@@ -1,6 +1,7 @@
 <template>
   <div>
     <div v-if="!isOpen" id="chatButton" @click="openChat">
+      <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
       <i class="fa fa-comments"></i>
     </div>
 
@@ -41,7 +42,9 @@
         me: this.$auth().user._id,
         currentUser: -1,
         currentChat: 0,
-        messages: []
+        messages: [],
+        unreadMessages: [],
+        unreadMessagesCount: 0
       }
     },
     directives: {
@@ -54,9 +57,19 @@
             if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1 && user._id !== this.$auth().user._id) {
               return user
             }
+          }).map(user => {
+            return {
+              ...user,
+              unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
+            }
           })
         } else {
-          return this.$props.users.filter(user => user._id !== this.$auth().user._id)
+          return this.$props.users.filter(user => user._id !== this.$auth().user._id).map(user => {
+            return {
+              ...user,
+              unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
+            }
+          })
         }
       },
     },
@@ -73,9 +86,23 @@
           this.currentChat = response.data.conversation._id
           this.messages = response.data.messages || []
           this.messages.authorName = this.$props.users.filter(user => user._id === id)[0].fullname
+          this.getMessages()
         }).catch(err => {
           if (err) console.log(err.response, 'qwe')
         })
+      },
+      getMessages () {
+        this.$api('get', 'conversations').then(response => {
+          this.unreadMessages = response.data.conversations.map(conversation => {
+            return {
+              count: conversation.unreadMessages,
+              lastMessage: conversation.message.body,
+              userId: conversation.chat.userId,
+              chatId: conversation.chat.chatId
+            }
+          })
+          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b)
+        }).catch(err => console.log(err))
       },
       sendMessage (message) {
         message = message.trim().replace(/\r\n|\r|\n/g,"<br />")
@@ -89,9 +116,11 @@
         })
       },
     },
+    beforeMount () {
+      this.getMessages()
+    },
     sockets: {
       newMessage (data) {
-        console.log(data)
         if (data.author === this.currentUser) {
           this.messages.push(data)
         } else {
@@ -106,13 +135,30 @@
   #chatButton {
     position: fixed;
     z-index: 90;
-    bottom: 10px;
+    bottom: 30px;
     right: 10px;
     padding: 10px 13px;
     border-radius: 100px;
     background: #4e8348;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
     color: #fff;
     cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    }
+
+    .chat-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      background-color: crimson;
+      border-radius: 50%;
+    }
   }
 
   #chat {

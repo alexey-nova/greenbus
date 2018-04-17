@@ -21,7 +21,7 @@
                             {{dl.name}}
                           </router-link>
                         </th>
-                        <td>{{$dateFormat(dl.deadline)}}</td>
+                        <td>{{$dateFormat(dl.deadline, 'd mmm yyyy, HH:MM')}}</td>
                       </tr>
                     </table> 
                   </div>
@@ -150,7 +150,8 @@
                           {{task.name}}
                         </router-link>
                       </td>
-                      <td>{{task.description}}</td>
+                      <td v-html="task.description"></td>
+                      <!-- <td>{{task.description}}</td> -->
                     </tr>
                   </table>
                   <table border="1" v-else>
@@ -225,28 +226,36 @@
         }
       }
     },
-    async beforeMount () {
-      try {
-        const response = await this.$api('get', 'tasks')
+    beforeMount () {
+      this.$api('get', 'tasks').then(response => {
         this.today = response.data.deadlines.today
         this.tomorrow = response.data.deadlines.tomorrow
         this.week = response.data.deadlines.week
-        this.tasks = await response.data.tasks.sort(function(a, b) {
-          var dateA = new Date(a.deadline), dateB = new Date(b.deadline)
-          return dateA - dateB
-        })
-        await this.tasks.map((task) => {
-          response.data.deadlines.deadlined.map((dl) => {
-            if (task._id === dl._id) {
-              this.deadlined.push(task)
-            }
+        const calendarTasks = []
+        const groups = response.data.tasks.reduce((groups, task) => {
+          const date = task.deadline.split('T')[0]
+          if (!groups[date]) groups[date] = []
+          groups[date].push(task)
+          return groups
+        }, {})
+        Object.keys(groups).forEach((group, groupIndex) => {
+          this.events.push({
+            title: groups[group].length,
+            start: group,
+            editable: false
           })
         })
-      } catch (error) {
-        console.log(error)
-        this.notify('Произошла ошибка!', 'error')
-      }
-      
+        this.tasks = response.data.tasks.sort((a, b) => {
+          let dateA = new Date(a.deadline), dateB = new Date(b.deadline)
+          return dateA - dateB
+        })
+        this.tasks.map(task => {
+          response.data.deadlines.deadlined.map(dl => task._id === dl._id && this.deadlined.push(task))
+        })
+      }).catch(err => {
+        console.log(err)
+        this.notify('Временная ошибка', 'danger')
+      })
     },
     mounted () {
       this.loadUsers()

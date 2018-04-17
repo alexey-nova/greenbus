@@ -1,7 +1,12 @@
 <template>
   <div class="wrapper">
     <notifications :duration="5000" :speed="1000"/>
-
+    <offline @detected-condition="handleConnectivityChange">
+      <div slot="offline"></div>
+    </offline>
+    <div v-if="!onlineStatus" class="offline">
+      <p class="offline-text"><i class="fa fa-exclamation-triangle"></i> Подключение к интернету отсутствует</p>
+    </div>
     <AppHeader></AppHeader>
 
     <AppSidebar></AppSidebar>
@@ -14,16 +19,15 @@
     </main>
 
     <AppFooter></AppFooter>
+    
   </div>
 </template>
 <script>
   import '#/assets/jquery/jquery.min'
-//  import '#/assets/bootstrap/bootstrap.min'
   import '#/assets/adminlte/js/adminlte.min'
   import Chat from '@/Chat'
-//  import 'vue-flash-message/dist/vue-flash-message.min.css'
-//  import 'bootstrap/dist/css/bootstrap.css'
   import 'element-ui/lib/theme-chalk/index.css'
+  import offline from 'v-offline'
 
   import AppHeader from './app/Header.vue'
   import AppFooter from './app/Footer.vue'
@@ -40,12 +44,14 @@
       Alert,
       VueFlashMessage,
       Chat,
+      offline
     },
     data () {
       return {
         height: 0,
         showMessageBox: false,
-        users: []
+        users: [],
+        onlineStatus: true
       }
     },
     methods: {
@@ -66,6 +72,9 @@
           console.log(err.response)
         })
       },
+      handleConnectivityChange(status) {
+        this.onlineStatus = status
+      }
     },
     beforeMount () {
       if (this.$auth().user) {
@@ -181,6 +190,21 @@
 
   .buttons { margin: -4px 0; }
   .buttons .btn { margin: 4px 0; }
+
+  .offline {
+    width: 100vw;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 5000;
+    position: absolute;
+
+    &-text {
+      font-size: 19px;
+      padding: 20px;
+      background: red;
+      color: #fff;
+    }
+  }
 
   body .wrapper .content-wrapper .content .messenger-button {
     border: none;
