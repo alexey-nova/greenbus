@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <!-- <div class="bottomWrapper">
+          <div class="bottomWrapper">
             <div class="bottom">
               <span class="fontSize">
                 <h4>Платежные календари на согласовании</h4>
@@ -110,7 +110,7 @@
                   </table> 
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
         <div class="right">
           <div class="dayTaskWrapper">
