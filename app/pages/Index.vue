@@ -17,7 +17,7 @@
                     <table border="1">
                       <tr v-for="dl in deadlined" :key="dl.id">
                         <th>
-                          <router-link :to="{name: 'tasks', query: {type: 'show', task: dl.id}}">
+                          <router-link :to="{name: 'tasks', query: {type: 'show', task: dl._id}}">
                             {{dl.name}}
                           </router-link>
                         </th>
@@ -146,7 +146,7 @@
                     <tr v-for="task in dateTasks" :key="task.id">
                       <td>{{dateFormatForSec(task.deadline)}}</td>
                       <td>
-                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">
+                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task._id}}">
                           {{task.name}}
                         </router-link>
                       </td>

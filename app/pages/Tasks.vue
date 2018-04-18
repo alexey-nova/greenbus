@@ -244,7 +244,7 @@
         let taskId = this.$_.get(this.$route, 'query.task', '')
         if (type && taskId) {
           this.loadTasks().then((tasks) => {
-            this.toggleModal(type, (this.$_.find(tasks, ['id', taskId*1])))
+            this.toggleModal(type, (this.$_.find(tasks, ['_id', taskId])))
           })
         }
       }

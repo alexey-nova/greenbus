@@ -11,10 +11,12 @@
           <li>
             <ul class="menu">
               <li v-for="n in pending" :key="n._id">
-                <a href="#">
-                  <!--<i class="fa fa-users text-aqua"></i> 5 new members joined today-->
+                <a v-if="n.module" href="#" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
                   {{n.description}}
                 </a>
+                <p v-else>
+                  {{n.description}}
+                </p>
               </li>
               <li v-if="$_.size(pending)"><a class="read-all" href="#" @click="readNots">Прочитать все уведомления</a></li>
               <li v-if="!$_.size(pending)"><a href="#">У вас нет уведомлений</a></li>
@@ -62,6 +64,12 @@
           this.loadNots()
         }).catch(e => {})
       },
+      goTo (location, context) {
+        console.log(context.moduleId)
+        if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
+        // else if (location === 'memos') return this.$router.push({ name: 'memos', query: { type: 'show', memo: context.moduleId }})
+        // else if (location === 'meetings') return this.$router.push({ name: 'meetings', query: { type: 'show', meeting: context.moduleId }})
+      }
     },
     mounted () {
       this.loadNots()
