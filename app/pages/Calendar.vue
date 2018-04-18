@@ -13,7 +13,6 @@
 
     <Box>
     <calendar-view
-			class="holiday-us-traditional holiday-us-official"
 			:show-date="showDate"
 			@click-date="onClickDay"
 			@click-event="onClickEvent"
@@ -22,7 +21,7 @@
 			:enable-drag-drop="true"
 			:disable-past="disablePast"
 			:disable-future="disableFuture"
-			:show-event-times="showEventTimes"
+			:show-event-times="false"
 			:display-period-uom="displayPeriodUom"
 			:display-period-count="displayPeriodCount"
 			:starting-day-of-week="startingDayOfWeek"
@@ -43,7 +42,6 @@
     import CalendarView from "vue-simple-calendar"
     import CalendarMathMixin from "vue-simple-calendar/dist/calendar-math-mixin.js"
     require("vue-simple-calendar/dist/static/css/default.css")
-    require("vue-simple-calendar/dist/static/css/holidays-us.css")
 
     export default {
         name: "App",
@@ -67,12 +65,12 @@
 						startingDayOfWeek: 1,
 						disablePast: false,
 						disableFuture: false,
-						displayPeriodUom: "month",
+						displayPeriodUom: 'month',
 						displayPeriodCount: 1,
 						showEventTimes: true,
 						events: [],
 						users: [],
-						type: "create",
+						type: 'create',
 					}
         },
         computed: {
@@ -118,7 +116,7 @@
 					}
         },
         mounted () {
-					this.loadMeetings()
+					this.showMeetingFromQuery()
 					this.loadUsers()
         },
         methods: {
@@ -127,24 +125,24 @@
 						this.type = type;
 					},
 					loadMeetings() {
-						this.$api('get', 'meetings').then(response => {
-							this.events = response.data
+						return this.$api('get', 'meetings').then(response => {
+							return this.events = response.data
 						}).catch(e => {
-							this.notify(e, 'danger')
+							return this.notify(e, 'danger')
 						})
 					},
 					createMeeting (meeting) {
 						let newDate = new Date(meeting.startDate)
-						let endDate = new Date(meeting.endDate)
+						let endDate = new Date(meeting.startDate)
 						let startTime = meeting.startTime.split(':')
-						newDate.setUTCHours(startTime[0])
-						newDate.setUTCMinutes(startTime[1])
+						newDate.setHours(startTime[0])
+						newDate.setMinutes(startTime[1])
 
 						let endTime = meeting.endTime.split(':')
-						endDate.setUTCHours(endTime[0])
-						endDate.setUTCMinutes(endTime[1])
+						endDate.setHours(endTime[0])
+						endDate.setMinutes(endTime[1])
 
-						let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate:endDate, place: meeting.place, description: meeting.description}
+						let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate, place: meeting.place, description: meeting.description}
 						this.$api('post', 'meetings', data).then(response => {
 							this.modal.createMeeting = false
 							this.notify(response.data.message)
@@ -247,32 +245,11 @@
 					},
 					getMeeting(id) {
 						this.$api('get', 'meetings/' + id).then(response => {
-							var getStartDate = new Date(response.data.startDate)
-							var getEndDate = new Date(response.data.endDate)
-							var sHours, sMinutes, eHours, eMinutes
-							if (getStartDate.getUTCHours().toString().length === 1) {
-								sHours = "0" + getStartDate.getUTCHours()
-							} else {
-								sHours =  getStartDate.getUTCHours()
-							}
-							if (getStartDate.getUTCMinutes().toString().length === 1) {
-								sMinutes = "0" + getStartDate.getUTCMinutes()
-							} else {
-								sMinutes =  getStartDate.getUTCMinutes()
-							}
-
-							if (getEndDate.getUTCHours().toString().length === 1) {
-								eHours = "0" + getEndDate.getUTCHours()
-							} else {
-								eHours =  getEndDate.getUTCHours()
-							}
-							if (getStartDate.getUTCMinutes().toString().length === 1) {
-									eMinutes = "0" + getEndDate.getUTCMinutes()
-							} else {
-								eMinutes =  getEndDate.getUTCMinutes()
-							}
-							response.data['startTime'] = sHours + ":" + sMinutes
-							response.data['endTime'] = eHours + ":" + eMinutes
+							const startTime = `${(new Date(response.data.startDate)).getHours()}:${(new Date(response.data.startDate)).getMinutes()}`
+							const endTime = `${(new Date(response.data.endDate)).getHours()}:${(new Date(response.data.endDate)).getMinutes()}`
+							
+							response.data['startTime'] = startTime
+							response.data['endTime'] = endTime
 
 							this.toggleModal('edit', response.data, 'edit')
 						}).catch(e => {
@@ -295,6 +272,18 @@
 							this.notify(e, 'danger')
 						})
 					},
+					showMeetingFromQuery () {
+						let type = this.$_.get(this.$route, 'query.type', '')
+						let meetingId = this.$_.get(this.$route, 'query.meeting', '')
+						if (type && meetingId) {
+							this.loadMeetings().then(meetings => {
+								this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])), 
+								'edit')
+							})
+						} else {
+							this.loadMeetings()
+						}
+					}
 			},
     }
 </script>

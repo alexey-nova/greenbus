@@ -29,11 +29,6 @@
           users: [],
           tasks: [
             {
-              link: {name: 'tasks'},
-              name: 'Все',
-              isActive: () => this.$isRoute('tasks'),
-            },
-            {
               link: {name: 'tasksByFilter', params: {param1: 'in'}},
               name: 'Входящие',
               isActive: () => this.$isRoute('tasksByFilter', 'param1', 'in'),
@@ -63,6 +58,11 @@
               name: 'Просроченные',
               isActive: () => this.$isRoute('tasksByFilter', 'param1', 'deadlined'),
             },
+            {
+              link: {name: 'tasks'},
+              name: 'Все',
+              isActive: () => this.$isRoute('tasks'),
+            }
           ],
           documents: [
             {
@@ -70,11 +70,6 @@
               link: {name: 'documents'},
               isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
               children: [
-                {
-                  link: {name: 'documents'},
-                  name: 'Все',
-                  isActive: () => this.$isRoute('documents'),
-                },
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'in'}},
                   name: 'Входящие',
@@ -89,6 +84,11 @@
                   link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
                   name: 'На согласовании',
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
+                },
+                {
+                  link: {name: 'documents'},
+                  name: 'Все',
+                  isActive: () => this.$isRoute('documents'),
                 },
               ],
             },

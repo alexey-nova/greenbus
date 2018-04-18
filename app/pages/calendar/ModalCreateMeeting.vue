@@ -107,19 +107,19 @@
           <div class="col-lg-6">
             <div class="form-group">
               <label>Дата встречи</label>
-              <div>{{setStartDate()}}</div>
+              <div>{{ $dateFormat(model.startDate, 'dd mmm yyyy') }}</div>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
               <label>Время начала встречи</label>
-              <div>{{model.startTime}}</div>
+              <div>{{ $dateFormat(model.startDate, 'HH:mm') }}</div>
             </div>
           </div>
           <div class="col-lg-3">
             <div class="form-group">
               <label>Время конца встречи</label>
-              <div>{{model.endTime}}</div>
+              <div>{{ $dateFormat(model.endDate, 'HH:mm') }}</div>
             </div>
           </div>
         </div>
@@ -290,11 +290,7 @@
         let date = new Date(this.model.endDate)
         let ret = (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear()
         return ret
-      },
-      /*getStatus1 () {
-          //let check = this.$_.find(this.model.participants, ['user', this.$auth().user._id])
-          //return check
-      }*/
+      }
     },
     computed: {
       isAnswered () {

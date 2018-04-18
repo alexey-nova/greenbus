@@ -13,13 +13,13 @@
       </router-link>
     </li>
     <li :class="[{active: $isRoute(['tasks', 'tasksByFilter'])}, 'nav-item']">
-      <router-link class="nav-link" :to="{name: 'tasks'}" :style="{color: colors['tasks']}">
+      <router-link class="nav-link" :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :style="{color: colors['tasks']}">
         <i class="fa fa-calendar-check-o fa-2x"></i>
         <div>Задачи</div>
       </router-link>
     </li>
     <li :class="[{active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents', 'ps', 'psByFilter'])}, 'nav-item']">
-      <router-link class="nav-link" :to="{name: 'documents'}" :style="{color: colors['documents']}">
+      <router-link class="nav-link" :to="{name: 'documentsByFilter', params: { param1: 'in' }}" :style="{color: colors['documents']}">
         <i class="fa fa-file-text-o fa-2x"></i>
         <div>Документы</div>
       </router-link>

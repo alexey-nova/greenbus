@@ -55,7 +55,6 @@
       },
       loadNots () {
         this.$api('get', 'notifications').then(response => {
-          console.log(response.data)
           this.pending = response.data.pending
         }).catch(e => {})
       },
@@ -65,10 +64,9 @@
         }).catch(e => {})
       },
       goTo (location, context) {
-        console.log(context.moduleId)
         if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
-        // else if (location === 'memos') return this.$router.push({ name: 'memos', query: { type: 'show', memo: context.moduleId }})
-        // else if (location === 'meetings') return this.$router.push({ name: 'meetings', query: { type: 'show', meeting: context.moduleId }})
+        else if (location === 'memos') return this.$router.push({ name: 'documents', query: { type: 'show', memo: context.moduleId }})
+        else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
       }
     },
     mounted () {
