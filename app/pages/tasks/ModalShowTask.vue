@@ -37,25 +37,73 @@
       <div v-if="tabs === 2">
         <p v-if="!$_.size(comments)">Обсуждений нет</p>
         <div v-for="comment in comments" style="padding: 5px 0">
-          <div class="user"><strong>{{getUser(comment.performedBy).fullname}}</strong></div>
-          <div class="comment">{{comment.comment}}</div>
-          <div v-for="file in comment.files">
-            <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+          <div v-if="comment.taskId">
+            <div class="user">
+              <strong>{{getUser(comment.performedBy).fullname}}</strong>
+              <span>({{ $dateFormat(comment.createdAt, 'dd mmm, HH:MM') }})</span>
+            </div>
+            <div class="comment">{{comment.comment}}</div>
+            <div v-for="file in comment.files">
+              <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+            </div>
+            <div v-if="comment.replies && comment.replies[0]">
+              <div class="user" style="margin-top: 15px;">
+                <i class="fa fa-reply" style="color: grey"></i>
+                <strong>{{getUser(model.from).fullname}}</strong>
+                <span>({{ $dateFormat(comment.replies[0].createdAt, 'dd mmm, HH:MM') }})</span>  
+              </div>
+              <div class="comment">{{comment.replies[0].comment && comment.replies[0].comment}}</div>
+              <div v-for="file in comment.replies[0].files">
+                <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+              </div>
+            </div>
+            <div style="padding: 5px 0"></div>
+            <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && comment.taskId)">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
+            </div>
           </div>
-          <div v-if="comment.replies[0]">
-            <div class="user" style="margin-top: 15px;"><strong>{{getUser(model.from).fullname}}</strong></div>
-            <div class="comment">{{comment.replies[0].comment && comment.replies[0].comment}}</div>
-            <div v-for="file in comment.replies[0].files">
+          <div v-else>
+            <div class="user">
+              <strong>{{getUser(comment.user).fullname}}</strong>
+              <span>({{ $dateFormat(comment.createdAt, 'dd mmm, HH:MM') }})</span>
+            </div>
+            <div class="comment" v-html="comment.comment"></div>
+            <div v-for="file in comment.files">
               <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
             </div>
           </div>
         </div>
-        <div style="padding: 5px 0"></div>
-        <div v-if="$auth().user._id === model.from && model.status === 1">
-          <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comments[$_.size(comments) -1]._id})"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
-        </div>
+        
         <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
+        <hr>
+        <div>
+          <div :class="['form-group']">
+            <label for="field-description">Комментарий</label>
+            <ckeditor
+              placeholder="Комментарий"
+              id="field-description"
+              v-model="model.comment"
+              :config="ckEditorConfig">
+            </ckeditor>
+            <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
+          </div>
+          <file-upload
+            class="btn btn-default"
+            :multiple="true"
+            v-model="model.files"
+            ref="upload">
+            <i class="fa fa-plus"></i>
+            Выбрать файлы
+          </file-upload>
+          <ul style="list-style: none; padding: 0;">
+            <li v-for="(file, index) in model.files" :key="index">
+              <span>{{file.name}}</span> -
+              <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+            </li>
+          </ul>
+          <button class="btn btn-default" :disabled="!model.comment" @click="sendComment()">Отправить</button>
+        </div>
       </div>
     </div>
 
@@ -89,6 +137,8 @@
   import Datepicker from 'vuejs-datepicker'
   import { Switch } from 'element-ui'
   import 'element-ui/lib/theme-chalk/index.css'
+  import Ckeditor from 'vue-ckeditor2'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
@@ -99,6 +149,8 @@
       ModalShowUser,
       Datepicker,
       'el-switch': Switch,
+      Ckeditor,
+      FileUpload
     },
     data () {
       return {
@@ -115,6 +167,14 @@
           'Согласовано',
           'Отказано',
         ],
+        ckEditorConfig: {
+          toolbar: [
+            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+          ],
+          height: 150
+        },
+        newComment: '',
+        newFiles: []
       }
     },
     props: ['model', 'users', 'tab'],
@@ -147,6 +207,18 @@
         this.$emit('confirmTask', model)
         this.toggleModal('confirmTask')
       },
+      sendComment () {
+        let data = this.$createFormData({
+          files: this.$_.map(this.model.files, (f) => f.file),
+          comment: this.model.comment,
+          moduleId: this.model._id
+        })
+        this.$api('post', 'comments', data).then(response => {
+          console.log(response.data)
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       close () {
         this.tabs = 0
         this.$emit('onClose')
@@ -158,7 +230,11 @@
       loadTask () {
         this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
           this.comments = response.data.executions
+          response.data.comments.forEach(comment => {
+            this.comments.push(comment)
+          })
         }).catch(e => {
+          console.log(e)
 //          this.notify(e, 'danger')
         })
       },
