@@ -149,7 +149,8 @@
           this.$log(e, 'danger')
         })
       },
-      editTask (task) {admin
+      editTask (task) {
+        task.to = JSON.stringify(task.to)
         task.files = this.$_.reduce(task.files, (result, f) => {
           if (f.file) {
             result.push(f.file)

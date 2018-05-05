@@ -315,7 +315,6 @@
           })
         },
         set: function (newValue) {
-//                    this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'participants')
           this.$props.model.participants = this.$_.map(newValue, m => {
             return {_id: m._id, user: m._id}
           })

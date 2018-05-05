@@ -46,7 +46,7 @@
           <Multiselect
             id="field-coExecutives"
             name="coExecutives"
-            v-model="model.coExecutives"
+            v-model="selectedUsers"
             :options="usersForSelect"
             :close-on-select="false"
             :hide-selected="true"
@@ -126,11 +126,31 @@
       },
       selectedUser: {
         get: function () {
-          return {name: this.getUser(this.$props.model.to).fullname, _id: this.$props.model.to}
+          if (this.$props.model.to) return { name: this.getUser(this.$props.model.to.user).fullname, _id: this.$props.model.to}
+          return {}
         },
         set: function (newValue) {
           this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
           this.$props.model.to = newValue ? newValue._id : ''
+        }
+      },
+      selectedUsers: {
+        get: function () {
+          if (this.$_.size(this.$props.model.coExecutives) > 10) {
+            this.errors.items.push({
+              field: 'participants',
+              scope: null,
+              msg: 'Допустимо не больше 10 участников',
+            })
+          }
+          return this.$_.map(this.$props.model.coExecutives, m => {
+            return (m && m.user) ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
+          })
+        },
+        set: function (newValue) {
+          this.$props.model.coExecutives = this.$_.map(newValue, m => {
+            return {_id: m._id, user: m._id}
+          })
         }
       }
     },
