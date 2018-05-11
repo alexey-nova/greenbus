@@ -214,7 +214,10 @@
           moduleId: this.model._id
         })
         this.$api('post', 'comments', data).then(response => {
-          console.log(response.data)
+          this.comments.push(response.data.comment)
+          this.notify('Комментарий успешно добавлен')
+          this.model.files = []
+          this.model.comment = ''
         }).catch(err => {
           console.log(err)
         })
