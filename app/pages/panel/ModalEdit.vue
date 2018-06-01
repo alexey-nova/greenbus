@@ -6,7 +6,7 @@
         <div class="list_header">
           <div class="flex">
             <div>
-              <span>Добавить {{setTypeName}}</span>
+              <span>Редактировать {{setTypeName}}</span>
             </div>
             <div class="buttons">
               <button type="button" class="button-top close close-add-class" @click="close"></button>
@@ -48,40 +48,12 @@
           <!-- <span v-show="errors.has('dept')" class="help-block">{{ errors.first('dept') }}</span> -->
         </div>
         <div class="flex center">
-            <button type="" class="add-button auto-width form-submit">Добавить</button>
+            <button type="" class="add-button auto-width form-submit">Редактировать</button>
         </div>
       </div>
       <div class="modal-footer"></div>
       </div>
     </div>
-    <!-- <h3 slot="header" class="modal-title">Добавление</h3> -->
-
-    <!-- <div slot="content" class="row">
-      <div :class="['form-group', {'has-error': errors.has('name')}]">
-        <label for="field-name">Название</label>
-        <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name" />
-        <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
-      </div>
-      <div v-if="model.type === 'otdel'" :class="['form-group', {'has-error': errors.has('to')}]">
-        <label for="field-to">Департамент *</label>
-        <Multiselect
-          id="field-to"
-          name="to"
-          v-validate="'required'"
-          v-model="selectedDepartment"
-          :options="departments"
-          track-by="name"
-          label="name">
-        </Multiselect>
-        <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
-      </div>
-    </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Создать</button>
-    </div> -->
-
   </Modal>
 </template>
 
@@ -110,17 +82,7 @@
           position: 'должность'
         }
         return names[this.model.type]
-      },
-      // filteredOtdels: {
-      //   get () {
-      //     if (!this.model.department) return []
-      //     return this.otdels.filter(item => item.parent === this.model.department)
-      //   },
-      //   set (newVal) {
-      //     console.log(newVal)
-      //   }
-        
-      // }
+      }
     },
     methods: {
       close () {
@@ -155,7 +117,6 @@
         } else {
           this.filteredOtdels = []
         }
-        
       }
     }
   }

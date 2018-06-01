@@ -10,7 +10,7 @@
             <button class="add-button" @click="toggleModal('create', { type: 'department' })"><img src="~assets/img/add.png" >Добавить департамент</button>
           </div>
         </div>
-        <table >
+        <table>
           <tr class="green">
             <td width="100%">
               <div>
@@ -24,8 +24,8 @@
             
             <td class="border-none">
               <div class="flex">
-                <button class="button-table edit"></button>
-                <button class="button-table remove"></button>
+                <button class="button-table edit" @click="toggleModal('edit', { type: 'department', name: dept.name, _id: dept._id })"></button>
+                <button class="button-table remove" @click="toggleModal('delete', { type: 'department', name: dept.name })"></button>
               </div>
             </td>
           </tr>
@@ -59,13 +59,13 @@
             
             <td class="border-none">
               <div class="flex">
-                <button class="button-table edit"></button>
-                <button class="button-table remove"></button>
+                <!-- <button class="button-table edit" @click="toggleModal('edit', { ...dept, type: 'otdel' })"></button> -->
+                <!-- <button class="button-table remove" @click="toggleModal('delete', { type: 'otdel', name: dept.name })"></button> -->
               </div>
             </td>
           </tr>
           <tr v-if="otdels.length === 0">
-            <td>Департаменты отсутствуют</td>
+            <td>Отделы отсутствуют</td>
           </tr>
         </table>
       </div>
@@ -100,8 +100,8 @@
             
             <td class="border-none">
               <div class="flex">
-                <button class="button-table edit"></button>
-                <button class="button-table remove"></button>
+                <!-- <button class="button-table edit" @click="toggleModal('edit', { type: 'position', name: position.name, _id: position._id })"></button> -->
+                <!-- <button class="button-table remove" @click="toggleModal('delete', { type: 'position', name: position.name, _id: position._id })"></button> -->
               </div>
             </td>
           </tr>
@@ -112,16 +112,22 @@
       </div>
     </div>
     <ModalCreate :model="modal.create" :departments="departments" :otdels="otdels" @onClose="toggleModal('create')" @onSubmit="submit"></ModalCreate>
+    <ModalEdit :model="modal.edit" :departments="departments" :otdels="otdels" @onClose="toggleModal('edit')" @onSubmit="edit"></ModalEdit>
+    <ModalDelete :model="modal.edit" @onClose="toggleModal('edit')" @onSubmit="remove"></ModalDelete>
   </div>
 </template>
 
 <script>
 import ModalCreate from './panel/ModalCreate'
+import ModalEdit from './panel/ModalEdit'
+import ModalDelete from './panel/ModalDelete'
 
 export default {
   name: 'Panel',
   components: {
-    ModalCreate
+    ModalCreate,
+    ModalEdit,
+    ModalDelete
   },
   data () {
     return {
@@ -181,6 +187,25 @@ export default {
           this.notify(response.data.message)
         })
       }
+    },
+    edit (data) {
+      if (data.type === 'department') {
+        this.$api('put', `departments/${data._id}`, data).then(response => {
+          this.modal.edit = false
+          this.departments = this.departments.map(item => {
+            if (item._id === data._id) item.name = data.name
+            return item
+          })
+          this.notify(response.data.message)
+        })
+      } else if (data.type === 'otdel') {
+        
+      } else if (data.type === 'position') {
+
+      }
+    },
+    remove (data) {
+
     }
     // loadUsers () {
     //   return this.$api('get', 'users').then(response => {
