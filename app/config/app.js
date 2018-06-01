@@ -14,8 +14,8 @@ export default {
   // soketUrl: 'http://195.93.152.79:3333/',  
   // fileUrl: 'http://195.93.152.79:3333/',
   // вообще другой тестовый сервер
-  apiUrl: 'http://159.98.89.114:3333/api/',
-  soketUrl: 'http://159.98.89.114:3333/',
+  apiUrl: 'http://159.89.98.114:3333/api/',
+  soketUrl: 'http://159.89.98.114:3333/',
   fileUrl: 'http://159.98.89.114:3333/',
   mockApiUrl:  path,
 }
