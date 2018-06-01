@@ -1,11 +1,53 @@
 <template>
-  <aside class="main-sidebar">
+  <div class="nav">
+    <div class="info-box">
+      <div class="info-container">
+        <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
+        <img v-else :src="avatar" alt="Аватар">
+        <p class="light">{{ $auth().user.fullname }}</p>
+        <p class="small italic">{{ $auth().user.position }}</p>
+      </div>
+      <button class="italic" @click="toggle">Мой профиль</button>
+    </div>
+    <div class="main-menu">
+      <ul class="list" v-if="isOpen">
+        <li>
+          <router-link :to="{name: 'profile'}">
+            <img src="~assets/img/left_menu/profile.png">
+            Профиль
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="{name: 'panel', params: { param1: 'depts'}}" v-if="$auth().user.admin">
+            <div class="item">
+              <i class="fa fa-columns"></i>&nbsp;&nbsp;Панель управления
+            </div>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="{name: 'templates'}" v-if="$auth().user.admin">
+            <div class="item">
+              <i class="fa fa-sitemap"></i>&nbsp;&nbsp;Шаблоны заявок
+            </div>
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="{name: 'logout'}">
+            <img src="~assets/img/left_menu/logout.png">
+            Выход
+          </router-link>
+        </li>
+        <hr>
+      </ul>
+      <sidebar-menu></sidebar-menu>
+    </div>
+  </div>
+  <!-- <aside class="main-sidebar">
     <section class="sidebar">
 
       <div class="user-panel">
         <div class="image">
-          <img v-if="!avatar" src="./../../assets/design/avatar.jpg" class="img-circle" alt="User Image">
-          <!--<img v-if="$auth().user.avatar != undefined" :src="'http://195.93.152.79:3333/' + $auth().user.avatar" class="img-circle" alt="User Image">-->
+          <img v-if="!avatar" src="~assets/design/avatar.jpg" class="img-circle" alt="User Image">
           <img v-if="avatar" :src="avatar" class="img-circle" alt="User Image">
         </div>
         <div class="info">
@@ -24,11 +66,11 @@
             <i class="fa fa-user"></i>&nbsp;&nbsp;Профиль
           </div>
         </router-link>
-        <!-- <router-link :to="{name: 'panel'}" v-if="$auth().user.admin">
+        <router-link :to="{name: 'panel'}" v-if="$auth().user.admin">
           <div class="item">
             <i class="fa fa-columns"></i>&nbsp;&nbsp;Панель управления
           </div>
-        </router-link> -->
+        </router-link>
         <router-link :to="{name: 'logout'}">
           <div class="item">
             <i class="fa fa-power-off"></i>&nbsp;&nbsp;Выход
@@ -39,7 +81,7 @@
       <SidebarMenu></SidebarMenu>
 
     </section>
-  </aside>
+  </aside> -->
 </template>
 
 <script>
@@ -49,7 +91,7 @@
   export default {
     components: {
       User,
-      SidebarMenu,
+      'sidebar-menu': SidebarMenu,
     },
     data () {
       return {
@@ -70,6 +112,7 @@
 </script>
 
 <style lang="scss" scoped>
+  p { margin: 0.2em 0 }
   .sidebar .user-panel .info .name { white-space: normal; }
   .profile-toggler { background: #09101a; padding: 10px 15px; color: #ddd; font-size: .9em; cursor: pointer; }
 

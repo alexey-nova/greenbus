@@ -2,14 +2,14 @@
   <Animation enter="fadeIn">
     <div v-if="isOpen" :class="['modal', 'show'].concat(typeClasses)" tabindex="-1" role="dialog" aria-hidden="true">
       <div :class="['modal-dialog']" role="document">
-        <div class="modal-content">
+        <div>
           <form @submit="submit">
 
             <div v-if="$slots.header" class="modal-header">
               <slot name="header"></slot>
             </div>
 
-            <div v-if="$slots.content" class="modal-body">
+            <div v-if="$slots.content">
               <slot name="content"></slot>
             </div>
 

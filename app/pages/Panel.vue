@@ -1,78 +1,199 @@
 <template>
-  <Box>
-    <div class="col-md-6">
-      <div :class="['form-group', {'has-error': errors.has('users')}]">
-        <label for="field-users">Сотрудники с доступом для ексел</label><br />
-        <Multiselect
-          id="field-users"
-          v-model="selectedUsers"
-          :options="users"
-          :close-on-select="false"
-          :hide-selected="true"
-          :clear-on-select="false"
-          :multiple="true"
-          track-by="fullname"
-          label="fullname">
-        </Multiselect>
-        <span v-show="errors.has('users')" class="help-block">{{ errors.first('users') }}</span>
-      </div>
-      <div class="form-group">
-        <button class="btn btn-primary" @click="addExcelUsers()">Применить</button>
+  <div class="working_area">
+    <div class="white-block no-padding">
+      <div class="padding-block">
+        <div class="flex margin-bottom align-center">
+          <div class="search">
+            <h4>Департаменты</h4>
+          </div>
+          <div class="add">
+            <button class="add-button" @click="toggleModal('create', { type: 'department' })"><img src="~assets/img/add.png" >Добавить департамент</button>
+          </div>
+        </div>
+        <table >
+          <tr class="green">
+            <td width="100%">
+              <div>
+                <span>Название департамента</span>
+              </div>
+            </td>
+            <td class="button-width">&nbsp;</td>
+          </tr>
+          <tr v-for="dept in departments" :key="dept._id">
+            <td  class="td_center">{{dept.name}}</td>
+            
+            <td class="border-none">
+              <div class="flex">
+                <button class="button-table edit"></button>
+                <button class="button-table remove"></button>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="departments.length === 0">
+            <td class="td_center">Департаменты отсутствуют</td>
+          </tr>
+        </table>
       </div>
     </div>
-  </Box>
+    <div class="white-block no-padding">
+      <div class="padding-block">
+        <div class="flex margin-bottom align-center">
+          <div class="search">
+            <h4>Отделы</h4>
+          </div>
+          <div class="add">
+            <button class="add-button" @click="toggleModal('create', { type: 'otdel' })"><img src="~assets/img/add.png">Добавить отдел</button>
+          </div>
+        </div>
+        <table >
+          <tr class="green">
+            <td width="100%">
+              <div>
+                <span>Название отдела</span>
+              </div>
+            </td>
+            <td class="button-width">&nbsp;</td>
+          </tr>
+          <tr v-for="dept in otdels" :key="dept._id">
+            <td  class="td_center">{{dept.name}}</td>
+            
+            <td class="border-none">
+              <div class="flex">
+                <button class="button-table edit"></button>
+                <button class="button-table remove"></button>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="otdels.length === 0">
+            <td>Департаменты отсутствуют</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="white-block no-padding">
+      <div class="padding-block">
+        <div class="flex margin-bottom align-center">
+          <div class="search">
+            <h4>Должности</h4>
+          </div>
+          <div class="add">
+            <button class="add-button" @click="toggleModal('create', { type: 'position' })"><img src="~assets/img/add.png">Добавить должность</button>
+          </div>
+        </div>
+        <table >
+          <tr class="green">
+            <td width="50%">
+              <div>
+                <span>Название должности</span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <span>Отдел</span>
+              </div>
+            </td>
+            <td class="button-width">&nbsp;</td>
+          </tr>
+          <tr v-for="position in positions" :key="position._id">
+            <td width="50%" class="td_center">{{position.name}}</td>
+            <td width="50%" class="td_center">{{position.department.name}}</td>
+            
+            <td class="border-none">
+              <div class="flex">
+                <button class="button-table edit"></button>
+                <button class="button-table remove"></button>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="positions.length === 0">
+            <td>Должности отсутствуют</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <ModalCreate :model="modal.create" :departments="departments" :otdels="otdels" @onClose="toggleModal('create')" @onSubmit="submit"></ModalCreate>
+  </div>
 </template>
 
 <script>
-import Multiselect from 'vue-multiselect'
-import Box from '@/Box'
+import ModalCreate from './panel/ModalCreate'
 
 export default {
   name: 'Panel',
   components: {
-    Multiselect,
-    Box
+    ModalCreate
   },
   data () {
     return {
-      users: [],
-      selectedUsers: []
+      departments: [],
+      otdels: [],
+      positions: [],
+      modal: {
+        create: false,
+        edit: false,
+        delete: false
+      },
     }
   },
   methods: {
-    loadUsers () {
-      return this.$api('get', 'users').then(response => {
-        this.users = response.data
-      }).catch(e => {
-        this.notify(e, 'danger')
+    toggleModal (name, model, tab) {
+        this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
+      },
+    loadDepartments () {
+      this.$api('get', 'departments').then(response => {
+        this.departments = response.data.departments.filter(item => item.departmentType === 'head')
+        this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
       })
     },
-    loadUtil () {
-      return this.$api('get', 'users/utils').then(response => {
-        const users = response.data.util.excelUsers
-        if ((this.users && this.users.length > 0) && (users && users.length > 0)) {
-          this.$store.commit('app/setExcelUsers', users)
-          this.selectedUsers = this.users.filter(user => users.includes(user._id))
+    loadPositions () {
+      this.$api('get', 'positions').then(response => {
+        this.positions = response.data.positions
+      })
+    },
+    submit (model) {
+      if (model.type && model.type === 'department') {
+        this.$api('post', 'departments', { type: 'head', name: model.name }).then(response => {
+          this.modal.create = false
+          this.departments.push(response.data.department)
+          this.notify(response.data.message)
+        })
+      } else if (model.type && model.type === 'otdel') {
+        model.parent = model.otdel ? model.otdel : model.department ? model.department : ''
+        if (!model.parent) {
+          this.notify('Выберите департамент/отдел', 'danger')
+          return
+        } 
+        this.$api('post', 'departments', { type: 'common', name: model.name, parent: model.parent }).then(response => {
+          this.modal.create = false
+          this.otdels.push(response.data.department)
+          this.notify(response.data.message)
+        })
+      } else if (model.type && model.type === 'position') {
+        model.parent = model.otdel ? model.otdel : model.department ? model.department : ''
+        if (!model.parent) {
+          this.notify('Выберите департамент/отдел', 'danger')
+          return
         }
-      }).catch(err => {
-        console.log(err.response)
-      })
-    },
-    addExcelUsers () {
-      if (this.selectedUsers.length === 0) return this.notify('Добавьте пользователей', 'danger')
-      const users = this.selectedUsers.map(user => user._id)
-      this.$api('post', 'users/excel', { users }).then(response => {
-        this.notify(response.data.message)
-        this.loadUtil()
-      }).catch(err => {
-        console.log(err.response)
-      })
+        this.$api('post', 'positions', { department: model.parent, name: model.name }).then(response => {
+          this.modal.create = false
+          this.positions.push(response.data.position)
+          this.notify(response.data.message)
+        })
+      }
     }
+    // loadUsers () {
+    //   return this.$api('get', 'users').then(response => {
+    //     this.users = response.data
+    //   }).catch(e => {
+    //     this.notify(e, 'danger')
+    //   })
+    // }
   },
   beforeMount () {
-    this.loadUsers().then(() => {
-      this.loadUtil()
-    })
+    this.loadDepartments()
+    this.loadPositions()
+    // this.loadUsers()
   }
 }
 </script>

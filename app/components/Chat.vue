@@ -52,25 +52,25 @@
     },
     computed: {
       filteredUsers () {
+        let users = []
         if (this.search) {
-          return this.$_.filter(this.$props.users, (user) => {
+          users = this.$_.filter(this.$props.users, (user) => {
             if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1 && user._id !== this.$auth().user._id) {
               return user
             }
-          }).map(user => {
-            return {
-              ...user,
-              unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
-            }
           })
         } else {
-          return this.$props.users.filter(user => user._id !== this.$auth().user._id).map(user => {
-            return {
-              ...user,
-              unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
-            }
-          })
+          users = this.$props.users.filter(user => user._id !== this.$auth().user._id)
         }
+        users = users.map(user => {
+          return {
+            ...user,
+            unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
+          }
+        })
+
+        users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
+        return users
       },
     },
     methods: {
@@ -98,7 +98,8 @@
               count: conversation.unreadMessages,
               lastMessage: conversation.message.body,
               userId: conversation.chat.userId,
-              chatId: conversation.chat.chatId
+              chatId: conversation.chat.chatId,
+              date: conversation.message.createdAt || new Date(2014, 1)
             }
           })
           this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b)

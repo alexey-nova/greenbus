@@ -1,0 +1,52 @@
+@media screen and (min-width:1921px){
+    body{
+        font-size: 18px;
+    }
+}
+@media screen and (max-width:1920px){
+    body{
+        font-size: 18px;
+    }
+}
+@media screen and (max-width:1700px){
+    body{
+        font-size: 17px;
+    }
+}
+@media screen and (max-width:1500px){
+    body{
+        font-size: 16px;
+    }
+}
+@media screen and (max-width:1400px){
+    body{
+        font-size: 15px;
+    }
+}
+@media screen and (max-width:1260px){
+    body{
+        font-size: 14px;
+    }
+    .flex.img img {
+        width: 12px;
+    }
+    .add-button.transparent {
+        font-size: 0.9em;
+    }
+}
+@media screen and (max-width:1165px){
+    body{
+        font-size: 12px;
+    }
+    .flex.img img {
+        width: 11px;
+    }
+}
+@media screen and (max-width:1000px){
+    body{
+        font-size: 12px;
+    }
+}
+@media screen and (max-width:992px){
+
+}

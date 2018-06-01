@@ -10,7 +10,6 @@ Vue.use({
     plugins.auth.install()
     plugins.translate.install()
 
-
     // global
     Vue.prototype.$_ = core.$_
     Vue.prototype.$http = core.$http

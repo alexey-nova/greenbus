@@ -24,7 +24,7 @@
         <div class="avatar">
           <span v-if="user.unreadMessages && user.unreadMessages.count" class="badge badge-success">{{ user.unreadMessages.count }}</span>
           <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
-          <img v-if="avatar(user)" class="avatar" width="40" height="40" :src="avatar(user)">
+          <img v-if="avatar(user)" class="img-circle" width="40" height="40" :src="avatar(user)">
         </div>
         <div class="name">
           <p>{{user.fullname}}</p>

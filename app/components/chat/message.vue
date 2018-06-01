@@ -16,6 +16,22 @@
           el.scrollTop = el.scrollHeight - el.clientHeight
         })
       }
+    },
+    methods: {
+      avatar (author) {
+        if (!author) return false
+        if ((author._id ? author._id : author ) === this.me && this.$auth().user.avatar) {
+          return `${this.$config('app.fileUrl')}${this.$auth().user.avatar}`
+        } else if (this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar) {
+          return `${this.$config('app.fileUrl')}${this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar}`
+        } else {
+          return false
+        }
+      },
+    },
+    mounted () {
+      // console.log('users', this.users)
+      // console.log('me', this.me)
     }
   }
 </script>
@@ -30,7 +46,9 @@
             <span>{{ message.createdAt | time }}</span>
           </p>
           <div class="main" :class="{ self: me === (message.author._id ? message.author._id : message.author) }">
-            <img class="avatar" width="30" height="30" :src="$auth().user.avatar"/>
+            
+            <img v-if="avatar(message.author)" class="avatar" :src="avatar(message.author)" alt="Ава">
+            <img v-else class="avatar" src="./../../assets/avatar.jpg" alt="Ава">
             <div class="text" v-html="message.body"></div>
           </div>
         </li>
@@ -76,6 +94,7 @@
       float: left;
       margin: 0 10px 0 0;
       border-radius: 3px;
+      width: 30px;
     }
     .text {
       display: inline-block;
@@ -106,6 +125,7 @@
       .avatar {
         float: right;
         margin: 0 0 0 10px;
+        width: 30px;
       }
       .text {
         background-color: #b2e281;

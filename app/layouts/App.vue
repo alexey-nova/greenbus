@@ -9,16 +9,15 @@
     </div>
     <AppHeader></AppHeader>
 
-    <AppSidebar></AppSidebar>
+    <div class="container">
+      <AppSidebar></AppSidebar>
 
-    <main class="content-wrapper" :style="{minHeight: this.height + 'px'}">
-      <section class="content">
-        <Chat :users="users"></Chat>
-        <router-view/>
-      </section>
-    </main>
-
-    <AppFooter></AppFooter>
+      <div class="container-box">
+        <div class="top-shadow"></div>
+          <Chat :users="users"></Chat>
+          <router-view/>
+      </div>
+    </div>
     
   </div>
 </template>
@@ -91,24 +90,16 @@
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
-<style src="#/assets/adminlte/css/adminlte.min.css"></style>
+<style src="#/assets/css/style.css"></style>
+<style src="#/assets/css/responsive.css"></style>
 <style lang="scss">
-  /*.wrapper { display: flex; min-height: calc(100em - 101px); flex-direction: column; }*/
-  /*main { flex: 1; }*/
-  html { font-size: 62.5% !important; }
-  body { font-size: 150% !important; }
-
-  // header
-  body .wrapper .main-header { border-bottom: 7px solid #bdbdbd; max-height: none; }
-  body .wrapper .main-header .logo { background-color: #fff; text-align: left; height: 81px; }
-  body .wrapper .main-header .logo img { height: 50px; margin-top: 15px; }
+  .container { padding: 0; }
   body .wrapper .main-header .navbar { background: #fff; }
   body .wrapper .main-header .navbar-nav>li>a { text-align: center; }
   body .wrapper .main-header .navbar .nav>*:not(.active)>a { color: #bdbdbd !important; }
   body .wrapper .main-header .navbar-custom-menu li a { padding: 24px; }
   body .wrapper .main-header .navbar .nav>li>a>.label { top: 20px; right: 20px; }
   .nav>li>a:hover, .nav>li>a:active, .nav>li>a:focus { background: #fff; }
-
 
   // sidebar
   body .wrapper .main-sidebar { padding-top: 80px; background: #232a38; }
@@ -125,8 +116,6 @@
   body .wrapper .sidebar-menu li a { color: #ddd; font-size: 1em; border-left: 3px solid transparent; }
   body .wrapper .sidebar-menu li.active>a { background: #323743; border-left-color: #bbb; }
 
-
-
   // main
   /*body .wrapper .content { padding: 0; }*/
   body .wrapper .content { padding: 25px; }
@@ -138,20 +127,7 @@
 
   body .wrapper .box { padding: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); border: none; }
 
-
-
-
-
-
-  /*body .wrapper .main-header .nav .nav-item.active a {  }*/
-  /*body .wrapper .main-header .navbar .sidebar-toggle { height: 80px; padding-top: 30px; }*/
-
-  /*body .wrapper .main-header .navbar-custom-menu li a { padding: 30px 15px; }*/
-  /*body .wrapper .main-header .navbar-custom-menu .user.user-menu { background: #3a8843; margin-left: 15px; }*/
-
-
-
-  a { cursor: pointer; }
+  a { cursor: pointer; text-decoration: none; }
   body .wrapper .btn { border-radius: 5px; }
   body .wrapper .form-group { margin-bottom: 20px; }
   body .wrapper .form-group label { margin: 0 10px 5px 0; }
@@ -159,13 +135,8 @@
   body .wrapper select.form-control { padding-left: 0; }
   td.admin { width: 100px; }
   input[type=file] { margin: 8px 0; }
-
-
-
-  .modal-body { padding: 15px 20px; }
+  .modal{background:rgba(0,0,0,0.3)}
   .modal-title { font-size: 20px; }
-  .modal-body { padding: 20px 20px; }
-
 
   .table th { position: relative; background: #eee; }
   .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
@@ -177,7 +148,6 @@
 
   .vdp-datepicker .form-control { background: #fff; }
 
-  .notifications { margin-top: 87px; margin-right: 10px; }
   .vue-notification { padding: 17px 10px; margin: 5px 3px; font-size: 16px !important; box-shadow: 2px 2px 6px -3px #000;
     color: #ffffff; background: #44A4FC; border-left: 5px solid #187FE7; cursor: pointer;
     &.warn { background: #ffb648; border-left-color: #f48a06; }

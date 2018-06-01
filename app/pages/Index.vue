@@ -1,172 +1,150 @@
 <template>
-  <div>
-    <PageTitle :title="$trans('pages.index.pageTitle')"></PageTitle>
-      <div class="indexWrapper">
-        <div class="left">
-          <div class="topWrapper">
-            <div class="top">
-              <span class="fontSize">
-                <h4>Ваши Задачи</h4>
-              </span>
-              <div style="display: flex">
-                <div class="innerLeft">
-                  <span class="fontSize">
-                    <h5>Просроченные</h5>
-                  </span>
-                  <div class="deadlinedWraper">
-                    <table border="1">
-                      <tr v-for="dl in deadlined" :key="dl.id">
-                        <th>
-                          <router-link :to="{name: 'tasks', query: {type: 'show', task: dl._id}}">
-                            {{dl.name}}
-                          </router-link>
-                        </th>
-                        <td>{{$dateFormat(dl.deadline, 'd mmm yyyy, HH:MM')}}</td>
-                      </tr>
-                    </table> 
-                  </div>
-                </div>
-                <div class="innerRight">
-                  <span class="fontSize">
-                    <h5>Предстоящие</h5>
-                  </span>
-                  <div>
-                    <table border="1">
-                      <tr class="firstRow">
-                        <th>Сегодня</th>
-                        <td>{{today.length}}</td>
-                      </tr>
-                      <tr class="secondRow">
-                        <th>Завтра</th>
-                        <td>{{tomorrow.length}}</td>
-                      </tr>
-                      <tr class="thirdRow">
-                        <th>Неделя</th>
-                        <td>{{week.length}}</td>
-                      </tr>
-                    </table> 
-                  </div>
-                </div>
-              </div>
+  <div class="working_area">
+    <div class="flex">
+      <div class="flex-left">
+        <div class="white-block">
+          <p class="title">Ваши задачи</p>
+          <div class="flex">
+            <div class="table">
+              <p class="title2">Просроченные</p>
+              <table>
+                  <tr class="green">
+                      <td width="22%">Задача</td>
+                      <td width="19%">Приоритет</td>
+                      <td width="39%">Срок до</td>
+                      <td width="20%">От кого</td>
+                  </tr>
+                  <tr v-for="dl in deadlined" :key="dl._id">
+                    <td>{{dl.name}}</td>
+                    <td>{{dl.urgency ? 'Срочная' : 'Простая'}} задача</td>
+                    <td>{{$dateFormat(dl.deadline, 'd mmm yyyy, HH:MM')}}</td>
+                    <td>Admin</td>
+                  </tr>
+              </table>
+            </div>
+            <div class="table">
+                <p class="title2">Предстоящие</p>
+                <table>
+                    <tr class="green">
+                        <td width="22%">Задача</td>
+                        <td width="19%">Приоритет</td>
+                        <td width="39%">Срок до</td>
+                        <td width="20%">От кого</td>
+                    </tr>
+                    <tr v-for="task in upcomingTasks" :key="task._id">
+                    <td>{{task.name}}</td>
+                    <td>{{task.urgency ? 'Срочная' : 'Простая'}} задача</td>
+                    <td>{{$dateFormat(task.deadline, 'd mmm yyyy, HH:MM')}}</td>
+                    <td>Admin</td>
+                  </tr>
+                </table>
             </div>
           </div>
-          <!-- <div class="bottomWrapper">
-            <div class="bottom">
-              <span class="fontSize">
-                <p>Все Задачи</p>
-              </span>
-              <div class="tasksWrapper">
-                  <table border="1">
-                    <tr v-for="task in tasks" :key="task._id">
-                      <th>
-                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task.id}}">
-                          {{task.name}}
-                        </router-link>
-                      </th>
-                      <td>{{dateFormat(task.deadline)}}</td>
-                    </tr>
-                  </table> 
-              </div>
-            </div>
-          </div> -->
-          <div class="bottomWrapper">
-            <div class="bottom">
-              <span class="fontSize">
-                <h4>Служебные записки на согласовании</h4>
-              </span>
-              <div class="tasksWrapper">
-                  <table border="1">
-                    <tr v-for="memo in filteredMemos" :key="memo._id">
-                      <td>{{memo.id}}</td>
-                      <td>{{memo.name}}</td>
-                      <td>{{memo.nameFrom}}</td>
-                      <td>
-                        <button class="btn btn-default" type="button" @click="goTo('documentsByFilter', { param1: 'confirmation' }, {type: 'show', memo: memo._id})">
-                          <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
-                        </button>
-                      </td>
-                    </tr>
-                  </table> 
-              </div>
-            </div>
-          </div>
-          <!-- <div class="bottomWrapper">
-            <div class="bottom">
-              <span class="fontSize">
-                <h4>Платежные календари на согласовании</h4>
-              </span>
-              <div class="tasksWrapper">
-                  <table border="1">
-                    <tr v-for="p in ps" :key="p._id">
-                      <td>{{p.id}}</td>
-                      <td>{{p.provider}}</td>
-                      <td>{{p.contractNo}}</td>
-                      <td>
-                        <button class="btn btn-default" type="button" @click="goTo('psByFilter', { param1: 'confirmation' }, {type: 'show', p: p._id})">
-                          <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
-                        </button>
-                      </td>
-                    </tr>
-                  </table> 
-              </div>
-            </div>
-          </div> -->
         </div>
-        <div class="right">
-          <div class="dayTaskWrapper">
-            <div class="dayTask">
-              <div class="todayDate">
-                <div class="spansWrapper">
-                  <div class="row" style="font-size: 1.3em; padding: 15px 0 20px; ">
-                    <div class="col-lg-5" style="padding-top: 10px;">
-                      {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
+        <div class="white-block">
+          <p class="title">Служебные записки на соглосовании</p>
+          <table>
+            <tr class="green">
+              <td width="5%" class="id">ID</td>
+              <td width="12%">Тема</td>
+              <td width="12%">Статус</td>
+              <td width="20%">Исполнитель</td>
+              <td width="20%">Кому</td>
+              <td width="15%">Информация</td>
+              <td width="15%">Подробнее</td>
+            </tr>
+            <tr v-for="memo in filteredMemos" :key="memo._id">
+              <td>{{memo.id}}</td>
+              <td>{{memo.name}}</td>
+              <td>---</td>
+              <td>{{memo.nameTo}}</td>
+              <td>{{memo.nameFrom}}</td>
+              <td>---</td>
+              <td><a href="#" class="green_anchor">Подробнее</a></td>
+            </tr>
+
+            <!-- <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>
+                    <div class="td-flex">
+                        <a href="#" class="td-flex-item comment" data-toggle="modal" data-target="#info-order">
+                            <img src="~assets/img/comment.png">
+                            <span>12</span>
+                        </a>
+                        <a href="#" class="td-flex-item folder" data-toggle="modal" data-target="#info-order">
+                            <img src="~assets/img/folder.png">
+                            <span>12</span>
+                        </a>
                     </div>
-                    <div class="col-lg-2" style="font-size: 2em">
-                      {{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}
-                    </div>
-                    <div class="col-lg-5" style="padding-top: 10px;">
-                      {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
-                    </div>
-                  </div>
-                  <span style="font-size: 1.5em">
-                  </span>
-                  <span style="font-size: 5em">
-                  </span>                            
-                  <span style="font-size: 1.5em">
-                  </span>
-                </div>
-              </div>
-              <div class="info">
-                 <table border="1" v-if="dateTasks.length > 0">
-                    <tr>
-                      <td>Время</td>
-                      <td>Название</td>
-                      <td>Описание</td>
-                    </tr>
-                    <tr v-for="task in dateTasks" :key="task.id">
-                      <td>{{dateFormatForSec(task.deadline)}}</td>
-                      <td>
-                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task._id}}">
-                          {{task.name}}
-                        </router-link>
-                      </td>
-                      <td v-html="task.description"></td>
-                      <!-- <td>{{task.description}}</td> -->
-                    </tr>
-                  </table>
-                  <table border="1" v-else>
-                    <tr class="centered_border">
-                      <th>На эту дату нет задач</th>
-                    </tr>
-                  </table>
-              </div>
-            </div>
+                </td>
+                <td class="td_center">
+                    <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+                </td>
+            </tr> -->
+          </table>
+        </div>
+      </div>
+      <div class="flex-right">
+        <div class="calendar">
+          <div class="calendar-top">
+              <span class="week_day">
+                {{dateTasks.length > 0 ? getDateWeekDay(dateTasks[0].deadline) : getDateWeekDay(selectedDate)}}
+              </span>
+              <span class="week_day small">
+                <span>{{dateTasks.length > 0 ? new Date(dateTasks[0].deadline).getDate() : new Date(selectedDate).getDate()}}</span>
+                <span>
+                  {{dateTasks.length > 0 ? getMonthName(dateTasks[0].deadline) : getMonthName(selectedDate)}}
+                </span>
+              </span>
           </div>
-          <div class="calendarWrapper">
-            <full-calendar :events="events" :config="config" :header="header"></full-calendar>
+          <div class="calendar-arrows">
+              <div class="flex">
+                  <a href="#" class="left-arr">
+                      <img src="~assets/img/arr-left.png">
+                  </a>
+                  <div class="center-arr">
+                      <span>{{getMonthName((new Date()).getMonth() - 1)}}</span>
+                      <span class="upper">{{getMonthName(new Date())}}</span>
+                      <span>{{getMonthName((new Date()).getMonth() + 1)}}</span>
+                  </div>
+                  <a href="#" class="right-arr">
+                      <img src="~assets/img/arr-right.png">
+                  </a>
+              </div>
+          </div>
+          <div class="calendar-tasks">
+              <div class="tasks">
+                  <div class="tasks-item">
+                      <p v-for="task in dateTasks" :key="task._id">
+                        {{task.name}}
+                      </p>
+                  </div>
+              </div>
+          </div>
+          <!-- <div class="week_days">
+              <div class="flex">
+                  <a href="#">Пн</a>
+                  <a href="#">Вт</a>
+                  <a href="#">Ср</a>
+                  <a href="#">Чт</a>
+                  <a href="#">Пт</a>
+                  <a href="#">Сб</a>
+                  <a href="#">Вс</a>
+              </div>
+          </div> -->
+          
+          <div class="days">
+            <div class="flex-days">
+              <full-calendar :events="events" :config="config" :header="header"></full-calendar>
+            </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 <script>
@@ -183,6 +161,7 @@
         seoTitle: this.$trans('pages.index.seoTitle'),
         dateTasks: [],
         deadlined: [],
+        upcomingTasks: [],
         today: '',
         tomorrow: '',
         week: '',
@@ -249,9 +228,17 @@
           let dateA = new Date(a.deadline), dateB = new Date(b.deadline)
           return dateA - dateB
         })
-        this.tasks.map(task => {
-          response.data.deadlines.deadlined.map(dl => task._id === dl._id && this.deadlined.push(task))
+        this.tasks.forEach(task => {
+          response.data.deadlines.deadlined.forEach(dl => {
+            if (task._id === dl._id) this.deadlined.push(task) 
+          })
         })
+        let deadlined = response.data.deadlines.deadlined
+        let tasks = this.tasks
+        if (deadlined && deadlined.length > 0) {
+          let deadlinedIds = deadlined.map(item => item._id)
+          this.upcomingTasks = tasks.filter(item => !deadlinedIds.includes(item._id))
+        }
       }).catch(err => {
         console.log(err)
         this.notify('Временная ошибка', 'danger')
@@ -262,9 +249,6 @@
       this.$api('get', 'memos?f=confirmation').then(response => {
         this.memos = response.data
       })
-      // this.$api('get', 'paymentSchedules?f=confirmation').then(response => {
-      //   this.ps = response.data
-      // })
     },
     methods: {
       loadUsers () {
@@ -322,7 +306,6 @@
         return dayName
       },
       getMonthName (date) {
-        var month=new Date(date).getMonth();
         var arr=[
            'Январь',
            'Февраль',
@@ -337,6 +320,10 @@
            'Ноябрь',
            'Декабрь',
         ]
+        if ((typeof date) === 'number') {
+          return arr[date]
+        }
+        var month = new Date(date).getMonth();
         return arr[month]
       }
     }
@@ -344,26 +331,6 @@
 </script>
 
 <style scoped>
-  div {
-    margin: 0 auto;
-    display: block;
-    /*font-size: 0.9em;*/
-  }
-  span {
-    display: block;
-    margin: 0 auto;
-  }
-  p, h4, h5 {
-    margin: 0;
-    padding: 5px 0 5px 0;
-    height: 100%;
-    line-height: 100%;
-    text-align: center;
-    width: 100%;
-  }
-  table { width: 100%; border: 1px solid #ccc; font-size: 12px; }
-  th { padding: 5px; }
-  td { padding: 5px; }
   .indexWrapper { display: flex; align-content: flex-start; }
   .left { display: inline-block; min-height: 150px; padding: 5px; width: calc((100% / 1.5) - 5px); }
   .topWrapper { background: white; border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); padding: 15px; }

@@ -12,6 +12,7 @@ import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
 import Contragents from '#/pages/Contragents'
 import Calendar from '#/pages/Calendar'
+import Template from '#/pages/Template'
 // import PaymentSchedule from '#/pages/PaymentSchedule'
 
 import Auth from '#/layouts/Auth'
@@ -37,7 +38,7 @@ var router = new Router({
           component: Profile
         },
         {
-          path: '/panel',
+          path: '/panel/:param1',
           name: 'panel',
           component: Panel
         },
@@ -90,6 +91,11 @@ var router = new Router({
           path: '/calendar',
           name: 'calendar',
           component: Calendar,
+        },
+        {
+          path: '/templates',
+          name: 'templates',
+          component: Template,
         },
         // {
         //   path: '/ps',

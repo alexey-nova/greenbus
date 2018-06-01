@@ -1,11 +1,98 @@
 <template>
-  <div>
-    <PageTitle :title="'Сотрудники'"></PageTitle>
-
-    <PageButtons v-if="$auth().hasRole('admin')">
-      <button class="btn btn-success" @click="toggleModal('showDep', {})"><i class="fa fa-id-badge"></i>&nbsp;&nbsp;Управление отделами</button>
-      <button class="btn btn-success" @click="toggleModal('createUser', {})"><i class="fa fa-user"></i>&nbsp;&nbsp;Добавить сотрудника</button>
-    </PageButtons>
+<div class="working_area">
+  <div class="white-block no-padding">
+    <div class="padding-block">
+      <div class="flex margin-bottom align-center">
+        <div class="search">
+          <form action="" method="">
+            <input type="text" placeholder="Поиск" name="search">
+            <button class="add-button" type="submit"><img src="~assets/img/search.png"></button>
+          </form>
+        </div>
+        <div class="add" v-if="$auth().hasRole('admin')">
+          <!-- <button class="add-button"  @click="toggleModal('showDep', {})">Управление отделами</button> -->
+          <button class="add-button" @click="toggleModal('createUser', {})"><img src="~assets/img/add.png">Добавить сотрудника</button>
+        </div>
+      </div>
+      <table>
+        <tr class="green">
+          <td width="5%" class="id">
+            <div class="flex img align-center">
+              <span>ID</span>
+              <img src="~assets/img/sver.png" class="sort">
+            </div>
+          </td>
+          <td width="22%">
+            <div class="flex img align-center">
+              <input type="text" placeholder="ФИО" class="td-search-input" disabled>
+              <img src="~assets/img/search-2.png" class="td-search-button">
+            </div>
+          </td>
+          <td width="16%">
+            <div class="flex img align-center">
+              <span>Должность</span>
+              <img src="~assets/img/sver.png" class="sort">
+            </div>
+          </td>
+          <td width="10%">
+            <div class="flex img align-center">
+              <span>Отдел</span>
+            </div>
+          </td>
+          <td width="13%">
+            <div class="flex img align-center">
+              <span>Телефон</span>
+            </div>
+          </td>
+          <td width="13%">
+            <div class="flex img align-center">
+              <span>E-mail</span>
+            </div>
+          </td>
+          <td width="20%">
+            <div class="flex img align-center">
+              <span>Доп. информация</span>
+            </div>
+          </td>
+          <td class="button-width">&nbsp;</td>
+        </tr>
+        <tr v-for="user in users" :key="user._id">
+          <td class="td_center">{{user.id}}</td>
+          <td>{{user.fullname}}</td>
+          <td>{{positionName(user.positionId || user.position)}}</td>
+          <td>{{departmentName(user.departmentId || user.department)}}</td>
+          <td><a :href="`tel:${user.phone}`" class="td_link">{{user.phone}}</a></td>
+          <td><a :href="`mailto:${user.email}`" class="td_link">{{user.email}}</a></td>
+          <td>
+            <div class="flex align-center sm-w">
+              <button @click="toggleModal('createTask', { urgency: false, to: user._id })" class="add-button transparent">
+                <img src="~assets/img/add2.png">
+                <span>Поставить задачу</span>
+              </button>
+              <a @click="toggleModal('showUser', user)" class="green_anchor">Подробнее</a>
+            </div>
+          </td>
+          <!-- <td class="border-none" v-if="$auth().hasRole('admin')">
+            <div class="flex">
+              <button class="button-table edit"></button>
+              <button class="button-table remove"></button>
+            </div>
+          </td> -->
+        </tr>
+      </table>
+    </div>
+    <!-- <div class="more">
+      <button class="more-button">Еще 4 записи</button>
+    </div> -->
+  </div>
+  <ModalCreateUser :model="modal.createUser" :users="users" :departments="departments" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+    <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
+    <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+    <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
+    <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
+    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
+</div>
+  <!-- <div>
 
     <Box>
       <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
@@ -32,19 +119,10 @@
       </v-client-table>
     </Box>
 
-    <ModalCreateUser :model="modal.createUser" :users="users" :departments="departments" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
-    <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
-    <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
-    <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
-    <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
-    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
-  </div>
+  </div> -->
 </template>
 
 <script>
-  import PageTitle from '@/PageTitle'
-  import PageButtons from '@/PageButtons'
-  import Box from '@/Box'
   import ModalCreateUser from './users/ModalCreateUser'
   import ModalEditUser from './users/ModalEditUser'
   import ModalShowUser from './users/ModalShowUser'
@@ -55,9 +133,6 @@
   export default {
     plugins: ['auth'],
     components: {
-      PageTitle,
-      PageButtons,
-      Box,
       ModalCreateUser,
       ModalDeleteUser,
       ModalEditUser,
@@ -69,7 +144,10 @@
       return {
         seoTitle: this.$trans('pages.index.seoTitle'),
         users: [],
+        allDepartments: [],
         departments: [],
+        otdels: [],
+        positions: [],
         filter: false,
         modal: {
           editUser: false,
@@ -134,6 +212,8 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createUser (user) {
+        user.departmentId = user.otdel || user.department
+        user.positionId = user.position
         this.$api('post', 'users', user).then(response => {
           this.loadUsers()
           this.modal.createUser = false
@@ -187,19 +267,23 @@
       },
       loadDepartments () {
         this.$api('get', 'departments').then(response => {
-          this.departments = response.data
+          this.allDepartments = response.data.departments
+          this.departments = response.data.departments.filter(item => item.departmentType === 'head')
+          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
           let sidebar = [
             {
               link: {name: 'users'},
               isActive: () => this.$isRoute('users'),
-              name: 'Все'
+              name: 'Все',
+              imgSrc: 'folder.png'
             }
           ]
-          _.map(response.data, value => {
+          _.map(response.data.departments, value => {
             let item = _.assign({}, value)
             item.link = {name: 'usersByDep', params: {param1: value.name}}
             item.isActive = () => this.$isRoute('usersByDep', 'param1', value.name)
             item.name = value.name
+            item.imgSrc = 'folder.png'
             sidebar.push(item)
           })
 
@@ -208,6 +292,25 @@
         }).catch(e => {
           this.notify(e.response.data, 'danger')
         })
+      },
+      loadPositions () {
+        this.$api('get', 'positions').then(response => {
+          this.positions = response.data.positions
+        })
+      },
+      departmentName (_id) {
+        if (this.allDepartments.length > 0) {
+          if (this.allDepartments.filter(item => item._id === _id).length > 0) {
+            return this.allDepartments.filter(item => item._id === _id)[0].name
+          }
+        }
+      },
+      positionName (_id) {
+        if (this.positions.length > 0) {
+          if (this.positions.filter(item => item._id === _id).length > 0) {
+            return this.positions.filter(item => item._id === _id)[0].name
+          }
+        }
       },
       updateFilter () {
         let department = this.$route.params.param1
@@ -225,6 +328,7 @@
 
       this.loadUsers()
       this.loadDepartments()
+      this.loadPositions()
 
       this.updateFilter()
     },

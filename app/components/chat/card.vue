@@ -25,7 +25,7 @@
   <div class="card">
     <header>
       <img v-if="!avatar" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
-      <img v-if="avatar" class="avatar" width="40" height="40" :src="avatar">
+      <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
       <p class="name">{{$auth().user.fullname}}</p>
     </header>
     <footer>

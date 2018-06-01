@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav navbar-nav">
+  <!-- <ul class="nav navbar-nav">
     <li :class="[{active: $isRoute('index')}, 'nav-item']">
       <router-link class="nav-link" :to="{name: 'index'}" :style="{color: colors['index']}">
         <i class="fa fa-home fa-2x"></i>
@@ -31,48 +31,80 @@
       </router-link>
     </li>
 
-  </ul>
+  </ul> -->
+  <div class="header-box">
+        <div class="header-box-left">
+          <router-link :to="{name: 'index'}" class="logo">
+            <img src="~assets/img/logo.png">
+          </router-link>
+            <div class="top_menu_left">
+                <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
+                    <div class="center">
+                        <img src="~assets/img/header/1.png">
+                        <span>Рабочий стол</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'users'}" :class="[{active: $isRoute('users')}, 'menu-item']">
+                    <div class="center">
+                        <img src="~assets/img/header/2.png">
+                        <span>Сотрудники</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'index'}" class="menu-item">
+                    <div class="center">
+                        <img src="~assets/img/header/3.png">
+                        <span>Задачи</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'index'}" class="menu-item">
+                    <div class="center">
+                        <img src="~assets/img/header/4.png">
+                        <span>Документы</span>
+                    </div>
+                </router-link>
+            </div>
+        </div>
+        <div class="top_menu_right">
+            <router-link :to="{name: 'calendar'}" class="menu-item">
+                <div class="center">
+                    <img src="~assets/img/header/6.png">
+                    <span class="notifications">+1</span>
+                </div>
+            </router-link>
+            <a class="menu-item chat-call">
+                <div class="center">
+                    <img src="~assets/img/header/7.png">
+                    <span class="notifications">+22</span>
+                </div>
+            </a>
+            <a href="#" class="menu-item notifications-call">
+                <div class="center">
+                    <img src="~assets/img/header/8.png">
+                    <span class="notifications">+13</span>
+                </div>
+            </a>
+        </div>
+
+        <!--Уведомления-->
+        <div class="not-bg"></div>
+        <div class="notifications-box">
+            <div class="notifications-block">
+                <ul>
+                    <li class="bold">Уведомления</li>
+                </ul>
+                <ul class="notifications-menu">
+                    <li><a href="#">У вас нет уведомлений</a></li>
+                </ul>
+            </div>
+        </div>
+        <!--///Уведомления-->
+
+    </div>
 </template>
 
 <script>
   export default {
-    data () {
-      return {
-        colors: {
-          index: '#8487b7',
-          users: '#5b9b64',
-          usersByDep: '#5b9b64',
-          tasks: '#9b340c',
-          tasksByFilter: '#9b340c',
-          documents: '#a5a52f',
-          documentsByFilter: '#a5a52f',
-          calendar: '#1b73c9',
-          folder: '#a5a52f',
-          contragents: '#a5a52f',
-          ps: '#a5a52f',
-          psByFilter: '#a5a52f',
-        }
-      }
-    },
-    calculate: {
-      color () {
-
-      }
-    },
-    methods: {
-      changeColor () {
-        let color = this.colors[this.$route.name]
-        this.$store.commit('app/setHeaderColor', color)
-      }
-    },
-    mounted () {
-      this.changeColor()
-    },
-    watch: {
-      '$route' (to, from) {
-        this.changeColor()
-      }
-    },
+    name: 'Navigation'
   }
 </script>
 
