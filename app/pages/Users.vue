@@ -72,12 +72,12 @@
               <a @click="toggleModal('showUser', user)" class="green_anchor">Подробнее</a>
             </div>
           </td>
-          <!-- <td class="border-none" v-if="$auth().hasRole('admin')">
+          <td class="border-none" v-if="$auth().hasRole('admin')">
             <div class="flex">
-              <button class="button-table edit"></button>
-              <button class="button-table remove"></button>
+              <button class="button-table edit" @click="toggleModal('editUser', user)"></button>
+              <button class="button-table remove" @click="toggleModal('deleteUser', user) "></button>
             </div>
-          </td> -->
+          </td>
         </tr>
       </table>
     </div>
@@ -87,8 +87,8 @@
   </div>
   <ModalCreateUser :model="modal.createUser" :users="users" :departments="departments" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
-    <ModalEditUser :model="modal.editUser" :departments="departments" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
-    <ModalShowUser :model="modal.showUser" :departments="departments" @onClose="toggleModal('showUser')"></ModalShowUser>
+    <ModalEditUser :model="modal.editUser" :departments="departments" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+    <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
     <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
 </div>

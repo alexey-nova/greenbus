@@ -19,18 +19,18 @@
             </td>
             <td class="button-width">&nbsp;</td>
           </tr>
-          <tr v-for="dept in departments" :key="dept._id">
+          <tr v-if="departments.length === 0">
+            <td class="td_center">Департаменты отсутствуют</td>
+          </tr>
+          <tr v-else v-for="dept in departments" :key="dept._id">
             <td  class="td_center">{{dept.name}}</td>
             
             <td class="border-none">
               <div class="flex">
                 <button class="button-table edit" @click="toggleModal('edit', { type: 'department', name: dept.name, _id: dept._id })"></button>
-                <button class="button-table remove" @click="toggleModal('delete', { type: 'department', name: dept.name })"></button>
+                <button class="button-table remove" @click="toggleModal('delete', { type: 'department', name: dept.name, _id: dept._id })"></button>
               </div>
             </td>
-          </tr>
-          <tr v-if="departments.length === 0">
-            <td class="td_center">Департаменты отсутствуют</td>
           </tr>
         </table>
       </div>
@@ -47,25 +47,32 @@
         </div>
         <table >
           <tr class="green">
-            <td width="100%">
+            <td width="50%">
               <div>
                 <span>Название отдела</span>
               </div>
             </td>
-            <td class="button-width">&nbsp;</td>
-          </tr>
-          <tr v-for="dept in otdels" :key="dept._id">
-            <td  class="td_center">{{dept.name}}</td>
-            
-            <td class="border-none">
-              <div class="flex">
-                <!-- <button class="button-table edit" @click="toggleModal('edit', { ...dept, type: 'otdel' })"></button> -->
-                <!-- <button class="button-table remove" @click="toggleModal('delete', { type: 'otdel', name: dept.name })"></button> -->
+            <td width="50%">
+              <div>
+                Родитель
               </div>
             </td>
+            <td class="button-width">&nbsp;</td>
           </tr>
           <tr v-if="otdels.length === 0">
             <td>Отделы отсутствуют</td>
+          </tr>
+          <tr v-else v-for="dept in otdels" :key="dept._id">
+            <td  class="td_center">{{dept.name}}</td>
+            <td class="td_center">{{getParent(dept.parent)}}</td>
+            <td class="border-none">
+              <div class="flex">
+                <button
+                  class="button-table edit"
+                  @click="toggleModal('edit', { type: 'otdel', name: dept.name, _id: dept._id })"></button>
+                <button class="button-table remove" @click="toggleModal('delete', { type: 'otdel', name: dept.name, _id: dept._id })"></button>
+              </div>
+            </td>
           </tr>
         </table>
       </div>
@@ -94,26 +101,27 @@
             </td>
             <td class="button-width">&nbsp;</td>
           </tr>
-          <tr v-for="position in positions" :key="position._id">
-            <td width="50%" class="td_center">{{position.name}}</td>
-            <td width="50%" class="td_center">{{position.department.name}}</td>
-            
-            <td class="border-none">
-              <div class="flex">
-                <!-- <button class="button-table edit" @click="toggleModal('edit', { type: 'position', name: position.name, _id: position._id })"></button> -->
-                <!-- <button class="button-table remove" @click="toggleModal('delete', { type: 'position', name: position.name, _id: position._id })"></button> -->
-              </div>
-            </td>
-          </tr>
           <tr v-if="positions.length === 0">
             <td>Должности отсутствуют</td>
           </tr>
+          <tr v-else v-for="position in positions" :key="position._id">
+            <td width="50%" class="td_center">{{position.name}}</td>
+            <td width="50%" class="td_center">{{position.department && position.department.name}}</td>
+            
+            <td class="border-none">
+              <div class="flex">
+                <button class="button-table edit" @click="toggleModal('edit', { type: 'position', name: position.name, _id: position._id, department: position.department._id })"></button>
+                <button class="button-table remove" @click="toggleModal('delete', { type: 'position', name: position.name, _id: position._id })"></button>
+              </div>
+            </td>
+          </tr>
+          
         </table>
       </div>
     </div>
     <ModalCreate :model="modal.create" :departments="departments" :otdels="otdels" @onClose="toggleModal('create')" @onSubmit="submit"></ModalCreate>
     <ModalEdit :model="modal.edit" :departments="departments" :otdels="otdels" @onClose="toggleModal('edit')" @onSubmit="edit"></ModalEdit>
-    <ModalDelete :model="modal.edit" @onClose="toggleModal('edit')" @onSubmit="remove"></ModalDelete>
+    <ModalDelete :model="modal.delete" @onClose="toggleModal('delete')" @onSubmit="remove"></ModalDelete>
   </div>
 </template>
 
@@ -133,6 +141,7 @@ export default {
     return {
       departments: [],
       otdels: [],
+      allDepartments: [],
       positions: [],
       modal: {
         create: false,
@@ -142,12 +151,20 @@ export default {
     }
   },
   methods: {
+    getParent (deptId) {
+      if (this.allDepartments.filter(item => item._id === deptId)[0]) {
+        return this.allDepartments.filter(item => item._id === deptId)[0].name
+      } else {
+        return '---'
+      }
+    },
     toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
         this.modal.tab = tab ? tab : 0
       },
     loadDepartments () {
       this.$api('get', 'departments').then(response => {
+        this.allDepartments = response.data.departments
         this.departments = response.data.departments.filter(item => item.departmentType === 'head')
         this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
       })
@@ -189,36 +206,56 @@ export default {
       }
     },
     edit (data) {
-      if (data.type === 'department') {
+      if (data.type === 'department' || data.type === 'otdel') {
         this.$api('put', `departments/${data._id}`, data).then(response => {
           this.modal.edit = false
-          this.departments = this.departments.map(item => {
+          if (data.type === 'department') {
+            this.departments = this.departments.map(item => {
+              if (item._id === data._id) item.name = data.name
+              return item
+            })
+          } else if (data.type === 'otdel') {
+            this.otdels = this.otdels.map(item => {
+              if (item._id === data._id) item.name = data.name
+              return item
+            })
+          }
+          this.notify(response.data.message)
+        })
+      } else if (data.type === 'position') {
+        this.$api('put', `positions/${data._id}`, { name: data.name, department: data.department }).then(response => {
+          this.positions = this.positions.filter(item => {
+            this.modal.edit = false
             if (item._id === data._id) item.name = data.name
             return item
           })
           this.notify(response.data.message)
         })
-      } else if (data.type === 'otdel') {
-        
-      } else if (data.type === 'position') {
-
       }
     },
     remove (data) {
-
+      if (data.type === 'department' || data.type === 'otdel') {
+        this.$api('delete', `departments/${data._id}`).then(response => {
+          if (data.type === 'department') {
+            this.departments = this.departments.filter(item => item._id !== data._id)
+          } else if (data.type === 'otdel') {
+            this.otdels = this.otdels.filter(item => item._id !== data._id)
+          }
+          this.modal.delete = false
+          this.notify(response.data.message)
+        })
+      } else if (data.type === 'position') {
+        this.$api('delete', `positions/${data._id}`).then(response => {
+          this.positions = this.positions.filter(item => item._id !== data._id)
+          this.modal.delete = false
+          this.notify(response.data.message)
+        })
+      }
     }
-    // loadUsers () {
-    //   return this.$api('get', 'users').then(response => {
-    //     this.users = response.data
-    //   }).catch(e => {
-    //     this.notify(e, 'danger')
-    //   })
-    // }
   },
   beforeMount () {
     this.loadDepartments()
     this.loadPositions()
-    // this.loadUsers()
   }
 }
 </script>

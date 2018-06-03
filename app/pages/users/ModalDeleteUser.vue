@@ -1,29 +1,41 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-
-    <h3 slot="header" class="modal-title">Удалить пользователя</h3>
-
-    <div slot="content">
-      Вы действительно хотите удалить пользователя <strong>{{model.fullname}}</strong>?
+    <div class="modal-dialog small" role="document" slot="content">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <span>Удалить пользователя</span>
+              <div class="buttons">
+                <button type="button" class="button-top close body-add close-add-class" @click="close"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="profile full modal-body">
+          <span>Вы действительно хотите удалить пользователя <span class="bold">{{model.fullname}}</span>?</span>
+          <div class="flex flex-end red">
+            <button class="save pad">Удалить</button>
+          </div>
+        </div>
+        <div class="modal-footer"></div>
+      </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;&nbsp;Удалить</button>
-    </div>
-
   </Modal>
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
-    },
-    props: ['model', 'onSubmit', 'onClose'],
-    methods: {
+export default {
+  name: 'ModalDelete',
+  components: {
+    Modal
+  },
+  props: ['onSubmit', 'model', 'onClose'],
+  computed: {
+  },
+  methods: {
       close () {
         this.$emit('onClose')
       },
@@ -31,9 +43,5 @@
         this.$emit('onSubmit', this.model)
       },
     }
-  }
+}
 </script>
-
-<style lang="scss" scoped>
-
-</style>

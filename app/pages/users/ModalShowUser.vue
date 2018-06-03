@@ -1,43 +1,55 @@
 <template>
-  <Modal :isOpen="model" :type="['lg', 'read-only']">
-
-    <h3 slot="header" class="modal-title">Карточка пользователя</h3>
-
-    <div slot="content" class="row">
-      <div class="col-md-6">
-        <div class="form-group text-center">
-          <img class="avatar" src="./../../assets/design/avatar.jpg">
-          <h2>{{model.fullname}}</h2>
+  <Modal :isOpen="model" :type="['read-only']">
+    <div slot="content" class="modal-dialog small">
+      <div class="modal-content">
+            <div class="modal-header">
+                <div class="list_header">
+                    <div class="flex">
+                        <span>Карточка сотрудника</span>
+                        <div class="buttons">
+                            <button class="button-top close" @click="close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="cart flex">
+                    <div class="cart-item left">
+                        <div class="cart-img">
+                          <img v-if="avatar" :src="avatar" alt="Avatar">
+                          <img v-else src="~assets/img/nopicture.jpg">
+                        </div>
+                    </div>
+                    <div class="cart-item">
+                        <div class="cart-text">
+                            <p class="name">{{model.fullname}}</p>
+                        </div>
+                        <div class="cart-inside flex">
+                            <span>Должность:</span>
+                            <p>{{positionName}}</p>
+                        </div>
+                        <div class="cart-inside flex">
+                            <span>Отдел:</span>
+                            <p>{{departmentName}}</p>
+                        </div>
+                        <div class="cart-inside flex">
+                            <span>Телефон:</span>
+                            <p>
+                                <a class="td_link" :href="`tel:${model.phone}`">{{model.phone}}</a>
+                            </p>
+                        </div>
+                        <div class="cart-inside flex">
+                            <span>E-mail:</span>
+                            <p>
+                                <a class="td_link" :href="`mailto:${model.email}`">{{model.email}}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Должность</label>
-          <span class="form-control">{{model.position}}</span>
-        </div>
-        <div class="form-group">
-          <label>Отдел</label>
-          <span class="form-control">{{model.department}}</span>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <a :href="'mailto:'+model.email" class="form-control">{{model.email}}</a>
-        </div>
-        <div v-if="model.phone" class="form-group">
-          <label>Телефон</label>
-          <a :href="'tel:+'+parseInt(model.phone.replace(/\D+/g,''))" class="form-control">{{model.phone}}</a>
-        </div>
-        <div v-if="model.whatsapp" class="form-group">
-          <label>Telegram</label>
-          <a :href="'tel:+'+parseInt(model.whatsapp.replace(/\D+/g,''))" class="form-control">{{model.whatsapp}}</a>
-        </div>
-      </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-    </div>
-
   </Modal>
 </template>
 
@@ -48,18 +60,25 @@
     components: {
       Modal,
     },
-    props: ['model', 'departments', 'onClose'],
+    props: ['model', 'departments', 'positions', 'onClose'],
     methods: {
       close () {
         this.$emit('onClose')
       },
     },
     computed: {
-//      departmentName () {
-//        console.log(this.$props.model.department)
-//        let dep = this.$_.find(this.$props.departments, 'id', this.$props.model.department)
-//        return dep ? dep.name : ''
-//      }
+     departmentName () {
+      //  if (this.departments.filter(item => item._id === ))
+       let dep = this.$_.find(this.departments, '_id', this.model.departmentId)
+       return dep ? dep.name : ''
+     },
+     positionName () {
+       let position = this.$_.find(this.positions, '_id', this.model.positionId)
+       return position ? position.name : ''
+     },
+     avatar () {
+       return this.model.avatar ? `${this.$config('app.fileUrl')}${this.model.avatar}` : false
+     }
     }
   }
 </script>

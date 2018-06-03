@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal :isOpen="model" @onSubmit="submit">
     <div class="modal-dialog small" role="document" slot="content">
       <div class="modal-content">
         <div class="modal-header">
@@ -7,7 +7,7 @@
             <div class="flex">
               <span>Удалить {{setTypeName}}</span>
               <div class="buttons">
-                <button type="button" class="button-top close body-add close-add-class"></button>
+                <button type="button" class="button-top close body-add close-add-class" @click="close"></button>
               </div>
             </div>
           </div>
@@ -32,7 +32,7 @@ export default {
   components: {
     Modal
   },
-  props: ['onSubmit', 'model', 'departments', 'otdels', 'onClose'],
+  props: ['onSubmit', 'model', 'onClose'],
   computed: {
     setTypeName () {
       const names = {
@@ -42,6 +42,14 @@ export default {
       }
       return names[this.model.type]
     }
-  }
+  },
+  methods: {
+      close () {
+        this.$emit('onClose')
+      },
+      submit () {
+        this.$emit('onSubmit', this.model)
+      },
+    }
 }
 </script>

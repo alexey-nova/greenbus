@@ -87,8 +87,8 @@
             </div>
           </div>
         </div>
-      <div class="modal-footer"></div>
-    </div>
+        <div class="modal-footer"></div>
+      </div>
     </div>
     <!-- <h3 slot="header" class="modal-title">Создать пользователя</h3> -->
 
