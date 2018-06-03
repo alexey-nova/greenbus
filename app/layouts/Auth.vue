@@ -30,7 +30,6 @@ import Chat from '@/Chat'
 
 
 
-  .notifications { margin-top: 87px; margin-right: 10px; }
   .vue-notification { padding: 17px 10px; margin: 5px 3px; font-size: 16px !important; box-shadow: 2px 2px 6px -3px #000;
     color: #ffffff; background: #44A4FC; border-left: 5px solid #187FE7; cursor: pointer;
     &.warn { background: #ffb648; border-left-color: #f48a06; }
