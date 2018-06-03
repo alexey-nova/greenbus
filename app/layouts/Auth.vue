@@ -23,7 +23,8 @@ import Chat from '@/Chat'
 </script>
 
 <style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
-
+<style src="#/assets/css/style.css"></style>
+<style src="#/assets/css/responsive.css"></style>
 <style lang="scss">
   body { background: #d2d6de !important; }
 
