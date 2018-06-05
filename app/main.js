@@ -3,10 +3,16 @@ import Vue from 'vue'
 import store from './store/index'
 import router from './routes'
 import './plugins'
+import { Cascader } from 'element-ui'
+import lang from 'element-ui/lib/locale/lang/ru-RU'
+import locale from 'element-ui/lib/locale'
 
 import JsonExcel from 'vue-json-excel'
 
 Vue.component('downloadExcel', JsonExcel)
+
+locale.use(lang)
+Vue.use(Cascader)
 
 /*
 * Config

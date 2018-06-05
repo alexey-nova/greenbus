@@ -82,8 +82,10 @@
     },
     mounted () {
       this.height = window.innerHeight - 101
-      this.loadUsers()
-      this.loadUtil()
+      if (this.$auth().user) {
+        this.loadUsers()
+        this.loadUtil()
+      }
     }
   }
 </script>

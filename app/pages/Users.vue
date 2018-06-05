@@ -85,41 +85,13 @@
       <button class="more-button">Еще 4 записи</button>
     </div> -->
   </div>
-  <ModalCreateUser :model="modal.createUser" :users="users" :departments="departments" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
-    <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
-    <ModalEditUser :model="modal.editUser" :departments="departments" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
-    <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
-    <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
-    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
+  <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+  <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
+  <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+  <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
+  <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
+  <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
 </div>
-  <!-- <div>
-
-    <Box>
-      <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-        <div v-if="$auth().hasRole('admin')" slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('editUser', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <button class="btn btn-sm btn-default" @click="toggleModal('deleteUser', props.row)"><i class="fa fa-trash"></i></button>
-        </div>
-        <div slot="tools" slot-scope="props">
-          <div class="buttons">
-            <button class="btn btn-default" @click="toggleModal('showUser', props.row)">
-              <i class="fa fa fa-user"></i>&nbsp;&nbsp;Подробнее
-            </button>
-            <button class="btn btn-primary" @click="toggleModal('createTask', {urgency: false, to: props.row._id})">
-              <i class="fa fa fa-calendar-check-o"></i>&nbsp;&nbsp;Поставить задачу
-            </button>
-          </div>
-        </div>
-        <div slot="email" slot-scope="props">
-          <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
-        </div>
-        <div slot="phone" slot-scope="props">
-          <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
-        </div>
-      </v-client-table>
-    </Box>
-
-  </div> -->
 </template>
 
 <script>
@@ -146,6 +118,7 @@
         users: [],
         allDepartments: [],
         departments: [],
+        storeDepartments: this.$store.getters['app/departments'],
         otdels: [],
         positions: [],
         filter: false,
@@ -212,7 +185,7 @@
         this.modal[name] = model === undefined ? !this.modal[name] : model
       },
       createUser (user) {
-        user.departmentId = user.otdel || user.department
+        user.departmentId = user.department
         user.positionId = user.position
         this.$api('post', 'users', user).then(response => {
           this.loadUsers()
@@ -270,6 +243,7 @@
           this.allDepartments = response.data.departments
           this.departments = response.data.departments.filter(item => item.departmentType === 'head')
           this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
+          
           let sidebar = [
             {
               link: {name: 'users'},
@@ -288,10 +262,47 @@
           })
 
           this.$store.commit('app/setSidebar', sidebar)
-
         }).catch(e => {
           this.notify(e.response.data, 'danger')
         })
+      },
+      group (array) {
+        let heads = JSON.parse(JSON.stringify(array)).map(item => {
+          item.value = item._id
+          item.label = item.name
+          return item
+        })
+        let result = []
+        this.otdels.forEach(item => {
+          this.setChildren(heads, {...item})
+        })
+        result = [...heads]
+        return result
+      },
+      exists (arr, key, val) {
+        return arr.filter( item => item[key] === val).length > 0
+      },
+      setChildren (arr, item) {
+        const target = { ...item }
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].children) {
+            if (arr[i]._id === target.parent) {
+              if (!this.exists(arr[i].children, '_id', target._id)) {
+                target.label = target.name
+                target.value = target._id
+                arr[i].children.push(target)
+              }
+            } else {
+              this.setChildren(arr[i].children, target)
+            }
+          } else {
+            if (arr[i]._id === target.parent) {
+              target.label = target.name
+              target.value = target._id
+              arr[i].children = [target]
+            }
+          }
+        }
       },
       loadPositions () {
         this.$api('get', 'positions').then(response => {
@@ -322,14 +333,12 @@
     },
 
     mounted () {
-      if (this.$auth().hasRole('admin')) {
-        this.tableData.columns.push('admin')
-      }
-
+      // if (this.$auth().hasRole('admin')) {
+      //   this.tableData.columns.push('admin')
+      // }
       this.loadUsers()
       this.loadDepartments()
       this.loadPositions()
-
       this.updateFilter()
     },
     destroyed () {

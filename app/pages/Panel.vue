@@ -119,7 +119,7 @@
         </table>
       </div>
     </div>
-    <ModalCreate :model="modal.create" :departments="departments" :otdels="otdels" @onClose="toggleModal('create')" @onSubmit="submit"></ModalCreate>
+    <ModalCreate :model="modal.create" :departments="group(departments)" @onClose="toggleModal('create')" @onSubmit="submit"></ModalCreate>
     <ModalEdit :model="modal.edit" :departments="departments" :otdels="otdels" @onClose="toggleModal('edit')" @onSubmit="edit"></ModalEdit>
     <ModalDelete :model="modal.delete" @onClose="toggleModal('delete')" @onSubmit="remove"></ModalDelete>
   </div>
@@ -142,6 +142,7 @@ export default {
       departments: [],
       otdels: [],
       allDepartments: [],
+      storeDepartments: this.$store.getters['app/departments'],
       positions: [],
       modal: {
         create: false,
@@ -167,7 +168,47 @@ export default {
         this.allDepartments = response.data.departments
         this.departments = response.data.departments.filter(item => item.departmentType === 'head')
         this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
+        this.group([...this.departments])
+        this.group([...this.departments])
       })
+    },
+    group (array) {
+      let heads = JSON.parse(JSON.stringify(array)).map(item => {
+        item.value = item._id
+        item.label = item.name
+        return item
+      })
+      let result = []
+      this.otdels.forEach(item => {
+        this.setChildren(heads, {...item})
+      })
+      result = [...heads]
+      return result
+    },
+    exists (arr, key, val) {
+      return arr.filter( item => item[key] === val).length > 0
+    },
+    setChildren (arr, item) {
+      const target = { ...item }
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].children) {
+          if (arr[i]._id === target.parent) {
+            if (!this.exists(arr[i].children, '_id', target._id)) {
+              target.label = target.name
+              target.value = target._id
+              arr[i].children.push(target)
+            }
+          } else {
+            this.setChildren(arr[i].children, target)
+          }
+        } else {
+          if (arr[i]._id === target.parent) {
+            target.label = target.name
+            target.value = target._id
+            arr[i].children = [target]
+          }
+        }
+      }
     },
     loadPositions () {
       this.$api('get', 'positions').then(response => {
@@ -180,17 +221,21 @@ export default {
           this.modal.create = false
           this.departments.push(response.data.department)
           this.notify(response.data.message)
+        }).catch(e => {
+          Object.keys(e.response.data.errors).forEach(item => {
+            this.notify(e.response.data.errors[item].msg, 'danger')
+          })
         })
       } else if (model.type && model.type === 'otdel') {
-        model.parent = model.otdel ? model.otdel : model.department ? model.department : ''
-        if (!model.parent) {
-          this.notify('Выберите департамент/отдел', 'danger')
-          return
-        } 
+        model.parent = model.department
         this.$api('post', 'departments', { type: 'common', name: model.name, parent: model.parent }).then(response => {
           this.modal.create = false
           this.otdels.push(response.data.department)
           this.notify(response.data.message)
+        }).catch(e => {
+          Object.keys(e.response.data.errors).forEach(item => {
+            this.notify(e.response.data.errors[item].msg, 'danger')
+          })
         })
       } else if (model.type && model.type === 'position') {
         model.parent = model.otdel ? model.otdel : model.department ? model.department : ''
@@ -202,6 +247,10 @@ export default {
           this.modal.create = false
           this.positions.push(response.data.position)
           this.notify(response.data.message)
+        }).catch(e => {
+          Object.keys(e.response.data.errors).forEach(item => {
+            this.notify(e.response.data.errors[item].msg, 'danger')
+          })
         })
       }
     },

@@ -24,7 +24,7 @@
             <button type="" class="add-button auto-width form-submit">Редактировать</button>
         </div>
       </div>
-      <div class="modal-footer"></div>
+      <!-- <div class="modal-footer"></div> -->
       </div>
     </div>
   </Modal>

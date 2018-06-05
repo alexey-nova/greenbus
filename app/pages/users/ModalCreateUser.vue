@@ -39,29 +39,8 @@
             <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('dept')}]">
                 <label for="field-dept">Департамент</label>
-                <Multiselect
-                  id="field-dept"
-                  name="dept"
-                  v-validate="'required'"
-                  v-model="model.department"
-                  :options="departments"
-                  track-by="name"
-                  label="name">
-                </Multiselect>
+                <el-cascader :options="departments" change-on-select @change="setVal" :value="model.deptHierarchy"></el-cascader>
                 <span v-show="errors.has('dept')" class="help-block">{{ errors.first('dept') }}</span>
-              </div>
-              <div :class="['form-group', {'has-error': errors.has('otdel')}]">
-                <label for="field-otdel">Отдел</label>
-                <Multiselect
-                  id="field-otdel"
-                  name="otdel"
-                  v-validate="'required'"
-                  v-model="model.otdel"
-                  :options="filteredOtdels"
-                  track-by="name"
-                  label="name">
-                </Multiselect>
-                <span v-show="errors.has('otdel')" class="help-block">{{ errors.first('otdel') }}</span>
               </div>
               <div :class="['input-exc', {'has-error': errors.has('position')}]">
                 <label for="field-position">Должность</label>
@@ -162,12 +141,17 @@
       }
     },
     methods: {
+      setVal (val) {
+        this.model.department = val[val.length - 1]
+        this.filteredPositions = this.positions.filter(item => item.department._id === this.model.department)
+        this.model.deptHierarchy = val
+      },
       close () {
         this.$emit('onClose')
       },
       submit () {
-        this.model.department = this.model.department && this.model.department._id
-        this.model.otdel = this.model.otdel && this.model.otdel._id
+        // this.model.department = this.model.department && this.model.department._id
+        // this.model.otdel = this.model.otdel && this.model.otdel._id
         this.model.position = this.model.position && this.model.position._id
         this.$validator.validateAll().then(() => {
           if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
@@ -196,22 +180,6 @@
       },
     },
     mounted () {
-    },
-    watch: {
-      'model.department': function (val) {
-        if (val) {
-          this.filteredOtdels = this.otdels.filter(item => item.parent === val._id)
-        } else {
-          this.filteredOtdels = []
-        }
-      },
-      'model.otdel': function (val) {
-        if (val) {
-          this.filteredPositions = this.positions.filter(item => item.department._id === val._id || item.department._id === (this.model.department && this.model.department._id))
-        } else {
-          this.filteredPositions = []
-        }
-      },
     }
   }
 </script>

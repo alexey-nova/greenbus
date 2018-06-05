@@ -2287,3 +2287,13 @@ section.login{
     text-align: center;
     margin-bottom: 25px;
 }
+
+/* element-ui cascader */
+
+.el-cascader {
+	width: 100%;
+}
+
+.el-input__suffix {
+	height: auto;
+}
