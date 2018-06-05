@@ -267,7 +267,7 @@
         })
       },
       group (array) {
-        let heads = JSON.parse(JSON.stringify(array)).map(item => {
+        let heads = array.map(item => {
           item.value = item._id
           item.label = item.name
           return item

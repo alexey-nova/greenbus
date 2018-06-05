@@ -173,7 +173,7 @@ export default {
       })
     },
     group (array) {
-      let heads = JSON.parse(JSON.stringify(array)).map(item => {
+      let heads = array.map(item => {
         item.value = item._id
         item.label = item.name
         return item
@@ -231,6 +231,7 @@ export default {
         this.$api('post', 'departments', { type: 'common', name: model.name, parent: model.parent }).then(response => {
           this.modal.create = false
           this.otdels.push(response.data.department)
+          this.allDepartments.push(response.data.department)
           this.notify(response.data.message)
         }).catch(e => {
           Object.keys(e.response.data.errors).forEach(item => {
@@ -245,7 +246,9 @@ export default {
         }
         this.$api('post', 'positions', { department: model.parent, name: model.name }).then(response => {
           this.modal.create = false
-          this.positions.push(response.data.position)
+          const position = response.data.position
+          position.department = this.allDepartments.find(item => item._id === position.department)
+          this.positions.push(position)
           this.notify(response.data.message)
         }).catch(e => {
           Object.keys(e.response.data.errors).forEach(item => {
