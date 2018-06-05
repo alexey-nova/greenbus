@@ -65,16 +65,19 @@
         this.$emit('onClose')
       },
       submit () {
-        if (!this.model.department) {
-          this.errors.items.push({
-            id: '100',
-            field: 'department',
-            scope: null,
-            msg: 'Поле Департамент/Отдел обязательно для заполнения',
-          })
-        } else {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
+        if (this.model.type === 'otdel' || this.model.type === 'position') {
+          if (!this.model.department) {
+            this.errors.items.push({
+              id: '100',
+              field: 'department',
+              scope: null,
+              msg: 'Поле Департамент/Отдел обязательно для заполнения',
+            })
+          } else {
+            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
+          }
         }
+        
 
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
