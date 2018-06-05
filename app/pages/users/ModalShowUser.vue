@@ -26,11 +26,11 @@
                         </div>
                         <div class="cart-inside flex">
                             <span>Должность:</span>
-                            <p>{{positionName}}</p>
+                            <p>{{model.position}}</p>
                         </div>
                         <div class="cart-inside flex">
                             <span>Отдел:</span>
-                            <p>{{departmentName}}</p>
+                            <p>{{model.department}}</p>
                         </div>
                         <div class="cart-inside flex">
                             <span>Телефон:</span>

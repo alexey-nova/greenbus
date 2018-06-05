@@ -56,7 +56,7 @@
           </td>
           <td class="button-width">&nbsp;</td>
         </tr>
-        <tr v-for="user in users" :key="user._id">
+        <tr v-for="user in filteredUsers" :key="user._id">
           <td class="td_center">{{user.id}}</td>
           <td>{{user.fullname}}</td>
           <td>{{positionName(user.positionId || user.position)}}</td>
@@ -69,7 +69,7 @@
                 <img src="~assets/img/add2.png">
                 <span>Поставить задачу</span>
               </button>
-              <a @click="toggleModal('showUser', user)" class="green_anchor">Подробнее</a>
+              <a @click="toggleModal('showUser', { fullname: user.fullname, phone: user.phone, email: user.email, department: departmentName(user.departmentId), position: positionName(user.positionId)})" class="green_anchor">Подробнее</a>
             </div>
           </td>
           <td class="border-none" v-if="$auth().hasRole('admin')">
@@ -95,264 +95,288 @@
 </template>
 
 <script>
-  import ModalCreateUser from './users/ModalCreateUser'
-  import ModalEditUser from './users/ModalEditUser'
-  import ModalShowUser from './users/ModalShowUser'
-  import ModalDeleteUser from './users/ModalDeleteUser'
-  import ModalCreateTask from './tasks/ModalCreateTask'
-  import ModalShowDep from './users/ModalShowDep'
+import ModalCreateUser from './users/ModalCreateUser'
+import ModalEditUser from './users/ModalEditUser'
+import ModalShowUser from './users/ModalShowUser'
+import ModalDeleteUser from './users/ModalDeleteUser'
+import ModalCreateTask from './tasks/ModalCreateTask'
+import ModalShowDep from './users/ModalShowDep'
 
-  export default {
-    plugins: ['auth'],
-    components: {
-      ModalCreateUser,
-      ModalDeleteUser,
-      ModalEditUser,
-      ModalCreateTask,
-      ModalShowUser,
-      ModalShowDep,
-    },
-    data () {
-      return {
-        seoTitle: this.$trans('pages.index.seoTitle'),
-        users: [],
-        allDepartments: [],
-        departments: [],
-        storeDepartments: this.$store.getters['app/departments'],
-        otdels: [],
-        positions: [],
-        filter: false,
-        modal: {
-          editUser: false,
-          showUser: false,
-          createTask: false,
-          createUser: false,
-          deleteUser: false,
-          showDep: false,
-        },
-        tableData: {
-          columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
-          options: {
-            headings: {
-              id: 'ID',
-              admin: '',
-              fullname: 'Ф.И.О',
-              position: 'Должность',
-              department: 'Отдел',
-              phone: 'Телефон',
-              email: 'Email',
-              tools: 'Доп. информация',
-            },
-            orderBy: {
-              column: 'id',
-              ascending: false
-            },
-            sortable: ['id', 'fullname', 'position', 'department', 'phone', 'email',],
-            filterable: ['id', 'fullname', 'position', 'department', 'phone', 'email',],
-            customSorting: {
-              id: function (ascending) {
-                return (a, b) => {
-                  a = a.id * 1
-                  b = b.id * 1
-
-                  if (ascending)
-                    return a >= b ? 1 : -1
-
-                  return a <= b ? 1 : -1
-                }
-              }
-            },
-            columnsClasses: {
-              admin: 'admin',
-            },
+export default {
+  plugins: ['auth'],
+  components: {
+    ModalCreateUser,
+    ModalDeleteUser,
+    ModalEditUser,
+    ModalCreateTask,
+    ModalShowUser,
+    ModalShowDep
+  },
+  data () {
+    return {
+      seoTitle: this.$trans('pages.index.seoTitle'),
+      users: [],
+      allDepartments: [],
+      departments: [],
+      storeDepartments: this.$store.getters['app/departments'],
+      otdels: [],
+      positions: [],
+      filter: false,
+      modal: {
+        editUser: false,
+        showUser: false,
+        createTask: false,
+        createUser: false,
+        deleteUser: false,
+        showDep: false
+      },
+      tableData: {
+        columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
+        options: {
+          headings: {
+            id: 'ID',
+            admin: '',
+            fullname: 'Ф.И.О',
+            position: 'Должность',
+            department: 'Отдел',
+            phone: 'Телефон',
+            email: 'Email',
+            tools: 'Доп. информация'
           },
-        },
-      }
-    },
-    computed: {
-      filteredUsers: {
-        get: function () {
-          let users = _.clone(this.users)
-          if (this.filter !== false) {
-            users = _.filter(users, ['department', this.filter])
+          orderBy: {
+            column: 'id',
+            ascending: false
+          },
+          sortable: ['id', 'fullname', 'position', 'department', 'phone', 'email'],
+          filterable: ['id', 'fullname', 'position', 'department', 'phone', 'email'],
+          customSorting: {
+            id: function(ascending) {
+              return (a, b) => {
+                a = a.id * 1
+                b = b.id * 1
+
+                if (ascending) return a >= b ? 1 : -1;
+
+                return a <= b ? 1 : -1;
+              }
+            }
+          },
+          columnsClasses: {
+            admin: 'admin'
           }
-          return users
         }
       }
+    };
+  },
+  computed: {
+    filteredUsers: {
+      get: function() {
+        let users = _.clone(this.users)
+        if (this.filter !== false) {
+          users = _.filter(users, ['departmentId', this.filter])
+        }
+        return users
+      }
+    }
+  },
+  methods: {
+    toggleModal(name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model;
     },
-    methods: {
-      toggleModal (name, model) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-      },
-      createUser (user) {
-        user.departmentId = user.department
-        user.positionId = user.position
-        this.$api('post', 'users', user).then(response => {
+    createUser(user) {
+      user.departmentId = user.department
+      user.positionId = user.position
+      this.$api('post', 'users', user)
+        .then(response => {
           this.loadUsers()
           this.modal.createUser = false
           this.notify(response.data.message)
-        }).catch((e) => {
+        })
+        .catch(e => {
           this.notify('Временно нельзя создать пользователя', 'info')
           this.$log(e, 'danger')
         })
-      },
-      editUser (user) {
-        this.$api('put', 'users/' + user._id, user).then(response => {
+    },
+    editUser (user) {
+      this.$api('put', 'users/' + user._id, user)
+        .then(response => {
           this.loadUsers()
           this.modal.editUser = false
           this.notify(response.data.message)
-        }).catch(e => {
+        })
+        .catch(e => {
           this.notify('Временно нельзя редактировать пользователя', 'info')
           this.modal.editUser = false
           this.$log(e, 'danger')
         })
-      },
-      deleteUser (user) {
-        this.$api('delete', 'users/' + user._id).then(response => {
+    },
+    deleteUser(user) {
+      this.$api('delete', 'users/' + user._id)
+        .then(response => {
           this.users = this.$_.remove(this.users, u => u._id !== user._id)
           this.modal.deleteUser = false
           this.notify(response.data.message)
-        }).catch(e => {
+        })
+        .catch(e => {
           this.notify('Временно нельзя удалить пользователя', 'info')
           this.modal.deleteUser = false
           this.$log(e, 'danger')
         })
-      },
-      createTask (task) {
-        task.files = this.$_.map(task.files, (f) => f.file)
-        let data = this.$createFormData(task)
-        this.$api('post', 'tasks', data).then(response => {
+    },
+    createTask(task) {
+      task.files = this.$_.map(task.files, f => f.file)
+      let data = this.$createFormData(task)
+      this.$api('post', 'tasks', data)
+        .then(response => {
           this.modal.createTask = false
           this.notify(response.data.message)
-        }).catch(e => {
+        })
+        .catch(e => {
           this.notify('Временно нельзя создать задачу', 'info')
           this.$log(e, 'danger')
         })
-      },
-      loadUsers () {
-        this.$api('get', 'users').then(response => {
+    },
+    loadUsers() {
+      this.$api('get', 'users')
+        .then(response => {
           if (response.data && response.data.length > 0) {
-            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
+            this.users = response.data.filter(
+              user =>
+                user._id !== this.$auth().user._id && user.login !== 'admin'
+            )
           }
-        }).catch(e => {
+        })
+        .catch(e => {
           this.notify(e, 'danger')
         })
-      },
-      loadDepartments () {
-        this.$api('get', 'departments').then(response => {
+    },
+    loadDepartments() {
+      this.$api('get', 'departments')
+        .then(response => {
           this.allDepartments = response.data.departments
-          this.departments = response.data.departments.filter(item => item.departmentType === 'head')
-          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
-          
+          this.departments = response.data.departments.filter(
+            item => item.departmentType === 'head'
+          )
+          this.otdels = response.data.departments.filter(
+            item => item.departmentType === 'common'
+          )
+
           let sidebar = [
             {
-              link: {name: 'users'},
+              link: { name: 'users' },
               isActive: () => this.$isRoute('users'),
               name: 'Все',
               imgSrc: 'folder.png'
             }
           ]
-          _.map(response.data.departments, value => {
-            let item = _.assign({}, value)
-            item.link = {name: 'usersByDep', params: {param1: value.name}}
-            item.isActive = () => this.$isRoute('usersByDep', 'param1', value.name)
-            item.name = value.name
-            item.imgSrc = 'folder.png'
-            sidebar.push(item)
-          })
-
+          sidebar = [...sidebar, ...this.group(this.departments)]
+          
           this.$store.commit('app/setSidebar', sidebar)
-        }).catch(e => {
+        })
+        .catch(e => {
           this.notify(e.response.data, 'danger')
         })
-      },
-      group (array) {
-        let heads = array.map(item => {
-          item.value = item._id
-          item.label = item.name
-          return item
-        })
-        let result = []
-        this.otdels.forEach(item => {
-          this.setChildren(heads, {...item})
-        })
-        result = [...heads]
-        return result
-      },
-      exists (arr, key, val) {
-        return arr.filter( item => item[key] === val).length > 0
-      },
-      setChildren (arr, item) {
-        const target = { ...item }
-        for (let i = 0; i < arr.length; i++) {
-          if (arr[i].children) {
-            if (arr[i]._id === target.parent) {
-              if (!this.exists(arr[i].children, '_id', target._id)) {
-                target.label = target.name
-                target.value = target._id
-                arr[i].children.push(target)
-              }
-            } else {
-              this.setChildren(arr[i].children, target)
-            }
-          } else {
-            if (arr[i]._id === target.parent) {
+    },
+    group(array) {
+      var self = this
+      let heads = array.map(item => {
+        item.value = item._id
+        item.label = item.name
+        item.link = { name: 'usersByDep', params: { param1: item._id } }
+        item.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
+        item.imgSrc = 'folder.png'
+        item.imgSrc2 = 'folder-h.png'
+        return item
+      })
+      let result = []
+      this.otdels.forEach(item => {
+        this.setChildren(heads, { ...item })
+      })
+      result = [...heads]
+      return result
+    },
+    exists(arr, key, val) {
+      return arr.filter(item => item[key] === val).length > 0
+    },
+    setChildren(arr, item) {
+      var self = this
+      const target = JSON.parse(JSON.stringify(item))
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].children) {
+          if (arr[i]._id === target.parent) {
+            if (!this.exists(arr[i].children, '_id', target._id)) {
               target.label = target.name
               target.value = target._id
-              arr[i].children = [target]
+              target.link = { name: 'usersByDep', params: { param1: target._id } }
+              target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
+              target.imgSrc = 'folder.png'
+              target.imgSrc2 = 'folder-h.png'
+              arr[i].children.push(target)
             }
+          } else {
+            this.setChildren(arr[i].children, target)
+          }
+        } else {
+          if (arr[i]._id === target.parent) {
+            target.label = target.name
+            target.value = target._id
+            target.link = { name: 'usersByDep', params: { param1: target._id } }
+            target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
+            target.imgSrc2 = 'folder-h.png'
+            target.imgSrc = 'folder.png'
+            
+            arr[i].children = [target]
           }
         }
-      },
-      loadPositions () {
-        this.$api('get', 'positions').then(response => {
-          this.positions = response.data.positions
-        })
-      },
-      departmentName (_id) {
-        if (this.allDepartments.length > 0) {
-          if (this.allDepartments.filter(item => item._id === _id).length > 0) {
-            return this.allDepartments.filter(item => item._id === _id)[0].name
-          }
-        }
-      },
-      positionName (_id) {
-        if (this.positions.length > 0) {
-          if (this.positions.filter(item => item._id === _id).length > 0) {
-            return this.positions.filter(item => item._id === _id)[0].name
-          }
-        }
-      },
-      updateFilter () {
-        let department = this.$route.params.param1
-        if (department === undefined) {
-          department = false
-        }
-        this.filter = department
-      },
-    },
-
-    mounted () {
-      // if (this.$auth().hasRole('admin')) {
-      //   this.tableData.columns.push('admin')
-      // }
-      this.loadUsers()
-      this.loadDepartments()
-      this.loadPositions()
-      this.updateFilter()
-    },
-    destroyed () {
-      this.$store.commit('app/setSidebar', {})
-    },
-    watch: {
-      '$route' (to, from) {
-        this.updateFilter()
       }
     },
+    loadPositions() {
+      this.$api('get', 'positions').then(response => {
+        this.positions = response.data.positions;
+      });
+    },
+    departmentName(_id) {
+      if (this.allDepartments.length > 0) {
+        if (this.allDepartments.filter(item => item._id === _id).length > 0) {
+          return this.allDepartments.filter(item => item._id === _id)[0].name;
+        }
+      }
+    },
+    positionName(_id) {
+      if (this.positions.length > 0) {
+        if (this.positions.filter(item => item._id === _id).length > 0) {
+          return this.positions.filter(item => item._id === _id)[0].name;
+        }
+      }
+    },
+    updateFilter() {
+      let department = this.$route.params.param1
+      if (department === undefined) {
+        department = false;
+      }
+      this.filter = department;
+    }
+  },
+
+  mounted() {
+    // if (this.$auth().hasRole('admin')) {
+    //   this.tableData.columns.push('admin')
+    // }
+    this.loadUsers();
+    this.loadDepartments();
+    this.loadPositions();
+    this.updateFilter();
+  },
+  destroyed() {
+    this.$store.commit('app/setSidebar', {});
+  },
+  watch: {
+    $route(to, from) {
+      this.updateFilter();
+    }
   }
+};
 </script>
 
 <style lang="scss" scoped>
-
-
 </style>

@@ -254,7 +254,7 @@ header{
     color: #1b8442;
 }
 .list li a:hover img, .list li a.active img{
-    filter: grayscale(100%) sepia(100%) contrast(200%) hue-rotate(90deg);
+    /* filter: grayscale(100%) sepia(100%) contrast(200%) hue-rotate(90deg); */
 }
 .hidden{
     display: none;
