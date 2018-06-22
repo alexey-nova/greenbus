@@ -8,6 +8,18 @@
         font-size: 18px;
     }
 }
+@media screen and (min-width:1800px){
+    .flex.img img {
+        width: 20px;
+    }
+    .folders-item {
+        width: 12%;
+    }
+    .folders{
+        width: 86%;
+    }
+
+}
 @media screen and (max-width:1700px){
     body{
         font-size: 17px;
@@ -35,6 +47,10 @@
     }
 }
 @media screen and (max-width:1165px){
+    .green_anchor{
+        margin: 0.3em 0;
+        display: inline-block;
+    }
     body{
         font-size: 12px;
     }
@@ -48,5 +64,905 @@
     }
 }
 @media screen and (max-width:992px){
+    html,body{
+        -webkit-overflow-scrolling : touch !important;
+        overflow: auto !important;
+        height: 100% !important;
+    }
+    .select-img{
+        width: 100%;
+        margin-bottom: 1em;
+    }
+    .select-img-box{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .profile-p{
+        margin-top: 1em;
+    }
+    .profile-right .padding-block{
+        padding-top: 0;
+    }
+    .profile{
+        width: 100%;
+    }
+    .profile-left, .profile-right{
+        width: 100%;
+    }
+    .mob-flex p, .mob-flex span{
+        font-size: 1.2em;
+    }
+    .relative{
+        width: 100%;
+    }
+    .flex-days ul{
+        pointer-events: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    .week-box .flex-days {
+        padding: 0.8em 0;
+    }
+    .week-box .flex-days button span{
+        font-size: 0.9em;
+    }
+    .week-box .flex-days button{
+        font-size: 0.9em;
+    }
+    .flex-days ul{
+        font-size: 1vw;
+    }
+    .calendar-box{
+        padding: 0;
+    }
+    .left-arr img, .right-arr img {
+        width: 1.4em;
+    }
+    .center-arr span {
+        margin: 0 0px;
+    }
+    .center-arr{
+        font-size: 1.2em;
+    }
+    .month-mobile{
+        padding: 0.5em;
+        color: white;
+        background-color: #1b8442;
+    }
+    .folders-box{
+        margin-left: 0;
+    }
+    .folders-item {
+        width: 7.9em;
+        margin: 0 1.2%;
+        margin-bottom: 1em;
+    }
+    .search.m-block{
+        display: block;
+        width: 100%;
+        margin-bottom: 1em;
+    }
+    .search.m-block form{
+        width: 100%;
+    }
+    .form-item-big{
+        margin-bottom: 1em;
+    }
+    .forum-box-2{
+        padding: 0!important;
+    }
+    .modal-footer .more {
+        padding-left: 1em;
+    }
+    .modal-footer .more button{
+        font-size: 1em;
+    }
+    .info-box-text{
+        margin-bottom: 1em;
+    }
+    .forum-box .form-item-big, .forum-box .form-item-small{
+        width: 100%;
+        padding-bottom: 0.5em;
+    }
+    .white-menu.top {
+        padding-top: 1em;
+    }
+    a.categories {
+        width: 85px;
+    }
+    .white-menu.top .white-menu-box{
+        justify-content: flex-start;
+        padding-right: 1em;
+    }
+    .stage2{
+        display: none;
+    }
+    .margin2-helper{
+        padding: 0;
+    }
+    .margin-helper.margin2-helper{
+        margin-left: 0;
+        left: 0;
+    }
+    .categories-item {
+        margin-left: 0;
+        width: 45%;
+    }
+    .margin2-helper{
+        margin-left: 0;
+        left: 0;
+    }
+    .white-menu-box {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 1em;
+        padding-right: 3.5em;
+    }
+    .disabled-margin{
+        margin-top: 0;
+    }
+    .info-button {
+        width: 30%;
+        margin: 0;
+    }
+    .info-box-button{
+        justify-content: space-between;
+    }
+    .flex.align-start.border-bottom{
+        flex-direction: column;
+    }
+    .info-box-button, .info-box-text{
+        width: 100%;
+    }
+    .no-padding-m td{
+        padding: 0.2em 0.5em;
+        line-height: 0;
+    }
+    .button-top {
+        width: 23px;
+        height: 23px;
+    }
+    .dropdown-menu > li > a{
+        padding: 3px 5px;
+    }
+    .dropdown-menu{
+        font-size: unset;
+    }
+    div.jfilestyle label {
+        padding: 0.5em 0.9em;
+    }
+    .jfilestyle .glyphicon{
+        display: none;
+    }
+    .select-file label{
+        width: auto;
+    }
+    .m-align{
+        align-items: center;
+    }
+    .select-file{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1em;
+    }
+    .flex.m-center{
+        justify-content: center;
+    }
+    .form-item{
+        width: 100%;
+    }
+    .column{
+        flex-direction: column;
+    }
+    .modal-dialog{
+        width: 600px!important;
+        margin: 30px auto;
+    }
 
+    .list li{
+        position: relative;
+    }
+    .list li a.active:before{
+        position: absolute;
+        content: "";
+        background-color: #e5e5e5;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    .add-button{
+        padding: 0.8em;
+    }
+    table td{
+        padding: 1em 0.5em;
+    }
+    div.add{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    div.add .add-button{
+        margin-left: 0;
+    }
+    div.add.auto{
+         width: auto;
+     }
+    div.add.auto .add-button{
+        margin-left: 1em;
+    }
+    .search{
+        display: none;
+    }
+    .modal-body .search{
+        display: block;
+    }
+    .modal-body .search form{
+        width: 100%;
+    }
+    .add-button.transparent{
+        margin: 0;
+        color: white;
+        padding: 0;
+        border-bottom: 1px solid white;
+    }
+    .add-button.transparent:hover{
+        color: white;
+    }
+    td .button-table{
+        margin-left: 0;
+        margin-right: 0.5em;
+    }
+    tr.green .flex{
+        align-items: center;
+    }
+    .more{
+        display: none;
+    }
+    .modal .more{
+        display: block;
+    }
+    .menu-item img{
+        width: 25px;
+    }
+    .top_menu_right .menu-item img{
+        width: 27px;
+    }
+    .list li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-right: 0.5em;
+    }
+    .main-menu hr{
+        display: none;
+    }
+    body{
+        font-size: 16px;
+        padding-bottom: 65px;
+    }
+    .top_menu_left{
+        font-size: 13px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background: white;
+        z-index: 100;
+        width: 100%;
+        height: 65px;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        -webkit-box-shadow: 0px -1px 5px 0px rgba(168,168,168,1);
+        -moz-box-shadow: 0px -1px 5px 0px rgba(168,168,168,1);
+        box-shadow: 0px -1px 5px 0px rgba(168,168,168,1);
+    }
+    .top_menu_left:before{
+        position: absolute;
+        content: "";
+        top: 0.5em;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #1b8442;
+    }
+    .logo{
+        margin: 0;
+    }
+    .menu-item{
+        border: none;
+    }
+    .menu-item:hover, .menu-item.active{
+        border: none;
+    }
+
+    header {
+        border-bottom: 4px solid #1b8442;
+    }
+    .nav{
+        width: 17em;
+        position: fixed;
+        overflow: auto;
+        right: 105%;
+        top: 0;
+        z-index: 105;
+        height: auto;
+        bottom: 0;
+    }
+    .nav.active{
+        right: unset;
+        left: 0;
+    }
+    /*.container{*/
+        /*position: relative;*/
+    /*}*/
+    .top-shadow {
+        height: 0.5em;
+    }
+    .menu-item {
+        width: 9em;
+        font-size: 11px;
+    }
+    .top_menu_left .menu-item .center{
+        justify-content: flex-end;
+        padding-bottom: 7px;
+    }
+    .header-box {
+        padding-top: 0px;
+    }
+    .info-box img {
+        width: 6em;
+        margin-right: 5px;
+    }
+    .mob-flex{
+        text-align: left;
+        color: #1b8442;
+    }
+    .nav .info-container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .nav .info-box {
+        background-image: none;
+        color: white;
+        text-align: center;
+        padding: 0;
+        padding-right: 0.5em;
+        font-size: 0.9em;
+        border-bottom: 1px solid #b5b3b3;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .nav .info-box button{
+        width: 20px;
+        height: 20px;
+        background-color: transparent;
+        border: none;
+        margin: 0;
+        margin-left: 5px;
+        overflow: hidden;
+        color: transparent;
+        background-image: url("../img/mob1.png");
+        background-position: center center;
+        background-size: 100% 100%;
+    }
+    .nav .info-box button:after{
+        display: none;
+    }
+    .mobile-block{
+        display: block;
+    }
+    .table{
+        width: 100%;
+    }
+    .mobile-reverse{
+        flex-direction: column-reverse;
+    }
+    .flex-right{
+        margin: 0;
+        width: 100%;
+        text-align: center;
+    }
+    .calendar{
+        max-width: 400px;
+        margin: 0 auto;
+        margin-bottom: 1em;
+    }
+    .flex-days button {
+        height: 3em;
+        font-size: 0.9em;
+    }
+    .mob-block{
+        display: block!important;
+    }
+    .mob-none{
+        display: none!important;
+    }
+    table {
+        font-size: 0.9em;
+    }
+    .title{
+        font-size: 1.3em;
+        margin-bottom: 0.3em;
+    }
+    .table p{
+        font-size: 1.1em;
+    }
+    .mob-margin{
+        margin-bottom: 1em;
+    }
+    .td-flex-item{
+        color: white;
+        margin-left: 1em;
+    }
+    .td-flex-item img {
+        width: 16px;
+        filter: brightness(0) invert(1);
+    }
+    .chat{
+        font-size: 0.9em
+    }
+    .notifications-box{
+        z-index: 105;
+    }
+    .not-bg{
+        z-index: 104;
+    }
+    .list li{
+        border-bottom: 1px solid #b5b3b3;
+        padding-left: 1.2em;
+    }
+    .list li a {
+        padding: 0.7em 0;
+        font-size: 1em;
+    }
+    .main-menu{
+        padding: 0;
+    }
+    .chat-bg, .not-bg{
+        cursor: pointer;
+    }
+    div.add.flex-end{
+        justify-content: flex-end;
+    }
+}
+@media screen and (max-width:770px){
+    body{
+        font-size: 14px;
+    }
+    .modal-content{
+        font-size: 14px;
+    }
+}
+@media screen and (max-width:630px){
+    .filter .search input, .filter .search select {
+        padding: 0.7em;
+    }
+    .modal-dialog{
+        width: auto!important;
+    }
+    .cart.flex{
+        flex-direction: column;
+    }
+    .cart-item.left, .cart-item{
+        width: 100%;
+        text-align: center;
+    }
+    .cart-img img {
+        width: 300px;
+        margin: 0 auto;
+        display: block;
+        margin-bottom: 1em;
+    }
+    /*.cart-inside.flex{*/
+        /*text-align: left;*/
+    /*}*/
+    .cart-inside span, .cart-inside p{
+        width: 50%;
+    }
+}
+@media screen and (max-width:550px){
+    .m-align-end{
+        align-items: flex-end;
+    }
+    .c-column form{
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+    }
+    .c-column{
+        width: 49%;
+    }
+    .c-column form select{
+        width: 100%;
+        margin-left: 0;
+        margin-top: 2px;
+    }  .c-column form select{
+        width: 100%;
+        margin-left: 0;
+        margin-top: 2px;
+    }
+    .folders-item {
+        width: 22%;
+        margin: 0 5.6%;
+        margin-bottom: 1em;
+        text-align: center;
+    }
+    .profile{
+        font-size: 0.95em;
+    }
+    a.categories {
+        width: 75px;
+    }
+    .add-button{
+        font-size: 0.8em;
+    }
+    .modal-content{
+        width: 100%;
+    }
+    .modal-dialog{
+        margin: 10px;
+    }
+
+    td .button-table{
+        font-size: 1.2em;
+    }
+    .list li a {
+        padding: 1em 0;
+        font-size: 1.1em;
+    }
+    body{
+        font-size: 13px;
+    }
+    .modal-content{
+        font-size: 13px;
+    }
+    .top_menu_left{
+        justify-content: space-between;
+    }
+    .menu-item {
+        width: 24%;
+    }
+    .working_area {
+        padding: 0.5em;
+    }
+    .white-block {
+        padding: 0.5em;
+    }
+    .days{
+        padding: 0.5em;
+    }
+    .padding-block {
+        padding: 0.5em;
+    }
+    .forum-box{
+        padding: 1em;
+        padding-top: 0.6em;
+    }
+    .border-bottom {
+        padding: 0.5em;
+        padding-top: 1em;
+    }
+    .chat {
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        font-size: 1em;
+    }
+    .chat_left {
+        width: 40%;
+    }
+    .chat_right {
+        width: 60%;
+    }
+    .nav {
+        width: 22em;
+    }
+    .info-box img{
+        width: 8em;
+    }
+    .modal .add-button {
+        font-size: 1em;
+    }
+    span.date{
+        display: block;
+        margin-left: 0;
+    }
+    .list_header{
+        font-size: 1em;
+        padding: 0.7em 1em;
+    }
+    .categories-item {
+        width: 43%;
+    }
+    .m-button{
+        width: 100%;
+        flex-direction: column;
+    }
+    .m-button button{
+        width: 100%!important;
+        margin: 0.3em 0!important;
+        border-radius: 0!important;
+    }
+}
+@media screen and (max-width:430px){
+    .folders-box {
+        margin-left: 0;
+    }
+    .folders-item {
+        width: 22%;
+        margin: 0 5.6%;
+        margin-bottom: 1em;
+        text-align: center;
+    }
+    .categories-item{
+        width: 100%;
+    }
+    .info-button {
+        width: 32%;
+    }
+}
+@media screen and (max-width:400px){
+    .tasks {
+        width: 100%;
+    }
+    div.add.auto{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    div.add.auto button{
+        width: 48%;
+        margin-left: 0!important;
+        margin-top: 1em;
+    }
+    .m-column{
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    .info-button img {
+        display: none;
+    }
+    a.categories {
+        width: 30%;
+        margin: 0 1.6%;
+    }
+
+    .forum-response-box {
+        width: 100%;
+    }
+    .info-button {
+        width: 32%;
+    }
+
+    .notifications-box{
+        width: 80%;
+        font-size: 1.1em;
+    }
+    .mob-block-sm{
+        display: block;
+    }
+    .cart-img img {
+        width: 100%;
+    }
+    p.name {
+        font-size: 1.4em;
+    }
+    body{
+        padding-bottom: 62px;
+    }
+    .top_menu_left:before {
+        top: 4px;
+    }
+    .menu-item {
+        font-size: 10px;
+    }
+    .top_menu_left {
+        height: 62px;
+    }
+    .flex-days button {
+        height: 2.5em;
+    }
+
+    .chat-bg{
+        z-index: 104;
+    }
+    .chat {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        font-size: 1.2em;
+        z-index: 105;
+        height: auto;
+    }
+    .fixed-bottom button {
+        font-size: 1.1em;
+    }
+    .chat_left ul li a{
+        position: relative;
+    }
+    .chat .flex{
+        flex-direction: column;
+    }
+    .chat_left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+    }
+    .chat_right {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        display: none;
+        width: 100%;
+        height: auto;
+    }
+    .fixed-top{
+        padding-right: 4.2em;
+        position: relative;
+    }
+
+}
+
+@media screen and (max-width:350px){
+    .top_menu_right .menu-item {
+        width: 4.5em;
+    }
+    body{
+        font-size: 12px;
+    }
+    .modal-content{
+        font-size: 12px;
+    }
+    .info-button img {
+        width: 12px;
+    }
+}
+
+@media screen and (max-width:310px){
+    .relative .remove {
+        margin-top: 0.6em;
+        margin-left: 0.5em;
+    }
+    .img-span {
+        width: 2em;
+    }
+    .m-align-end{
+        align-items: center;
+    }
+    .c-column{
+        width: 100%;
+    }
+    .c-column form select{
+        margin-bottom: 0.5em;
+    }
+    div.add.auto button{
+        width: 100%;
+        margin-top:10px;
+        margin-bottom: 0;
+    }
+    .categories-item {
+        width: 98%;
+    }
+    .categories-item-img {
+        width: 35px;
+        height: 40px;
+    }
+    .info-button img {
+        display: none;
+    }
+    .filter .search .add-button {
+        width: 38px;
+    }
+    .filter-a img{
+        width: 20px;
+    }
+    .button-top {
+        width: 19px;
+        height: 19px;
+    }
+    body{
+        font-size: 11px;
+        padding-bottom: 60px;
+    }
+    .modal-content{
+        font-size: 11px;
+    }
+    .menu-item {
+        font-size: 9px;
+    }
+    .top_menu_left {
+        height: 60px;
+    }
+    .logo img {
+        width: 74%;
+    }
+    .top_menu_right{
+        width: 58%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .top_menu_right .menu-item img {
+        margin: 0;
+        width: 22px;
+    }
+    .filter .search .add-button img {
+        max-width: 13px;
+    }
+    div.add{
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+    }
+    div.add .add-button{
+        margin: 0 auto;
+        margin-bottom: 0.5em;
+    }
+    div.add .add-button img{
+        display: none;
+    }
+}
+
+@media screen and (max-width:276px){
+    .select-img-box .select-item {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .select-img-box label{
+        line-height: 15px;
+    }
+    .folders-item {
+        width: 32%;
+        margin: 0 9%;
+        margin-bottom: 1em;
+        text-align: center;
+    }
+    .nav {
+        width: 19em;
+    }
+    .info-box img{
+        width: 6em;
+    }
+
+    body{
+        font-size: 10px;
+        padding-bottom: 55px;
+    }
+    .modal-content{
+        font-size: 10px;
+    }
+    .menu-item {
+        font-size: 8px;
+    }
+    .top_menu_left {
+        height: 55px;
+    }
+    .notifications {
+        top: 0;
+    }
+
+}
+@media screen and (max-width:245px){
+    .menu-item {
+        font-size: 7px;
+    }
 }

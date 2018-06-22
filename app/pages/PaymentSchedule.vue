@@ -355,8 +355,6 @@
 <style lang="scss">
   .table .td-tools { min-width: 80px; }
 
-  .table tr {  }
-
   .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; }
   .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

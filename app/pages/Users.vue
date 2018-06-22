@@ -1,97 +1,122 @@
 <template>
-<div class="working_area">
-  <div class="white-block no-padding">
-    <div class="padding-block">
-      <div class="flex margin-bottom align-center">
-        <div class="search">
-          <form action="" method="">
-            <input type="text" placeholder="Поиск" name="search">
-            <button class="add-button" type="submit"><img src="~assets/img/search.png"></button>
-          </form>
+  <div class="working_area">
+    <div class="white-block no-padding">
+      <div class="padding-block">
+        <div class="flex margin-bottom align-center">
+          <div class="search">
+            <!-- <form>
+              <input type="text" placeholder="Поиск" name="search">
+              <button class="add-button" type="submit"><img src="~assets/img/search.png"></button>
+            </form> -->
+          </div>
+          <div class="add" v-if="$auth().hasRole('admin')">
+            <!-- <button class="add-button"  @click="toggleModal('showDep', {})">Управление отделами</button> -->
+            <button class="add-button" @click="toggleModal('createUser', {})"><img src="~assets/img/add.png">Добавить сотрудника</button>
+          </div>
         </div>
-        <div class="add" v-if="$auth().hasRole('admin')">
-          <!-- <button class="add-button"  @click="toggleModal('showDep', {})">Управление отделами</button> -->
-          <button class="add-button" @click="toggleModal('createUser', {})"><img src="~assets/img/add.png">Добавить сотрудника</button>
-        </div>
+        <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
+          <div slot="positionId" slot-scope="props">
+            <p>{{positionName(props.row.positionId || props.row.position)}}</p>
+          </div>
+          <div slot="departmentId" slot-scope="props">
+            <p>{{departmentName(props.row.departmentId || props.row.department)}}</p>
+          </div>
+          <div slot="phone" slot-scope="props">
+            <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
+          </div>
+          <div slot="email" slot-scope="props">
+            <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
+          </div>
+          <div class="flex align-center sm-w" slot="tools" slot-scope="props">
+            <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
+              <img src="~assets/img/add2.png">
+              <span>Поставить задачу</span>
+            </button>
+            <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: departmentName(props.row.departmentId), position: positionName(props.row.positionId)})" class="green_anchor">Подробнее</a>
+          </div>
+          <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
+            <button class="button-table edit" @click="toggleModal('editUser', $_.clone(props.row))"></button>
+            <button class="button-table remove" @click="toggleModal('deleteUser', props.row) "></button>
+          </div>
+        </v-client-table>
+        <!-- <table>
+          <tr class="green">
+            <td width="5%" class="id">
+              <div class="flex img align-center">
+                <span>ID</span>
+                <img src="~assets/img/sver.png" class="sort">
+              </div>
+            </td>
+            <td width="22%">
+              <div class="flex img align-center">
+                <input type="text" placeholder="ФИО" class="td-search-input" disabled>
+                <img src="~assets/img/search-2.png" class="td-search-button">
+              </div>
+            </td>
+            <td width="16%">
+              <div class="flex img align-center">
+                <span>Должность</span>
+                <img src="~assets/img/sver.png" class="sort">
+              </div>
+            </td>
+            <td width="10%">
+              <div class="flex img align-center">
+                <span>Отдел</span>
+              </div>
+            </td>
+            <td width="13%">
+              <div class="flex img align-center">
+                <span>Телефон</span>
+              </div>
+            </td>
+            <td width="13%">
+              <div class="flex img align-center">
+                <span>E-mail</span>
+              </div>
+            </td>
+            <td width="20%">
+              <div class="flex img align-center">
+                <span>Доп. информация</span>
+              </div>
+            </td>
+            <td class="button-width">&nbsp;</td>
+          </tr>
+          <tr v-for="user in filteredUsers" :key="user._id">
+            <td class="td_center">{{user.id}}</td>
+            <td>{{user.fullname}}</td>
+            <td>{{positionName(user.positionId || user.position)}}</td>
+            <td>{{departmentName(user.departmentId || user.department)}}</td>
+            <td><a :href="`tel:${user.phone}`" class="td_link">{{user.phone}}</a></td>
+            <td><a :href="`mailto:${user.email}`" class="td_link">{{user.email}}</a></td>
+            <td>
+              <div class="flex align-center sm-w">
+                <button @click="toggleModal('createTask', { urgency: false, to: user._id })" class="add-button transparent">
+                  <img src="~assets/img/add2.png">
+                  <span>Поставить задачу</span>
+                </button>
+                <a @click="toggleModal('showUser', { fullname: user.fullname, phone: user.phone, email: user.email, department: departmentName(user.departmentId), position: positionName(user.positionId)})" class="green_anchor">Подробнее</a>
+              </div>
+            </td>
+            <td class="border-none" v-if="$auth().hasRole('admin')">
+              <div class="flex">
+                <button class="button-table edit" @click="toggleModal('editUser', user)"></button>
+                <button class="button-table remove" @click="toggleModal('deleteUser', user) "></button>
+              </div>
+            </td>
+          </tr>
+        </table> -->
       </div>
-      <table>
-        <tr class="green">
-          <td width="5%" class="id">
-            <div class="flex img align-center">
-              <span>ID</span>
-              <img src="~assets/img/sver.png" class="sort">
-            </div>
-          </td>
-          <td width="22%">
-            <div class="flex img align-center">
-              <input type="text" placeholder="ФИО" class="td-search-input" disabled>
-              <img src="~assets/img/search-2.png" class="td-search-button">
-            </div>
-          </td>
-          <td width="16%">
-            <div class="flex img align-center">
-              <span>Должность</span>
-              <img src="~assets/img/sver.png" class="sort">
-            </div>
-          </td>
-          <td width="10%">
-            <div class="flex img align-center">
-              <span>Отдел</span>
-            </div>
-          </td>
-          <td width="13%">
-            <div class="flex img align-center">
-              <span>Телефон</span>
-            </div>
-          </td>
-          <td width="13%">
-            <div class="flex img align-center">
-              <span>E-mail</span>
-            </div>
-          </td>
-          <td width="20%">
-            <div class="flex img align-center">
-              <span>Доп. информация</span>
-            </div>
-          </td>
-          <td class="button-width">&nbsp;</td>
-        </tr>
-        <tr v-for="user in filteredUsers" :key="user._id">
-          <td class="td_center">{{user.id}}</td>
-          <td>{{user.fullname}}</td>
-          <td>{{positionName(user.positionId || user.position)}}</td>
-          <td>{{departmentName(user.departmentId || user.department)}}</td>
-          <td><a :href="`tel:${user.phone}`" class="td_link">{{user.phone}}</a></td>
-          <td><a :href="`mailto:${user.email}`" class="td_link">{{user.email}}</a></td>
-          <td>
-            <div class="flex align-center sm-w">
-              <button @click="toggleModal('createTask', { urgency: false, to: user._id })" class="add-button transparent">
-                <img src="~assets/img/add2.png">
-                <span>Поставить задачу</span>
-              </button>
-              <a @click="toggleModal('showUser', { fullname: user.fullname, phone: user.phone, email: user.email, department: departmentName(user.departmentId), position: positionName(user.positionId)})" class="green_anchor">Подробнее</a>
-            </div>
-          </td>
-          <td class="border-none" v-if="$auth().hasRole('admin')">
-            <div class="flex">
-              <button class="button-table edit" @click="toggleModal('editUser', user)"></button>
-              <button class="button-table remove" @click="toggleModal('deleteUser', user) "></button>
-            </div>
-          </td>
-        </tr>
-      </table>
+      <div class="more">
+        <button type="button" @click="showMoreUsers()" class="more-button" v-if="this.users.length > this.chunkedUsers.length">Показать следующие {{this.users.length - this.chunkedUsers.length}}</button>
+      </div>
     </div>
-    <!-- <div class="more">
-      <button class="more-button">Еще 4 записи</button>
-    </div> -->
+    <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+    <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
+    <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+    <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
+    <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
+    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
   </div>
-  <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
-  <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
-  <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
-  <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
-  <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
-  <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
-</div>
 </template>
 
 <script>
@@ -116,6 +141,8 @@ export default {
     return {
       seoTitle: this.$trans('pages.index.seoTitle'),
       users: [],
+      chunkedUsers: [],
+      chunkNumber: 1,
       allDepartments: [],
       departments: [],
       storeDepartments: this.$store.getters['app/departments'],
@@ -131,39 +158,39 @@ export default {
         showDep: false
       },
       tableData: {
-        columns: ['id', 'fullname', 'position', 'department', 'phone', 'email', 'tools'],
+        columns: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email', 'tools', 'admin'],
         options: {
           headings: {
             id: 'ID',
             admin: '',
-            fullname: 'Ф.И.О',
-            position: 'Должность',
-            department: 'Отдел',
+            fullname: 'ФИО',
+            positionId: 'Должность',
+            departmentId: 'Отдел',
             phone: 'Телефон',
             email: 'Email',
-            tools: 'Доп. информация'
+            tools: 'Доп. информация',
+            admin: 'Управление'
           },
           orderBy: {
             column: 'id',
             ascending: false
           },
-          sortable: ['id', 'fullname', 'position', 'department', 'phone', 'email'],
-          filterable: ['id', 'fullname', 'position', 'department', 'phone', 'email'],
+          sortable: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email'],
+          filterable: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email'],
           customSorting: {
             id: function(ascending) {
               return (a, b) => {
                 a = a.id * 1
                 b = b.id * 1
-
                 if (ascending) return a >= b ? 1 : -1;
-
                 return a <= b ? 1 : -1;
               }
             }
           },
           columnsClasses: {
             admin: 'admin'
-          }
+          },
+          highlightMatches: true
         }
       }
     };
@@ -171,7 +198,8 @@ export default {
   computed: {
     filteredUsers: {
       get: function() {
-        let users = _.clone(this.users)
+        let users = _.clone(this.chunkedUsers)
+        // users = users.length > 1 ? users.slice(0, 1) : users
         if (this.filter !== false) {
           users = _.filter(users, ['departmentId', this.filter])
         }
@@ -244,6 +272,8 @@ export default {
               user =>
                 user._id !== this.$auth().user._id && user.login !== 'admin'
             )
+            console.log('users', this.users)
+            this.chunkedUsers = this.users.slice(0, 1)
           }
         })
         .catch(e => {
@@ -269,6 +299,7 @@ export default {
               imgSrc: 'folder.png'
             }
           ]
+          // console.log('group', this.group(this.departments))
           sidebar = [...sidebar, ...this.group(this.departments)]
           
           this.$store.commit('app/setSidebar', sidebar)
@@ -355,6 +386,11 @@ export default {
         department = false;
       }
       this.filter = department;
+    },
+    showMoreUsers () {
+      const usersLength = this.users.length
+      const chunkedUsersLength = this.chunkedUsers.length
+      this.chunkedUsers = this.users.slice(0, chunkedUsersLength + 20)
     }
   },
 
@@ -373,10 +409,11 @@ export default {
   watch: {
     $route(to, from) {
       this.updateFilter();
-    }
+    },
   }
 };
 </script>
 
 <style lang="scss" scoped>
+body .wrapper .form-control { border-width: 0 0 1px; border-radius: 0; padding-left: 5px; }
 </style>

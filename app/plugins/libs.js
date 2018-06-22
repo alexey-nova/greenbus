@@ -31,8 +31,8 @@ const notify = {
           if (type === 'danger') type = 'error'
           this.$notify({
             ...options,
-            text: text,
-            type: type,
+            text,
+            type
           })
         }
       }
@@ -47,7 +47,7 @@ Validator.localize('ru', VeeValidateRu);
 Vue.use(VeeValidate, {
   locale: 'ru',
   dictionary: {
-    ru: {attributes: {
+    ru: { attributes: {
       login: 'Логин',
       email: 'Email',
       fullname: 'Ф.И.О',

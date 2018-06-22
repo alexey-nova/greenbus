@@ -1,32 +1,28 @@
 <template>
-  <div class="login-box">
-
-    <div class="login-logo">
-      <b>GreenBus</b>
-    </div>
-
-    <div class="login-box-body">
-      <p class="login-box-msg">Вход в систему</p>
-
-      <form @submit="login">
-        <div class="form-group has-feedback">
-          <input type="text" class="form-control" placeholder="Email" v-model="loginData.login">
-          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+  <section class="login">
+      <div class="login-box">
+        <h1 class="center">Green Bus</h1>
+        <div class="login-form">
+          <p class="login-center">Вход в систему</p>
+          <form @submit.prevent="login">
+            <div :class="['form-group', 'has-feedback', {'has-error': errors.has('login')}]">
+              <input id="field-login" class="form-control" placeholder="Login" v-validate="'required'" name="login" v-model="loginData.login">
+              <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+              <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
+            </div>
+            <div :class="['form-group', 'has-feedback', {'has-error': errors.has('password')}]">
+              <input id="field-password" type="password" placeholder="Пароль" v-validate="'required'" name="password" class="form-control" v-model="loginData.password">
+              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+              <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
+            </div>
+            <button class="btn btn-success btn-block">Войти</button>
+          </form>
         </div>
-        <div class="form-group has-feedback">
-          <input type="password" class="form-control" placeholder="Пароль" v-model="loginData.password">
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block btn-flat">Войти</button>
-      </form>
-    </div>
-  </div>
+      </div>
+    </section>
 </template>
 
 <script>
-  import base64js from 'base64-js'
-  import TextDecoderLite from 'text-encoder-lite'
-
   export default {
     data () {
       return {
@@ -38,19 +34,20 @@
     },
     methods: {
       login (event) {
-        event.preventDefault()
-        this.$api('post', 'auth/login', this.loginData).then(response => {
-          this.$login(response.data.token)
-          this.$router.push({name: 'index'})
-        }).catch(e => {
-          this.notify('Неверный логин или пароль', 'danger')
+        this.$validator.validateAll().then(result => {
+          if (!this.$_.size(this.errors.items)) {
+            this.$api('post', 'auth/login', this.loginData).then(response => {
+              this.$login(response.data.token)
+              this.$router.push({ name: 'index' })
+            }).catch(e => {
+              this.notify('Неверный логин или пароль', 'danger')
+            })
+          }
         })
       }
-    },
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-  .login-box { width: auto; max-width: 420px; }
-  .login-box-body { padding: 50px 50px 70px; }
 </style>

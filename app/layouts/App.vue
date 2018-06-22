@@ -140,11 +140,11 @@
   .modal{background:rgba(0,0,0,0.3)}
   .modal-title { font-size: 20px; }
 
-  .table th { position: relative; background: #eee; }
-  .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
-  .table th>span:first-child { margin-right: 30px; white-space: nowrap; position: static; }
-  .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td { border: 1px solid #ccc !important; }
-  .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { padding: 10px !important; }
+  // .table th { position: relative; background: #eee; }
+  // .table th>span:last-child { position: absolute; top: 12px; right: 10px; }
+  // .table th>span:first-child { margin-right: 30px; white-space: nowrap; position: static; }
+  // .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td { border: 1px solid #ccc !important; }
+  // .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { padding: 10px !important; }
 
   .label.label-default { background: #eee; }
 
