@@ -85,9 +85,7 @@ header{
 .logo img{
     width: 85%;
 }
-.logo img:hover{
-    filter: grayscale(100%);
-}
+
 .top_menu_left{
     display: inline-block;
     vertical-align: bottom;
@@ -2508,4 +2506,10 @@ tr.green2{
 .VueTables thead {
     background-color: #1b8442;
     color: #fff;
+}
+
+.VueTables__search-field input, .VueTables__search-field input:focus {
+	border-width: 1px !important;
+	box-shadow: none;
+	border-color: #ccc;
 }

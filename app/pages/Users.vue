@@ -4,23 +4,12 @@
       <div class="padding-block">
         <div class="flex margin-bottom align-center">
           <div class="search">
-            <!-- <form>
-              <input type="text" placeholder="Поиск" name="search">
-              <button class="add-button" type="submit"><img src="~assets/img/search.png"></button>
-            </form> -->
           </div>
           <div class="add" v-if="$auth().hasRole('admin')">
-            <!-- <button class="add-button"  @click="toggleModal('showDep', {})">Управление отделами</button> -->
             <button class="add-button" @click="toggleModal('createUser', {})"><img src="~assets/img/add.png">Добавить сотрудника</button>
           </div>
         </div>
         <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-          <div slot="positionId" slot-scope="props">
-            <p>{{positionName(props.row.positionId || props.row.position)}}</p>
-          </div>
-          <div slot="departmentId" slot-scope="props">
-            <p>{{departmentName(props.row.departmentId || props.row.department)}}</p>
-          </div>
           <div slot="phone" slot-scope="props">
             <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
           </div>
@@ -106,9 +95,6 @@
           </tr>
         </table> -->
       </div>
-      <div class="more">
-        <button type="button" @click="showMoreUsers()" class="more-button" v-if="this.users.length > this.chunkedUsers.length">Показать следующие {{this.users.length - this.chunkedUsers.length}}</button>
-      </div>
     </div>
     <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
@@ -141,8 +127,6 @@ export default {
     return {
       seoTitle: this.$trans('pages.index.seoTitle'),
       users: [],
-      chunkedUsers: [],
-      chunkNumber: 1,
       allDepartments: [],
       departments: [],
       storeDepartments: this.$store.getters['app/departments'],
@@ -158,14 +142,14 @@ export default {
         showDep: false
       },
       tableData: {
-        columns: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email', 'tools', 'admin'],
+        columns: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email', 'tools', 'admin'],
         options: {
           headings: {
             id: 'ID',
             admin: '',
             fullname: 'ФИО',
-            positionId: 'Должность',
-            departmentId: 'Отдел',
+            posName: 'Должность',
+            deptName: 'Отдел',
             phone: 'Телефон',
             email: 'Email',
             tools: 'Доп. информация',
@@ -175,8 +159,8 @@ export default {
             column: 'id',
             ascending: false
           },
-          sortable: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email'],
-          filterable: ['id', 'fullname', 'positionId', 'departmentId', 'phone', 'email'],
+          sortable: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email'],
+          filterable: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email'],
           customSorting: {
             id: function(ascending) {
               return (a, b) => {
@@ -198,11 +182,25 @@ export default {
   computed: {
     filteredUsers: {
       get: function() {
-        let users = _.clone(this.chunkedUsers)
-        // users = users.length > 1 ? users.slice(0, 1) : users
+        let users = _.clone(this.users)
         if (this.filter !== false) {
           users = _.filter(users, ['departmentId', this.filter])
         }
+
+        const departments = {}
+        _.clone(this.allDepartments).forEach(item => {
+          departments[item._id] = item.name
+        })
+        const positions = {}
+        _.clone(this.positions).forEach(item => {
+          positions[item._id] = item.name
+        })
+        
+        users = users.map(item => {
+          item.deptName = departments[item.departmentId]
+          item.posName = positions[item.positionId]
+          return item
+        })
         return users
       }
     }
@@ -268,12 +266,7 @@ export default {
       this.$api('get', 'users')
         .then(response => {
           if (response.data && response.data.length > 0) {
-            this.users = response.data.filter(
-              user =>
-                user._id !== this.$auth().user._id && user.login !== 'admin'
-            )
-            console.log('users', this.users)
-            this.chunkedUsers = this.users.slice(0, 1)
+            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
           }
         })
         .catch(e => {
@@ -385,30 +378,24 @@ export default {
       if (department === undefined) {
         department = false;
       }
-      this.filter = department;
+      this.filter = department
     },
-    showMoreUsers () {
-      const usersLength = this.users.length
-      const chunkedUsersLength = this.chunkedUsers.length
-      this.chunkedUsers = this.users.slice(0, chunkedUsersLength + 20)
-    }
   },
-
-  mounted() {
+  mounted () {
     // if (this.$auth().hasRole('admin')) {
     //   this.tableData.columns.push('admin')
     // }
-    this.loadUsers();
-    this.loadDepartments();
-    this.loadPositions();
-    this.updateFilter();
+    this.loadUsers()
+    this.loadDepartments()
+    this.loadPositions()
+    this.updateFilter()
   },
-  destroyed() {
-    this.$store.commit('app/setSidebar', {});
+  destroyed () {
+    this.$store.commit('app/setSidebar', {})
   },
   watch: {
     $route(to, from) {
-      this.updateFilter();
+      this.updateFilter()
     },
   }
 };
