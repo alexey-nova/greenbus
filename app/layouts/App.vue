@@ -17,8 +17,8 @@
           <Chat :users="users"></Chat>
           <router-view/>
       </div>
-    </div>
-    
+    </div>  
+
   </div>
 </template>
 <script>

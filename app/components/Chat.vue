@@ -6,7 +6,26 @@
     </div>
 
     <div v-if="isOpen">
-      <div id="chat" v-click-outside="closeChat">
+      <!-- <div class="chat-bg"></div> -->
+      <div v-click-outside="closeChat" class="chat">
+        <div class="flex">
+          <div class="chat_left">
+            <card :user="users[me]" v-model="search"></card>
+            <list :users="filteredUsers" :current="currentUser" @changeCurrent="changeCurrent"></list>
+          </div>
+          <div class="chat_right" v-if="currentUser==-1">
+            <div class="fixed-top">
+              <p>Чат не выбран </p>
+            </div>
+          </div>
+          <div class="chat_right" v-else>
+            <message :messages="messages" :users="users" :me="me"></message>
+            <CText @sendMessage="sendMessage"></CText>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div id="chat" v-click-outside="closeChat">
         <div class="sidebar">
           <card :user="users[me]" v-model="search"></card>
           <list :users="filteredUsers" :current="currentUser" @changeCurrent="changeCurrent"></list>
@@ -15,7 +34,7 @@
           <message :messages="messages" :users="users" :me="me"></message>
           <CText @sendMessage="sendMessage"></CText>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -70,6 +89,7 @@
         })
 
         users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
+        console.log(users)
         return users
       },
     },

@@ -607,7 +607,7 @@ input:disabled,textarea:disabled{
     height: 30em;
     overflow: hidden;
     z-index: 100;
-    display: none;
+    display: block;
 }
 .chat-bg{
     background: rgba(0, 0, 0, 0.5);
@@ -739,7 +739,7 @@ input:disabled,textarea:disabled{
 }
 .fixed-center{
     overflow-y: auto;
-    height: 100%;
+    height: 26em;
     font-size: 0.8em;
 }
 

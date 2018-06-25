@@ -71,12 +71,12 @@
                     <span class="notificationse">+1</span>
                 </div>
             </router-link>
-            <a class="menu-item chat-call">
+            <!-- <a class="menu-item chat-call" id="chatButton" @click="openChat">
                 <div class="center">
                     <img src="~assets/img/header/7.png">
-                    <span class="notificationse">+22</span>
+                    <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
                 </div>
-            </a>
+            </a> -->
             <a href="#" class="menu-item notifications-call">
                 <div class="center">
                     <img src="~assets/img/header/8.png">
@@ -103,8 +103,24 @@
 </template>
 
 <script>
+  import Chat from '@/Chat'
+
   export default {
-    name: 'Navigation'
+    name: 'Navigation',
+    components: {
+      Chat
+    },
+    data () {
+      return {
+        unreadMessagesCount: 0
+      }
+    },
+    methods: {
+      openChat () {
+        console.log(Chat)
+        Chat.openChat();
+      }
+    }
   }
 </script>
 

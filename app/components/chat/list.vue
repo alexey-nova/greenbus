@@ -18,7 +18,25 @@
 </script>
 
 <template>
-  <div class="list">
+  <div class="user_list style-15">
+    <ul>
+      <li v-for="user in users" :key="user._id"  @click="changeCurrent(user._id); readChat(user.unreadMessages.chatId)">
+        <a href="#" data-id="1" :class="{ active: user._id === current }">
+          <div class="user-block__image">
+            <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
+            <img v-if="avatar(user)" class="img-circle" width="40" height="40" :src="avatar(user)">
+            <span v-if="user.unreadMessages && user.unreadMessages.count" class="badge custom-count">{{ user.unreadMessages.count }}</span>
+          </div>
+          <div class="user_info">
+            <p class="light">{{user.fullname}}</p>
+            <!-- <p class="small italic">{{user.position}}</p> -->
+            <span>{{ user.unreadMessages && user.unreadMessages.lastMessage }}</span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <!-- <div class="list">
     <ul>
       <li v-for="user in users" :key="user._id" :class="{ active: user._id === current }" @click="changeCurrent(user._id); readChat(user.unreadMessages.chatId)">
         <div class="avatar">
@@ -32,12 +50,22 @@
         </div>
       </li>
     </ul>
-  </div>
+  </div> -->
 </template>
 
 <style scoped lang="scss">
+  .user-block__image {
+    position: relative;
+  }
+  .custom-count {
+    padding: 3px 5px;
+    background: #4e8348;
+    position: absolute;
+    left: 3em;
+    top: -0.2em;
+    font-size: .8em;
+  }
   .list {
-
     height: 292px;
     width: 220px;
     overflow-y: scroll;
@@ -72,11 +100,13 @@
       position: relative;
 
       .badge {
-        top: -5px;
-        right: -5px;
+        top: -25px;
+        left: -25px;
         padding: 3px 5px;
         background: #4e8348;
-        position: absolute;
+        position: absolute !important;
+        margin-left: 3em;
+        margin-top: -1.5em;
         font-size: .7em;
       }
     }

@@ -22,7 +22,27 @@
 </script>
 
 <template>
-  <div class="card">
+  <div class="chat_left_top">
+    <ul>
+      <li>
+        <a href="#">
+          <img v-if="!avatar" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
+          <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
+          <div class="user_info">
+            <p class="light">{{$auth().user.fullname}}</p>
+            <p class="small italic">{{$auth().user.position}}</p>
+          </div>
+        </a>
+        <div class="mob-block-sm">
+          <img src="assets/img/close.png" class="m-close">
+        </div>
+      </li>
+    </ul>
+    <div class="chat_search">
+      <input class="search" type="text" placeholder="поиск..." :value="search" @keyup="onKeyup">
+    </div>
+  </div>
+  <!-- <div class="card">
     <header>
       <img v-if="!avatar" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
       <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
@@ -31,7 +51,7 @@
     <footer>
       <input class="search" type="text" placeholder="поиск..." :value="search" @keyup="onKeyup">
     </footer>
-  </div>
+  </div> -->
 </template>
 
 <style scoped lang="scss">
