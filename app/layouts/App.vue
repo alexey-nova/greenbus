@@ -14,10 +14,10 @@
 
       <div class="container-box">
         <div class="top-shadow"></div>
-          <Chat :users="users"></Chat>
+          <!-- <Chat :users="users"></Chat> -->
           <router-view/>
       </div>
-    </div>  
+    </div>
 
   </div>
 </template>

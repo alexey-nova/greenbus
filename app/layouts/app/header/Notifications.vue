@@ -1,30 +1,30 @@
 <template>
-  <div class="navbar-custom-menu">
-    <ul class="nav navbar-nav">
-      <li class="dropdown notifications-menu" v-click-outside="close">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" @click="toggle">
-          <i class="fa fa-bell-o fa-2x"></i>
-          <span v-if="$_.size(pending)" class="label label-warning">{{$_.size(pending)}}</span>
-        </a>
-        <ul v-if="isOpen" class="dropdown-menu">
-          <li class="header"><strong>Уведомления</strong></li>
-          <li>
-            <ul class="menu">
-              <li v-for="n in pending" :key="n._id">
-                <a v-if="n.module" href="#" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
-                  {{n.description}}
-                </a>
-                <p v-else>
-                  {{n.description}}
-                </p>
-              </li>
-              <li v-if="$_.size(pending)"><a class="read-all" href="#" @click="readNots">Прочитать все уведомления</a></li>
-              <li v-if="!$_.size(pending)"><a href="#">У вас нет уведомлений</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
+  <div class="center" @click="toggle">
+    <img src="~assets/img/header/8.png">
+    <span class="notificationse" v-if="$_.size(pending)">{{$_.size(pending)}}</span>
+
+    <div v-if="isOpen" v-click-outside="close">
+      <div class="not-bg"></div>
+      <div class="notifications-box">
+        <div class="notifications-block">
+          <ul>
+            <li class="bold">Уведомления</li>
+          </ul>
+          <ul class="notifications-menu">
+            <li v-for="n in pending" :key="n._id">
+              <a v-if="n.module" href="#" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
+                {{n.description}}
+              </a>
+              <p v-else>
+                {{n.description}}
+              </p>
+            </li>
+            <li v-if="$_.size(pending)"><a class="read-all" href="#" @click="readNots">Прочитать все уведомления</a></li>
+            <li v-if="!$_.size(pending)"><a href="#">У вас нет уведомлений</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
