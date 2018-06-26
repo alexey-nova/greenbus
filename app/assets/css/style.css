@@ -1162,11 +1162,11 @@ span.red{
     outline: none!important;
     cursor: pointer;
     border-radius: 0;
-    background-image: url("../img/select.png");
+    /* background-image: url("../img/select.png"); */
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: right 3px center;
-    padding-right: 25px!important;
+    /* padding-right: 25px!important; */
 }
 .btn:after, .btn:before{
     display: none;
@@ -1177,11 +1177,11 @@ span.red{
     border-color: #d1d1d1;
     outline: none!important;
     border-radius: 0;
-    background-image: url("../img/select.png");
+    /* background-image: url("../img/select.png"); */
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: right 3px center;
-    padding-right: 25px!important;
+    /* padding-right: 25px!important; */
     box-shadow: none;
 
 }
