@@ -53,7 +53,7 @@
 						<span>Сотрудники</span>
 					</div>
 				</router-link>
-				<router-link :to="{name: 'index'}" class="menu-item">
+				<router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" class="menu-item">
 					<div class="center">
 						<img src="~assets/img/header/3.png">
 						<span>Задачи</span>
@@ -75,16 +75,16 @@
 						</div>
 				</router-link>
 				<a class="menu-item chat-call">
-						<div class="center">
-								<img src="~assets/img/header/7.png">
-								<span class="notificationse">+22</span>
-						</div>
+					<div class="center">
+						<img src="~assets/img/header/7.png">
+						<span class="notificationse">+22</span>
+					</div>
 				</a>
 				<a href="#" class="menu-item notifications-call">
-						<div class="center">
-								<img src="~assets/img/header/8.png">
-								<span class="notificationse">+13</span>
-						</div>
+					<div class="center">
+						<img src="~assets/img/header/8.png">
+						<span class="notificationse">+13</span>
+					</div>
 				</a>
 		</div>
 
@@ -105,9 +105,25 @@
 </template>
 
 <script>
-export default {
-	name: 'Navigation'
-}
+  import Chat from '@/Chat'
+
+  export default {
+    name: 'Navigation',
+    components: {
+      Chat
+    },
+    data () {
+      return {
+        unreadMessagesCount: 0
+      }
+    },
+    methods: {
+      openChat () {
+        console.log(Chat)
+        Chat.openChat();
+      }
+    }
+  }
 </script>
 
 <style lang="scss" scoped>

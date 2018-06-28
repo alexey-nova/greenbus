@@ -9,91 +9,50 @@
             <button class="add-button" @click="toggleModal('createUser', {})"><img src="~assets/img/add.png">Добавить сотрудника</button>
           </div>
         </div>
-        <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-          <div slot="phone" slot-scope="props">
-            <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
+        <div class="mob-none">
+          <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
+            <div slot="phone" slot-scope="props">
+              <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
+            </div>
+            <div slot="email" slot-scope="props">
+              <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
+            </div>
+            <div class="flex align-center sm-w" slot="tools" slot-scope="props">
+              <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
+                <img src="~assets/img/add2.png">
+                <span>Поставить задачу</span>
+              </button>
+              <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: deptName, position: props.row.posName})" class="green_anchor">Подробнее</a>
+            </div>
+            <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
+              <button class="button-table edit" @click="toggleModal('editUser', $_.clone(props.row))"></button>
+              <button class="button-table remove" @click="toggleModal('deleteUser', props.row) "></button>
+            </div>
+          </v-client-table>
+        </div>
+        <div class="mob-block">
+          <div class="search">
+            <input type="text" placeholder="Поиск" name="search" v-model="mobTableData.filter">
           </div>
-          <div slot="email" slot-scope="props">
-            <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
-          </div>
-          <div class="flex align-center sm-w" slot="tools" slot-scope="props">
-            <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
-              <img src="~assets/img/add2.png">
-              <span>Поставить задачу</span>
-            </button>
-            <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: departmentName(props.row.departmentId), position: positionName(props.row.positionId)})" class="green_anchor">Подробнее</a>
-          </div>
-          <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
-            <button class="button-table edit" @click="toggleModal('editUser', $_.clone(props.row))"></button>
-            <button class="button-table remove" @click="toggleModal('deleteUser', props.row) "></button>
-          </div>
-        </v-client-table>
-        <!-- <table>
-          <tr class="green">
-            <td width="5%" class="id">
-              <div class="flex img align-center">
-                <span>ID</span>
-                <img src="~assets/img/sver.png" class="sort">
-              </div>
-            </td>
-            <td width="22%">
-              <div class="flex img align-center">
-                <input type="text" placeholder="ФИО" class="td-search-input" disabled>
-                <img src="~assets/img/search-2.png" class="td-search-button">
-              </div>
-            </td>
-            <td width="16%">
-              <div class="flex img align-center">
-                <span>Должность</span>
-                <img src="~assets/img/sver.png" class="sort">
-              </div>
-            </td>
-            <td width="10%">
-              <div class="flex img align-center">
-                <span>Отдел</span>
-              </div>
-            </td>
-            <td width="13%">
-              <div class="flex img align-center">
-                <span>Телефон</span>
-              </div>
-            </td>
-            <td width="13%">
-              <div class="flex img align-center">
-                <span>E-mail</span>
-              </div>
-            </td>
-            <td width="20%">
-              <div class="flex img align-center">
-                <span>Доп. информация</span>
-              </div>
-            </td>
-            <td class="button-width">&nbsp;</td>
-          </tr>
-          <tr v-for="user in filteredUsers" :key="user._id">
-            <td class="td_center">{{user.id}}</td>
-            <td>{{user.fullname}}</td>
-            <td>{{positionName(user.positionId || user.position)}}</td>
-            <td>{{departmentName(user.departmentId || user.department)}}</td>
-            <td><a :href="`tel:${user.phone}`" class="td_link">{{user.phone}}</a></td>
-            <td><a :href="`mailto:${user.email}`" class="td_link">{{user.email}}</a></td>
-            <td>
-              <div class="flex align-center sm-w">
-                <button @click="toggleModal('createTask', { urgency: false, to: user._id })" class="add-button transparent">
-                  <img src="~assets/img/add2.png">
-                  <span>Поставить задачу</span>
-                </button>
-                <a @click="toggleModal('showUser', { fullname: user.fullname, phone: user.phone, email: user.email, department: departmentName(user.departmentId), position: positionName(user.positionId)})" class="green_anchor">Подробнее</a>
-              </div>
-            </td>
-            <td class="border-none" v-if="$auth().hasRole('admin')">
-              <div class="flex">
-                <button class="button-table edit" @click="toggleModal('editUser', user)"></button>
-                <button class="button-table remove" @click="toggleModal('deleteUser', user) "></button>
-              </div>
-            </td>
-          </tr>
-        </table> -->
+          <b-table
+            stacked
+            :current-page="mobTableData.currentPage"
+            :filter="mobTableData.filter"
+            @filtered="onFiltered"
+            :per-page="mobTableData.perPage"
+            :items="filteredUsers"
+            :fields="mobTableData.fields">
+            <template slot="fullname" slot-scope="row">
+              <span>{{row.value}} (<a @click="toggleModal('showUser', { fullname: row.value, phone: row.item.phone, email: row.item.email, department: row.item.deptName, position: row.item.posName})" class="green_anchor">Подробнее</a>)</span>
+            </template>
+            <template slot="actions" slot-scope="row">
+              <button class="button-table edit" @click="toggleModal('editUser', $_.clone(row.item))"></button>
+              <button class="button-table remove" @click="toggleModal('deleteUser', row.item) "></button>
+              <button class="button-table add" @click="toggleModal('createTask')"></button>
+            </template>
+          </b-table>
+          <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
+        </div>
       </div>
     </div>
     <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
@@ -112,6 +71,8 @@ import ModalShowUser from './users/ModalShowUser'
 import ModalDeleteUser from './users/ModalDeleteUser'
 import ModalCreateTask from './tasks/ModalCreateTask'
 import ModalShowDep from './users/ModalShowDep'
+import bTable from 'bootstrap-vue/es/components/table/table'
+import bPagination from 'bootstrap-vue/es/components/pagination/pagination'
 
 export default {
   plugins: ['auth'],
@@ -121,7 +82,9 @@ export default {
     ModalEditUser,
     ModalCreateTask,
     ModalShowUser,
-    ModalShowDep
+    ModalShowDep,
+    'b-table': bTable,
+    'b-pagination': bPagination
   },
   data () {
     return {
@@ -176,6 +139,21 @@ export default {
           },
           highlightMatches: true
         }
+      },
+      mobTableData: {
+        fields: [
+          { key: 'fullname', label: 'ФИО'},
+          { key: 'posName', label: 'Должность'},
+          { key: 'deptName', label: 'Департамент'},
+          { key: 'phone', label: 'Телефон'},
+          { key: 'email', label: 'E-mail'},
+          { key: 'actions', label: 'Действия'},
+        ],
+        currentPage: 1,
+        perPage: 5,
+        totalRows: 0,
+        // pageOptions: [ 5, 10, 15 ],
+        filter: null
       }
     };
   },
@@ -188,13 +166,17 @@ export default {
         }
 
         const departments = {}
-        _.clone(this.allDepartments).forEach(item => {
-          departments[item._id] = item.name
-        })
+        if (this.allDepartments && this.allDepartments.length > 0) {
+          _.clone(this.allDepartments).forEach(item => {
+            departments[item._id] = item.name
+          })
+        }
         const positions = {}
-        _.clone(this.positions).forEach(item => {
-          positions[item._id] = item.name
-        })
+        if (this.positions && this.positions.length > 0) {
+          _.clone(this.positions).forEach(item => {
+            positions[item._id] = item.name
+          })
+        }
         
         users = users.map(item => {
           item.deptName = departments[item.departmentId]
@@ -292,7 +274,6 @@ export default {
               imgSrc: 'folder.png'
             }
           ]
-          // console.log('group', this.group(this.departments))
           sidebar = [...sidebar, ...this.group(this.departments)]
           
           this.$store.commit('app/setSidebar', sidebar)
@@ -380,6 +361,10 @@ export default {
       }
       this.filter = department
     },
+    onFiltered (filteredItems) {
+      this.mobTableData.totalRows = filteredItems.length
+      this.mobTableData.currentPage = 1
+    }
   },
   mounted () {
     // if (this.$auth().hasRole('admin')) {
@@ -389,6 +374,7 @@ export default {
     this.loadDepartments()
     this.loadPositions()
     this.updateFilter()
+    this.mobTableData.totalRows = this.filteredUsers.length
   },
   destroyed () {
     this.$store.commit('app/setSidebar', {})

@@ -1,50 +1,86 @@
 <template>
-  <div>
-    <PageTitle :title="'Задачи'"></PageTitle>
-
-    <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('create', {urgency: false})"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;Создать задачу</button>
-    </PageButtons>
-
-    <Box>
-      <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
-        <div slot="admin" slot-scope="props" v-if="props.row.from === $auth().user._id">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <button class="btn btn-sm btn-default" @click="toggleModal('deleted', props.row)"><i class="fa fa-trash"></i></button>
+  <div class="working_area">
+    <div class="white-block no-padding">
+      <div class="padding-block">
+        <div class="flex margin-bottom align-center">
+					<div></div>
+					<div class="add flex-end">
+						<button class="add-button auto-width" @click="toggleModal('create', { urgency: false })"><img src="~assets/img/add.png">Создать задачу</button>
+					</div>
         </div>
-        <div slot="info" slot-scope="props">
-          <span class="tools" @click="toggleModal('show', props.row, 2)">
-            <span v-if="props.row.comments" class="label label-success">{{props.row.comments}}</span>
-            <i class="fa fa-comment-o"></i>
-          </span>
-          <span class="tools" @click="toggleModal('show', props.row, 1)">
-            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
-            <i class="fa fa-file-o"></i>
-          </span>
+        <div class="mob-none">
+          <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
+						<div slot="admin" slot-scope="props" v-if="props.row.from === $auth().user._id">
+							<button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
+							<button class="button-table remove" @click="toggleModal('deleted', props.row)"></button>
+						</div>
+            <div slot="info" slot-scope="props">
+              <span class="tools" @click="toggleModal('show', props.row, 2)">
+                <span v-if="props.row.comments" class="label label-success">{{props.row.comments}}</span>
+                <i class="fa fa-comment-o"></i>
+              </span>
+              <span class="tools" @click="toggleModal('show', props.row, 1)">
+                <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
+                <i class="fa fa-file-o"></i>
+              </span>
+            </div>
+            <div slot="tools" slot-scope="props">
+							<a class="green_anchor pointer" @click="toggleModal('show', props.row)">Подробнее</a>
+            </div>
+            <div slot="from" slot-scope="props">
+              {{getUser(props.row.from).fullname}}
+            </div>
+            <div slot="to" slot-scope="props">
+              {{getUser(props.row.to.user).fullname}}
+            </div>
+            <div slot="urgency" slot-scope="props">
+              <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
+            </div>
+            <div slot="status" slot-scope="props">
+              {{statuses[props.row.status]}}
+            </div>
+            <div slot="deadline" slot-scope="props">
+              {{$dateFormat(props.row.deadline, 'd mmm yyyy')}}
+            </div>
+          </v-client-table>
         </div>
-        <div slot="tools" slot-scope="props">
-          <button class="btn btn-default" @click="toggleModal('show', props.row)"><i class="fa fa-calendar"></i>&nbsp;&nbsp;Подробнее</button>
+        <div class="mob-block">
+					<div class="search">
+            <input type="text" placeholder="Поиск" name="search" v-model="mobTableData.filter">
+          </div>
+          <b-table
+            stacked
+            :current-page="mobTableData.currentPage"
+            :filter="mobTableData.filter"
+            @filtered="onFiltered"
+            :per-page="mobTableData.perPage"
+            :items="tasks"
+            :fields="mobTableData.fields">
+            <template slot="name" slot-scope="row">
+              <span>{{row.value}} (<a @click="toggleModal('show', {})" class="green_anchor">Подробнее</a>)</span>
+            </template>
+						<template slot="status" slot-scope="row">
+							{{statuses[row.value]}}
+						</template>
+						<template slot="deadline" slot-scope="row">
+							{{$dateFormat(row.value, 'd mmm yyyy')}}
+						</template>
+						<template slot="from" slot-scope="row">
+							{{getUser(row.value).fullname}}
+						</template>
+						<template slot="to" slot-scope="row">
+							{{getUser(row.value.user).fullname}}
+						</template>
+            <template slot="actions" slot-scope="row">
+              <button class="button-table edit" @click="toggleModal('edit', $_.clone(row.item))"></button>
+              <button class="button-table remove" @click="toggleModal('deleted', row.item) "></button>
+            </template>
+          </b-table>
+          <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
         </div>
-        <div slot="from" slot-scope="props">
-          {{getUser(props.row.from).fullname}}
-        </div>
-        <div slot="to" slot-scope="props">
-          {{getUser(props.row.to.user).fullname}}
-        </div>
-        <div slot="urgency" slot-scope="props">
-          <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
-          <!--<span v-if="!props.row.urgency" class="label label-default">Обычная</span>-->
-        </div>
-        <div slot="status" slot-scope="props">
-          {{statuses[props.row.status]}}
-        </div>
-        <div slot="deadline" slot-scope="props">
-          {{$dateFormat(props.row.deadline, 'd mmm yyyy')}}
-        </div>
-      </v-client-table>
-    </Box>
-
-    <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
+      </div>
+    </div>
+		<ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
@@ -52,23 +88,21 @@
 </template>
 
 <script>
-  import PageTitle from '@/PageTitle'
-  import PageButtons from '@/PageButtons'
-  import Box from '@/Box'
   import ModalCreate from './tasks/ModalCreateTask'
   import ModalEdit from './tasks/ModalEditTask'
   import ModalDelete from './tasks/ModalDeleteTask'
-  import ModalShow from './tasks/ModalShowTask'
+	import ModalShow from './tasks/ModalShowTask'
+	import bTable from 'bootstrap-vue/es/components/table/table'
+	import bPagination from 'bootstrap-vue/es/components/pagination/pagination'
 
   export default {
     components: {
-      PageTitle,
-      PageButtons,
-      Box,
       ModalCreate,
       ModalEdit,
       ModalDelete,
-      ModalShow,
+			ModalShow,
+			'b-table': bTable,
+    	'b-pagination': bPagination
     },
     data () {
       return {
@@ -89,11 +123,11 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'info', 'tools', 'admin'],
+          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools', 'admin'],
           options: {
             headings: {
               id: 'ID',
-              admin: '',
+              admin: 'Управление',
               name: 'Задача',
               description: 'Описание',
               urgency: 'Приоритет',
@@ -101,8 +135,7 @@
               deadline: 'Срок до',
               from: 'От кого',
               to: 'Ответственный',
-              info: 'Инфо',
-              tools: 'Доп. информация',
+              tools: 'Информация',
             },
             orderBy: {
               column: 'id',
@@ -127,10 +160,24 @@
               admin: 'admin',
             },
           },
-        },
+				},
+				mobTableData: {
+					fields: [
+						{ key: 'name', label: 'Задача'},
+						{ key: 'status', label: 'Статус'},
+						{ key: 'deadline', label: 'Срок до'},
+						{ key: 'from', label: 'От кого'},
+						{ key: 'to', label: 'Ответственный'},
+						{ key: 'actions', label: 'Управление'},
+					],
+					currentPage: 1,
+					perPage: 5,
+					totalRows: 0,
+					// pageOptions: [ 5, 10, 15 ],
+					filter: null
+				}
       }
     },
-
     methods: {
       toggleModal (name, model, tab) {
         this.modal[name] = model === undefined ? !this.modal[name] : model
@@ -217,7 +264,8 @@
       },
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-        this.tasks = []
+				this.tasks = []
+				
         return this.$api('get', 'tasks' + filter).then(response => {
           return this.tasks = response.data.tasks
         }).catch(e => {
@@ -248,14 +296,19 @@
             this.toggleModal(type, (this.$_.find(tasks, ['_id', taskId])))
           })
         }
-      }
+			},
+			onFiltered (filteredItems) {
+				this.mobTableData.totalRows = filteredItems.length
+				this.mobTableData.currentPage = 1
+			}
     },
 
     mounted () {
       this.loadTasks()
       this.loadUsers()
       this.setSidebar()
-      this.showTaskFromQuery()
+			this.showTaskFromQuery()
+    	this.mobTableData.totalRows = this.tasks.length
     },
     destroyed () {
       this.$store.commit('app/setSidebar', {})

@@ -1,5 +1,5 @@
 <template>
-  <Animation enter="fadeIn">
+  <Animation>
     <div v-if="isOpen" :class="['modal', 'show'].concat(typeClasses)" tabindex="-1" role="dialog" aria-hidden="true">
       <div :class="['modal-dialog']" role="document">
         <div>

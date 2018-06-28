@@ -220,7 +220,7 @@ header{
     top: 0;
     width: 15px;
     bottom: 0;
-    background-image: url("../img/left_menu/arrow.png");
+    /* background-image: url("../img/left_menu/arrow.png"); */
     background-size: 14px;
     background-position: right center;
     background-repeat: no-repeat;
@@ -605,7 +605,7 @@ input:disabled,textarea:disabled{
     height: 30em;
     overflow: hidden;
     z-index: 100;
-    display: none;
+    display: block;
 }
 .chat-bg{
     background: rgba(0, 0, 0, 0.5);
@@ -737,7 +737,7 @@ input:disabled,textarea:disabled{
 }
 .fixed-center{
     overflow-y: auto;
-    height: 100%;
+    height: 26em;
     font-size: 0.8em;
 }
 
@@ -880,7 +880,7 @@ input:disabled,textarea:disabled{
 .search input{
     padding: 0.5em;
     display: inline-block;
-    width: 90%;
+    width: 100%;
     font-size: 0.8em;
 }
 .align-center{
@@ -912,7 +912,8 @@ input:disabled,textarea:disabled{
 .button-table.add{
     background-image: url("../img/add.png");
     background-size: 1.5em;
-    background-color: #1b8442;
+		background-color: #1b8442;
+		display: inline-block;
 }
 .button-table.download{
     background-image: url("../img/left.png");
@@ -1160,11 +1161,10 @@ span.red{
     outline: none!important;
     cursor: pointer;
     border-radius: 0;
-    background-image: url("../img/select.png");
+    /* background-image: url("../img/select.png"); */
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: right 3px center;
-    padding-right: 25px!important;
 }
 .btn:after, .btn:before{
     display: none;
@@ -1175,11 +1175,10 @@ span.red{
     border-color: #d1d1d1;
     outline: none!important;
     border-radius: 0;
-    background-image: url("../img/select.png");
+    /* background-image: url("../img/select.png"); */
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: right 3px center;
-    padding-right: 25px!important;
     box-shadow: none;
 
 }
@@ -2033,14 +2032,13 @@ span.date{
     margin-left: 1.5%;
 }
 select{
-    background-image: url("../img/select.png");
-    background-size: 16px;
-    background-repeat: no-repeat;
-    background-position: right 3px center;
-    padding-right: 25px!important;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+	/* background-image: url("../img/select.png"); */
+	background-size: 16px;
+	background-repeat: no-repeat;
+	background-position: right 3px center;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 
 .sm-margin{
@@ -2512,4 +2510,18 @@ tr.green2{
 	border-width: 1px !important;
 	box-shadow: none;
 	border-color: #ccc;
+}
+
+/* b-pagination */
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+	background-color: #1b8442;
+	border-color: #1b8442;
+}
+
+.pagination > li > a, .pagination > li > span {
+    color: #1b8442;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    color: #1b8442;
 }

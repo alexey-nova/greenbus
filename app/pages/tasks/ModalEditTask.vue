@@ -1,92 +1,100 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit" type="lg">
-
-    <h3 slot="header" class="modal-title">Редактировать задачу</h3>
-
-    <div slot="content" class="row">
-
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('name')}]">
-          <label for="field-name">Название *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name" />
-          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+<div class="modal-dialog" slot="content">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <span>Редактировать задачу</span>
+              <div class="buttons">
+                <button class="button-top close" type="button" @click="close"></button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div :class="['form-group', {'has-error': errors.has('description')}]">
-          <label for="field-description">Описание *</label>
-          <ckeditor
-            id="field-description"
-            v-model="model.description"
-            v-validate="'required'"
-            :config="ckEditorConfig">
-          </ckeditor>
-          <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
+        <div class="profile full modal-body">
+          <div class="flex column">
+            <div class="form-item">
+              <div :class="['form-group', {'has-error': errors.has('name')}]">
+                <label for="field-name">Тема *</label>
+                <input id="field-name" v-validate="'required'" name="name" v-model="model.name" />
+                <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+              </div>
+              <div :class="['form-group', {'has-error': errors.has('description')}]">
+                <label for="field-description">Описание *</label>
+                <ckeditor
+                  id="field-description"
+                  v-model="model.description"
+                  v-validate="'required'"
+                  :config="ckEditorConfig">
+                </ckeditor>
+                <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
+              </div>
+            </div>
+            <div class="form-item">
+              <div :class="['form-group', {'has-error': errors.has('to')}]">
+                <label for="field-to">Ответственный *</label>
+                <Multiselect
+                  id="field-to"
+                  name="to"
+                  v-validate="'required'"
+                  v-model="selectedUser"
+                  :options="usersForSelect"
+                  track-by="name"
+                  label="name">
+                </Multiselect>
+                <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
+              </div>
+              <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
+                <label for="field-to">Соисполнители *</label>
+                <Multiselect
+                  id="field-coExecutives"
+                  name="coExecutives"
+                  v-model="selectedUsers"
+                  :options="usersForSelect"
+                  :close-on-select="false"
+                  :hide-selected="true"
+                  :clear-on-select="false"
+                  :multiple="true"
+                  track-by="name"
+                  label="name">
+                </Multiselect>
+                <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
+              </div>
+              <div class="sm-margin"></div>
+              <div :class="['form-group', {'has-error': errors.has('deadline')}]">
+                <label>Срок сдачи *</label>
+                <Datepicker language="ru" name="deadline" v-validate="'required'" v-model="model.deadline"></Datepicker>
+                <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
+              </div>
+              <div class="flex align-end column m-center m-align">
+                <div class="select-file">
+                  <div :class="['form-group', {'has-error': errors.has('urgency')}]">
+                    <label for="field-urgency">Важно</label>
+                    <el-switch id="field-urgency" v-validate="'required'" name="urgency" v-model="model.urgency"></el-switch>
+                    <span v-show="errors.has('urgency')" class="help-block">{{ errors.first('urgency') }}</span>
+                  </div>
+                  <file-upload
+                    class="btn btn-default"
+                    :multiple="true"
+                    v-model="model.files"
+                    ref="upload">
+                    Прикрепить файлы
+                  </file-upload>
+                  <ul style="list-style: none; padding: 0;">
+                    <li v-for="(file, index) in model.files" :key="index">
+                      <span>{{file.name}}</span>
+                    </li>
+                  </ul>
+                </div>
+                <button type="submit" class="save pad2">Сохранить</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div :class="['form-group', {'has-error': errors.has('urgency')}]">
-          <label for="field-urgency">Важно</label>
-          <el-switch id="field-urgency" v-validate="'required'" name="urgency" v-model="model.urgency"></el-switch>
-          <span v-show="errors.has('urgency')" class="help-block">{{ errors.first('urgency') }}</span>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('to')}]">
-          <label for="field-to">Ответственный *</label>
-          <Multiselect
-            id="field-to"
-            name="to"
-            v-validate="'required'"
-            v-model="selectedUser"
-            :options="usersForSelect"
-            track-by="name"
-            label="name">
-          </Multiselect>
-          <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
-          <label for="field-to">Соисполнители *</label>
-          <Multiselect
-            id="field-coExecutives"
-            name="coExecutives"
-            v-model="selectedUsers"
-            :options="usersForSelect"
-            :close-on-select="false"
-            :hide-selected="true"
-            :clear-on-select="false"
-            :multiple="true"
-            track-by="name"
-            label="name">
-          </Multiselect>
-          <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('deadline')}]">
-          <label>Срок сдачи *</label>
-          <Datepicker input-class="form-control" language="ru" name="deadline" v-validate="'required'" v-model="model.deadline"></Datepicker>
-          <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
-        </div>
-        <div class="form-group">
-          <label class="custom-file-label">Прикрепить файлы</label>
-          <br />
-          <file-upload
-            class="btn btn-default"
-            :multiple="true"
-            v-model="model.files"
-            ref="upload">
-            <i class="fa fa-plus"></i>
-            Выбрать файлы
-          </file-upload>
-          <ul style="list-style: none; padding: 0;">
-            <li v-for="file in model.files" :key="file.id">
-              <span>{{file.name}}</span>
-            </li>
-          </ul>
-        </div>
+        <div class="modal-footer"></div>
       </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Создать</button>
-    </div>
-
   </Modal>
 </template>
 
@@ -149,7 +157,7 @@
         },
         set: function (newValue) {
           this.$props.model.coExecutives = this.$_.map(newValue, m => {
-            return {_id: m._id, user: m._id}
+            return {_id: m._id, user: m._id, name: this.getUser(m._id).fullname}
           })
         }
       }
@@ -171,19 +179,14 @@
             msg: 'Поле Кому обязательно для заполнения',
           })
         }
+        this.model.coExecutives = this.selectedUsers
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             this.$emit('onSubmit', this.model)
           }
         }).catch(() => {
         })
-      },
-//      addFiles (e) {
-//        let files = e.target.files || e.dataTransfer.files
-//        if (!files.length) return
-//
-//        this.$props.model.files = files
-//      }
+      }
     }
   }
 </script>
