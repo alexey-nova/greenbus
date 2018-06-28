@@ -1130,6 +1130,9 @@ span.red{
     font-size: 1em;
     border: 1px solid #d1d1d1;
 }
+.custom-multiselect input{
+  display: none!important;
+}
 .profile textarea{
     width: 100%;
     margin-bottom: 1em;

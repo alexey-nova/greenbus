@@ -72,7 +72,7 @@
                 </div>
             </router-link>
             <a href="#" class="menu-item chat-call">
-              <Chat :users="users"></Chat>
+              <Chat></Chat>
             </a>
             <a href="#" class="menu-item notifications-call">
                 <Notifications></Notifications>

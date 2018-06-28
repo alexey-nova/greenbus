@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <PageTitle :title="'Ежедневник'"></PageTitle>
+  <div class="container-box">
+      <div class="working_area">
+    <!-- <PageTitle :title="'Ежедневник'"></PageTitle>
     <PageButtons>
 			<p :style="{ float: 'left', 'margin-bottom': 0 }">Выбрать период:
 				<select v-model="displayPeriodUom">
@@ -28,9 +29,84 @@
 			@drop-on-date="onDrop"
 			:events="eventsForComponent"/>
     </Box>
+    -->
+      <div class="flex margin-bottom align-center">
+        <div class="search big-form">
+          <form>
+            <span>Выбрать период:</span>
+            <select @change="changeView()" v-model="displayPeriodUom">
+                <option value="month">месяц</option>
+                <option value="week">неделя</option>
+                <option value="day">день</option>
+            </select>
+          </form>
+        </div>
+        <div class="add m-align-end">
+          <!--//mobile-->
+          <div class="search big-form mob-block c-column">
+            <form>
+              <span>Выбрать период:</span>
+              <select @change="changeView()" v-model="displayPeriodUom">
+                  <option value="month">месяц</option>
+                  <option value="week">неделя</option>
+                  <option value="day">день</option>
+              </select>
+            </form>
+          </div>
+          <!--//mobile-->
+          <button class="add-button auto-width" data-toggle="modal" data-target="#event" @click="toggleModal('create', {}, 'create')"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;Создать событие</button>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="calendar">
+          <div class="calendar-top">
+            <span class="week_day">
+              <a href="#" class="left-arr" @click="prevYear()">
+                <img src="~assets/img/arr-left.png">
+              </a>
+              {{ currentYear }}
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextYear()">
+              </a>
+            </span>
+            <!-- <span class="week_day">
+              {{dateTasks.length > 0 ? $dateFormat(dateTasks[0].deadline, 'dddd') : $dateFormat(selectedDate, 'dddd')}}
+            </span>
+            <span class="week_day small">
+              <span>{{$dateFormat(selectedDate, 'd')}}</span>
+              <span>
+                {{$dateFormat(selectedDate, 'mmmm')}}
+              </span>
+            </span> -->
+          </div>
+          <div class="month mob-none">
+            <a v-for="month in getMonths()" :class="{'active': month.isCurrent}" @click="changeCurrentMonth(month.index)">
+              <span>{{month.name}}</span>
+            </a>
+          </div>
+          <div class="calendar-tasks">
+            <div class="tasks">
+              <div class="tasks-item">
+                <p v-for="task in dateTasks" :key="task._id">
+                  {{task.name}}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="days">
+            <div class="flex-days">
+              <full-calendar
+              :config="config"
+              ref="calendar"
+              :events="eventsForComponent"
+        			/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
     <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
-
   </div>
 </template>
 
@@ -41,7 +117,24 @@
     import ModalCreate from './calendar/ModalCreateMeeting'
     import CalendarView from "vue-simple-calendar"
     import CalendarMathMixin from "vue-simple-calendar/dist/calendar-math-mixin.js"
+    import { FullCalendar } from 'vue-full-calendar'
+    require('../assets/fullcalendar.css')
     require("vue-simple-calendar/dist/static/css/default.css")
+
+    const arr = [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь'
+    ]
 
     export default {
         name: "App",
@@ -51,10 +144,38 @@
 					CalendarView,
 					CalendarMathMixin,
 					ModalCreate,
+          FullCalendar
         },
         data() {
 					return {
+            dateTasks: [],
+            tasks: '',
+            selectedDate: new Date(),
+            currentMonth: this.selectedDate || new Date(),//old
+            currentYear: (new Date()).getFullYear(),
+            config: {
+              weekends: true,
+              locale: 'ru',
+              defaultView: 'month',
+              themeSystem: 'bootstrap3',
+              contentHeight: 'auto',
+              selectable: true,
+              dayClick: (date, jsEvent, view) => {
+                this.selectedDate = date._d
+                // this.currentMonth = date._d
+                this.renderTasks(date._d)
+              },
+              eventClick: (event) => {
+                this.getMeeting(event.id)
+    						this.message = `You clicked: ${event.title}`
+              },
+            },
 						meetings: [],
+            header: {
+              left: '',
+              center: '',
+              right: ''
+            },
 						modal: {
 							create: false,
 							edit: false,
@@ -90,8 +211,8 @@
 								let e = {
 									id: event._id,
 									title: event.name,
-									startDate: event.startDate,
-									endDate: event.endDate,
+									start: event.startDate,
+									end: event.endDate,
 								}
 								if (event.status === 'confirmed') {
 									e.classes = "green"
@@ -108,8 +229,8 @@
 								return {
 									_id: event.id,
 									name: event.title,
-									startDate: event.startDate,
-									endDate: event.endDate,
+									start: event.startDate,
+									end: event.endDate,
 								}
 							})
 						}
@@ -118,6 +239,8 @@
         mounted () {
 					this.showMeetingFromQuery()
 					this.loadUsers()
+          this.getMonths()
+          this.getTasks()
         },
         methods: {
 					toggleModal (name, model, type) {
@@ -238,8 +361,8 @@
 						this.alreadyAdded = true
 						this.events.push({
 							id: "e12",
-							startDate: this.thisMonth(22),
-							endDate: this.thisMonth(22),
+							start: this.thisMonth(22),
+							end: this.thisMonth(22),
 							title: "New Event",
 						})
 					},
@@ -247,7 +370,7 @@
 						this.$api('get', 'meetings/' + id).then(response => {
 							const startTime = `${(new Date(response.data.startDate)).getHours()}:${(new Date(response.data.startDate)).getMinutes()}`
 							const endTime = `${(new Date(response.data.endDate)).getHours()}:${(new Date(response.data.endDate)).getMinutes()}`
-							
+
 							response.data['startTime'] = startTime
 							response.data['endTime'] = endTime
 
@@ -277,13 +400,116 @@
 						let meetingId = this.$_.get(this.$route, 'query.meeting', '')
 						if (type && meetingId) {
 							this.loadMeetings().then(meetings => {
-								this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])), 
+								this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])),
 								'edit')
 							})
 						} else {
 							this.loadMeetings()
 						}
-					}
+					},
+          renderTasks(date) {
+            this.dateTasks = []
+            this.tasks.map(task => {
+              if (
+                new Date(date).toDateString() ===
+                new Date(task.deadline).toDateString()
+              ) {
+                this.dateTasks.push(task)
+              }
+            })
+          },
+          nextMonth() {
+            this.$refs.calendar.fireMethod('next')
+            this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
+            console.log(this.currentMonth)
+          },
+          prevMonth() {
+            this.$refs.calendar.fireMethod('prev')
+            this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
+          },
+          getMonthName(date) {//old
+
+            return {
+              thisMonth: arr[new Date(this.currentMonth).getMonth()],
+              nextMonth: arr[new Date(this.currentMonth).getMonth() + 1],
+              prevMonth: arr[new Date(this.currentMonth).getMonth() - 1]
+            }
+          },
+          getMonths() {
+            return arr.map((month, index) => {
+              return {
+                index: index,
+                name: month,
+                isCurrent: index == this.selectedDate.getMonth()
+              }
+            })
+          },
+          getTasks() {
+            this.$api('get', 'tasks')
+              .then(response => {
+                this.today = response.data.deadlines.today
+                this.tomorrow = response.data.deadlines.tomorrow
+                this.week = response.data.deadlines.week
+                const calendarTasks = []
+                const groups = response.data.tasks.reduce((groups, task) => {
+                  const date = task.deadline.split('T')[0]
+                  if (!groups[date]) groups[date] = []
+                  groups[date].push(task)
+                  return groups
+                }, {})
+                Object.keys(groups).forEach((group, groupIndex) => {
+                  this.events.push({
+                    title: groups[group].length,
+                    start: group,
+                    editable: false
+                  })
+                })
+                this.tasks = response.data.tasks.sort((a, b) => {
+                  let dateA = new Date(a.deadline),
+                    dateB = new Date(b.deadline)
+                  return dateA - dateB
+                })
+                this.tasks.forEach(task => {
+                  response.data.deadlines.deadlined.forEach(dl => {
+                    if (task._id === dl._id) this.deadlined.push(task)
+                  })
+                })
+                // let deadlined = response.data.deadlines.deadlined
+                // let tasks = this.tasks
+                // if (deadlined && deadlined.length > 0) {
+                //   let deadlinedIds = deadlined.map(item => item._id)
+                //   this.upcomingTasks = tasks.filter(item => !deadlinedIds.includes(item._id))
+                // }
+              })
+              .catch(err => {
+                console.log(err)
+                this.notify("Временная ошибка", "danger")
+              })
+          },
+          changeCurrentMonth (index) {
+            this.selectedDate = new Date(this.currentYear, index, 1)
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+            //this.getMonths()
+          },
+          nextYear () {
+            this.currentYear++
+            this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+          },
+          prevYear () {
+            this.currentYear--
+            this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+          },
+          changeView () {
+            if (this.displayPeriodUom === 'week') {
+              this.$refs.calendar.fireMethod('changeView', 'basicWeek')
+            } else if (this.displayPeriodUom === 'month') {
+              this.$refs.calendar.fireMethod('changeView', 'month')
+            } else if (this.displayPeriodUom === 'day') {
+              this.$refs.calendar.fireMethod('changeView', 'agendaDay')
+            }
+          }
 			},
     }
 </script>
