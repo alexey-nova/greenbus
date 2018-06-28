@@ -90,10 +90,10 @@
   }
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
 <style src="#/assets/css/style.css"></style>
+<style src="#/assets/bootstrap/css/bootstrap.min.css"></style>
 <style src="#/assets/css/responsive.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
   .container { padding: 0; }
   body .wrapper .main-header .navbar { background: #fff; }

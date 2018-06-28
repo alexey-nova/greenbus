@@ -1130,8 +1130,15 @@ span.red{
     font-size: 1em;
     border: 1px solid #d1d1d1;
 }
-.custom-multiselect input{
-  display: none!important;
+.multiselect__input {
+    width: auto !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+.multiselect input:focus {
+    border: none !important;
 }
 .profile textarea{
     width: 100%;

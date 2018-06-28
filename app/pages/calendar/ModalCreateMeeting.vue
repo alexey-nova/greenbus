@@ -81,13 +81,13 @@
                   <label for="field-participants">Участники *</label><br/>
                   <Multiselect
                     id="field-participants"
-                    class="custom-multiselect"
                     v-model="selectedUsers"
                     :options="usersForSelect"
                     :close-on-select="false"
                     :hide-selected="true"
                     :clear-on-select="false"
                     :multiple="true"
+                    placeholder="Выберите"
                     track-by="name"
                     label="name"
                   >
