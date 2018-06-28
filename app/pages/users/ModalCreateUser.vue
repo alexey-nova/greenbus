@@ -42,7 +42,7 @@
                 <el-cascader :options="departments" change-on-select @change="setVal" :value="model.deptHierarchy"></el-cascader>
                 <span v-show="errors.has('dept')" class="help-block">{{ errors.first('dept') }}</span>
               </div>
-              <div :class="['input-exc', {'has-error': errors.has('position')}]">
+              <div :class="['form-group input-exc', {'has-error': errors.has('position')}]">
                 <label for="field-position">Должность</label>
                 <Multiselect
                   id="field-position"
@@ -57,7 +57,7 @@
               </div>
               <div :class="['form-group', {'has-error': errors.has('phone')}]">
                 <label for="field-phone">Телефон *</label>
-                <masked-input id="field-phone" class="form-control" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
+                <masked-input id="field-phone" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
                 <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
               </div>
               <div class="flex flex-end">

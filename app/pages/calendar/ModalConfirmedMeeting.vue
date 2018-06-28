@@ -1,17 +1,32 @@
 <template>
     <Modal :isOpen="model" @onSubmit="submit">
-
-        <h3 slot="header" class="modal-title">Согласовать встречу</h3>
-
-        <div slot="content">
-            Вы действительно хотите согласовать эту встречу?
+      <div slot="content" class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="list_header">
+              <div class="flex">
+                <span class="modal-title">Согласовать встречу</span>
+                <div class="buttons">
+                  <button type="button" class="button-top close" @click="close"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="profile full modal-body">
+            <div class="flex column">
+              <div class="form-item">
+                Вы действительно хотите согласовать эту встречу?
+              </div>
+            </div>
+            <div class="flex flex-end m-center">
+              <button type="button" class="save pad2" data-dismiss="modal" @click="close">Отмена</button>
+              <button type="submit" class="save pad2">Согласовать</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+          </div>
         </div>
-
-        <div slot="footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">Отмена</button>
-            <button type="submit" class="btn btn-success">Согласовать</button>
-        </div>
-
+      </div>
     </Modal>
 </template>
 

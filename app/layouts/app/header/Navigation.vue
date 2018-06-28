@@ -33,94 +33,68 @@
 
   </ul> -->
   <div class="header-box">
-		<div class="header-box-left">
-			<div class="logo">
-				<img src="~assets/img/logo.png">
-			</div>
-			<!-- <router-link :to="{name: 'index'}" class="logo">
-				
-			</router-link> -->
-			<div class="top_menu_left">
-				<router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
-					<div class="center">
-						<img src="~assets/img/header/1.png">
-						<span>Рабочий стол</span>
-					</div>
-				</router-link>
-				<router-link :to="{name: 'users'}" :class="[{active: $isRoute('users')}, 'menu-item']">
-					<div class="center">
-						<img src="~assets/img/header/2.png">
-						<span>Сотрудники</span>
-					</div>
-				</router-link>
-				<router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" class="menu-item">
-					<div class="center">
-						<img src="~assets/img/header/3.png">
-						<span>Задачи</span>
-					</div>
-				</router-link>
-				<router-link :to="{name: 'index'}" class="menu-item">
-					<div class="center">
-						<img src="~assets/img/header/4.png">
-						<span>Документы</span>
-					</div>
-				</router-link>
-			</div>
-		</div>
-		<div class="top_menu_right">
-				<router-link :to="{name: 'calendar'}" class="menu-item">
-						<div class="center">
-								<img src="~assets/img/header/6.png">
-								<span class="notificationse">+1</span>
-						</div>
-				</router-link>
-				<a class="menu-item chat-call">
-					<div class="center">
-						<img src="~assets/img/header/7.png">
-						<span class="notificationse">+22</span>
-					</div>
-				</a>
-				<a href="#" class="menu-item notifications-call">
-					<div class="center">
-						<img src="~assets/img/header/8.png">
-						<span class="notificationse">+13</span>
-					</div>
-				</a>
-		</div>
+        <div class="header-box-left">
+          <router-link :to="{name: 'index'}" class="logo">
+            <img src="~assets/img/logo.png">
+          </router-link>
+            <div class="top_menu_left">
+                <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
+                    <div class="center">
+                        <img src="~assets/img/header/1.png">
+                        <span>Рабочий стол</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'users'}" :class="[{active: $isRoute('users')}, 'menu-item']">
+                    <div class="center">
+                        <img src="~assets/img/header/2.png">
+                        <span>Сотрудники</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'index'}" class="menu-item">
+                    <div class="center">
+                        <img src="~assets/img/header/3.png">
+                        <span>Задачи</span>
+                    </div>
+                </router-link>
+                <router-link :to="{name: 'index'}" class="menu-item">
+                    <div class="center">
+                        <img src="~assets/img/header/4.png">
+                        <span>Документы</span>
+                    </div>
+                </router-link>
+            </div>
+        </div>
+        <div class="top_menu_right">
+            <router-link :to="{name: 'calendar'}" class="menu-item">
+                <div class="center">
+                    <img src="~assets/img/header/6.png">
+                    <span class="notificationse">+1</span>
+                </div>
+            </router-link>
+            <a href="#" class="menu-item chat-call">
+              <Chat></Chat>
+            </a>
+            <a href="#" class="menu-item notifications-call">
+                <Notifications></Notifications>
+            </a>
+        </div>
 
-		<!--Уведомления-->
-		<div class="not-bg"></div>
-		<div class="notifications-box">
-				<div class="notifications-block">
-						<ul>
-								<li class="bold">Уведомления</li>
-						</ul>
-						<ul class="notifications-menu">
-								<li><a href="#">У вас нет уведомлений</a></li>
-						</ul>
-				</div>
-		</div>
-		<!--///Уведомления-->
-	</div>
+    </div>
 </template>
 
 <script>
   import Chat from '@/Chat'
+  import Notifications from './Notifications'
 
   export default {
     name: 'Navigation',
     components: {
-      Chat
+      Chat,
+      Notifications,
     },
     data () {
       return {
-        unreadMessagesCount: 0
-      }
-    },
-    methods: {
-      openChat () {
-        console.log(Chat)
-        Chat.openChat();
+        unreadMessagesCount: 0,
       }
     }
   }

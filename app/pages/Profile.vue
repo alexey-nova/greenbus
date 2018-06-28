@@ -1,5 +1,114 @@
 <template>
-  <div>
+  <div class="container">
+    <div class="container-box">
+      <div class="working_area">
+       <div class="profile">
+          <p class="profile-p">Профиль</p>
+          <div class="profile-box flex column">
+            <div class="profile-left">
+              <div class="padding-block">
+                <form @submit="submit" data-vv-scope="user">
+                  <div class="flex column">
+                    <div class="form-item">
+                      <div :class="['', {'has-error': errors.has('login')}]">
+                        <label for="field-login">Логин *</label>
+                        <input type="text" id="field-login" :readonly="!$auth().user.admin" v-validate="'required'" name="login" v-model="model.login">
+                        <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
+                      </div>
+                      <div :class="['', {'has-error': errors.has('fullname')}]">
+                        <label for="field-fullname">ФИО *</label>
+                        <input type="text" id="field-fullname" v-validate="'required'" name="fullname" v-model="model.fullname">
+                        <span v-show="errors.has('fullname')" class="help-block">{{ errors.first('fullname') }}</span>
+                      </div>
+                      <div :class="['', {'has-error': errors.has('email')}]">
+                        <label for="field-email">E-mail *</label>
+                        <input type="text" id="field-email" :readonly="!$auth().user.admin" v-validate="'required|email'" name="email" v-model="model.email">
+                        <span v-show="errors.has('email')" class="help-block">{{ errors.first('email') }}</span>
+                      </div>
+                    </div>
+                    <div class="form-item">
+                      <div :class="['', {'has-error': errors.has('department')}]">
+                        <label for="field-department">Отдел *</label>
+                        <select id="field-department" :readonly="!$auth().user.admin" v-validate="'required'" name="department" v-model="model.department">
+                          <option v-for="dep in departments" :value="dep.name">{{dep.name}}</option>
+                        </select>
+                        <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
+                      </div>
+                      <div :class="['', {'has-error': errors.has('position')}]">
+                        <label for="field-position">Должность *</label>
+                        <input type="text" id="field-position" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.position">
+                        <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
+                      </div>
+                      <div :class="['', {'has-error': errors.has('phone')}]">
+                        <label for="field-phone">Телефон *</label>
+                        <masked-input id="field-phone" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
+                        <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex margin align-center column">
+                    <div class="select-img">
+                      <div class="select-img-box">
+                        <div class="select-item" style="position:relative">
+                          <label class="ava">Аватар</label>
+                          <file-upload
+                            class="btn btn-default"
+                            :multiple="false"
+                            v-model="model.files"
+                            ref="upload">
+                            <i class="fa fa-plus"></i>
+                            Выбрерите файл
+                          </file-upload>
+                          <ul style="list-style: none; padding: 0; position: absolute; left: 12.5em; top: -0.1em">
+                            <li v-for="(file, index) in model.files" :key="index">
+                               <span class="label label-success">1</span>
+                            </li>
+                          </ul>
+                          <!-- <input type="file" class="jfilestyle profile-file" data-input="false" id="field-files" lang="ru" @change="addFiles"> -->
+                        </div>
+                        <div class="select-item right">
+                          <label>Уведомления</label>
+                          <input type="checkbox">
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="save pad">Сохранить</button>
+                  </div>
+                </form>
+              </div>
+              <hr class="line">
+            </div>
+            <div class="profile-right">
+              <div class="padding-block">
+                <form @submit="changePassword">
+                  <div :class="['', {'has-error': errors.has('currentPassword')}]">
+                    <label for="field-currentPassword">Текущий пароль *</label>
+                    <input id="field-currentPassword" type="password" v-validate="'required'" name="currentPassword" v-model="model.currentPassword">
+                    <span v-show="errors.has('currentPassword')" class="help-block">{{ errors.first('currentPassword') }}</span>
+                  </div>
+                  <div :class="['', {'has-error': errors.has('password')}]">
+                    <label for="field-password">Новый пароль *</label>
+                    <input id="field-password" type="password" v-validate="'required|min:5'" name="password" v-model="model.password">
+                    <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
+                  </div>
+                  <div :class="['', {'has-error': errors.has('confirmPassword')}]">
+                    <label for="field-confirmPassword">Повторите новый пароль *</label>
+                    <input id="field-confirmPassword" type="password" v-validate="'required|confirmed:password'" name="confirmPassword" v-model="model.confirmPassword">
+                    <span v-show="errors.has('confirmPassword')" class="help-block">{{ errors.first('confirmPassword') }}</span>
+                  </div>
+                  <div class="flex margin">
+                    <button class="save"><i class="fa fa-check"></i>&nbsp;&nbsp;Сменить пароль</button>
+                  </div>
+                </form>
+              </div>
+              <hr class="line">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div>
     <PageTitle title="Профиль"></PageTitle>
 
     <Box>
@@ -80,10 +189,11 @@
         </Box>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
+  import FileUpload from 'vue-upload-component'
   import PageTitle from '@/PageTitle'
   import Box from '@/Box'
   import MaskedInput from 'vue-masked-input'
@@ -95,6 +205,7 @@
       Box,
       MaskedInput,
       SwitchInput: Switch,
+      FileUpload,
     },
     data () {
       return {
@@ -135,11 +246,11 @@
       },
       submit (event) {
         event.preventDefault()
-        this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position', 'phone').then(() => {
-          if (!(this.fields.$user.login.invalid || this.fields.$user.fullname.invalid || this.fields.$user.email.invalid
-              || this.fields.$user.department.invalid || this.fields.$user.position.invalid || this.fields.$user.phone.invalid)) {
-            this.save(this.model)
-          }
+        if (this.model.files) {
+          this.model.avatar = this.model.files[0]
+        }
+        this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position').then(() => {
+          this.save(this.model)
         }).catch(() => {
         })
       },

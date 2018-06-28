@@ -1129,6 +1129,16 @@ span.red{
     font-size: 1em;
     border: 1px solid #d1d1d1;
 }
+.multiselect__input {
+    width: auto !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+.multiselect input:focus {
+    border: none !important;
+}
 .profile textarea{
     width: 100%;
     margin-bottom: 1em;
@@ -1165,6 +1175,7 @@ span.red{
     background-size: 16px;
     background-repeat: no-repeat;
     background-position: right 3px center;
+    /* padding-right: 25px!important; */
 }
 .btn:after, .btn:before{
     display: none;
@@ -1180,7 +1191,6 @@ span.red{
     background-repeat: no-repeat;
     background-position: right 3px center;
     box-shadow: none;
-
 }
 .bs-caret{
     display: none;
@@ -1537,7 +1547,7 @@ span.bold{
     -webkit-box-shadow: -1px 1px 5px 0px rgba(148,148,148,1);
     -moz-box-shadow: -1px 1px 5px 0px rgba(148,148,148,1);
     box-shadow: -1px 1px 5px 0px rgba(148,148,148,1);
-    display: none;
+    /* display: none; */
     z-index: 100;
 }
 .notifications-box ul li{

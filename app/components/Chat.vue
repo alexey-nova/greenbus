@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <div v-if="!isOpen" id="chatButton" @click="openChat">
-      <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
-      <i class="fa fa-comments"></i>
-    </div>
+  <div class="center" @click="openChat">
+    <img src="~assets/img/header/7.png">
+    <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
 
-    <div v-if="isOpen">
+    <div v-if="isOpen" v-click-outside="closeChat">
       <!-- <div class="chat-bg"></div> -->
-      <div v-click-outside="closeChat" class="chat">
+      <div class="chat">
         <div class="flex">
           <div class="chat_left">
             <card :user="users[me]" v-model="search"></card>
@@ -24,7 +22,6 @@
           </div>
         </div>
       </div>
-
       <!-- <div id="chat" v-click-outside="closeChat">
         <div class="sidebar">
           <card :user="users[me]" v-model="search"></card>
@@ -94,6 +91,13 @@
       },
     },
     methods: {
+      loadUsers () {
+        this.$api('get', 'users').then(response => {
+          this.users = response.data
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      },
       openChat () {
         this.isOpen = true
       },
@@ -139,6 +143,11 @@
     },
     beforeMount () {
       this.getMessages()
+    },
+    mounted () {
+      if (this.$auth().user) {
+        this.loadUsers()
+      }
     },
     sockets: {
       newMessage (data) {
