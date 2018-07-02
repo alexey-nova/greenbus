@@ -148,10 +148,8 @@
                 return (a, b) => {
                   a = a.id * 1
                   b = b.id * 1
-
                   if (ascending)
                     return a >= b ? 1 : -1
-
                   return a <= b ? 1 : -1
                 }
               }
@@ -159,6 +157,7 @@
             columnsClasses: {
               admin: 'admin',
             },
+            highlightMatches: true
           },
 				},
 				mobTableData: {
@@ -187,7 +186,6 @@
         task.files = this.$_.map(task.files, (f) => f.file)
         let data = this.$createFormData(task)
         this.$api('post', 'tasks', data).then(response => {
-
           this.modal.create = false
           this.loadTasks()
           this.notify(response.data.message)

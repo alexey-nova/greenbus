@@ -50,17 +50,17 @@
                         <span>Сотрудники</span>
                     </div>
                 </router-link>
-                <router-link :to="{name: 'index'}" class="menu-item">
+                <router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :class="['menu-item', { active: ($isRoute(['tasks', 'tasksByFilter'])) }]">
                     <div class="center">
                         <img src="~assets/img/header/3.png">
                         <span>Задачи</span>
                     </div>
                 </router-link>
-                <router-link :to="{name: 'index'}" class="menu-item">
-                    <div class="center">
-                        <img src="~assets/img/header/4.png">
-                        <span>Документы</span>
-                    </div>
+                <router-link :class="['menu-item', { active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents']) }]" :to="{name: 'documentsByFilter', params: { param1: 'in' }}">
+                  <div class="center">
+                    <img src="~assets/img/header/4.png">
+                    <span>Документы</span>
+                  </div>
                 </router-link>
             </div>
         </div>

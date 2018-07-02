@@ -180,7 +180,9 @@
               <div class="tasks">
                   <div class="tasks-item">
                       <p v-for="task in dateTasks" :key="task._id">
-                        {{task.name}}
+                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task._id}}">
+                          {{task.name}}
+                        </router-link>
                       </p>
                   </div>
               </div>
@@ -210,7 +212,6 @@ export default {
       seoTitle: this.$trans('pages.index.seoTitle'),
       dateTasks: [],
       deadlined: [],
-      // upcomingTasks: [],
       today: '',
       tomorrow: '',
       week: '',
@@ -227,7 +228,6 @@ export default {
         selectable: true,
         dayClick: (date, jsEvent, view) => {
           this.selectedDate = date._d
-          // this.currentMonth = date._d
           this.renderTasks(date._d)
         }
       },
@@ -236,7 +236,6 @@ export default {
         center: '',
         right: ''
       },
-      // ps: [],
       memos: [],
       users: []
     }
@@ -343,12 +342,6 @@ export default {
             if (task._id === dl._id) this.deadlined.push(task)
           })
         })
-        // let deadlined = response.data.deadlines.deadlined
-        // let tasks = this.tasks
-        // if (deadlined && deadlined.length > 0) {
-        //   let deadlinedIds = deadlined.map(item => item._id)
-        //   this.upcomingTasks = tasks.filter(item => !deadlinedIds.includes(item._id))
-        // }
       })
       .catch(err => {
         console.log(err)
