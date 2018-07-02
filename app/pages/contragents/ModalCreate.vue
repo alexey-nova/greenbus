@@ -1,24 +1,35 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-
-    <h3 slot="header" class="modal-title">Создать контрагент</h3>
-
-    <div slot="content" class="row">
-      <div class="col-lg-12">
-        <div :class="['form-group', {'has-error': errors.has('name')}]">
-          <label for="field-name">Название *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
-          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+    <div slot="content" class="modal-dialog small2">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <div>
+                <span>Создать контрагент</span>
+              </div>
+              <div class="buttons">
+                <button type="button" class="button-top close" data-dismiss="modal" @click="close"></button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">БИН</label>
-          <input id="field-name" class="form-control" name="bin" v-model="model.bin">
+        <div class="profile full  modal-body">
+          <div :class="['', {'has-error': errors.has('name')}]">
+            <label for="field-name">Название *</label>
+            <input id="field-name" v-validate="'required'" name="name" v-model="model.name">
+            <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+          </div>
+          <div :class="['', {'has-error': errors.has('text')}]">
+            <label for="field-text">БИН</label>
+            <input id="field-name" name="bin" v-model="model.bin">
+          </div>
+          <div class="flex center">
+            <button type="submit" class="add-button auto-width form-submit">Создать</button>
+          </div>
         </div>
+        <div class="modal-footer"></div>
       </div>
-    </div>
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Создать</button>
     </div>
   </Modal>
 </template>

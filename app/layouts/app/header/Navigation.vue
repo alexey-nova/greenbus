@@ -68,7 +68,6 @@
             <router-link :to="{name: 'calendar'}" class="menu-item">
                 <div class="center">
                     <img src="~assets/img/header/6.png">
-                    <span class="notificationse">+1</span>
                 </div>
             </router-link>
             <a href="#" class="menu-item chat-call">
