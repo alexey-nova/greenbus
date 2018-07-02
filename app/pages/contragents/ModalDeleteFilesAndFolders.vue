@@ -1,17 +1,28 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-
-    <h3 slot="header" class="modal-title">Удалить файлы и папки</h3>
-
-    <div slot="content">
-      Вы действительно хотите удалить эти файлы и папки?
+    <div slot="content" class="modal-dialog small2">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <div>
+                <span>Удалить файлы и папки</span>
+              </div>
+              <div class="buttons">
+                <button type="button" class="button-top close" data-dismiss="modal" aria-label="Close" @click="close"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="profile full modal-body">
+          <span>Вы действительно хотите удалить эти файлы и папки?</span>
+          <div class="flex flex-end red">
+            <button type="submit" class="save pad">Удалить</button>
+          </div>
+        </div>
+        <div class="modal-footer"></div>
+      </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">Отмена</button>
-      <button type="submit" class="btn btn-danger">Удалить</button>
-    </div>
-
   </Modal>
 </template>
 

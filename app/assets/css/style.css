@@ -2110,6 +2110,10 @@ select{
 .folder-img.sm-img img{
     width: 3em;
 }
+.folder-img.selected img{
+    background-color: lightgray;
+    padding: 0.5em;
+}
 .folders-item .button-table{
     font-size: 0.85em;
     margin: 0 2px;

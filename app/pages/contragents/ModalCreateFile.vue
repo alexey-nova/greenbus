@@ -6,7 +6,7 @@
           <div class="list_header">
             <div class="flex">
               <div>
-                <span>Переместить папку</span>
+                <span>Создать файл</span>
               </div>
               <div class="buttons">
                 <button type="button" class="button-top close" data-dismiss="modal" aria-label="Close" @click="close"></button>
@@ -14,15 +14,26 @@
             </div>
           </div>
         </div>
-        <div class="profile full modal-body">
-          <div :class="['form-group', {'has-error': errors.has('name')}]">
-            <label for="field-name">Выберите папку для перемещения *</label>
-            <select name="dest" v-model="model.dest">
-              <option v-for="folder in folders" :value="folder._id">{{ folder.finalStr }}</option>
-            </select>
+        <div class="profile full  modal-body">
+          <label>Загрузить файлы</label>
+          <!-- <input type="file" multiple id="field-files" lang="ru" @change="addFiles"> -->
+          <div class="select-file">
+            <file-upload
+              class="btn btn-default"
+              :multiple="true"
+              v-model="files"
+              ref="upload">
+              Прикрепить файлы
+            </file-upload>
+            <ul style="list-style: none; padding: 0;">
+              <li v-for="(file, index) in files" :key="index">
+                <span>{{file.name}}</span> -
+                <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+              </li>
+            </ul>
           </div>
           <div class="flex center">
-            <button type="submit" class="add-button auto-width form-submit">Сохранить</button>
+            <button type="submit" class="add-button auto-width form-submit">Загрузить</button>
           </div>
         </div>
         <div class="modal-footer"></div>
@@ -35,18 +46,22 @@
   import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
   import MaskedInput from 'vue-masked-input'
+  import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
       Modal,
       MaskedInput,
+      Multiselect,
+      FileUpload,
     },
     data () {
       return {
-        folders: []
+        files: []
       }
     },
-    props: ['model', 'onSubmit', 'onClose', 'ids'],
+    props: ['model', 'onSubmit', 'onClose', 'uploadingFiles',],
     methods: {
       close () {
         this.$emit('onClose')
@@ -55,26 +70,18 @@
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             let model = this.$_.clone(this.$props.model)
-            this.$emit('onSubmit', model)
+            this.$emit('onSubmit', this.files)
+            this.files = []
           }
         }).catch(() => {
+          console.log('t')
         })
+      },
+      addFiles(e){
+        console.log(e)
       }
     },
-    computed: {},
-    mounted () {
-      this.$api('get', 'ca/folders').then(response => {
-        const strings = []
-        response.data.map(folder => {
-          if (this.ids.includes(folder._id)) {
-            strings.push(folder.finalStr)
-          }
-        })
-        const starts = `^(${strings.join('|')})`
-        if(strings.length > 0) this.folders = response.data.filter(folder => !(new RegExp(starts).test(folder.finalStr)))
-        else this.folders = response.data
-      })
-    }
+    computed: {}
   }
 </script>
 
