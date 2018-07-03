@@ -1,9 +1,176 @@
 <template><div>
   <Modal :isOpen="model" type="lg">
+    <div class="modal-dialog big" slot="content">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <div>
+                <span>Информация по задаче</span>
+              </div>
+              <div class="buttons">
+                <button class="button-top close" @click="close"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="profile full modal-body no-padding">
+          <div class="info-block">
+            <div class="flex align-start border-bottom">
+              <div class="info-box-text">
+              </div>
+              <div class="info-box-button">
+                <button :class="['info-button clicked left-margin', tabs === 0 && 'active']" @click="toggleTab(0)"><img src="~assets/img/2.png">Информация</button>
+                <button :class="['info-button clicked', tabs === 1 && 'active']" @click="toggleTab(1)"><img src="~assets/img/1.png" class="big-margin">Файлы</button>
+                <button :class="['info-button clicked', tabs === 2 && 'active']" @click="toggleTab(2)"><img src="~assets/img/comment.png">Обсуждение</button>
+              </div>
+            </div>
+            <div v-if="tabs === 0">
+              <div class="forum-box">
+                <div class="flex column">
+                  <div class="form-item">
+                    <label>Тема</label>
+                    <input type="text" name="" :value="model.name" disabled>
+                    <label>Описание</label>
+                    <div class="text" v-html="model.description"></div>
+                  </div>
+                  <div class="form-item">
+                    <label>Ответственный</label>
+                    {{model.to && getUser(model.to.user).fullname}}&nbsp;{{(model.to && model.to.read.status) ? `(Просмотрено: ${$dateFormat(model.to.read.date, 'd mmm yyyy, HH:MM')})` : ''}}<br />
+                    <span v-if="model.coExecutives && model.coExecutives.length > 0">Соисполнители: </span>
+                    <ul v-if="model.coExecutives && model.coExecutives.length > 0">
+                      <li v-for="user in model.coExecutives" :key="user._id">{{user && getUser(user.user).fullname}}&nbsp;{{user.read.status ? `(Просмотрено: ${$dateFormat(user.read.date, 'd mmm yyyy, HH:MM')})` : ''}}</li>
+                    </ul>
+                    <div class="sm-margin"></div>
+                    Приоритет:
+                    <span v-if="model.urgency" class="label label-danger">Важная</span>
+                    <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
+                    Статус: {{statuses[model.status]}}<br />
+                    <label class="disabled-margin">Срок задачи</label>
+                    <div class="select">
+                      
+                      <div>
+                        Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}
+                      </div>
+                      <div>
+                        Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="tabs === 1">
+              <div class="margin-helper margin2-helper">
+                <div class="white-menu-box" v-if="model.files.length > 0">
+                  <div v-for="(file, index) in model.files" :key="index" class="categories-item">
+                    <div class="flex flex-start">
+                      <div class="categories-item-img"></div>
+                      <div class="categories-item-text">
+                        <a :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">{{file.name}}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    <h3 slot="header" class="modal-title">Информация по задаче</h3>
+              <!-- <div class="modal-footer no-padding">
+                  <div class="more">
+                      <button class="more-button">Еще 12</button>
+                  </div>
+              </div> -->
+            </div>
+            <div v-if="tabs === 2">
+                <div class="forum-box">
+                    <div class="forum-item">
+                        <div class="forum-title flex">
+                            <p class="forum-name">Жумагалиев АБ</p>
+                            <p class="forum-date">21.02.2018</p>
+                        </div>
+                        <div class="forum-text">
+                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
+                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
+                        </div>
+                        <div class="flex flex-end forum-button">
+                            <button class="add-button auto-width reply">Ответить</button>
+                        </div>
+                        <div class="hidden-forum-box hidden1">
+                            <div class="forum-response">
+                                <div class="forum-response-box">
+                                    <p class="forum-name">Жумагалиев АБ</p>
+                                    <form action="" method="">
+                                        <div class="forum-textarea">
+                                            <textarea placeholder="Введите текст"></textarea>
+                                        </div>
+                                        <div class="flex flex-end forum-button">
+                                            <button type="submit" class="add-button auto-width">Отправить</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="forum-response">
+                            <div class="forum-response-box">
+                                <p class="forum-name">Жумагалиев АБ</p>
+                                <div class="forum-response-info">
+                                    <div class="response-info-text">
+                                        <p class="forum-name2">Жумагалиев АБ</p>
+                                        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
+                                    </div>
+                                    <div class="response-info-date">
+                                        <p class="forum-date">21.02.2018</p>
+                                    </div>
 
-    <div slot="content">
+                                </div>
+                                <div class="forum-text">
+                                    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
+                                </div>
+                                <div class="flex flex-end forum-button">
+                                    <button class="add-button auto-width reply2">Ответить</button>
+                                </div>
+                                <div class="hidden-forum-box hidden2">
+                                    <div class="forum-response">
+                                        <div class="forum-response-box">
+                                            <p class="forum-name">Жумагалиев АБ</p>
+                                            <form action="" method="">
+                                                <div class="forum-textarea">
+                                                    <textarea placeholder="Введите текст"></textarea>
+                                                </div>
+                                                <div class="flex flex-end forum-button">
+                                                    <button type="submit" class="add-button auto-width">Отправить</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="forum-item">
+                        <div class="forum-title flex">
+                            <p class="forum-name">Жумагалиев АБ</p>
+                            <p class="forum-date">21.02.2018</p>
+                        </div>
+                        <div class="forum-text">
+                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
+                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
+                        </div>
+                        <div class="flex flex-end forum-button">
+                            <button class="add-button auto-width reply">Ответить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer no-padding">
+                    <div class="more">
+                        <button class="more-button">Еще 12</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
       <ul class="menu">
         <li :class="{'active': tabs === 0}" @click="toggleTab(0)"><a>Инфо</a></li>
         <li :class="{'active': tabs === 1}" @click="toggleTab(1)"><a>Файлы</a></li>
@@ -105,20 +272,6 @@
           <button class="btn btn-default" :disabled="!model.comment" @click="sendComment()">Отправить</button>
         </div>
       </div>
-    </div>
-
-    <div slot="footer">
-
-      <div class="time" style="float: left; text-align: left; padding-top: 5px;">
-        <i class="fa fa-clock-o"></i> Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
-      </div>
-      <div v-if="model.status === 2" class="time" style="float: left; text-align: left; padding-top: 5px; margin-left: 20px;">
-        <i class="fa fa-clock-o"></i> Завершена: {{$dateFormat(model.updatedAt, 'd mmm yyyy, hh:MM')}}
-      </div>
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Закрыть окно</button>
-      <button v-if="((model.to && $auth().user._id === model.to.user) || (model.coExecutives && model.coExecutives.filter(user => user.user === $auth().user._id)[0])) && model.status === 0" type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('performTask', model)">
-        <i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Завершить задачу
-      </button>
     </div>
   </Modal>
 

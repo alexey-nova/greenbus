@@ -1535,6 +1535,9 @@ span.bold{
 .flex.red{
     margin-top: 3em;
 }
+.text {
+    word-wrap: break-word;
+}
 .text-center{
     text-align: center;
 }
@@ -2526,10 +2529,15 @@ tr.green2{
 	border-color: #ccc;
 }
 
+.VueTables__highlight b {
+    background-color: yellow;
+}
+
 /* b-pagination */
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-	background-color: #1b8442;
-	border-color: #1b8442;
+	background-color: #1b8442 !important;
+    border-color: #1b8442 !important;
+    color: #fff !important;
 }
 
 .pagination > li > a, .pagination > li > span {
@@ -2537,5 +2545,9 @@ tr.green2{
 }
 
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    color: #1b8442;
+}
+
+li.active .router-link-active {
     color: #1b8442;
 }
