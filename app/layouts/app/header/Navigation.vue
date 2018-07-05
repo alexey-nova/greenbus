@@ -70,14 +70,15 @@
                     <img src="~assets/img/header/6.png">
                 </div>
             </router-link>
-            <a href="#" class="menu-item chat-call">
-              <Chat></Chat>
+            <a class="menu-item chat-call pointer" @click="$store.commit('app/openChat')">
+              <div class="center">
+                <img src="~assets/img/header/7.png">
+              </div>
             </a>
-            <a href="#" class="menu-item notifications-call">
+            <a class="menu-item notifications-call">
                 <Notifications></Notifications>
             </a>
         </div>
-
     </div>
 </template>
 

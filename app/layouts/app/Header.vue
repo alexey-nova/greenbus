@@ -14,6 +14,6 @@
     components: {
       Navigation,
       // Notifications,
-    },
+    }
   }
 </script>

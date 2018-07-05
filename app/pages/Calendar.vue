@@ -44,65 +44,68 @@
         <div class="add m-align-end">
           <!--//mobile-->
           <div class="search big-form mob-block c-column">
-            <form>
-              <span>Выбрать период:</span>
-              <select @change="changeView()" v-model="displayPeriodUom">
-                  <option value="month">месяц</option>
-                  <option value="week">неделя</option>
-                  <option value="day">день</option>
-              </select>
-            </form>
           </div>
           <!--//mobile-->
-          <button class="add-button auto-width" data-toggle="modal" data-target="#event" @click="toggleModal('create', {}, 'create')"><i class="fa fa-calendar-o"></i>&nbsp;&nbsp;Создать событие</button>
+          <button class="add-button auto-width" data-toggle="modal" data-target="#event" @click="toggleModal('create', {}, 'create')"><img src="~assets/img/add.png">Создать событие</button>
         </div>
       </div>
       <div class="flex">
         <div class="calendar">
-          <div class="calendar-top">
-            <span class="week_day">
-              <a href="#" class="left-arr" @click="prevYear()">
-                <img src="~assets/img/arr-left.png">
-              </a>
-              {{ currentYear }}
-              <a href="#" class="right-arr">
-                <img src="~assets/img/arr-right.png" @click="nextYear()">
-              </a>
-            </span>
-            <!-- <span class="week_day">
-              {{dateTasks.length > 0 ? $dateFormat(dateTasks[0].deadline, 'dddd') : $dateFormat(selectedDate, 'dddd')}}
-            </span>
-            <span class="week_day small">
-              <span>{{$dateFormat(selectedDate, 'd')}}</span>
-              <span>
-                {{$dateFormat(selectedDate, 'mmmm')}}
+          <div v-if="selectedView === 'month'">
+            <div class="calendar-top mob-none">
+              <span class="week_day">
+                <a href="#" class="left-arr" @click="prevYear()">
+                  <img src="~assets/img/arr-left.png">
+                </a>
+                {{ currentYear }}
+                <a href="#" class="right-arr">
+                  <img src="~assets/img/arr-right.png" @click="nextYear()">
+                </a>
               </span>
-            </span> -->
-          </div>
-          <div class="month mob-none">
-            <a v-for="month in getMonths()" :class="{'active': month.isCurrent}" @click="changeCurrentMonth(month.index)">
-              <span>{{month.name}}</span>
-            </a>
-          </div>
-          <div class="calendar-tasks">
-            <div class="tasks">
-              <div class="tasks-item">
-                <p v-for="task in dateTasks" :key="task._id">
-                  {{task.name}}
-                </p>
-              </div>
+            </div>
+            <div class="month-mobile mob-block">
+               <div class="flex align-center">
+                   <a href="#" class="left-arr">
+                       <img src="~assets/img/arr-left.png" @click="prevMonth()">
+                   </a>
+                   <div class="center-arr">
+                       <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
+                       <span>{{ currentYear }}</span>
+                   </div>
+                   <a href="#" class="right-arr">
+                       <img src="~assets/img/arr-right.png" @click="nextMonth()">
+                   </a>
+               </div>
+           </div>
+            <div class="month mob-none">
+              <a v-for="month in getMonths()" :class="{'active': month.isCurrent}" @click="changeCurrentMonth(month.index)">
+                <span>{{month.name}}</span>
+              </a>
             </div>
           </div>
           <div class="days">
-            <div class="flex-days">
+            <div class="flex-days mob-none">
               <full-calendar
               :config="config"
               ref="calendar"
               :events="eventsForComponent"
         			/>
             </div>
+            <div class="flex-days mob-block">
+              <full-calendar
+              :config="configMobile"
+              ref="calendarMobile"
+              :events="eventsForMobile"
+        			/>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="mob-block mob-task">
+          <a v-for="event in dateEvents" :key="event._id" class="mob-task-item green-i" @click="getMeeting(event._id)">
+              <span class="img-span"></span>
+              <span>{{event.name}}</span>
+          </a>
       </div>
     </div>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
@@ -148,11 +151,12 @@
         },
         data() {
 					return {
-            dateTasks: [],
-            tasks: '',
+            dateEvents: [],
+            tasks: [],
             selectedDate: new Date(),
             currentMonth: this.selectedDate || new Date(),//old
             currentYear: (new Date()).getFullYear(),
+            selectedView: 'month',
             config: {
               weekends: true,
               locale: 'ru',
@@ -163,12 +167,24 @@
               dayClick: (date, jsEvent, view) => {
                 this.selectedDate = date._d
                 // this.currentMonth = date._d
-                this.renderTasks(date._d)
+                this.renderEvents(date._d)
               },
               eventClick: (event) => {
                 this.getMeeting(event.id)
     						this.message = `You clicked: ${event.title}`
               },
+            },
+            configMobile: {
+              weekends: true,
+              locale: 'ru',
+              defaultView: 'month',
+              themeSystem: 'bootstrap3',
+              contentHeight: 'auto',
+              selectable: true,
+              dayClick: (date, jsEvent, view) => {
+                this.selectedDate = date._d
+                this.renderEvents(date._d)
+              }
             },
 						meetings: [],
             header: {
@@ -188,7 +204,7 @@
 						disableFuture: false,
 						displayPeriodUom: 'month',
 						displayPeriodCount: 1,
-						showEventTimes: true,
+						//showEventTimes: true,
 						events: [],
 						users: [],
 						type: 'create',
@@ -221,6 +237,7 @@
 								} else {
 									e.classes = "grey"
 								}
+
 								return e
 							})
 						},
@@ -234,13 +251,41 @@
 								}
 							})
 						}
-					}
+					},
+          eventsForMobile: {
+
+            get: function () {
+              const groups = this.events.reduce((groups, event) => {
+                const date = event.startDate.split('T')[0]
+                if (!groups[date]) groups[date] = []
+                groups[date].push(event)
+                return groups
+              }, {})
+
+							return this.$_.map(groups, event => {
+								let e = {
+									title: event.length,
+									start: event[0].startDate.split('T')[0]
+								}
+								if (event[0].status === 'confirmed') {
+									e.classes = "green"
+								} else if (event[0].status === 'rejected') {
+									e.classes = "red"
+								} else {
+									e.classes = "grey"
+								}
+
+								return e
+							})
+
+						},
+
+          }
         },
         mounted () {
 					this.showMeetingFromQuery()
 					this.loadUsers()
           this.getMonths()
-          this.getTasks()
         },
         methods: {
 					toggleModal (name, model, type) {
@@ -407,28 +452,28 @@
 							this.loadMeetings()
 						}
 					},
-          renderTasks(date) {
-            this.dateTasks = []
-            this.tasks.map(task => {
+          renderEvents(date) {
+            console.log(this.events)
+            this.dateEvents = []
+            this.events.map(event => {
               if (
                 new Date(date).toDateString() ===
-                new Date(task.deadline).toDateString()
+                new Date(event.startDate).toDateString()
               ) {
-                this.dateTasks.push(task)
+                this.dateEvents.push(event)
               }
             })
           },
           nextMonth() {
-            this.$refs.calendar.fireMethod('next')
-            this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
+            this.$refs.calendarMobile.fireMethod('next')
+            this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
             console.log(this.currentMonth)
           },
           prevMonth() {
-            this.$refs.calendar.fireMethod('prev')
-            this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
+            this.$refs.calendarMobile.fireMethod('prev')
+            this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
           },
           getMonthName(date) {//old
-
             return {
               thisMonth: arr[new Date(this.currentMonth).getMonth()],
               nextMonth: arr[new Date(this.currentMonth).getMonth() + 1],
@@ -443,48 +488,6 @@
                 isCurrent: index == this.selectedDate.getMonth()
               }
             })
-          },
-          getTasks() {
-            this.$api('get', 'tasks')
-              .then(response => {
-                this.today = response.data.deadlines.today
-                this.tomorrow = response.data.deadlines.tomorrow
-                this.week = response.data.deadlines.week
-                const calendarTasks = []
-                const groups = response.data.tasks.reduce((groups, task) => {
-                  const date = task.deadline.split('T')[0]
-                  if (!groups[date]) groups[date] = []
-                  groups[date].push(task)
-                  return groups
-                }, {})
-                Object.keys(groups).forEach((group, groupIndex) => {
-                  this.events.push({
-                    title: groups[group].length,
-                    start: group,
-                    editable: false
-                  })
-                })
-                this.tasks = response.data.tasks.sort((a, b) => {
-                  let dateA = new Date(a.deadline),
-                    dateB = new Date(b.deadline)
-                  return dateA - dateB
-                })
-                this.tasks.forEach(task => {
-                  response.data.deadlines.deadlined.forEach(dl => {
-                    if (task._id === dl._id) this.deadlined.push(task)
-                  })
-                })
-                // let deadlined = response.data.deadlines.deadlined
-                // let tasks = this.tasks
-                // if (deadlined && deadlined.length > 0) {
-                //   let deadlinedIds = deadlined.map(item => item._id)
-                //   this.upcomingTasks = tasks.filter(item => !deadlinedIds.includes(item._id))
-                // }
-              })
-              .catch(err => {
-                console.log(err)
-                this.notify("Временная ошибка", "danger")
-              })
           },
           changeCurrentMonth (index) {
             this.selectedDate = new Date(this.currentYear, index, 1)
@@ -503,11 +506,17 @@
           },
           changeView () {
             if (this.displayPeriodUom === 'week') {
+              this.selectedView = 'week'
+              console.log(this.selectedView)
               this.$refs.calendar.fireMethod('changeView', 'basicWeek')
             } else if (this.displayPeriodUom === 'month') {
+              this.selectedView = 'month'
+              console.log(this.selectedView)
               this.$refs.calendar.fireMethod('changeView', 'month')
             } else if (this.displayPeriodUom === 'day') {
-              this.$refs.calendar.fireMethod('changeView', 'agendaDay')
+              this.selectedView = 'day'
+              console.log(this.selectedView)
+              this.$refs.calendar.fireMethod('changeView', 'agendaDay', this.selectedDate)
             }
           }
 			},

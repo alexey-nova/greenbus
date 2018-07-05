@@ -18,7 +18,7 @@
           <router-view/>
       </div>
     </div>
-
+    <Chat v-if="$store.getters['app/isChatOpen']" :users="users"></Chat>
   </div>
 </template>
 <script>

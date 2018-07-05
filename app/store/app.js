@@ -14,13 +14,15 @@ export default {
       isShowed: false,
     },
     excelUsers: [],
-    departments: []
+    departments: [],
+    isChatOpen: false
   },
   getters: {
     excelUsers: state => {
       return state.excelUsers
     },
-    departments: state => state.departments
+    departments: state => state.departments,
+    isChatOpen: state => state.isChatOpen
   },
   mutations: {
     setSidebar (state, data) {
@@ -50,6 +52,12 @@ export default {
     },
     setDepartments (state, data) {
       state.departments = data
+    },
+    openChat (state) {
+      state.isChatOpen = true
+    },
+    closeChat (state) {
+      state.isChatOpen = false
     }
   },
 }

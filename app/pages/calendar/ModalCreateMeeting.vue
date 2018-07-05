@@ -155,9 +155,9 @@
             <div class="flex flex-end m-center">
                 <span v-if="isAnswered">
                   <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="save pad2" data-dismiss="modal" @click="toggleModal('confirmed', {id:model._id})">Согласовать</button>
-                  <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="save pad2" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})">Отказать</button>
+                  <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="save pad2 btn-danger" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})">Отказать</button>
                 </span>
-                <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="save pad2" @click="toggleModal('delete', {id:model._id})">Удалить</button>
+                <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="save pad2 btn-danger" @click="toggleModal('delete', {id:model._id})">Удалить</button>
                 <button v-if="type === 'create'" type="submit" class="save pad2">Создать</button>
                 <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="submit" class="save pad2">Изменить</button>
             </div>

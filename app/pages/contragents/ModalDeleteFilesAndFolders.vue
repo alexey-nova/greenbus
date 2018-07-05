@@ -17,7 +17,7 @@
         <div class="profile full modal-body">
           <span>Вы действительно хотите удалить эти файлы и папки?</span>
           <div class="flex flex-end red">
-            <button type="submit" class="save pad">Удалить</button>
+            <button type="submit" class="save pad btn-danger">Удалить</button>
           </div>
         </div>
         <div class="modal-footer"></div>
