@@ -144,7 +144,7 @@
     methods: {
       setVal (val) {
         this.model.department = val[val.length - 1]
-        this.filteredPositions = this.positions.filter(item => item.department._id === this.model.department)
+        this.filteredPositions = this.positions.filter(item => item.department ? item.department._id === this.model.department: false)
         this.model.deptHierarchy = val
       },
       close () {

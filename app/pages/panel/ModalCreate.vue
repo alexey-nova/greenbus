@@ -77,7 +77,6 @@
             this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
           }
         }
-        
 
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {

@@ -211,7 +211,7 @@ export default {
       }
     },
     loadPositions () {
-      this.$api('get', 'positions').then(response => {
+      this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },
