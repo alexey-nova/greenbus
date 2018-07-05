@@ -17,7 +17,7 @@
         <div class="profile full modal-body">
           <span>Вы действительно хотите удалить этого контрагента?</span>
           <div class="flex flex-end red">
-            <button type="submit" class="save pad">Удалить</button>
+            <button type="submit" class="save pad btn-danger">Удалить</button>
           </div>
         </div>
         <div class="modal-footer"></div>

@@ -20,7 +20,7 @@
             </div>
             <div class="flex flex-end m-center">
               <button type="button" class="save pad2" data-dismiss="modal" @click="close">Отмена</button>
-              <button type="submit" class="save pad2">Удалить</button>
+              <button type="submit" class="save pad2 btn-danger">Удалить</button>
             </div>
           </div>
           <div class="modal-footer">

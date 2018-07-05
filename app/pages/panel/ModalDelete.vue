@@ -13,9 +13,10 @@
           </div>
         </div>
         <div class="profile full modal-body">
-          <span>Вы действительно хотите удалить {{setTypeName}} <span class="bold">{{model.name}}</span>?</span>
+          <span>При удалении {{setTypeName}}а все относящиеся к этому {{setTypeName}}у <span class="bold">{{model.name}}</span> тоже удалятся.</span>
           <div class="flex flex-end red">
-            <button class="save pad">Удалить</button>
+            <button class="save pad btn-danger">Продолжить</button>
+            <button class="save pad" type="button" @click="close">Отмена</button>
           </div>
         </div>
         <div class="modal-footer"></div>

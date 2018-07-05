@@ -15,7 +15,7 @@
         <div class="profile full modal-body">
           <span>Вы действительно хотите удалить эту задачу?</span>
           <div class="flex flex-end red">
-            <button class="save pad">Удалить</button>
+            <button class="save pad btn-danger">Удалить</button>
           </div>
         </div>
           <div class="modal-footer"></div>
