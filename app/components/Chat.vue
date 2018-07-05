@@ -54,7 +54,7 @@
     data () {
       return {
         search: '',
-        isOpen: false,
+        isOpen: this.$store.getters['app/isChatOpen'],
         me: this.$auth().user._id,
         currentUser: -1,
         currentChat: 0,
@@ -91,17 +91,11 @@
       },
     },
     methods: {
-      loadUsers () {
-        this.$api('get', 'users').then(response => {
-          this.users = response.data
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
-      },
       openChat () {
         this.isOpen = true
       },
       closeChat () {
+        this.$store.commit('app/closeChat')
         this.isOpen = false
       },
       changeCurrent (id) {
@@ -143,11 +137,6 @@
     },
     beforeMount () {
       this.getMessages()
-    },
-    mounted () {
-      if (this.$auth().user) {
-        this.loadUsers()
-      }
     },
     sockets: {
       newMessage (data) {
