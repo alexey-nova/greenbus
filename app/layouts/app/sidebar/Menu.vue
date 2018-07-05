@@ -73,65 +73,39 @@ import Tree from './Tree'
             {
               name: 'Служебные записки',
               link: {name: 'documents'},
+              imgSrc: 'left_menu/3.png',
               isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
               children: [
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'in'}},
                   name: 'Входящие',
+                  imgSrc: 'left_menu/3.png',
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
                 },
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'out'}},
                   name: 'Исходящие',
+                  imgSrc: 'left_menu/3.png',
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
                 },
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
                   name: 'На согласовании',
+                  imgSrc: 'left_menu/3.png',
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
                 },
                 {
                   link: {name: 'documents'},
                   name: 'Все',
+                  imgSrc: 'left_menu/3.png',
                   isActive: () => this.$isRoute('documents'),
                 },
               ],
             },
-            // {
-            //   name: 'Платежный календарь',
-            //   link: { name: 'ps' },
-            //   isActive: () => this.$isRoute(['folder', 'ps', 'psByFilter']),
-            //   children: [
-            //     {
-            //       link: { name: 'ps' },
-            //       name: 'Все',
-            //       isActive: () => this.$isRoute('ps'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'in' }},
-            //       name: 'Входящие',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'in'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'out' }},
-            //       name: 'Исходящие',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'out'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'confirmation' }},
-            //       name: 'На согласовании',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmation'),
-            //     },
-            //     {
-            //       link: { name: 'psByFilter', params: { param1: 'confirmed' }},
-            //       name: 'Согласованные',
-            //       isActive: () => this.$isRoute('psByFilter', 'param1', 'confirmed'),
-            //     }
-            //   ]
-            // },
             {
               link: {name: 'contragents'},
               name: 'Контрагенты',
+              imgSrc: 'left_menu/3.png',
               isActive: () => this.$isRoute(['folder', 'contragents']),
             }
           ],
@@ -139,6 +113,7 @@ import Tree from './Tree'
             {
               link: { name: 'panel', params: { param1: 'departments' }},
               name: 'Департаменты/Отделы',
+              imgSrc: 'left_menu/3.png',
               isActive: () => this.$isRoute('panel', 'param1', 'departments'),
             },
           ]

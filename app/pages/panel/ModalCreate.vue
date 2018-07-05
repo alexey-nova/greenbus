@@ -62,6 +62,7 @@
         this.model.department = val[val.length - 1]
       },
       close () {
+        this.errors.clear()
         this.$emit('onClose')
       },
       submit () {
@@ -77,7 +78,7 @@
             this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
           }
         }
-        
+
 
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
