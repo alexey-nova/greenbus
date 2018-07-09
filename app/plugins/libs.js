@@ -46,6 +46,7 @@ Vue.use(notify)
 Validator.localize('ru', VeeValidateRu);
 Vue.use(VeeValidate, {
   locale: 'ru',
+  fieldsBagName: 'formFields',
   dictionary: {
     ru: { attributes: {
       login: 'Логин',

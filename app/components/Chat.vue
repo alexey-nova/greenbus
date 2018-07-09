@@ -1,7 +1,5 @@
 <template>
-  <div class="center" @click="openChat">
-    <img src="~assets/img/header/7.png">
-    <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
+  <div class="center">
 
     <div v-if="isOpen" v-click-outside="closeChat">
       <!-- <div class="chat-bg"></div> -->
@@ -86,7 +84,6 @@
         })
 
         users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
-        console.log(users)
         return users
       },
     },
@@ -129,6 +126,9 @@
           return
         }
         this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
+          var id = response.data.message.author
+          response.data.message.author = {}
+          response.data.message.author._id = id
           this.messages.push(response.data.message)
         }).catch(err => {
           if (err) console.log(err, 'asd')

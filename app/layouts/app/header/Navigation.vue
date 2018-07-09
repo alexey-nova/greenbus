@@ -70,9 +70,10 @@
                     <img src="~assets/img/header/6.png">
                 </div>
             </router-link>
-            <a class="menu-item chat-call pointer" @click="$store.commit('app/openChat')">
+            <a class="menu-item chat-call pointer" @click="onChatClick()">
               <div class="center">
                 <img src="~assets/img/header/7.png">
+                <span v-if="unreadMessagesCount" class="notificationse">{{ unreadMessagesCount }}</span>
               </div>
             </a>
             <a class="menu-item notifications-call">
@@ -95,6 +96,20 @@
     data () {
       return {
         unreadMessagesCount: 0,
+      }
+    },
+    beforeMount () {
+      this.getMessages()
+    },
+    methods: {
+      getMessages () {
+        this.$api('get', 'conversations').then(response => {
+          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b)
+        }).catch(err => console.log(err))
+      },
+      onChatClick () {
+        this.unreadMessagesCount = 0
+        this.$store.commit('app/openChat')
       }
     }
   }
