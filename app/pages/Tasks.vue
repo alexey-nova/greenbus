@@ -57,7 +57,7 @@
             :items="tasks"
             :fields="mobTableData.fields">
             <template slot="name" slot-scope="row">
-              <span>{{row.value}} (<a @click="toggleModal('show', {})" class="green_anchor">Подробнее</a>)</span>
+              <span>{{row.value}} (<a @click="toggleModal('show', row.item)" class="green_anchor">Подробнее</a>)</span>
             </template>
 						<template slot="status" slot-scope="row">
 							{{statuses[row.value]}}
