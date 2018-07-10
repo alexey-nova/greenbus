@@ -1,7 +1,5 @@
 <template>
-  <div class="center" @click="openChat">
-    <img src="~assets/img/header/7.png">
-    <span v-if="unreadMessagesCount" class="chat-count">{{ unreadMessagesCount }}</span>
+  <div class="center">
 
     <div v-if="isOpen" v-click-outside="closeChat">
       <!-- <div class="chat-bg"></div> -->
@@ -86,7 +84,6 @@
         })
 
         users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
-        console.log(users)
         return users
       },
     },
@@ -97,6 +94,7 @@
       closeChat () {
         this.$store.commit('app/closeChat')
         this.isOpen = false
+        this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
       },
       changeCurrent (id) {
         this.$api('post', 'conversations', { to: id }).then(response => {
@@ -120,7 +118,8 @@
               date: conversation.message.createdAt || new Date(2014, 1)
             }
           })
-          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b)
+          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
+          this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
         }).catch(err => console.log(err))
       },
       sendMessage (message) {
@@ -129,6 +128,9 @@
           return
         }
         this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
+          var id = response.data.message.author
+          response.data.message.author = {}
+          response.data.message.author._id = id
           this.messages.push(response.data.message)
         }).catch(err => {
           if (err) console.log(err, 'asd')

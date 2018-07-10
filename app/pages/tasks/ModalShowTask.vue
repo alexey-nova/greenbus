@@ -48,7 +48,7 @@
                     Статус: {{statuses[model.status]}}<br />
                     <label class="disabled-margin">Срок задачи</label>
                     <div class="select">
-                      
+
                       <div>
                         Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}
                       </div>
@@ -58,6 +58,7 @@
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
             <div v-if="tabs === 1">
@@ -81,90 +82,51 @@
               </div> -->
             </div>
             <div v-if="tabs === 2">
-                <div class="forum-box">
-                    <div class="forum-item">
-                        <div class="forum-title flex">
-                            <p class="forum-name">Жумагалиев АБ</p>
-                            <p class="forum-date">21.02.2018</p>
-                        </div>
-                        <div class="forum-text">
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                        </div>
-                        <div class="flex flex-end forum-button">
-                            <button class="add-button auto-width reply">Ответить</button>
-                        </div>
-                        <div class="hidden-forum-box hidden1">
-                            <div class="forum-response">
-                                <div class="forum-response-box">
-                                    <p class="forum-name">Жумагалиев АБ</p>
-                                    <form action="" method="">
-                                        <div class="forum-textarea">
-                                            <textarea placeholder="Введите текст"></textarea>
-                                        </div>
-                                        <div class="flex flex-end forum-button">
-                                            <button type="submit" class="add-button auto-width">Отправить</button>
-                                        </div>
-                                    </form>
-                                </div>
+              <p v-if="!$_.size(comments)">Обсуждений нет</p>
+              <div class="forum-box">
+                <div class="forum-item"  v-for="comment in comments">
+                  <div v-if="comment.taskId">
+                    <div class="forum-title flex" >
+                      <p class="forum-name">{{getUser(comment.performedBy).fullname}}</p>
+                      <p class="forum-date">({{ $dateFormat(comment.createdAt, 'dd mmm, HH:MM') }})</p>
+                    </div>
+                    <div class="forum-text">
+                      <span>{{comment.comment}}</span>
+                      <div v-for="file in comment.files">
+                        <div>files:<a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+                      </div>
+                    </div>
+                    <div class="forum-response" v-if="comment.replies && comment.replies[0]">
+                      <div class="forum-response-box">
+                        <p class="forum-name">{{getUser(model.from).fullname}}</p>
+                          <div class="forum-response-info">
+                            <div class="response-info-text">
+                              <span>{{comment.replies[0].comment && comment.replies[0].comment}}</span>
                             </div>
-                        </div>
-                        <div class="forum-response">
-                            <div class="forum-response-box">
-                                <p class="forum-name">Жумагалиев АБ</p>
-                                <div class="forum-response-info">
-                                    <div class="response-info-text">
-                                        <p class="forum-name2">Жумагалиев АБ</p>
-                                        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-                                    </div>
-                                    <div class="response-info-date">
-                                        <p class="forum-date">21.02.2018</p>
-                                    </div>
-
-                                </div>
-                                <div class="forum-text">
-                                    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                                </div>
-                                <div class="flex flex-end forum-button">
-                                    <button class="add-button auto-width reply2">Ответить</button>
-                                </div>
-                                <div class="hidden-forum-box hidden2">
-                                    <div class="forum-response">
-                                        <div class="forum-response-box">
-                                            <p class="forum-name">Жумагалиев АБ</p>
-                                            <form action="" method="">
-                                                <div class="forum-textarea">
-                                                    <textarea placeholder="Введите текст"></textarea>
-                                                </div>
-                                                <div class="flex flex-end forum-button">
-                                                    <button type="submit" class="add-button auto-width">Отправить</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="response-info-date">
+                              <p class="forum-date">({{ $dateFormat(comment.createdAt, 'dd mmm, HH:MM') }})</p>
                             </div>
-                        </div>
+                          </div>
+                          <div v-for="file in comment.replies[0].files">
+                            <div>files:<a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
+                          </div>
+                      </div>
+                  </div>
+                    <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && comment.taskId && !comment.status)" class="flex flex-end">
+                      <button type="button" class="save pad2 btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})">Отказать</button>
+                      <button type="button" class="save pad2 btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})">Согласовать</button>
                     </div>
-                    <div class="forum-item">
-                        <div class="forum-title flex">
-                            <p class="forum-name">Жумагалиев АБ</p>
-                            <p class="forum-date">21.02.2018</p>
-                        </div>
-                        <div class="forum-text">
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                        </div>
-                        <div class="flex flex-end forum-button">
-                            <button class="add-button auto-width reply">Ответить</button>
-                        </div>
-                    </div>
+                  </div>
                 </div>
-                <div class="modal-footer no-padding">
-                    <div class="more">
-                        <button class="more-button">Еще 12</button>
-                    </div>
-                </div>
+                <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
+              </div>
+            </div>
+            <div class="time mob-none" style="float: left; text-align: left; padding-top: 5px;">
+              Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
+            </div>
+            <div class="flex flex-end">
+              <button type="button" class="save pad2" @click="close">Закрыть окно</button>
+              <button v-if="((model.to && $auth().user._id === model.to.user) || (model.coExecutives && model.coExecutives.filter(user => user.user === $auth().user._id)[0])) && model.status === 0" type="button" class="save pad2" @click="toggleModal('performTask', model)">Завершить задачу</button>
             </div>
           </div>
         </div>
@@ -217,17 +179,16 @@
               <div class="user" style="margin-top: 15px;">
                 <i class="fa fa-reply" style="color: grey"></i>
                 <strong>{{getUser(model.from).fullname}}</strong>
-                <span>({{ $dateFormat(comment.replies[0].createdAt, 'dd mmm, HH:MM') }})</span>  
+                <span>({{ $dateFormat(comment.replies[0].createdAt, 'dd mmm, HH:MM') }})</span>
               </div>
               <div class="comment">{{comment.replies[0].comment && comment.replies[0].comment}}</div>
               <div v-for="file in comment.replies[0].files">
                 <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
               </div>
             </div>
-            <div style="padding: 5px 0"></div>
-            <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && comment.taskId)">
-              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})"><i class="fa fa-times"></i>&nbsp;&nbsp;Отказать</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})"><i class="fa fa-calendar-check-o"></i>&nbsp;&nbsp;Согласовать</button>
+            <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && !comment.status)">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})"><i class="fa fa-times"></i>Отказать</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})"><i class="fa fa-calendar-check-o"></i>Согласовать</button>
             </div>
           </div>
           <div v-else>
@@ -241,7 +202,7 @@
             </div>
           </div>
         </div>
-        
+
         <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
         <hr>
         <div>
@@ -275,7 +236,7 @@
     </div>
   </Modal>
 
-  <ModalPerform :model="modal.performTask" @onSubmit="performTask" @onClose="toggleModal('performTask')"></ModalPerform>
+  <ModalPerform v-if="modal.performTask" :model="modal.performTask" @onSubmit="performTask" @onClose="toggleModal('performTask')"></ModalPerform>
   <ModalReject :model="modal.rejectTask" @onSubmit="rejectTask" @onClose="toggleModal('rejectTask')"></ModalReject>
   <ModalConfirm :model="modal.confirmTask" @onSubmit="confirmTask" @onClose="toggleModal('confirmTask')"></ModalConfirm>
 
@@ -351,14 +312,17 @@
       performTask (task) {
         this.$emit('performTask', task)
         this.toggleModal('performTask')
+        this.close()
       },
       rejectTask (task) {
         this.$emit('rejectTask', task)
         this.toggleModal('rejectTask')
+        this.close()
       },
       confirmTask (model) {
         this.$emit('confirmTask', model)
         this.toggleModal('confirmTask')
+        this.close()
       },
       sendComment () {
         let data = this.$createFormData({

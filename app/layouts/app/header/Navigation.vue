@@ -73,6 +73,7 @@
             <a class="menu-item chat-call pointer" @click="$store.commit('app/openChat')">
               <div class="center">
                 <img src="~assets/img/header/7.png">
+                <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
               </div>
             </a>
             <a class="menu-item notifications-call">
@@ -94,7 +95,29 @@
     },
     data () {
       return {
-        unreadMessagesCount: 0,
+        unreadMessagesCount: this.$store.getters['app/unreadMessagesCount'],
+      }
+    },
+    computed: {
+      count() {
+        return this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount']
+      }
+    },
+    methods: {
+      getMessages () {
+        this.$api('get', 'conversations').then(response => {
+          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
+          this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
+        }).catch(err => console.log(err))
+      },
+    },
+    mounted () {
+       this.getMessages()
+    },
+    sockets: {
+      newMessage (data) {
+        this.$store.commit('app/setUnreadMessagesCount', ++this.unreadMessagesCount)
+        this.notify('У вас новое сообщение')
       }
     }
   }

@@ -15,14 +15,16 @@ export default {
     },
     excelUsers: [],
     departments: [],
-    isChatOpen: false
+    isChatOpen: false,
+    unreadMessagesCount: 0,
   },
   getters: {
     excelUsers: state => {
       return state.excelUsers
     },
     departments: state => state.departments,
-    isChatOpen: state => state.isChatOpen
+    isChatOpen: state => state.isChatOpen,
+    unreadMessagesCount: state => state.unreadMessagesCount
   },
   mutations: {
     setSidebar (state, data) {
@@ -58,6 +60,9 @@ export default {
     },
     closeChat (state) {
       state.isChatOpen = false
+    },
+    setUnreadMessagesCount (state, count) {
+      state.unreadMessagesCount = count
     }
   },
 }
