@@ -48,7 +48,7 @@
                     Статус: {{statuses[model.status]}}<br />
                     <label class="disabled-margin">Срок задачи</label>
                     <div class="select">
-                      
+
                       <div>
                         Дата создания: {{$dateFormat(model.createdAt, 'd mmm yyyy, hh:MM')}}
                       </div>
@@ -121,7 +121,7 @@
                 <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
               </div>
             </div>
-            <div class="time" style="float: left; text-align: left; padding-top: 5px;">
+            <div class="time mob-none" style="float: left; text-align: left; padding-top: 5px;">
               Срок до: {{$dateFormat(model.deadline, 'd mmm yyyy')}}
             </div>
             <div class="flex flex-end">
@@ -202,7 +202,7 @@
             </div>
           </div>
         </div>
-        
+
         <div v-if="model.status !== 1"><strong>{{statuses[model.status].toUpperCase()}}</strong></div>
         <hr>
         <div>

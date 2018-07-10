@@ -94,6 +94,7 @@
       closeChat () {
         this.$store.commit('app/closeChat')
         this.isOpen = false
+        this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
       },
       changeCurrent (id) {
         this.$api('post', 'conversations', { to: id }).then(response => {
@@ -117,7 +118,8 @@
               date: conversation.message.createdAt || new Date(2014, 1)
             }
           })
-          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b)
+          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
+          this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
         }).catch(err => console.log(err))
       },
       sendMessage (message) {

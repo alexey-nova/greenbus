@@ -61,16 +61,6 @@
           this.notify(e, 'danger')
         })
       },
-      loadUtil () {
-        return this.$api('get', 'users/utils').then(response => {
-          const users = response.data.util.excelUsers
-          if ((users && users.length > 0)) {
-            this.$store.commit('app/setExcelUsers', users)
-          }
-        }).catch(err => {
-          console.log(err.response)
-        })
-      },
       handleConnectivityChange(status) {
         this.onlineStatus = status
       }
@@ -84,7 +74,6 @@
       this.height = window.innerHeight - 101
       if (this.$auth().user) {
         this.loadUsers()
-        this.loadUtil()
       }
     }
   }
