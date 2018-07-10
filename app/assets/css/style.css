@@ -1397,6 +1397,22 @@ a.categories.active .white-menu-img{
     cursor: pointer;
     transition: 0.6s;
 }
+.templates-item{
+    margin-left: 2%;
+    display: flex;
+    width: 26%;
+    margin-bottom: 1.5em;
+    border: 1px solid #b9b9b9;
+    padding: 1em;
+    position: relative;
+    text-align: center;
+    -webkit-box-shadow: 0px 2px 5px 0px transparent;
+    -moz-box-shadow: 0px 2px 5px 0px transparent;
+    box-shadow: 0px 2px 5px 0px transparent;
+    cursor: pointer;
+    transition: 0.6s;
+    justify-content: space-between;
+}
 .categories-item.center{
     margin-left: 9%;
     margin-right: 9%;
