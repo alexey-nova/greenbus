@@ -1,88 +1,126 @@
 <template>
   <Modal :isOpen="model" type="lg" @onSubmit="submit">
-
-    <h3 slot="header" class="modal-title">Создать служебную записку</h3>
-
-    <div slot="content" class="row">
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('name')}]">
-          <label for="field-name">Тема *</label>
-          <input id="field-name" class="form-control" v-validate="'required'" name="name" v-model="model.name">
-          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+    <div class="modal-dialog big" slot="content">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <div>Создать новую служебную записку</div>
+              <div class="buttons">
+                <button class="button-top close" @click="close" type="button"></button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
-          <label for="field-memoTo">Кому *</label><br />
-          <Multiselect
-            id="field-memoTo"
-            v-model="selectedUsers"
-            :options="usersForSelect"
-            :close-on-select="false"
-            :hide-selected="true"
-            :clear-on-select="false"
-            :multiple="true"
-            track-by="name"
-            label="name"
-          >
-          </Multiselect>
-          <span v-show="errors.has('memoTo')" class="help-block">{{ errors.first('memoTo') }}</span>
+
+        <div v-if="step === 0" :class="['active-categories']">
+          <div class="profile full modal-body no-padding">
+            <div class="cat-box">
+              <div class="white-menu top">
+                <div class="white-menu-box">
+                  <a :class="['categories', { active: activeCategory === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category._id)">
+                    <div class="white-menu-img"></div>
+                    <span>{{category.name}}</span>
+                  </a>
+                </div>
+              </div>
+              <div class="categories-block" id="categories-id-1">
+                <div class="margin2-helper">
+                  <div class="white-menu-box">
+                    <a class="categories-item order" v-for="template in templates" :key="template._id" @click="chooseTemplate(template)">
+                      <div class="flex flex-start">
+                        <div class="categories-item-img"></div>
+                        <div class="categories-item-text">
+                          <span>{{template.name}}</span>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+
+        <div v-if="step === 1" :class="['active-categories']">
+          <div class="profile full modal-body">
+            <div class="flex">
+              <button class="add-button auto-width back back2" @click="step = 0" type="button"><img src="~assets/img/left.png"><span>Назад</span></button>
+              <span>Выбранный шаблон: <span>{{model.template.name}}</span></span>
+            </div>
+            <div class="flex column">
+              <div class="form-item">
+                <div :class="['form-group', {'has-error': errors.has('name')}]">
+                  <label for="field-name">Тема *</label>
+                  <input id="field-name" v-validate="'required'" name="name" v-model="model.name" />
+                  <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+                </div>
+                <div class="select-file">
+                  <file-upload
+                    class="btn btn-default"
+                    :multiple="true"
+                    v-model="model.files"
+                    ref="upload">
+                    Прикрепить файлы
+                  </file-upload>
+                  <ul style="list-style: none; padding: 0;">
+                    <li v-for="(file, index) in model.files" :key="index">
+                      <span>{{file.name}}</span> -
+                      <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-item">
+                <div :class="['form-group']">
+                  <label for="field-description">Описание</label>
+                  <ckeditor
+                    id="field-description"
+                    v-model="model.description"
+                    :config="ckEditorConfig">
+                  </ckeditor>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="flex center">
+              <button class="add-button auto-width send">Отправить <img src="~assets/img/left.png"></button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">Описание *</label>
-          <ckeditor 
-            v-model="model.text"
-            v-validate="'required'"
-            :config="ckEditorConfig">
-          </ckeditor>
-          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
-        </div>
-        
-      </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Создать</button>
-    </div>
-
   </Modal>
 </template>
 
 <script>
   import 'element-ui/lib/theme-chalk/index.css'
   import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import Multiselect from 'vue-multiselect'
+  import FileUpload from 'vue-upload-component'
   import Ckeditor from 'vue-ckeditor2'
 
   export default {
     components: {
       Modal,
-      MaskedInput,
-      Datepicker,
-      'el-switch': Switch,
-      Multiselect,
+      FileUpload,
       Ckeditor
     },
     data () {
       return {
-        to: null,
         ckEditorConfig: {
           toolbar: [
             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
           ],
           height: 150
-        }
+        },
+        categories: [],
+        activeCategory: null,
+        templates: [],
+        step: 0
       }
     },
-    props: ['model', 'users', 'onSubmit', 'onClose',],
+    props: ['model', 'onSubmit', 'onClose',],
     methods: {
       close () {
         this.$emit('onClose')
@@ -91,54 +129,45 @@
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             let model = this.$_.clone(this.$props.model)
-            model.to = this.$_.map(model.to, u => u.user)
             this.$emit('onSubmit', model)
           }
         }).catch(() => {
         })
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
       },
       addFiles (e) {
         let files = e.target.files || e.dataTransfer.files
         if (!files.length) return
 
         this.$props.model.files = files
-      }
-    },
-    computed: {
-      usersForSelect () {
-        return this.$_.map(this.$props.users, u => {
-          return {name: u.fullname, _id: u._id}
+      },
+      loadCategories () {
+        this.$api('get', 'bids/categories').then(response => {
+          console.log('categories', response.data)
+          this.categories = response.data.categories
+        }).catch(e => {
+          console.log('categories error', e.response)
         })
       },
-      selectedUsers: {
-        get: function () {
-          if (this.$_.size(this.$props.model.to) > 10) {
-            this.errors.items.push({
-              field: 'memoTo',
-              scope: null,
-              msg: 'Допустимо не больше 10 согласующих',
-            })
-          }
-          return this.$_.map(this.$props.model.to, m => {
-            return m ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
-          })
-        },
-        set: function (newValue) {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'memoTo')
-          this.$props.model.to = this.$_.map(newValue, m => {
-            return {user: m._id}
-          })
-        }
+      loadTemplates (categoryId) {
+        this.activeCategory = categoryId
+        this.$api('get', `bids/templates/${categoryId}`).then(response => {
+          console.log('templates', response.data)
+          this.templates = response.data.templates
+        })
+      },
+      chooseTemplate (template) {
+        this.model.template = template
+        this.step = 1
+      }
+    },
+    mounted () {
+      if (this.model) {
+        this.loadCategories()
       }
     }
   }
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss" scoped>
 
 </style>

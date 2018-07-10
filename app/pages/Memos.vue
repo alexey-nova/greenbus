@@ -1,50 +1,295 @@
 <template>
-  <div>
-    <PageTitle :title="'Служебные записки'"></PageTitle>
-
-    <PageButtons>
-      <button class="btn btn-success" @click="toggleModal('create', {})"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Создать служебную записку</button>
-    </PageButtons>
-
-    <Box>
-      <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
-        <div slot="admin" slot-scope="props">
-          <button class="btn btn-sm btn-default" @click="toggleModal('edit', $_.clone(props.row))"><i class="fa fa-edit"></i></button>
-          <button class="btn btn-sm btn-danger" @click="toggleModal('delete', props.row._id)"><i class="fa fa-trash"></i></button>
-        </div>
-        <div slot="from" slot-scope="props">
-          {{props.row.nameFrom}}
-        </div>
-        <div slot="to" slot-scope="props">
-          {{getUsersTo(props.row.to)}}
-        </div>
-        <div slot="status" slot-scope="props">
-          {{statuses[props.row.status]}}
-        </div>
-        <div slot="info" slot-scope="props">
-          <span class="tools" @click="toggleModal('show', props.row, 2)">
-            <span v-if="getCommentsCount(props.row)" class="label label-success">{{getCommentsCount(props.row)}}</span>
-            <i class="fa fa-comment-o"></i>
-          </span>
-          <span class="tools" @click="toggleModal('show', props.row, 1)">
-            <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
-            <i class="fa fa-file-o"></i>
-          </span>
-        </div>
-        <div slot="tools" slot-scope="props">
-          <div v-if="props.row.status === 0">
-            <!--<a @click="toggleModal('confirm', props.row._id)">Согласовать</a>-->
-            <!--<a @click="toggleModal('reject', props.row._id)">Отказать</a>-->
+  <div class="container-box">
+    <div class="top-shadow text2">
+      <div class="stage2">
+        <a class="stage2-item green">
+          <img src="~assets/img/user.jpg">
+          <div class="absolut-box">
+            <div class="stage-flex flex green">
+              <div class="stage-text">
+                <p>Жумагалиев АБ</p>
+                <p class="italic">Должность</p>
+              </div>
+              <div class="stage-date">
+                <span>24.05.2017</span>
+              </div>
+            </div>
           </div>
+        </a>
+        <a href="#" class="stage2-item gray">
+          <img src="~assets/img/user.jpg">
+          <div class="absolut-box">
+            <div class="stage-flex flex gray">
+              <div class="stage-text">
+                <p>Жумагалиев АБ</p>
+                <p class="italic">Должность</p>
+              </div>
+              <div class="stage-date">
+                <span>24.05.2017</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="stage2-item gray">
+          <img src="~assets/img/user.jpg">
+          <div class="absolut-box">
+            <div class="stage-flex flex gray">
+              <div class="stage-text">
+                <p>Жумагалиев АБ</p>
+                <p class="italic">Должность</p>
+              </div>
+              <div class="stage-date">
+                <span>24.05.2017</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="stage2-item yellow">
+          <img src="~assets/img/user.jpg">
+          <div class="absolut-box">
+            <div class="stage-flex flex yellow">
+              <div class="stage-text">
+                <p>Жумагалиев АБ</p>
+                <p class="italic">Должность</p>
+              </div>
+              <div class="stage-date">
+                <span>24.05.2017</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="stage2-item red">
+          <img src="~assets/img/user.jpg">
+          <div class="absolut-box">
+            <div class="stage-flex flex red">
+              <div class="stage-text">
+                <p>Жумагалиев АБ</p>
+                <p class="italic">Должность</p>
+              </div>
+              <div class="stage-date">
+                <span>24.05.2017</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="working_area">
+      <div class="white-block no-padding">
+        <div class="padding-block">
+          <div class="flex margin-bottom align-center">
+            <div class="search">
+            </div>
+            <div class="add flex-end">
+              <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать заявку</button>
+            </div>
+          </div>
+          <div class="mob-none">
+            <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
+              <div class="flex align-center sm-w" slot="tools" slot-scope="props">
+                <a @click="toggleModal('showBid', $_.clone(props.row))" class="green_anchor">Подробнее</a>
+              </div>
+              <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
+                <button class="button-table edit" @click="toggleModal('editBid', $_.clone(props.row))"></button>
+                <button class="button-table remove" @click="toggleModal('deleteBid', props.row) "></button>
+              </div>
+            </v-client-table>
+          </div>
+          <!-- <table class="mob-none">
+            <tr class="green">
+              <td width="5%" class="id">
+                <div class="flex img align-center">
+                  <span>ID</span>
+                  <img src="assets/img/sver.png" class="sort">
+                </div>
+              </td>
+              <td width="35%">
+                <div class="flex img align-center">
+                  <input type="text" placeholder="Тема" class="td-search-input" disabled>
+                  <img src="assets/img/search-2.png" class="td-search-button">
+                </div>
+              </td>
+              <td width="18%">
+                <div class="flex img align-center">
+                  <input type="text" placeholder="Дата" class="td-search-input" disabled>
+                  <img src="assets/img/search-2.png" class="td-search-button">
+                </div>
+              </td>
+              <td width="33%">
+                <div class="flex img align-center">
+                  <input type="text" placeholder="Исполнитель" class="td-search-input" disabled>
+                  <img src="assets/img/search-2.png" class="td-search-button">
+                </div>
+              </td>
+              <td width="22%">Подробнее</td>
+              <td class="button-width">&nbsp;</td>
+            </tr>
+            <tr class="clicked-tr">
+              <td  class="td_center">1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+              <td class="td_center">
+                <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+              </td>
+              <td class="border-none unset-click">
+                <div class="flex">
+                  <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
+                  <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
+                </div>
+              </td>
+            </tr>
+            <tr class="clicked-tr">
+              <td  class="td_center">1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+              <td class="td_center">
+                  <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+              </td>
+              <td class="border-none unset-click">
+                  <div class="flex">
+                      <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
+                      <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
+                  </div>
+              </td>
+            </tr>
+            <tr class="clicked-tr">
+                <td  class="td_center">1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td class="td_center">
+                    <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+                </td>
+                <td class="border-none unset-click">
+                    <div class="flex">
+                        <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
+                        <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
+                    </div>
+                </td>
+            </tr>
+          </table> -->
+          <div class="mob-block">
+              <div class="filter">
+                  <div class="search">
+                      <a href="#" class="filter-a">
+                          <span>Фильтр</span>
+                          <img src="assets/img/left.png">
+                      </a>
+                      <form action="" method="">
+                          <ul>
+                              <li>
+                                  <input type="text" placeholder="Тема" name="search">
+                                  <button class="add-button" type="submit"><img src="assets/img/search.png"></button>
+                              </li>
+                              <li>
+                                  <input type="text" placeholder="Исполнитель" name="search">
+                                  <button class="add-button" type="submit"><img src="assets/img/search.png"></button>
+                              </li>
+                          </ul>
+                      </form>
+                  </div>
 
-          <button class="btn btn-default" @click="toggleModal('show', props.row)">
-            <i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Подробнее
-          </button>
+
+              </div>
+              <table width="100%" class="mob-margin">
+                  <tr class="green">
+                      <td>
+                          <div class="flex">
+                              <div class="m-item">
+                                  <span>ID №1</span>
+                              </div>
+                              <div class="m-item">
+                              </div>
+                          </div>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Тема:</span>
+                          <span class="bold">Тема</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Дата:</span>
+                          <span class="bold">Дата</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Исполнитель:</span>
+                          <span class="bold">Исполнитель</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <div class="flex align-center">
+                              <div class="m-item">
+                                  <div class="flex">
+                                      <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
+                                      <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
+                                  </div>
+                              </div>
+                              <div class="m-item">
+                                  <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+                              </div>
+                          </div>
+                      </td>
+                  </tr>
+              </table>
+              <table width="100%" class="mob-margin">
+                  <tr class="green">
+                      <td>
+                          <div class="flex">
+                              <div class="m-item">
+                                  <span>ID №1</span>
+                              </div>
+                              <div class="m-item">
+                              </div>
+                          </div>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Тема:</span>
+                          <span class="bold">Тема</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Дата:</span>
+                          <span class="bold">Дата</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <span>Исполнитель:</span>
+                          <span class="bold">Исполнитель</span>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <div class="flex align-center">
+                              <div class="m-item">
+                                  <div class="flex">
+                                      <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
+                                      <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
+                                  </div>
+                              </div>
+                              <div class="m-item">
+                                  <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
+                              </div>
+                          </div>
+                      </td>
+                  </tr>
+              </table>
+          </div>
         </div>
-      </v-client-table>
-    </Box>
-
-    <ModalCreate :model="modal.create" :users="users" @onSubmit="createMemo" @onClose="toggleModal('create')"></ModalCreate>
+      </div>
+    </div>
+    <ModalCreate v-if="modal.create" :model="modal.create" @onSubmit="createBid" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
     <ModalDelete :model="modal.delete" @onSubmit="deleteMemo" @onClose="toggleModal('delete')"></ModalDelete>
@@ -52,9 +297,6 @@
 </template>
 
 <script>
-  import PageTitle from '@/PageTitle'
-  import PageButtons from '@/PageButtons'
-  import Box from '@/Box'
   import ModalCreate from './memos/ModalCreate'
   import ModalEdit from './memos/ModalEdit'
   import ModalShow from './memos/ModalShow'
@@ -64,9 +306,6 @@
 
   export default {
     components: {
-      PageTitle,
-      PageButtons,
-      Box,
       ModalCreate,
       ModalEdit,
       ModalReject,
@@ -78,6 +317,7 @@
       return {
         users: [],
         memos: [],
+        bids: [],
         modal: {
           show: false,
           create: false,
@@ -93,24 +333,23 @@
           'Отказано',
         ],
         tableData: {
-          columns: ['id', 'name', 'status', 'from', 'to', 'info', 'tools',],
+          columns: ['name', 'status', 'nameFrom', 'currentUserName', 'tools'],
           options: {
             headings: {
               id: 'ID',
               admin: '',
               name: 'Тема',
               status: 'Статус',
-              from: 'Исполнитель',
-              to: 'Кому',
-              info: 'Инфо',
+              nameFrom: 'От кого',
+              currentUserName: 'Текущий исполнитель',
               tools: 'Подробнее',
             },
             orderBy: {
               column: 'id',
               ascending: false
             },
-            sortable: ['id', 'name', 'status', 'from', 'to',],
-            filterable: ['id', 'name', 'status', 'from', 'to',],
+            sortable: ['id', 'name', 'status', 'userFrom'],
+            filterable: ['id', 'name', 'status', 'userFrom'],
             customSorting: {
               id: function (ascending) {
                 return (a, b) => {
@@ -124,9 +363,6 @@
                 }
               }
             },
-            rowClassCallback (row) {
-              return (row.urgency) ? 'bg-danger' : ''
-            },
             columnsClasses: {
               admin: 'admin',
             },
@@ -138,24 +374,25 @@
     computed: {
       filteredData: {
         get: function () {
-          let data = _.merge([], this.memos)
+          let data = _.merge([], this.bids)
+          console.log('x', this.users)
+          _.map(data, bid => {
+            let userFrom = _.find(this.users, u => u._id === bid.createdBy)
+            bid.nameFrom = userFrom ? userFrom.fullname : ''
 
-          _.map(data, memo => {
-            let userFrom = _.find(this.users, u => u._id === memo.from)
-            memo.nameFrom = userFrom ? userFrom.fullname : ''
-
-            let to = memo.to[0] ? memo.to[0].user : false
-            let userTo = _.find(this.users, u => u._id === to)
-            memo.nameTo = userTo ? userTo.fullname : ''
-
-            return memo
+            let currentUserName = _.find(this.users, u => u.positionId === bid.order[bid.currentUser].position)
+            bid.currentUserName = currentUserName ? currentUserName.fullname : ''
+            return bid
           })
           return data
         }
       }
     },
-
     methods: {
+      toggleModal (name, model, tab) {
+        this.modal[name] = model === undefined ? !this.modal[name] : model
+        this.modal.tab = tab ? tab : 0
+      },
       getCommentsCount (model) {
         return this.$_.reduce(model.to, (result, m) => {
           if (m.answer !== 'undefined') {
@@ -164,14 +401,12 @@
           return result
         }, 0)
       },
-      toggleModal (name, model, tab) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-        this.modal.tab = tab ? tab : 0
-      },
-      createMemo (memo) {
+      createBid (memo) {
+        memo.templateId = memo.template._id
+        delete memo.template
         let data = this.$createFormData(memo)
-        this.$api('post', 'memos', data).then(response => {
-          this.loadMemos()
+        this.$api('post', 'bids', data).then(response => {
+          this.loadBids()
           this.modal.create = false
           this.notify(response.data.message)
         }).catch(e => {
@@ -182,7 +417,7 @@
       editMemo (memo) {
         let data = this.$createFormData(memo)
         this.$api('put', 'memos/'+memo._id, data).then(response => {
-          this.loadMemos()
+          this.loadBids()
           this.modal.edit = false
           this.notify(response.data.message)
         }).catch(e => {
@@ -193,7 +428,7 @@
       rejectMemo (memo) {
         let data = this.$createFormData(memo)
         this.$api('post', 'memos/reject/'+memo._id, data).then(response => {
-          this.loadMemos()
+          this.loadBids()
           this.modal.show  = false
           this.notify(response.data.message)
         }).catch(e => {
@@ -203,7 +438,7 @@
       confirmMemo (data) {
         let formData = this.$createFormData(data)
         this.$api('post', 'memos/confirm/'+data._id, formData).then(response => {
-          this.loadMemos()
+          this.loadBids()
           this.modal.show = false
           this.notify(response.data.message)
         }).catch(e => {
@@ -222,11 +457,12 @@
           this.modal.delete = false
         })
       },
-      loadMemos () {
+      loadBids () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-        return this.$api('get', 'memos' + filter).then(response => {
-          return this.memos = response.data
+        return this.$api('get', 'bids' + filter).then(response => {
+          return this.bids = response.data.bids
         }).catch(e => {
+          console.log('sss')
           this.notify(e, 'danger')
         })
       },
@@ -237,23 +473,11 @@
           this.notify(e, 'danger')
         })
       },
-      getUsersTo (to) {
-        let names = this.$_.reduce(to, (data, v) => {
-          if (v) {
-            let user = this.$_.find(this.users, u => u._id === v.user)
-            if (user) {
-              data.push(user.fullname)
-            }
-            return data
-          }
-        }, [])
-        return (this.$_.isArray(names)) ? names.join(', ') : ''
-      },
       showMemoFromQuery () {
         let type = this.$_.get(this.$route, 'query.type', '')
         let memoId = this.$_.get(this.$route, 'query.memo', '')
         if (type && memoId) {
-          this.loadMemos().then(memos => {
+          this.loadBids().then(memos => {
             this.toggleModal(type, (this.$_.find(memos, ['_id', memoId])))
           })
         }
@@ -263,7 +487,7 @@
       if (this.$auth().hasRole('admin')) {
         this.tableData.columns.push('admin')
       }
-      this.loadMemos()
+      this.loadBids()
       this.loadUsers()
       this.showMemoFromQuery()
 
@@ -274,7 +498,7 @@
     },
     watch: {
       '$route' (to, from) {
-        this.loadMemos()
+        this.loadBids()
       }
     },
   }

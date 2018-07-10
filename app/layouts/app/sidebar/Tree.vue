@@ -2,8 +2,8 @@
   <ul v-if="item.children" :key="item.name" class="treeview-menu" style="display:none;margin: 10px;">
     <li v-for="(child, index) in item.children" :key="index" :class="[{active: child.isActive(), 'menu-open': child.isActive() && child.children, 'treeview': item.children}]">
       <router-link :to="child.link">
-        <img v-if="child.isActive()" :src="require(`assets/img/${item.imgSrc2}`)">
-        <img v-else :src="require(`assets/img/${item.imgSrc}`)">
+        <img v-if="child.isActive()" :src="item.imgSrc2 ? require(`assets/img/${item.imgSrc2}`) : require(`assets/img/${item.imgSrc}`)">
+        <img v-else :src="item.imgSrc && require(`assets/img/${item.imgSrc}`)">
         <span :class="{'active-span': child.isActive()}">{{child.name}}</span>
       </router-link>
       <Tree :item="child"></Tree>

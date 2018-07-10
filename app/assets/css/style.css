@@ -1161,6 +1161,7 @@ span.red{
     border: 1px solid #d1d1d1;
     outline: none;
     cursor: pointer;
+    background-color: #fff;
 }
 .btn{
     width: 100%;
@@ -1431,7 +1432,7 @@ a.categories.active .white-menu-img{
 .categories-item-text{
     width: 100%;
 }
-.categories-item .button-table.edit {
+.categories-item .button-table.edit, .categories-item .button-table.remove {
     position: absolute;
     left: 100%;
     bottom: 0;
@@ -1963,12 +1964,6 @@ span.date{
 .modal-footer .more2 button{
     font-size: 0.9em;
 }
-.active-categories{
-    display: none;
-}
-.active-categories.active{
-    display: block;
-}
 .clicked-tr{
     cursor: pointer;
 }
@@ -2045,13 +2040,9 @@ span.date{
     margin-left: 1.5%;
 }
 select{
-	/* background-image: url("../img/select.png"); */
 	background-size: 16px;
 	background-repeat: no-repeat;
 	background-position: right 3px center;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
 }
 
 .sm-margin{

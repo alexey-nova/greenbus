@@ -12,136 +12,63 @@
           <div class="cat-box">
             <div class="white-menu top">
               <div class="white-menu-box">
-                <a href="#" class="categories" v-for="category in categories" :key="category._id">
+                <a :class="['categories', { active: activeCategory && activeCategory._id === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category)">
                   <div class="white-menu-img"></div>
                   <span>{{category.name}}</span>
                 </a>
               </div>
             </div>
-            <!-- <div class="categories-block" id="categories-id-1">
+            <div class="categories-block" id="categories-id-1">
+							<div class="add" v-if="$auth().hasRole('admin')">
+								<button v-if="activeCategory" class="add-button" @click="toggleModal('createTemplate', { category: activeCategory })"><img src="~assets/img/add.png">Добавить шаблон</button>
+							</div>
                 <div class="margin2-helper">
-                    <div class="white-menu-box">
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                        <a href="#" class="categories-item order" data-order="1">
-                            <div class="flex flex-start">
-                                <div class="categories-item-img"></div>
-                                <div class="categories-item-text">
-                                    <span>Название шаблона</span>
-                                    <p>заявки</p>
-                                </div>
-                            </div>
-                            <button class="button-table edit"></button>
-                        </a>
-                    </div>
+                  <div class="white-menu-box">
+                    <a class="categories-item order" v-for="template in templates" :key="template._id">
+                      <div class="flex flex-start" @click="toggleModal('showTemplate', template)">
+                        <div class="categories-item-img"></div>
+                        <div class="categories-item-text">
+                          <span>{{template.name}}</span>
+                        </div>
+                      </div>
+                      <!-- <button class="button-table remove" @click="removeTemplate(template._id)"></button> -->
+                    </a>
+                  </div>
                 </div>
-            </div> -->
+            </div>
           </div>
         </div>
-          <!-- <div class="modal-footer border-none cat-box">
-              <div class="more more2">
-                  <button class="more-button">Еще 4 записи</button>
-              </div>
-          </div> -->
       </div>
     </div>
     <ModalCreate :model="modal.create" @onClose="toggleModal('create')" @onSubmit="addCategory"></ModalCreate>
+		<ModalCreateTemplate v-if="modal.createTemplate" :model="modal.createTemplate" @onClose="toggleModal('createTemplate')" @onSubmit="createTemplate"></ModalCreateTemplate>
+		<ModalShowTemplate v-if="modal.showTemplate" :model="modal.showTemplate" @onClose="toggleModal('showTemplate')"></ModalShowTemplate>
   </div>
 </template>
 
 <script>
 import ModalCreate from './templates/ModalCreate'
+import ModalCreateTemplate from './templates/ModalCreateTemplate'
+import ModalShowTemplate from './templates/ModalShowTemplate'
 
 export default {
   name: 'Template',
   components: {
-    ModalCreate
+		ModalCreate,
+		ModalCreateTemplate,
+    ModalShowTemplate
   },
   data () {
     return {
-      categories: [],
+			categories: [],
+			activeCategory: null,
+			templates: [],
       modal: {
         create: false,
         edit: false,
-        delete: false
+				delete: false,
+				createTemplate: false,
+        showTemplate: false
       },
     }
   },
@@ -161,7 +88,23 @@ export default {
         this.categories.push(response.data.category)
         this.notify(response.data.message)
       })
-    }
+		},
+		loadTemplates (category) {
+        this.activeCategory = category
+        this.$api('get', `bids/templates/${category._id}`).then(response => {
+          this.templates = response.data.templates
+        })
+			},
+		createTemplate (data) {
+      this.$api('post', `bids/templates/`, data).then(response => {
+        this.modal.createTemplate = false
+        this.notify(response.data.message)
+        this.templates.push(response.data.template)
+      })
+		},
+    // removeTemplate (_id) {
+
+    // }
   },
   mounted () {
     this.getCategories()

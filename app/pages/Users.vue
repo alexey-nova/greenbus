@@ -11,18 +11,18 @@
         </div>
         <div class="mob-none">
           <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-            <div slot="phone" slot-scope="props">
+            <!-- <div slot="phone" slot-scope="props">
               <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
-            </div>
-            <div slot="email" slot-scope="props">
+            </div> -->
+            <!-- <div slot="email" slot-scope="props">
               <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
-            </div>
+            </div> -->
             <div class="flex align-center sm-w" slot="tools" slot-scope="props">
               <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
                 <img src="~assets/img/add2.png">
                 <span>Поставить задачу</span>
               </button>
-              <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: deptName, position: props.row.posName})" class="green_anchor">Подробнее</a>
+              <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: props.row.deptName, position: props.row.posName})" class="green_anchor">Подробнее</a>
             </div>
             <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(props.row))"></button>
@@ -262,10 +262,7 @@ export default {
           this.departments = response.data.departments.filter(
             item => item.departmentType === 'head'
           )
-          this.otdels = response.data.departments.filter(
-            item => item.departmentType === 'common'
-          )
-
+          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
           let sidebar = [
             {
               link: { name: 'users' },
@@ -337,27 +334,27 @@ export default {
     },
     loadPositions() {
       this.$api('get', 'positions').then(response => {
-        this.positions = response.data.positions;
-      });
+        this.positions = response.data.positions
+      })
     },
     departmentName(_id) {
       if (this.allDepartments.length > 0) {
         if (this.allDepartments.filter(item => item._id === _id).length > 0) {
-          return this.allDepartments.filter(item => item._id === _id)[0].name;
+          return this.allDepartments.filter(item => item._id === _id)[0].name
         }
       }
     },
     positionName(_id) {
       if (this.positions.length > 0) {
         if (this.positions.filter(item => item._id === _id).length > 0) {
-          return this.positions.filter(item => item._id === _id)[0].name;
+          return this.positions.filter(item => item._id === _id)[0].name
         }
       }
     },
     updateFilter() {
       let department = this.$route.params.param1
       if (department === undefined) {
-        department = false;
+        department = false
       }
       this.filter = department
     },

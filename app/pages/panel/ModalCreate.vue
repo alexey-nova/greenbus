@@ -3,32 +3,32 @@
     <div slot="content" class="modal-dialog small2">
       <div class="modal-content">
         <div class="modal-header">
-        <div class="list_header">
-          <div class="flex">
-            <div>
-              <span>Добавить {{setTypeName}}</span>
-            </div>
-            <div class="buttons">
-              <button type="button" class="button-top close close-add-class" @click="close"></button>
+          <div class="list_header">
+            <div class="flex">
+              <div>
+                <span>Добавить {{setTypeName}}</span>
+              </div>
+              <div class="buttons">
+                <button type="button" class="button-top close close-add-class" @click="close"></button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="profile full modal-body">
-        <div :class="[{'has-error': errors.has('name')}]">
-          <label>Название</label>
-          <input type="text" v-validate="'required'" name="name" v-model="model.name">
-          <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+        <div class="profile full modal-body">
+          <div :class="[{'has-error': errors.has('name')}]">
+            <label>Название</label>
+            <input type="text" v-validate="'required'" name="name" v-model="model.name">
+            <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+          </div>
+          <div v-if="model.type === 'otdel' || model.type === 'position'" :class="['form-group', {'has-error': errors.has('department')}]">
+            <label for="field-dept">Департамент/Отдел</label>
+            <el-cascader :options="departments" change-on-select @change="setVal"></el-cascader>
+            <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
+          </div>
+          <div class="flex center">
+              <button type="" class="add-button auto-width form-submit">Добавить</button>
+          </div>
         </div>
-        <div v-if="model.type === 'otdel' || model.type === 'position'" :class="['form-group', {'has-error': errors.has('department')}]">
-          <label for="field-dept">Департамент/Отдел</label>
-          <el-cascader :options="departments" change-on-select @change="setVal"></el-cascader>
-          <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
-        </div>
-        <div class="flex center">
-            <button type="" class="add-button auto-width form-submit">Добавить</button>
-        </div>
-      </div>
       <!-- <div class="modal-footer"></div> -->
       </div>
     </div>
