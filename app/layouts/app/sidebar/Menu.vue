@@ -59,7 +59,7 @@ import Tree from './Tree'
             {
               link: {name: 'tasksByFilter', params: {param1: 'deadlined'}},
               name: 'Просроченные',
-              imgSrc: 'left_menu/3.png',
+              imgSrc: 'left_menu/deadlined.png',
               isActive: () => this.$isRoute('tasksByFilter', 'param1', 'deadlined'),
             },
             {

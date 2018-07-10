@@ -20,14 +20,14 @@
         <li>
           <router-link :to="{name: 'panel', params: { param1: 'depts'}}" v-if="$auth().user.admin">
             <div class="item">
-              <i class="fa fa-columns"></i>&nbsp;&nbsp;Панель управления
+              <img src="~assets/img/left_menu/panel.png" />Панель управления
             </div>
           </router-link>
         </li>
         <li>
           <router-link :to="{name: 'templates'}" v-if="$auth().user.admin">
             <div class="item">
-              <i class="fa fa-sitemap"></i>&nbsp;&nbsp;Шаблоны заявок
+              <img src="~assets/img/left_menu/template.png" />Шаблоны заявок
             </div>
           </router-link>
         </li>
