@@ -83,6 +83,12 @@
               </a>
             </div>
           </div>
+          <div v-if="selectedView === 'day'" class="calendar-top">
+            <span class="week_day">
+              {{$dateFormat(selectedDate, 'd')}}
+              {{$dateFormat(selectedDate, 'mmmm')}}
+            </span>
+          </div>
           <div class="days">
             <div class="flex-days mob-none">
               <full-calendar
@@ -286,6 +292,9 @@
 					this.showMeetingFromQuery()
 					this.loadUsers()
           this.getMonths()
+          this.loadMeetings().then(data => {
+            this.renderEvents(this.selectedDate)
+          })
         },
         methods: {
 					toggleModal (name, model, type) {

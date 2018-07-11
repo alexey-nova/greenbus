@@ -342,6 +342,7 @@ export default {
             if (task._id === dl._id) this.deadlined.push(task)
           })
         })
+        this.renderTasks(this.selectedDate)
       })
       .catch(err => {
         console.log(err)
