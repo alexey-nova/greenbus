@@ -76,7 +76,7 @@
                 <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
               </div>
             </a>
-            <a class="menu-item notifications-call">
+            <a >
                 <Notifications></Notifications>
             </a>
         </div>
