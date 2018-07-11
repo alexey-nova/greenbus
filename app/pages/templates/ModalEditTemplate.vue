@@ -94,12 +94,14 @@ export default {
       this.model.order.push({_id: '', confirmType: '', hours: '', position: ''})
     },
     submit () {
-      for (var i = 0; i < this.model.order.length; i++){
-        var pid = this.model.order[i].position._id
-        this.model.order[i].position = pid
-      }
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
+
+          for (var i = 0; i < this.model.order.length; i++){
+            var pid = this.model.order[i].position._id
+            this.model.order[i].position = pid
+          }
+          
           this.$emit('onSubmit', this.model)
         }
       }).catch(() => {})

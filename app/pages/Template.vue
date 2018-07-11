@@ -135,9 +135,11 @@ export default {
 		},
     editTemplate (data) {
       console.log(data)
+      this.modal.editTemplate = false
 		},
     deleteTemplate (data) {
       console.log(data)
+      this.modal.deleteTemplate = false
 		},
     // removeTemplate (_id) {
 
