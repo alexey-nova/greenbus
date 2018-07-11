@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div class="nav" id="nav" v-click-outside="closeSidebar">
     <div class="info-box">
       <div class="info-container">
         <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
@@ -87,6 +87,7 @@
 <script>
   import User from './sidebar/User'
   import SidebarMenu from './sidebar/Menu'
+  import ClickOutside from 'vue-click-outside'
 
   export default {
     components: {
@@ -98,6 +99,9 @@
         isOpen: false,
       }
     },
+    directives: {
+      ClickOutside
+    },
     computed: {
       avatar () {
         return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
@@ -106,6 +110,14 @@
     methods: {
       toggle () {
         this.isOpen = !this.isOpen
+      },
+      closeSidebar (e) {
+        if (window.innerWidth <= 414 && !e.path[2].classList.contains('header-box-left')) {
+          var current = document.getElementById('nav')
+          if (current && current.classList.contains('active')) {
+            current.classList.remove('active')
+          }
+        }
       }
     },
   }
