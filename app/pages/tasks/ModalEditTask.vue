@@ -1,6 +1,6 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit" type="lg">
-<div class="modal-dialog" slot="content">
+    <div class="modal-dialog" slot="content">
       <div class="modal-content">
         <div class="modal-header">
           <div class="list_header">
@@ -64,7 +64,15 @@
               <div class="sm-margin"></div>
               <div :class="['form-group', {'has-error': errors.has('deadline')}]">
                 <label>Срок сдачи *</label>
-                <Datepicker language="ru" name="deadline" v-validate="'required'" v-model="model.deadline"></Datepicker>
+                <Datepicker
+                  language="ru"
+                  name="deadline"
+                  :monday-first="true"
+                  :disabled="datepickerState.disabled"
+                  :highlighted="datepickerState.highlighted"
+                  v-validate="'required'"
+                  v-model="model.deadline">
+                </Datepicker>
                 <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
               </div>
               <div class="flex align-end column m-center m-align">
@@ -123,6 +131,14 @@
             [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
           ],
           height: 150
+        },
+        datepickerState: {
+          disabled: {
+            to: new Date((new Date()).setDate((new Date()).getDate() - 1))
+          },
+          highlighted: {
+            dates: [ new Date() ]
+          }
         }
       }
     },
