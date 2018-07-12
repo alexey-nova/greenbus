@@ -324,7 +324,8 @@
           return this.contragents.map(contragent =>  {
             return {
               ...contragent.mainFolder,
-              contragent: contragent._id
+              contragent: contragent._id,
+              bin: contragent.bin
             }
           })
         }
