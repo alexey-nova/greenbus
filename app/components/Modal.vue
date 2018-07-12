@@ -70,7 +70,7 @@
 </script>
 
 <style lang="scss">
-  .modal.type-lg .modal-dialog { max-width: 900px; width: auto; }
-
-  .modal.type-read-only .form-control[readonly] { background: #fff }
+.modal { overflow-y: auto; }
+.modal.type-lg .modal-dialog { max-width: 900px; width: auto; }
+.modal.type-read-only .form-control[readonly] { background: #fff }
 </style>

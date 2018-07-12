@@ -83,16 +83,28 @@ import Tree from './Tree'
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in'),
                 },
                 {
-                  link: {name: 'documentsByFilter', params: {param1: 'out'}},
+                  link: {name: 'documentsByFilter', params: { param1: 'out' }},
                   name: 'Исходящие',
                   imgSrc: 'left_menu/3.png',
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out'),
                 },
                 {
-                  link: {name: 'documentsByFilter', params: {param1: 'confirmation'}},
+                  link: {name: 'documentsByFilter', params: { param1: 'on' }},
                   name: 'На согласовании',
                   imgSrc: 'left_menu/3.png',
-                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'confirmation'),
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'on'),
+                },
+                {
+                  link: { name: 'documentsByFilter' , params: { param1: 'deadlined' }},
+                  name: 'Просроченные',
+                  imgSrc: 'left_menu/3.png',
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'deadlined'),
+                },
+                {
+                  link: { name: 'documentsByFilter' , params: { param1: 'done' }},
+                  name: 'Завершенные',
+                  imgSrc: 'left_menu/3.png',
+                  isActive: () => this.$isRoute('documentsByFilter', 'param1', 'done'),
                 },
                 {
                   link: {name: 'documents'},

@@ -1768,12 +1768,6 @@ span.date{
 .info-container2 .more-button{
     font-size: 0.95em;
 }
-.info-container2{
-    display: none;
-}
-.info-container2.active{
-    display: block;
-}
 .forum-name{
     color: #1b8442;
     font-size: 1.1em;
