@@ -34,9 +34,9 @@
   </ul> -->
   <div class="header-box">
         <div class="header-box-left">
-          <router-link :to="{name: 'index'}" class="logo">
+          <a class="logo" @click="toggleOrLink()">
             <img src="~assets/img/logo.png">
-          </router-link>
+          </a>
             <div class="top_menu_left">
                 <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
                     <div class="center">
@@ -70,13 +70,13 @@
                     <img src="~assets/img/header/6.png">
                 </div>
             </router-link>
-            <a class="menu-item chat-call pointer" @click="$store.commit('app/openChat')">
+            <a class="menu-item chat-call pointer mob-none" @click="$store.commit('app/openChat')">
               <div class="center">
                 <img src="~assets/img/header/7.png">
                 <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
               </div>
             </a>
-            <a class="menu-item notifications-call">
+            <a >
                 <Notifications></Notifications>
             </a>
         </div>
@@ -110,6 +110,19 @@
           this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
         }).catch(err => console.log(err))
       },
+      toggleOrLink () {
+        if (window.innerWidth > 414) {
+          this.$router.push({
+            name: 'index'
+          })
+        }
+        if (window.innerWidth <= 414) {
+          var current = document.getElementById('nav')
+          if (current) {
+            current.className += ' active'
+          }
+        }
+      }
     },
     mounted () {
        this.getMessages()

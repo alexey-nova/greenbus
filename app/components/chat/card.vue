@@ -34,7 +34,7 @@
           </div>
         </a>
         <div class="mob-block-sm">
-          <img src="assets/img/close.png" class="m-close">
+          <img src="~assets/img/close.png" class="m-close">
         </div>
       </li>
     </ul>

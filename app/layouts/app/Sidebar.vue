@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div class="nav" id="nav" v-click-outside="closeSidebar">
     <div class="info-box">
       <div class="info-container">
         <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
@@ -20,14 +20,14 @@
         <li>
           <router-link :to="{name: 'panel', params: { param1: 'depts'}}" v-if="$auth().user.admin">
             <div class="item">
-              <i class="fa fa-columns"></i>&nbsp;&nbsp;Панель управления
+              <img src="~assets/img/left_menu/panel.png" />Панель управления
             </div>
           </router-link>
         </li>
         <li>
           <router-link :to="{name: 'templates'}" v-if="$auth().user.admin">
             <div class="item">
-              <i class="fa fa-sitemap"></i>&nbsp;&nbsp;Шаблоны заявок
+              <img src="~assets/img/left_menu/template.png" />Шаблоны заявок
             </div>
           </router-link>
         </li>
@@ -87,6 +87,7 @@
 <script>
   import User from './sidebar/User'
   import SidebarMenu from './sidebar/Menu'
+  import ClickOutside from 'vue-click-outside'
 
   export default {
     components: {
@@ -98,6 +99,9 @@
         isOpen: false,
       }
     },
+    directives: {
+      ClickOutside
+    },
     computed: {
       avatar () {
         return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
@@ -106,6 +110,14 @@
     methods: {
       toggle () {
         this.isOpen = !this.isOpen
+      },
+      closeSidebar (e) {
+        if (window.innerWidth <= 414 && !e.path[2].classList.contains('header-box-left')) {
+          var current = document.getElementById('nav')
+          if (current && current.classList.contains('active')) {
+            current.classList.remove('active')
+          }
+        }
       }
     },
   }

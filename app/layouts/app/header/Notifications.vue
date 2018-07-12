@@ -1,8 +1,9 @@
 <template>
-  <div class="center" @click="toggle">
-    <img src="~assets/img/header/8.png">
-    <span class="notificationse" v-if="$_.size(pending)">{{$_.size(pending)}}</span>
-
+  <div class="menu-item notifications-call">
+    <div class="center" @click="toggle">
+      <img src="~assets/img/header/8.png">
+      <span class="notificationse" v-if="$_.size(pending)">{{$_.size(pending)}}</span>
+    </div>
     <div v-if="isOpen" v-click-outside="close">
       <div class="not-bg"></div>
       <div class="notifications-box">
@@ -26,6 +27,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>

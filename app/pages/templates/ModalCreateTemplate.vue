@@ -101,14 +101,15 @@ export default {
       this.order[this.steps - 1] = {}
     },
     submit () {
-      this.model.order = this.order
-      this.model.categoryId = this.model.category._id
-      this.model.order = this.model.order.map(item => {
-        item.position = item.position._id
-        return item
-      })
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
+          this.model.order = this.order
+          this.model.categoryId = this.model.category._id
+          this.model.order = this.model.order.map(item => {
+            item.position = item.position._id
+            return item
+          })
+
           this.$emit('onSubmit', this.model)
         }
       }).catch(() => {})

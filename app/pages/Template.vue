@@ -22,19 +22,42 @@
 							<div class="add" v-if="$auth().hasRole('admin')">
 								<button v-if="activeCategory" class="add-button" @click="toggleModal('createTemplate', { category: activeCategory })"><img src="~assets/img/add.png">Добавить шаблон</button>
 							</div>
-                <div class="margin2-helper">
-                  <div class="white-menu-box">
-                    <a class="categories-item order" v-for="template in templates" :key="template._id">
-                      <div class="flex flex-start" @click="toggleModal('showTemplate', template)">
-                        <div class="categories-item-img"></div>
-                        <div class="categories-item-text">
-                          <span>{{template.name}}</span>
-                        </div>
+              <!-- <div class="margin2-helper">
+                <div class="white-menu-box">
+                  <a class="categories-item order" v-for="template in templates" :key="template._id">
+                    <div class="flex flex-start" @click="toggleModal('showTemplate', template)">
+                      <div class="categories-item-img"></div>
+                      <div class="categories-item-text">
+                        <span>{{template.name}}</span>
                       </div>
-                      <!-- <button class="button-table remove" @click="removeTemplate(template._id)"></button> -->
-                    </a>
-                  </div>
+                    </div>
+                    <div class="folder-buttons">
+                      <button type="button" class="button-table" @click="">...</button>
+                      <button type="button" class="button-table edit" @click=""></button>
+                    </div>
+                     <button class="button-table remove" @click="removeTemplate(template._id)"></button>
+                  </a>
                 </div>
+              </div> -->
+              <div class="">
+                <div class="white-menu-box">
+                  <a class="fol-box templates-item" v-if="templates" v-for="template in templates" :key="template._id">
+                    <div class="folder-border" @click="toggleModal('showTemplate', template)">
+                      <div class="folder-img sm-img">
+                        <img src="~assets/img/file.png" class="block">
+                        <img src="~assets/img/file-h.png" class="none">
+                      </div>
+                      <div class="folder-text">
+                        <span>{{ template.name }}</span>
+                      </div>
+                    </div>
+                    <div class="folder-buttons">
+                      <button type="button" class="button-table remove" @click="toggleModal('deleteTemplate', template)"></button>
+                      <button type="button" class="button-table edit" @click="toggleModal('editTemplate', template)"></button>
+                    </div>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -43,6 +66,8 @@
     <ModalCreate :model="modal.create" @onClose="toggleModal('create')" @onSubmit="addCategory"></ModalCreate>
 		<ModalCreateTemplate v-if="modal.createTemplate" :model="modal.createTemplate" @onClose="toggleModal('createTemplate')" @onSubmit="createTemplate"></ModalCreateTemplate>
 		<ModalShowTemplate v-if="modal.showTemplate" :model="modal.showTemplate" @onClose="toggleModal('showTemplate')"></ModalShowTemplate>
+		<ModalEditTemplate v-if="modal.editTemplate" :model="modal.editTemplate" @onClose="toggleModal('editTemplate')" @onSubmit="editTemplate"></ModalEditTemplate>
+		<ModalDeleteTemplate v-if="modal.deleteTemplate" :model="modal.deleteTemplate" @onClose="toggleModal('deleteTemplate')" @onSubmit="deleteTemplate"></ModalDeleteTemplate>
   </div>
 </template>
 
@@ -50,13 +75,17 @@
 import ModalCreate from './templates/ModalCreate'
 import ModalCreateTemplate from './templates/ModalCreateTemplate'
 import ModalShowTemplate from './templates/ModalShowTemplate'
+import ModalEditTemplate from './templates/ModalEditTemplate'
+import ModalDeleteTemplate from './templates/ModalDeleteTemplate'
 
 export default {
   name: 'Template',
   components: {
 		ModalCreate,
 		ModalCreateTemplate,
-    ModalShowTemplate
+    ModalShowTemplate,
+    ModalEditTemplate,
+    ModalDeleteTemplate
   },
   data () {
     return {
@@ -68,7 +97,9 @@ export default {
         edit: false,
 				delete: false,
 				createTemplate: false,
-        showTemplate: false
+        showTemplate: false,
+        editTemplate: false,
+        deleteTemplate: false
       },
     }
   },
@@ -101,6 +132,14 @@ export default {
         this.notify(response.data.message)
         this.templates.push(response.data.template)
       })
+		},
+    editTemplate (data) {
+      console.log(data)
+      this.modal.editTemplate = false
+		},
+    deleteTemplate (data) {
+      console.log(data)
+      this.modal.deleteTemplate = false
 		},
     // removeTemplate (_id) {
 

@@ -4,7 +4,8 @@
       <div class="flex-left">
         <div class="white-block">
           <p class="title">Просроченные задачи</p>
-          <div class="flex mobile-block">
+          <p class="title2" v-if="deadlined.length === 0">Просроченных задач нет</p>
+          <div class="flex mobile-block" v-if="deadlined.length > 0">
             <div class="mini-table">
               <table class="mob-none">
                   <tr class="green">
@@ -342,6 +343,7 @@ export default {
             if (task._id === dl._id) this.deadlined.push(task)
           })
         })
+        this.renderTasks(this.selectedDate)
       })
       .catch(err => {
         console.log(err)

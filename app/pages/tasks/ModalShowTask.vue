@@ -114,7 +114,7 @@
                   </div>
                     <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && comment.taskId && !comment.status)" class="flex flex-end">
                       <button type="button" class="save pad2 btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})">Отказать</button>
-                      <button type="button" class="save pad2 btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})">Согласовать</button>
+                      <button type="button" class="save pad2" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})">Согласовать</button>
                     </div>
                   </div>
                 </div>
@@ -188,7 +188,7 @@
             </div>
             <div v-if="$auth().user._id === model.from && model.status === 1 && (comment && !comment.status)">
               <button type="button" class="btn btn-danger" data-dismiss="modal" @click="toggleModal('rejectTask', {_id: comment._id})"><i class="fa fa-times"></i>Отказать</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})"><i class="fa fa-calendar-check-o"></i>Согласовать</button>
+              <button type="button" class="btn btn-success" data-dismiss="modal" @click="toggleModal('confirmTask', {_id: comment._id})"><i class="fa fa-calendar-check-o"></i>Согласовать</button>
             </div>
           </div>
           <div v-else>
