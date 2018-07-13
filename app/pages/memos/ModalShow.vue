@@ -65,7 +65,7 @@
                               </div>
                             </div>
                           </div>
-                          <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)">
+                          <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult) && model.order[model.currentUser].position === this.$auth().user.position">
                             <div :class="['form-group', {'has-error': errors.has('date')}]">
                               <label>Дата оплаты *</label>
                               <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date"></Datepicker>

@@ -1,6 +1,6 @@
 <template>
   <div class="container-box">
-    <div class="top-shadow text2">
+    <!-- <div class="top-shadow text2">
       <div class="stage2">
         <a class="stage2-item green">
           <img src="~assets/img/user.jpg">
@@ -73,7 +73,7 @@
           </div>
         </a>
       </div>
-    </div>
+    </div> -->
     <div class="working_area">
       <div class="white-block no-padding">
         <div class="padding-block">
