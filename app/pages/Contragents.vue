@@ -414,7 +414,6 @@
         }
       },
       moveFilesAndFolders (model) {
-        this.chosenIds = []
         this.$api('post', `ca/${this.$route.params.folderId}/move`, {
           dest: model.dest,
           ids: this.chosenIds
