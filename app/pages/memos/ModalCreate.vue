@@ -142,7 +142,6 @@
       },
       loadCategories () {
         this.$api('get', 'bids/categories').then(response => {
-          console.log('categories', response.data)
           this.categories = response.data.categories
         }).catch(e => {
           console.log('categories error', e.response)
@@ -151,7 +150,6 @@
       loadTemplates (categoryId) {
         this.activeCategory = categoryId
         this.$api('get', `bids/templates/${categoryId}`).then(response => {
-          console.log('templates', response.data)
           this.templates = response.data.templates
         })
       },

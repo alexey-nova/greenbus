@@ -63,7 +63,6 @@ export default {
   },
   mounted () {
     if (this.model) {
-      console.log('model', this.model)
       this.loadPositions()
     }
   }

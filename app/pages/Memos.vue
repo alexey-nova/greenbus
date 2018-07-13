@@ -1,6 +1,6 @@
 <template>
   <div class="container-box">
-    <div class="top-shadow text2">
+    <!-- <div class="top-shadow text2">
       <div class="stage2">
         <a class="stage2-item green">
           <img src="~assets/img/user.jpg">
@@ -73,7 +73,7 @@
           </div>
         </a>
       </div>
-    </div>
+    </div> -->
     <div class="working_area">
       <div class="white-block no-padding">
         <div class="padding-block">
@@ -87,89 +87,14 @@
           <div class="mob-none">
             <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true">
               <div class="flex align-center sm-w" slot="tools" slot-scope="props">
-                <a @click="toggleModal('showBid', $_.clone(props.row))" class="green_anchor">Подробнее</a>
+                <a @click="toggleModal('show', $_.clone(props.row))" class="green_anchor">Подробнее</a>
               </div>
               <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
-                <button class="button-table edit" @click="toggleModal('editBid', $_.clone(props.row))"></button>
-                <button class="button-table remove" @click="toggleModal('deleteBid', props.row) "></button>
+                <button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
+                <button class="button-table remove" @click="toggleModal('delete', props.row) "></button>
               </div>
             </v-client-table>
           </div>
-          <!-- <table class="mob-none">
-            <tr class="green">
-              <td width="5%" class="id">
-                <div class="flex img align-center">
-                  <span>ID</span>
-                  <img src="assets/img/sver.png" class="sort">
-                </div>
-              </td>
-              <td width="35%">
-                <div class="flex img align-center">
-                  <input type="text" placeholder="Тема" class="td-search-input" disabled>
-                  <img src="assets/img/search-2.png" class="td-search-button">
-                </div>
-              </td>
-              <td width="18%">
-                <div class="flex img align-center">
-                  <input type="text" placeholder="Дата" class="td-search-input" disabled>
-                  <img src="assets/img/search-2.png" class="td-search-button">
-                </div>
-              </td>
-              <td width="33%">
-                <div class="flex img align-center">
-                  <input type="text" placeholder="Исполнитель" class="td-search-input" disabled>
-                  <img src="assets/img/search-2.png" class="td-search-button">
-                </div>
-              </td>
-              <td width="22%">Подробнее</td>
-              <td class="button-width">&nbsp;</td>
-            </tr>
-            <tr class="clicked-tr">
-              <td  class="td_center">1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td class="td_center">
-                <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
-              </td>
-              <td class="border-none unset-click">
-                <div class="flex">
-                  <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
-                  <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
-                </div>
-              </td>
-            </tr>
-            <tr class="clicked-tr">
-              <td  class="td_center">1</td>
-              <td>2</td>
-              <td>3</td>
-              <td>4</td>
-              <td class="td_center">
-                  <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
-              </td>
-              <td class="border-none unset-click">
-                  <div class="flex">
-                      <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
-                      <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
-                  </div>
-              </td>
-            </tr>
-            <tr class="clicked-tr">
-                <td  class="td_center">1</td>
-                <td>2</td>
-                <td>3</td>
-                <td>4</td>
-                <td class="td_center">
-                    <a href="#" class="green_anchor" data-toggle="modal" data-target="#info-order">Подробнее</a>
-                </td>
-                <td class="border-none unset-click">
-                    <div class="flex">
-                        <button class="button-table edit" data-toggle="modal" data-target="#edit-application"></button>
-                        <button class="button-table remove" data-toggle="modal" data-target="#remove-application"></button>
-                    </div>
-                </td>
-            </tr>
-          </table> -->
           <div class="mob-block">
               <div class="filter">
                   <div class="search">
@@ -291,8 +216,8 @@
     </div>
     <ModalCreate v-if="modal.create" :model="modal.create" @onSubmit="createBid" @onClose="toggleModal('create')"></ModalCreate>
     <ModalEdit :model="modal.edit" :users="users" @onSubmit="editMemo" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @onConfirm="confirmMemo" @onReject="rejectMemo" @onClose="toggleModal('show')"></ModalShow>
-    <ModalDelete :model="modal.delete" @onSubmit="deleteMemo" @onClose="toggleModal('delete')"></ModalDelete>
+    <ModalShow v-if="modal.show" :model="modal.show" :tab="modal.tab" :users="users" :getBids="loadBids" @onClose="toggleModal('show')"></ModalShow>
+    <ModalDelete :model="modal.delete" @onSubmit="deleteBid" @onClose="toggleModal('delete')"></ModalDelete>
   </div>
 </template>
 
@@ -327,11 +252,10 @@
           tab: 0,
           delete: false
         },
-        statuses: [
-          'На согласовании',
-          'Согласовано',
-          'Отказано',
-        ],
+        statuses: {
+          active: 'В работе',
+          done: 'Завершено'
+        },
         tableData: {
           columns: ['name', 'status', 'nameFrom', 'currentUserName', 'tools'],
           options: {
@@ -348,8 +272,8 @@
               column: 'id',
               ascending: false
             },
-            sortable: ['id', 'name', 'status', 'userFrom'],
-            filterable: ['id', 'name', 'status', 'userFrom'],
+            sortable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
+            filterable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
             customSorting: {
               id: function (ascending) {
                 return (a, b) => {
@@ -375,7 +299,6 @@
       filteredData: {
         get: function () {
           let data = _.merge([], this.bids)
-          console.log('x', this.users)
           _.map(data, bid => {
             let userFrom = _.find(this.users, u => u._id === bid.createdBy)
             bid.nameFrom = userFrom ? userFrom.fullname : ''
@@ -401,10 +324,10 @@
           return result
         }, 0)
       },
-      createBid (memo) {
-        memo.templateId = memo.template._id
-        delete memo.template
-        let data = this.$createFormData(memo)
+      createBid (bid) {
+        bid.templateId = bid.template._id
+        delete bid.template
+        let data = this.$createFormData(bid)
         this.$api('post', 'bids', data).then(response => {
           this.loadBids()
           this.modal.create = false
@@ -445,8 +368,8 @@
 //          this.notify(e, 'danger')
         })
       },
-      deleteMemo (data) {
-        this.$api('delete', `memos/${data}`).then(response => {
+      deleteBid (data) {
+        this.$api('delete', `bids/${data._id}`).then(response => {
           this.modal.delete = false
           this.notify(response.data.message)
           this.memos = this.memos.filter(memo => memo._id != response.data.memoId)
@@ -458,11 +381,10 @@
         })
       },
       loadBids () {
-        let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
+        let filter = this.$route.params.param1 ? `/?filter=${this.$route.params.param1}` : ''
         return this.$api('get', 'bids' + filter).then(response => {
           return this.bids = response.data.bids
         }).catch(e => {
-          console.log('sss')
           this.notify(e, 'danger')
         })
       },
@@ -500,6 +422,13 @@
       '$route' (to, from) {
         this.loadBids()
       }
+    },
+    sockets: {
+      notification: function (val) {
+        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+          this.loadBids()
+        }
+      },
     },
   }
 </script>
