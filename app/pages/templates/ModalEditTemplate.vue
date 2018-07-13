@@ -55,7 +55,7 @@
             <button type="button" class="button-table" @click="stepUp">+</button>
           </div>
           <div class="flex center">
-            <button class="add-button auto-width form-submit">Добавить</button>
+            <button class="add-button auto-width form-submit">Редактировать</button>
           </div>
         </div>
         <div class="modal-footer"></div>
@@ -101,7 +101,7 @@ export default {
             var pid = this.model.order[i].position._id
             this.model.order[i].position = pid
           }
-          
+
           this.$emit('onSubmit', this.model)
         }
       }).catch(() => {})

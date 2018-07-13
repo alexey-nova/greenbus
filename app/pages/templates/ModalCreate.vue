@@ -9,7 +9,7 @@
               <span>Добавить новую категорию</span>
             </div>
             <div class="buttons">
-              <button class="button-top close close-add-class" @click="close"></button>
+              <button type="button" class="button-top close close-add-class" @click="close"></button>
             </div>
           </div>
         </div>

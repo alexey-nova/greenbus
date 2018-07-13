@@ -44,7 +44,7 @@
                     <div class="sm-margin"></div>
                     Приоритет:
                     <span v-if="model.urgency" class="label label-danger">Важная</span>
-                    <span v-if="!model.urgency" class="label label-default">Обычная</span><br />
+                    <span v-if="!model.urgency" class="label label-info">Обычная</span><br />
                     Статус: {{statuses[model.status]}}<br />
                     <label class="disabled-margin">Срок задачи</label>
                     <div class="select">

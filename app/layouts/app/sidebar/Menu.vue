@@ -74,7 +74,7 @@ import Tree from './Tree'
               name: 'Служебные записки',
               link: {name: 'documents'},
               imgSrc: 'left_menu/1.png',
-              isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
+              isActive: () => this.$isRoute('documents', 'documentsByFilter'),
               children: [
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'in'}},
