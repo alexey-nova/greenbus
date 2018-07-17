@@ -55,6 +55,7 @@
             <input type="number" @change="sanitizeInput" step="24" min="24" v-validate="'required'" name="hours" v-model="order[index].hours">
             <span v-show="errors.has('hours')" class="help-block">{{ errors.first('hours') }}</span>
           </div>
+          <button v-if="index > 0" type="button" class="button-table" @click="stepDown(index)">-</button>
         </div>
         <div class="flex">
           <button type="button" class="button-table" @click="stepUp">+</button>
@@ -99,6 +100,10 @@ export default {
     stepUp (event) {
       this.steps++
       this.order[this.steps - 1] = {}
+    },
+    stepDown (index) {
+      this.steps--
+      this.order.splice(index, 1)
     },
     submit () {
       this.$validator.validateAll().then(() => {

@@ -53,7 +53,7 @@
                     </div>
                     <div class="folder-buttons">
                       <button type="button" class="button-table remove" @click="toggleModal('deleteTemplate', template)"></button>
-                      <button type="button" class="button-table edit" @click="toggleModal('editTemplate', template)"></button>
+                      <button type="button" class="button-table edit" @click="toggleModal('editTemplate', $_.clone(template))"></button>
                     </div>
                   </a>
                 </div>
