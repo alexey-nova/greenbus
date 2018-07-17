@@ -1,151 +1,144 @@
 <template>
   <Modal :isOpen="model" type="lg" @onSubmit="submit">
-
-    <h3 slot="header" class="modal-title">Редактировать служебную записку</h3>
-
-    <div slot="content" class="row">
-      <div class="col-lg-6">
-
-        <InputBase title="Тема" name="name" required :validate="'required'" v-model="model.name"></InputBase>
-
-        <div :class="['form-group', {'has-error': errors.has('text')}]">
-          <label for="field-text">Описание *</label>
-          <ckeditor
-            id="field-text"
-            v-model="model.text"
-            v-validate="'required'"
-            :config="ckEditorConfig">
-          </ckeditor>
-          <span v-show="errors.has('text')" class="help-block">{{ errors.first('text') }}</span>
+    <div class="modal-dialog big" slot="content">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="list_header">
+            <div class="flex">
+              <div>Редактировать служебную записку</div>
+              <div class="buttons">
+                <button class="button-top close" @click="close" type="button"></button>
+              </div>
+            </div>
+          </div>
         </div>
-
-      </div>
-      <div class="col-lg-6">
-
-        <FormInput title="Кому" name="memoTo" required>
-          <Multiselect
-            id="field-memoTo"
-            v-model="selectedUsers"
-            :options="usersForSelect"
-            :close-on-select="false"
-            :hide-selected="true"
-            :clear-on-select="false"
-            :multiple="true"
-            :allow-empty="false"
-            track-by="name"
-            label="name">
-          </Multiselect>
-        </FormInput>
-
-
-        <div class="form-group">
-          <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-          <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+        <div class="active-categories">
+          <div class="profile full modal-body">
+            <div class="flex">
+              <!-- <span>Выбранный шаблон: <span>{{model.template.name}}</span></span> -->
+            </div>
+            <div class="flex column">
+              <div class="form-item">
+                <div :class="['form-group', {'has-error': errors.has('name')}]">
+                  <label for="field-name">Тема *</label>
+                  <input id="field-name" v-validate="'required'" name="name" v-model="model.name" />
+                  <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
+                </div>
+                <div class="select-file form-group">
+                  <file-upload
+                    class="btn btn-default"
+                    :multiple="true"
+                    v-model="model.files"
+                    ref="upload">
+                    Прикрепить файлы
+                  </file-upload>
+                  <ul style="list-style: none; padding: 0;">
+                    <li v-for="(file, index) in model.files" :key="index" class="file">
+                      <span class="file-remove" @click="removeFile('files', index)">x</span>
+                      <span>{{file.name}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-item">
+                <p>Существующие файлы: </p>
+                <ul style="list-style: none; padding: 0;">
+                  <li v-for="(file, index) in newFiles" :key="index" class="file">
+                    <span class="file-remove" @click="removeFile('newFiles', index)">x</span>
+                    <span>{{file.name}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div :class="['form-group']">
+              <label for="field-description">Описание</label>
+              <ckeditor
+                id="field-description"
+                v-model="model.description"
+                :config="ckEditorConfig">
+              </ckeditor>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="flex center">
+              <button class="add-button auto-width send">Сохранить изменения <img src="~assets/img/left.png"></button>
+            </div>
+          </div>
         </div>
-        
       </div>
     </div>
-
-    <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Сохранить</button>
-    </div>
-
   </Modal>
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import FormInput from '@/FormInput'
-  import InputBase from '@/Input'
-  import TextareaBase from '@/Textarea'
-  import MaskedInput from 'vue-masked-input'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import Multiselect from 'vue-multiselect'
-  import Ckeditor from 'vue-ckeditor2'
+import Modal from '@/Modal'
+import Ckeditor from 'vue-ckeditor2'
+import FileUpload from 'vue-upload-component'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
-      Datepicker,
-      'el-switch': Switch,
-      Multiselect,
-      FormInput,
-      InputBase,
-      TextareaBase,
-      Ckeditor
+export default {
+  components: {
+    Modal,
+    Ckeditor,
+    FileUpload
+  },
+  data () {
+    return {
+      ckEditorConfig: {
+        toolbar: [
+          ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
+        ],
+        height: 150
+      },
+      newFiles: []
+    }
+  },
+  props: ['model', 'users', 'onSubmit', 'onClose'],
+  computed: {
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    data () {
-      return {
-        to: null,
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          model.newFiles = this.newFiles
+          this.$emit('onSubmit', model)
         }
-      }
+      }).catch(() => {
+      })
     },
-    props: ['model', 'users', 'onSubmit', 'onClose',],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            model.to = this.$_.map(model.to, u => u.user)
-            this.$emit('onSubmit', model)
-          }
-        }).catch(() => {
-        })
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
-
-        this.$props.model.files = files
-      }
+    addFiles (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.$props.model.files = files
     },
-    computed: {
-      usersForSelect () {
-        return this.$_.map(this.$props.users, u => {
-          return {name: u.fullname, _id: u._id}
-        })
-      },
-      selectedUsers: {
-        get: function () {
-          if (this.$_.size(this.$props.model.to) > 10) {
-            this.errors.items.push({
-              field: 'memoTo',
-              scope: null,
-              msg: 'Допустимо не больше 10 согласующих',
-            })
-          }
-          return this.$_.map(this.$props.model.to, m => {
-            return m ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
-          })
-        },
-        set: function (newValue) {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'memoTo')
-          this.$props.model.to = this.$_.map(newValue, m => {
-            return {user: m._id}
-          })
-        }
+    removeFile (target, index) {
+      if (target === 'files') {
+        this.model[target].splice(index, 1)
+      } else if (target === 'newFiles') {
+        this.newFiles.splice(index, 1)
+      } else {
+        return
       }
     }
+  },
+  mounted () {
+    this.newFiles = this.$_.clone(this.model.files)
+    this.model.files = []
   }
+}
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss" scoped>
-
+  .file {
+    padding: 3px;
+    &-remove {
+      color: #ff0000;
+      padding: 0 5px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
 </style>

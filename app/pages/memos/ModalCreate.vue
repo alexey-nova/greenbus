@@ -12,7 +12,6 @@
             </div>
           </div>
         </div>
-
         <div v-if="step === 0" :class="['active-categories']">
           <div class="profile full modal-body no-padding">
             <div class="cat-box">
@@ -41,9 +40,9 @@
             </div>
           </div>
         </div>
-
         <div v-if="step === 1" :class="['active-categories']">
           <div class="profile full modal-body">
+            <memo-chain type="create" :users="users" :order="chain()" :positions="positions"></memo-chain>
             <div class="flex">
               <button class="add-button auto-width back back2" @click="step = 0" type="button"><img src="~assets/img/left.png"><span>Назад</span></button>
               <span>Выбранный шаблон: <span>{{model.template.name}}</span></span>
@@ -71,16 +70,14 @@
                   </ul>
                 </div>
               </div>
-              <div class="form-item">
-                <div :class="['form-group']">
-                  <label for="field-description">Описание</label>
-                  <ckeditor
-                    id="field-description"
-                    v-model="model.description"
-                    :config="ckEditorConfig">
-                  </ckeditor>
-                </div>
-              </div>
+            </div>
+            <div :class="['form-group']">
+              <label for="field-description">Описание</label>
+              <ckeditor
+                id="field-description"
+                v-model="model.description"
+                :config="ckEditorConfig">
+              </ckeditor>
             </div>
           </div>
           <div class="modal-footer">
@@ -95,75 +92,83 @@
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import FileUpload from 'vue-upload-component'
-  import Ckeditor from 'vue-ckeditor2'
+import 'element-ui/lib/theme-chalk/index.css'
+import Modal from '@/Modal'
+import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
+import MemoChain from './MemoChain'
 
-  export default {
-    components: {
-      Modal,
-      FileUpload,
-      Ckeditor
-    },
-    data () {
-      return {
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
-        },
-        categories: [],
-        activeCategory: null,
-        templates: [],
-        step: 0
-      }
-    },
-    props: ['model', 'onSubmit', 'onClose',],
-    methods: {
-      close () {
-        this.$emit('onClose')
+export default {
+  components: {
+    Modal,
+    FileUpload,
+    Ckeditor,
+    MemoChain
+  },
+  props: ['model', 'onSubmit', 'onClose', 'users', 'positions'],
+  data () {
+    return {
+      ckEditorConfig: {
+        toolbar: [
+          [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+        ],
+        height: 150
       },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            this.$emit('onSubmit', model)
-          }
-        }).catch(() => {
-        })
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+      categories: [],
+      activeCategory: null,
+      templates: [],
+      step: 0,
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          this.$emit('onSubmit', model)
+        }
+      }).catch(() => {
+      })
+    },
+    addFiles (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
 
-        this.$props.model.files = files
-      },
-      loadCategories () {
-        this.$api('get', 'bids/categories').then(response => {
-          this.categories = response.data.categories
-        }).catch(e => {
-          console.log('categories error', e.response)
-        })
-      },
-      loadTemplates (categoryId) {
-        this.activeCategory = categoryId
-        this.$api('get', `bids/templates/${categoryId}`).then(response => {
-          this.templates = response.data.templates
-        })
-      },
-      chooseTemplate (template) {
-        this.model.template = template
-        this.step = 1
-      }
+      this.$props.model.files = files
     },
-    mounted () {
-      if (this.model) {
-        this.loadCategories()
-      }
+    loadCategories () {
+      this.$api('get', 'bids/categories').then(response => {
+        this.categories = response.data.categories
+      }).catch(e => {
+        console.log('categories error', e.response)
+      })
+    },
+    loadTemplates (categoryId) {
+      this.activeCategory = categoryId
+      this.$api('get', `bids/templates/${categoryId}`).then(response => {
+        this.templates = response.data.templates
+      })
+    },
+    chooseTemplate (template) {
+      this.model.template = template
+      this.step = 1
+    },
+    chain () {
+      return this.model.template.order.map(item => {
+        item.user = this.users.find(u => u.positionId === item.position)
+        return item
+      })
+    }
+  },
+  mounted () {
+    if (this.model) {
+      this.loadCategories()
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

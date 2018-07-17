@@ -4,8 +4,8 @@
       <div class="flex-left">
         <div class="white-block">
           <p class="title">Просроченные задачи</p>
-          <p class="title2" v-if="deadlined.length === 0">Просроченных задач нет</p>
-          <div class="flex mobile-block" v-if="deadlined.length > 0">
+          <p v-if="deadlined.length === 0" class="title2">Просроченных задач нет</p>
+          <div v-else class="flex mobile-block">
             <div class="mini-table">
               <table class="mob-none">
                   <tr class="green">
@@ -71,81 +71,50 @@
         </div>
         <div class="white-block">
           <p class="title">Служебные записки на согласовании</p>
-          <p class="title2" v-if="filteredMemos.length === 0">Служебных записок нет</p>
-          <table v-else class="mob-none">
-            <tr class="green">
-              <td width="5%" class="id">ID</td>
-              <td width="12%">Тема</td>
-              <td width="20%">Инициатор</td>
-              <td width="20%">Текущий согласовант</td>
-              <td width="15%">Подробнее</td>
-            </tr>
-            <tr v-for="memo in filteredMemos" :key="memo._id">
-              <td>{{memo.id}}</td>
-              <td>{{memo.name}}</td>
-              <td>{{memo.nameTo}}</td>
-              <td>{{memo.nameFrom}}</td>
-              <td><a href="#" class="green_anchor" @click="goTo('documentsByFilter', { param1: 'confirmation' }, {type: 'show', memo: memo._id})">Подробнее</a></td>
-            </tr>
-          </table>
-          <div class="mob-block">
-            <table width="100%" class="mob-margin" v-for="memo in filteredMemos" :key="memo._id">
+          <p v-if="filteredBids.length === 0" class="title2">Служебных записок нет</p>
+          <div v-else class="mini-table">
+            <table class="mob-none">
               <tr class="green">
-                <td>
-                  <div class="flex">
-                    <div class="m-item">
-                        <span>ID №{{memo.id}}</span>
-                    </div>
-                    <!-- <div class="m-item">
-                      <div class="td-flex">
-                        <a href="#" class="td-flex-item comment" data-toggle="modal" data-target="#info-order">
-                          <img src="assets/img/comment.png">
-                          <span>12</span>
-                        </a>
-                        <a href="#" class="td-flex-item folder" data-toggle="modal" data-target="#info-order">
-                          <img src="assets/img/folder.png">
-                          <span>12</span>
-                        </a>
-                      </div>
-                    </div> -->
-                  </div>
-                </td>
+                <td width="5%" class="id">ID</td>
+                <td width="35%">Тема</td>
+                <td width="30%">От кого</td>
+                <td width="30%">Подробнее</td>
               </tr>
-              <tr>
-                <td>
-                  <span>Тема:</span>
-                  <span class="bold">{{memo.name}}</span>
-                </td>
-              </tr>
-              <!-- <tr>
-                <td>
-                  <span>Статус:</span>
-                  <span class="bold">Статус</span>
-                </td>
-              </tr> -->
-              <tr>
-                <td>
-                  <span>Исполнитель:</span>
-                  <span class="bold">{{memo.nameFrom}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span>Кому:</span>
-                  <span class="bold">{{memo.nameTo}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="flex align-center">
-                    <div class="m-item"></div>
-                    <div class="m-item">
-                      <a href="#" class="green_anchor">Подробнее</a>
-                    </div>
-                  </div>
-                </td>
+              <tr v-for="bid in filteredBids" :key="bid._id">
+                <td>{{bid.id}}</td>
+                <td>{{bid.name}}</td>
+                <td>{{bid.userFrom}}</td>
+                <td><a href="#" class="green_anchor" @click="goTo('documentsByFilter', { param1: 'in' }, {type: 'show', bid: bid._id})">Подробнее</a></td>
               </tr>
             </table>
+            <div class="mob-block">
+              <table width="100%" class="mob-margin" v-for="bid in filteredBids" :key="bid._id">
+                <tr class="green">
+                  <td>
+                    <div class="flex">
+                      <div class="m-item">
+                        <span>ID №{{bid.id}}</span>
+                      </div>
+                      <div class="m-item">
+                        <a class="green_anchor white" @click="goTo('documentsByFilter', { param1: 'in' }, {type: 'show', bid: bid._id})">Подробнее</a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span>Тема:</span>
+                    <span class="bold">{{bid.name}}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span>От кого:</span>
+                    <span class="bold">{{bid.userFrom}}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -210,6 +179,7 @@ export default {
   },
   data() {
     return {
+      bids: [],
       seoTitle: this.$trans('pages.index.seoTitle'),
       dateTasks: [],
       deadlined: [],
@@ -237,21 +207,16 @@ export default {
         center: '',
         right: ''
       },
-      memos: [],
       users: []
     }
   },
   computed: {
-    filteredMemos: {
-      get: function() {
-        let data = _.merge([], this.memos)
-        _.map(data, memo => {
-          let userFrom = _.find(this.users, u => u._id === memo.from)
-          memo.nameFrom = userFrom ? userFrom.fullname : ''
-          return memo
-        })
-        return data
-      }
+    filteredBids() {
+      return this.bids.map(item => {
+        const user = this.users.find(u => u._id === item.createdBy)
+        item.userFrom = user ? user.fullname : ''
+        return item
+      })
     }
   },
   methods: {
@@ -304,18 +269,13 @@ export default {
     renderTasks(date) {
       this.dateTasks = []
       this.tasks.map(task => {
-        if (
-          new Date(date).toDateString() ===
-          new Date(task.deadline).toDateString()
-        ) {
+        if (new Date(date).toDateString() === new Date(task.deadline).toDateString()) {
           this.dateTasks.push(task)
         }
       })
-    }
-  },
-  beforeMount() {
-    this.$api('get', 'tasks')
-      .then(response => {
+    },
+    loadTasks () {
+      this.$api('get', 'tasks').then(response => {
         this.today = response.data.deadlines.today
         this.tomorrow = response.data.deadlines.tomorrow
         this.week = response.data.deadlines.week
@@ -344,17 +304,21 @@ export default {
           })
         })
         this.renderTasks(this.selectedDate)
-      })
-      .catch(err => {
+      }).catch(err => {
         console.log(err)
-        this.notify("Временная ошибка", "danger")
+        this.notify('Временная ошибка', 'danger')
       })
+    },
+    loadBids () {
+      this.$api('get', 'bids/?filter=in').then(response => {
+        this.bids = response.data.bids
+      })
+    }
   },
   mounted() {
     this.loadUsers()
-    this.$api("get", "memos?f=confirmation").then(response => {
-      this.memos = response.data
-    })
+    this.loadTasks()
+    this.loadBids()
   }
 }
 </script>

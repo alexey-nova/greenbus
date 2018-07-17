@@ -15,11 +15,12 @@
           </div>
         </div>
         <div class="profile full modal-body">
-          <div>
-            <label>Комментарий</label>
-            <textarea v-model="model.comment"></textarea>
+          <div :class="['form-group', {'has-error': errors.has('comment')}]">
+            <label>Комментарий <span v-if="model.type !== 'confirm'">*</span></label>
+            <textarea name="comment" v-validate="model.type !== 'confirm' && 'required'" v-model="model.comment"></textarea>
+            <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
           </div>
-          <div class="select-file">
+          <!-- <div class="select-file">
             <file-upload
               class="btn btn-default"
               :multiple="true"
@@ -33,7 +34,7 @@
                 <span>{{Math.ceil(file.size / 1024)}} КБ</span>
               </li>
             </ul>
-          </div>
+          </div> -->
           <div class="flex center">
             <button class="add-button auto-width form-submit">Отправить</button>
           </div>
@@ -45,12 +46,12 @@
 
 <script>
   import Modal from '@/Modal'
-  import FileUpload from 'vue-upload-component'
+  // import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
       Modal,
-      FileUpload,
+      // FileUpload,
     },
     props: ['model', 'onSubmit', 'onClose'],
     computed: {
@@ -63,14 +64,18 @@
         this.$emit('onClose')
       },
       submit () {
-        this.$emit('onSubmit', this.$props.model)
+        this.$validator.validateAll().then(() => {
+          if (!this.$_.size(this.errors.items)) {
+            this.$emit('onSubmit', this.model)
+          }
+        }).catch(() => {})
       },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+      // addFiles (e) {
+      //   let files = e.target.files || e.dataTransfer.files
+      //   if (!files.length) return
 
-        this.$props.model.files = files
-      }
+      //   this.$props.model.files = files
+      // }
     }
   }
 </script>

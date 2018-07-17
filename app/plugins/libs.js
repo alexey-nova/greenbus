@@ -8,19 +8,19 @@ import VueSocketio from 'vue-socket.io'
 
 //
 Vue.use(ClientTable, {
-  texts:{
-    count:"Показано с {from} по {to} из {count} записей|{count} записей|Одна запись",
-    filter:"Поиск: ",
-    filterPlaceholder:"Начните искать",
-    limit:"Записи:",
-    page:"Страница:",
-    noResults:"Ничего не найдено",
-    filterBy:"Фильтр по {column}",
-    loading:'Загрузка...',
-    defaultOption:'Выбрать {column}',
-    columns:'Колонки'
-  },
-}, false, 'bootstrap3', 'default');
+  texts: {
+    count: 'Показано с {from} по {to} из {count} записей|{count} записей|Одна запись',
+    filter: 'Поиск: ',
+    filterPlaceholder: 'Начните искать',
+    limit: 'Записи:',
+    page: 'Страница:',
+    noResults: 'Ничего не найдено',
+    filterBy: 'Фильтр по {column}',
+    loading: 'Загрузка...',
+    defaultOption: 'Выбрать {column}',
+    columns: 'Колонки'
+  }
+}, false, 'bootstrap3', 'default')
 
 //
 const notify = {
@@ -37,13 +37,13 @@ const notify = {
         }
       }
     })
-  },
+  }
 }
 Vue.use(Notifications)
 Vue.use(notify)
 
 //
-Validator.localize('ru', VeeValidateRu);
+Validator.localize('ru', VeeValidateRu)
 Vue.use(VeeValidate, {
   locale: 'ru',
   fieldsBagName: 'formFields',
@@ -66,7 +66,9 @@ Vue.use(VeeValidate, {
       currentPassword: 'Текущий пароль',
       password: 'Новый пароль',
       confirmPassword: 'Новый пароль еще раз',
-    }},
+      comment: 'Комментарий',
+      endDate: 'Время окончания'
+    }}
   }
 })
 

@@ -60,7 +60,6 @@
     <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
     <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
-    <ModalShowDep :model="modal.showDep" @onClose="toggleModal('showDep')"></ModalShowDep>
   </div>
 </template>
 
@@ -70,7 +69,6 @@ import ModalEditUser from './users/ModalEditUser'
 import ModalShowUser from './users/ModalShowUser'
 import ModalDeleteUser from './users/ModalDeleteUser'
 import ModalCreateTask from './tasks/ModalCreateTask'
-import ModalShowDep from './users/ModalShowDep'
 import bTable from 'bootstrap-vue/es/components/table/table'
 import bPagination from 'bootstrap-vue/es/components/pagination/pagination'
 
@@ -82,7 +80,6 @@ export default {
     ModalEditUser,
     ModalCreateTask,
     ModalShowUser,
-    ModalShowDep,
     'b-table': bTable,
     'b-pagination': bPagination
   },
@@ -102,7 +99,6 @@ export default {
         createTask: false,
         createUser: false,
         deleteUser: false,
-        showDep: false
       },
       tableData: {
         columns: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email', 'tools', 'admin'],
@@ -333,7 +329,7 @@ export default {
       }
     },
     loadPositions() {
-      this.$api('get', 'positions').then(response => {
+      this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },

@@ -7,11 +7,10 @@
             <div class="list_header">
               <div class="flex">
                 <div>
-                  <span>{{ model.name }}</span>
                   <!-- <span class="date">12.04.2018</span> -->
                 </div>
                 <div class="buttons flex">
-                  <button class="button-top pdf">PDF</button>
+                  <button class="button-top pdf" @click="toggleModal('pdf', model)">PDF</button>
                   <button @click="close" class="button-top close" type="button"></button>
                 </div>
               </div>
@@ -19,9 +18,10 @@
           </div>
           <div class="profile full modal-body no-padding">
             <div class="info-block">
+              <memo-chain :model="model" :order="chain" :users="users" :positions="positions"></memo-chain>
               <div class="flex align-start border-bottom">
                 <div class="info-box-text">
-                  <!-- <span v-html="model.description"></span> -->
+                  <span>Тема: {{ model.name }}</span>
                 </div>
                 <div class="info-box-button">
                   <button :class="['info-button clicked left-margin', tabs === 0 && 'active']" @click="toggleTab(0)"><img src="~assets/img/2.png">Информация</button>
@@ -42,39 +42,23 @@
                           <div class="date2">24.05.2018</div>
                         </div> -->
                         <div class="flex align-center bottom-buttons m-button" v-if="model.order[model.currentUser].position === $auth().user.position">
-                          <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="sendReply({ type: 'confirm' })" type="button">Согласовать</button>
-                          <button v-if="model.currentUser !== 0 && model.status === 'active'" class="info-button" @click="sendReply({ type: 'reject' })" type="button">Отклонить на шаг</button>
-                          <button v-if="model.currentUser !== 0 && model.status === 'active'" class="info-button" @click="sendReply({ type: 'rejectFull' })" type="button">Отклонить до заявителя</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-item-small">
-                      <div class="form-item-small-box">
-                        <div class="small-box-item">
-                          <div class="stage-box">
-                            <div 
-                              v-for="(item, index) in modifiedBid.order"
-                              :key="item._id" 
-                              :class="[
-                                'stage-flex flex', setOrderClass(item, index)]">
-                              <div class="stage-text">
-                                <p>{{getPositionName(item.position)}}</p>
-                              </div>
-                              <div class="stage-date">
-                                <span>{{$dateFormat(item.deadline, 'dd mmm yyyy')}}</span>
-                              </div>
-                            </div>
+                          <div class="fl">
+                            <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
+                            <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'reject' })" type="button">Отклонить на шаг</button>
+                            <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'rejectFull' })" type="button">Отклонить до заявителя</button>
+                            <button v-if="model.currentUser === 0" class="add-button auto-width" @click="sendReply({ type: 'confirm' })">Переотправить</button>
                           </div>
-                          <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult) && model.order[model.currentUser].position === this.$auth().user.position">
-                            <div :class="['form-group', {'has-error': errors.has('date')}]">
-                              <label>Дата оплаты *</label>
-                              <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date"></Datepicker>
-                              <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
+                          <div class="paydate">
+                            <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
+                              <div :class="[{'has-error': errors.has('date')}]">
+                                <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date" placeholder="Дата оплаты *" class="datepicker-input"></Datepicker>
+                                <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
+                              </div>
+                              <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
                             </div>
-                            <button class="add-button" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
-                          </div>
-                          <div v-else>
-                            <p>Дата оплаты: {{payDate}}</p>
+                            <div v-else>
+                              <p>Дата оплаты: {{payDate}}</p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -89,7 +73,7 @@
                       <div class="flex flex-start">
                         <div class="categories-item-img"></div>
                         <div class="categories-item-text">
-                          <span>{{ file.name }}</span>
+                          <a :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">{{file.name}}</a>
                         </div>
                       </div>
                     </div>
@@ -104,68 +88,13 @@
                         <textarea placeholder="Введите текст" v-model="comment"></textarea>
                       </div>
                       <div class="flex flex-end forum-button">
-                        <button :disabled="!comment" class="add-button auto-width" @click="sendComment()">Отправить</button>
+                        <button :disabled="!comment.trim()" class="add-button auto-width" @click="sendComment()">Отправить</button>
                       </div>
                     </div>
                   </div>
                   <div class="forum-box fixed">
-                    <div v-for="(com, index) in groupedComments" :key="`comment-${index}`" class="forum-item">
-                      <div class="forum-title flex">
-                        <p class="forum-name">{{getUser(com.user).fullname}}</p>
-                        <p class="forum-date">{{$dateFormat(com.createdAt, 'dd mmm yyyy')}}</p>
-                      </div>
-                      <div class="forum-text">
-                        <span>{{com.comment}}</span>
-                      </div>
-                      <!-- <div class="flex flex-end forum-button">
-                        <button class="add-button auto-width reply" type="button" @click="toggleReplyArea(index)">Ответить</button>
-                      </div>
-                      <div v-if="replies[index]" class="forum-response">
-                        <div class="forum-response-box">
-                            <div class="forum-textarea">
-                              <textarea placeholder="Введите текст" v-model="reply[index]"></textarea>
-                            </div>
-                            <div class="flex flex-end forum-button">
-                              <button type="button" class="add-button auto-width" @click="replyMessage(com._id, reply[index])">Отправить</button>
-                            </div>
-                        </div>
-                      </div> -->
-                      <!-- <div class="forum-response">
-                            <div class="forum-response-box">
-                              <p class="forum-name">Жумагалиев АБ</p>
-                              <div class="forum-response-info">
-                                <div class="response-info-text">
-                                    <p class="forum-name2">Жумагалиев АБ</p>
-                                    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>
-                                </div>
-                                <div class="response-info-date">
-                                    <p class="forum-date">21.02.2018</p>
-                                </div>
-
-                              </div>
-                              <div class="forum-text">
-                                  <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi asperiores blanditiis, fugit necessitatibus nemo similique tempora temporibus voluptates. Amet doloremque eaque error explicabo hic minima obcaecati quia quisquam similique voluptate?</span>
-                              </div>
-                              <div class="flex flex-end forum-button">
-                                  <button class="add-button auto-width reply2">Ответить</button>
-                              </div>
-                              <div class="hidden-forum-box hidden2">
-                                  <div class="forum-response">
-                                      <div class="forum-response-box">
-                                          <p class="forum-name">Жумагалиев АБ</p>
-                                          <form action="" method="">
-                                              <div class="forum-textarea">
-                                                  <textarea placeholder="Введите текст"></textarea>
-                                              </div>
-                                              <div class="flex flex-end forum-button">
-                                                  <button type="submit" class="add-button auto-width">Отправить</button>
-                                              </div>
-                                          </form>
-                                      </div>
-                                  </div>
-                              </div>
-                            </div>
-                        </div> -->
+                    <div class="forum-info">
+                      <c-messages :main="true" :comments="groupedComments" @submit="loadComments"></c-messages>
                     </div>
                   </div>
               </div>
@@ -178,6 +107,7 @@
     <ModalConfirm :model="modal.confirm" @onSubmit="confirm" @onClose="toggleModal('confirm')"></ModalConfirm>
     <ModalReject :model="modal.reject" @onSubmit="reject" @onClose="toggleModal('reject')"></ModalReject>
     <modal-reply v-if="modal.reply" :model="modal.reply" @onSubmit="sendReply" @onClose="toggleModal('reply')"></modal-reply>
+    <modal-pdf v-if="modal.pdf" :model="modal.pdf" :users="users" :positions="positions" @onClose="toggleModal('pdf')"></modal-pdf>
   </div>
 </template>
 
@@ -186,31 +116,31 @@ import Modal from '@/Modal'
 import ModalConfirm from './ModalConfirm'
 import ModalReject from './ModalReject'
 import ModalReply from './ModalReply'
-import 'pdfmake/build/pdfmake.js'
-import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-pdfMake.vfs = pdfFonts.pdfMake.vfs
-import pdf from './pdf'
-import logo1 from '#/assets/design/logos/logo1.png'
-import logo2 from '#/assets/design/logos/atg.png'
-import logo3 from '#/assets/design/logos/ki.png'
+import ModalPdf from './ModalPdf'
 import Datepicker from 'vuejs-datepicker'
+import CMessages from './CMessages'
+import MemoChain from './MemoChain'
 
 export default {
+  name: 'modal-show-memo',
   components: {
     Modal,
     ModalConfirm,
     ModalReject,
     'modal-reply': ModalReply,
+    ModalPdf,
     Datepicker,
+    CMessages,
+    MemoChain
   },
   data () {
     return {
-      selectedLogo: 'logo1',
       comments: [],
       modal: {
         confirm: false,
         reject: false,
-        reply: false
+        reply: false,
+        pdf: false
       },
       tabs: 0,
       positions: [],
@@ -221,8 +151,6 @@ export default {
   },
   props: ['model', 'users', 'tab', 'onConfirm', 'onReject', 'onClose', 'getBids'],
   watch: {
-    model () {
-    },
     tab () {
       this.tabs = this.$props.tab
     }
@@ -239,7 +167,10 @@ export default {
       return logo
     },
     isActiveConfirmButton () {
-      return ((this.model.order[this.model.currentUser].confirmType === 'date' && this.model.order[this.model.currentUser].contextResult) || this.model.order[this.model.currentUser].confirmType === 'default') && this.model.status === 'active'
+      return ((this.model.order[this.model.currentUser].confirmType === 'date' && this.model.order[this.model.currentUser].contextResult) || this.model.order[this.model.currentUser].confirmType === 'default') && (this.model.status === 'active' || this.model.status === 'declined')
+    },
+    isActiveDeclineButton () {
+      return this.model.currentUser !== 0 && (this.model.status === 'active' || this.model.status === 'declined')
     },
     payDate () {
       let date = 'Нет'
@@ -261,8 +192,10 @@ export default {
         }
         prevDate = this.nextWorkDay(prevDate)
         let nextDeadline = new Date(prevDate)
-        nextDeadline.setHours(nextDeadline.getHours() + item.hours)
-        nextDeadline = this.nextWorkDay(nextDeadline)
+        for(let ind = 0; ind < item.hours; ind++) {
+          nextDeadline.setHours(nextDeadline.getHours() + 1)
+          nextDeadline = this.nextWorkDay(nextDeadline)
+        }
         if (item.confirmed) {
           nextDeadline = new Date(item.confirmedDate)
         }
@@ -273,10 +206,33 @@ export default {
       return newBid
     },
     groupedComments () {
-      return this.comments
+      const targetArray = this.comments.filter(item => !item.replyTo)
+      const dataArray = JSON.parse(JSON.stringify(this.comments))
+      return this.join(targetArray, this.comments)
+    },
+    chain () {
+      return this.model.order.map(item => {
+        item.user = this.users.find(u => u.positionId === item.position)
+        return item
+      })
     }
   },
   methods: {
+    join (targetArray, dataArray) {
+      let result = JSON.parse(JSON.stringify(targetArray))
+      dataArray.forEach(item => {
+        const i = result.reduce((prev, target, i) => (target._id === item.replyTo) ? i : prev, -1)
+        if (i < 0) return
+        if (!result[i].replies) result[i].replies = []
+        result[i].replies.push(item)
+      })
+      return result.map(item => {
+        if (item.replies) {
+          item.replies = this.join(item.replies, dataArray)
+        }
+        return item
+      })
+    },
     getCreatedAt (comment) {
       return comment && comment.createdAt ? comment.createdAt : null
     },
@@ -288,7 +244,7 @@ export default {
     },
     confirm (model) {
       this.modal.confirm = false
-      this.$emit('onConfirm', model)
+      this.$emit('confirm', model)
     },
     reject (model) {
       this.modal.reject = false
@@ -302,8 +258,7 @@ export default {
       pdfMake.createPdf(docDefinition).download()
     },
     getUser (_id) {
-      let user = this.$_.find(this.$props.users, u => u._id === _id)
-      return user ? user : {}
+      return this.users.find(item = item._id === _id)
     },
     loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
@@ -316,28 +271,25 @@ export default {
       return ''
     },
     async sendReply (data) {
-      if (data.type === 'confirm') {
-        this.$api('post', `bids/confirm`, { bidId: this.model._id }).then(response => {
-          this.getBids()
-          this.close()
-        })
-      } else if (data.type === 'confirmDate') {
-        if (!data.date) return this.notify('Введите дату', 'danger')
-        this.$api('post', `bids/confirm?confirmType=date`, { bidId: this.model._id, date: data.date.getTime() }).then(response => {
-          this.getBids()
-          this.close()
-        })
-      } else if (data.type === 'reject') {
-        this.$api('post', `bids/decline`, { bidId: this.model._id }).then(response => {
-          this.getBids()
-          this.close()
-        })
-      } else if (data.type === 'rejectFull') {
-        this.$api('post', `bids/decline`, { bidId: this.model._id, goToFirst: true }).then(response => {
-          this.getBids()
-          this.close()
-        })
+      // data.files = this.$_.map(data.files, (f) => f.file)
+      // let formData = this.$createFormData(data)
+      try {
+        if (data.type === 'confirm') {
+          const response = await this.$api('post', `bids/confirm`, { bidId: this.model._id, ...data })
+        } else if (data.type === 'confirmDate') {
+          if (!data.date) return this.notify('Введите дату', 'danger')
+          const response = this.$api('post', `bids/confirm?confirmType=date`, { bidId: this.model._id, date: data.date.getTime() })
+        } else if (data.type === 'reject') {
+          const response = this.$api('post', `bids/decline`, { bidId: this.model._id, ...data })
+        } else if (data.type === 'rejectFull') {
+          const response = this.$api('post', `bids/decline`, { bidId: this.model._id, goToFirst: true, ...data })
+        }
+        this.getBids()
+        this.close()
+      } catch (e) {
+        console.log('dead', e)
       }
+      
     },
     nextWorkDay(date, weekends = [0, 6]) {
       const tempDate = new Date(date)
@@ -357,7 +309,7 @@ export default {
         this.loadComments(this.model._id)
       })
     },
-    loadComments (moduleId) {
+    loadComments (moduleId = this.model._id) {
       this.$api('get', `comments/${moduleId}`).then(response => {
         this.comments = response.data.comments
       })
@@ -367,7 +319,6 @@ export default {
     },
     replyMessage (commentId, comment) {
       this.$api('post', `comments`, { moduleId: this.model._id, comment, replyTo: commentId }).then(response => {
-        console.log('response', response.data)
         this.loadComments(this.model._id)
       })
     }
@@ -380,31 +331,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .select-logo { margin: 0 0 25px; }
-  .menu { list-style: none; display: flex; width: 100%; justify-content: space-around; margin: 0 0 20px; }
-  .menu li.active a { color: #000; cursor: auto; font-weight: bold; }
-  .author { font-weight: bold; margin-top: 10px; }
-  .memo { padding: 50px; }
-  .logo { text-align: center; }
-  h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
-  .user { margin: 10px -15px; }
-  .user .to-title { opacity: 0; }
-  .user:first-child .to-title { opacity: 1; }
-  .theme { margin: 30px -15px 10px; }
-  .from { margin: 10px -20px 10px; }
-  .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; }
-  .from-wrapper { margin-top: 100px; }
-  .pdf { color: #fff; margin-right: 10px; }
-  .forum-response-box.full {
-    width: 100%;
+.fl {
+  display: flex;
+  flex-wrap: wrap;
+
+  &-aic {
+    align-items: center;
   }
-  .forum-box.fixed {
-    max-height: 400px;
-    overflow-y: scroll;
-  }
-  button:disabled {
-    background-color: #fff;
-    color: #a5a5a5;
-  }
+}
+
+.ml1 {
+  margin-left: 1em;
+}
+
+.pdf {
+  color: #fff; margin-right: 10px;
+}
+.forum-response-box.full {
+  width: 100%;
+}
+.forum-box.fixed {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+button:disabled {
+  background-color: #fff;
+  color: #a5a5a5;
+}
 </style>
-submit
