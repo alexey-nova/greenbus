@@ -10,11 +10,10 @@
                 <form @submit="submit" data-vv-scope="user">
                   <div class="flex column">
                     <div class="form-item">
-                      <div :class="['form-group', {'has-error': errors.has('login')}]">
+                      <div :class="['', {'has-error': errors.has('login')}]">
                         <label for="field-login">Логин *</label>
-                        <p>{{ model.login }}</p>
-                        <!-- <input type="text" id="field-login" :readonly="!$auth().user.admin" v-validate="'required'" name="login" v-model="model.login" disabled> -->
-                        <!-- <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span> -->
+                        <input type="text" id="field-login" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="login" v-model="model.login" disabled>
+                        <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
                       </div>
                       <div :class="['', {'has-error': errors.has('fullname')}]">
                         <label for="field-fullname">ФИО *</label>
@@ -28,19 +27,17 @@
                       </div>
                     </div>
                     <div class="form-item">
-                      <div :class="['form-group', {'has-error': errors.has('department')}]">
+                      <div :class="['', {'has-error': errors.has('department')}]">
                         <label for="field-department">Отдел *</label>
-                        <p>{{ getDepartmentName(model.department) }}</p>
-                        <!-- <select id="field-department" :readonly="!$auth().user.admin" v-validate="'required'" name="department" v-model="model.department" disabled>
-                          <option v-for="dep in departments" :value="dep.name">{{dep.name}}</option>
+                        <select id="field-department" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="department" v-model="model.department" disabled>
+                          <option v-for="dep in departments" :value="dep.value">{{dep.text}}</option>
                         </select>
-                        <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span> -->
+                        <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
                       </div>
-                      <div :class="['form-group', {'has-error': errors.has('position')}]">
+                      <div :class="['', {'has-error': errors.has('position')}]">
                         <label for="field-position">Должность *</label>
-                        <p>{{ getPositionName(model.position) }}</p>
-                        <!-- <input type="text" id="field-position" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.position" disabled>
-                        <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span> -->
+                        <input type="text" id="field-position" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.position" disabled>
+                        <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
                       </div>
                       <div :class="['', {'has-error': errors.has('phone')}]">
                         <label for="field-phone">Телефон *</label>
@@ -222,9 +219,10 @@
         this.model = this.$_.cloneDeep(this.$store.state.auth.user)
       },
     },
-    mounted () {
+    async mounted () {
       this.loadDepartments()
-      this.loadPositions()
+      await this.loadPositions()
+      this.model.position = this.getPositionName(this.model.position)
     },
     methods: {
       changePassword (event) {
@@ -273,7 +271,12 @@
       },
       loadDepartments () {
         this.$api('get', 'departments').then(response => {
-          this.departments = response.data.departments
+          this.departments = response.data.departments.map(item => {
+            return {
+              text: item.name,
+              value: item._id
+            }
+          })
         }).catch(e => {
           this.notify(e.response.data, 'danger')
         })
@@ -288,10 +291,6 @@
         if (!files.length) return
 
         this.model.avatar = files[0]
-      },
-      getDepartmentName (id) {
-        const dept = this.departments.find(d => d._id === id)
-        return dept && dept.name
       },
       getPositionName (id) {
         const dept = this.positions.find(d => d._id === id)

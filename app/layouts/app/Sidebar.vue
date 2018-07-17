@@ -5,7 +5,7 @@
         <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
         <img v-else :src="avatar" alt="Аватар">
         <p class="light">{{ $auth().user.fullname }}</p>
-        <p class="small italic">{{ $auth().user.position }}</p>
+        <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
       </div>
       <button class="italic" @click="toggle">Мой профиль</button>
     </div>
@@ -97,6 +97,7 @@
     data () {
       return {
         isOpen: false,
+        positions: []
       }
     },
     directives: {
@@ -118,8 +119,20 @@
             current.classList.remove('active')
           }
         }
+      },
+      loadPositions() {
+        return this.$api('get', 'positions?all=true').then(response => {
+          this.positions = response.data.positions
+        })
+      },
+      getPositionName (id) {
+        const position = this.positions.find(p => p._id === id)
+        return position && position.name
       }
     },
+    beforeMount () {
+      this.loadPositions()
+    }
   }
 </script>
 
