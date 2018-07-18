@@ -35,9 +35,9 @@
           <form>
             <span>Выбрать период:</span>
             <select @change="changeView()" v-model="displayPeriodUom">
-                <option value="month">месяц</option>
-                <option value="week">неделя</option>
-                <option value="day">день</option>
+              <option value="month">месяц</option>
+              <option value="week">неделя</option>
+              <option value="day">день</option>
             </select>
           </form>
         </div>
@@ -64,18 +64,18 @@
               </span>
             </div>
             <div class="month-mobile mob-block">
-               <div class="flex align-center">
-                   <a href="#" class="left-arr">
-                       <img src="~assets/img/arr-left.png" @click="prevMonth()">
-                   </a>
-                   <div class="center-arr">
-                       <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
-                       <span>{{ currentYear }}</span>
-                   </div>
-                   <a href="#" class="right-arr">
-                       <img src="~assets/img/arr-right.png" @click="nextMonth()">
-                   </a>
+             <div class="flex align-center">
+               <a href="#" class="left-arr">
+                 <img src="~assets/img/arr-left.png" @click="prevMonth()">
+               </a>
+               <div class="center-arr">
+                 <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
+                 <span>{{ currentYear }}</span>
                </div>
+               <a href="#" class="right-arr">
+                 <img src="~assets/img/arr-right.png" @click="nextMonth()">
+               </a>
+             </div>
            </div>
             <div class="month mob-none">
               <a v-for="month in getMonths()" :class="{'active': month.isCurrent}" @click="changeCurrentMonth(month.index)">
@@ -83,10 +83,29 @@
               </a>
             </div>
           </div>
+          <div v-if="selectedView === 'week'" class="calendar-top">
+            <span class="week_day">
+              <a href="#" class="left-arr" @click="prevWeek()">
+                <img src="~assets/img/arr-left.png">
+              </a>
+              <span>{{$dateFormat(monday, 'd')}} {{$dateFormat(monday, 'mmmm')}} - </span>
+              <span>{{$dateFormat(sunday, 'd')}} {{$dateFormat(sunday, 'mmmm')}}, {{currentYear}}</span>
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextWeek()">
+              </a>
+            </span>
+          </div>
           <div v-if="selectedView === 'day'" class="calendar-top">
             <span class="week_day">
+              <a href="#" class="left-arr" @click="prevDay()">
+                <img src="~assets/img/arr-left.png">
+              </a>
               {{$dateFormat(selectedDate, 'd')}}
-              {{$dateFormat(selectedDate, 'mmmm')}}
+              {{$dateFormat(selectedDate, 'mmmm')}},
+              {{currentYear}}
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextDay()">
+              </a>
             </span>
           </div>
           <div class="days">
@@ -108,10 +127,10 @@
         </div>
       </div>
       <div class="mob-block mob-task">
-          <a v-for="event in dateEvents" :key="event._id" class="mob-task-item green-i" @click="getMeeting(event._id)">
-              <span class="img-span"></span>
-              <span>{{event.name}}</span>
-          </a>
+        <a v-for="event in dateEvents" :key="event._id" class="mob-task-item green-i" @click="getMeeting(event._id)">
+          <span class="img-span"></span>
+          <span>{{event.name}}</span>
+        </a>
       </div>
     </div>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
@@ -162,8 +181,11 @@
             selectedDate: new Date(),
             currentMonth: this.selectedDate || new Date(),//old
             currentYear: (new Date()).getFullYear(),
+            monday: new Date(),
+            sunday: new Date(),
             selectedView: 'month',
             config: {
+              allDaySlot: false,
               weekends: true,
               locale: 'ru',
               defaultView: 'month',
@@ -181,6 +203,7 @@
               },
             },
             configMobile: {
+              allDaySlot: false,
               weekends: true,
               locale: 'ru',
               defaultView: 'month',
@@ -295,6 +318,8 @@
           this.loadMeetings().then(data => {
             this.renderEvents(this.selectedDate)
           })
+          this.getMonday()
+          this.getSunday()
         },
         methods: {
 					toggleModal (name, model, type) {
@@ -462,7 +487,6 @@
 						}
 					},
           renderEvents(date) {
-            console.log(this.events)
             this.dateEvents = []
             this.events.map(event => {
               if (
@@ -476,7 +500,6 @@
           nextMonth() {
             this.$refs.calendarMobile.fireMethod('next')
             this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
-            console.log(this.currentMonth)
           },
           prevMonth() {
             this.$refs.calendarMobile.fireMethod('prev')
@@ -501,7 +524,6 @@
           changeCurrentMonth (index) {
             this.selectedDate = new Date(this.currentYear, index, 1)
             this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
-            //this.getMonths()
           },
           nextYear () {
             this.currentYear++
@@ -513,18 +535,58 @@
             this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
             this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
           },
+          getMonday () {
+            var date = new Date(this.selectedDate)
+            var diff = this.selectedDate.getDay() - 1
+            date.setDate(date.getDate() - diff)
+            this.monday = date
+          },
+          getSunday () {
+            var date = new Date(this.selectedDate)
+            var diff = 7 - this.selectedDate.getDay()
+            date.setDate(date.getDate() + diff)
+            this.sunday = date
+          },
+          nextWeek () {
+            var date = this.selectedDate
+            date.setDate(date.getDate() + 7)
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+            this.getMonday()
+            this.getSunday()
+            this.updateCurrentYear()
+          },
+          prevWeek () {
+            var date = this.selectedDate
+            date.setDate(date.getDate() - 7)
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+            this.getMonday()
+            this.getSunday()
+            this.updateCurrentYear()
+          },
+          prevDay () {
+            var date = this.selectedDate
+            this.selectedDate = new Date(date.setDate(date.getDate() - 1))
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+            this.updateCurrentYear()
+          },
+          nextDay () {
+            var date = this.selectedDate
+            this.selectedDate = new Date(date.setDate(date.getDate() + 1))
+            this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+            this.updateCurrentYear()
+          },
+          updateCurrentYear () {
+            this.currentYear = this.selectedDate.getFullYear()
+          },
           changeView () {
             if (this.displayPeriodUom === 'week') {
               this.selectedView = 'week'
-              console.log(this.selectedView)
-              this.$refs.calendar.fireMethod('changeView', 'basicWeek')
+              this.$refs.calendar.fireMethod('changeView', 'basicWeek', this.selectedDate)
             } else if (this.displayPeriodUom === 'month') {
               this.selectedView = 'month'
-              console.log(this.selectedView)
               this.$refs.calendar.fireMethod('changeView', 'month')
             } else if (this.displayPeriodUom === 'day') {
               this.selectedView = 'day'
-              console.log(this.selectedView)
               this.$refs.calendar.fireMethod('changeView', 'agendaDay', this.selectedDate)
             }
           }

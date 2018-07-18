@@ -8,7 +8,8 @@
             <div class="list_header">
               <div class="flex">
                 <span v-if="type !== 'edit'" class="modal-title">Создать событие</span>
-                <span v-if="type === 'edit'" class="modal-title">Редактировать событие</span>
+                <span v-if="type === 'edit' && model.createdBy === this.$auth().user._id" class="modal-title">Редактировать событие</span>
+                <span v-if="type === 'edit' && model.createdBy !== this.$auth().user._id" class="modal-title">Просмотр события</span>
                 <div class="buttons">
                   <button type="button" class="button-top close" @click="close"></button>
                 </div>
