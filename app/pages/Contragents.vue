@@ -93,7 +93,7 @@
                   <button class="add-button auto-width" @click="toggleModal('createFolder', {})"><img src="~assets/img/add.png">Создать папку</button>
                 </div>
               </div>
-              <div v-if="chosenIds.length > 0" class="flex margin-bottom align-center m-column">
+              <div v-if="chosenIds.length > 0" class="flex margin-bottom align-center m-column" style="width:50%; float:right">
                 <a></a>
                 <div class="add auto">
                   <button type="button" class="add-button auto-width" @click="toggleModal('moveFilesAndFolders', {})">Переместить</button>
@@ -101,7 +101,7 @@
                 </div>
               </div>
               <div class="folders">
-                <div class="folders-box">
+                <div class="folders-box" style="margin-top: 3.2em">
                   <a v-if="$route.params.folderId" v-for="(item, index) in content.childFolders" :key="index" class="folders-item fol-box">
                     <router-link :to="{ name: 'folder', params: { folderId: item._id }}" tag="div" class="folder-border">
                       <div :class="['folder-img', {'selected': chosenIds.includes(item._id)}]">
