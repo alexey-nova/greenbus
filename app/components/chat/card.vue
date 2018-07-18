@@ -1,6 +1,6 @@
 <script>
   export default {
-    props: ['user', 'search'],
+    props: ['user', 'search', 'positions'],
     model: {
       prop: 'search',
       event: 'change'
@@ -11,6 +11,10 @@
 //        if (search.length > 0) {
           this.$emit('change', search)
 //        }
+      },
+      getPositionName (id) {
+        const position = this.positions.find(p => p._id === id)
+        return position && position.name
       }
     },
     computed: {
@@ -30,7 +34,7 @@
           <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
           <div class="user_info">
             <p class="light">{{$auth().user.fullname}}</p>
-            <p class="small italic">{{$auth().user.position}}</p>
+            <p class="small italic">{{getPositionName($auth().user.position)}}</p>
           </div>
         </a>
         <div class="mob-block-sm">
