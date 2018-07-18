@@ -32,7 +32,7 @@
                     <label>Тема</label>
                     <input type="text" name="" :value="model.name" disabled>
                     <label>Описание</label>
-                    <div class="text" v-html="model.description"></div>
+                    <div class="text text-input" v-html="model.description"></div>
                   </div>
                   <div class="form-item">
                     <label>Ответственный</label>

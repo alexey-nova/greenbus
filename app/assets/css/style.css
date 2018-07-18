@@ -1555,6 +1555,14 @@ span.bold{
 .text {
     word-wrap: break-word;
 }
+.text-input {
+    width: 100%;
+    margin-bottom: 1em;
+    margin-top: 2px;
+    padding: 8px 5px;
+    font-size: 1em;
+    border: 1px solid #d1d1d1;
+}
 .text-center{
     text-align: center;
 }

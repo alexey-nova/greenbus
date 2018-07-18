@@ -41,12 +41,13 @@
                   v-model="selectedUser"
                   :options="usersForSelect"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
               </div>
               <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
-                <label for="field-to">Соисполнители *</label>
+                <label for="field-to">Соисполнители</label>
                 <Multiselect
                   id="field-coExecutives"
                   name="coExecutives"
@@ -57,7 +58,8 @@
                   :clear-on-select="false"
                   :multiple="true"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
               </div>
