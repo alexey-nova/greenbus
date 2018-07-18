@@ -6,7 +6,7 @@
       <div class="chat">
         <div class="flex">
           <div class="chat_left">
-            <card :user="users[me]" v-model="search"></card>
+            <card :user="users[me]" :positions="positions" v-model="search"></card>
             <list :users="filteredUsers" :current="currentUser" @changeCurrent="changeCurrent"></list>
           </div>
           <div class="chat_right" v-if="currentUser==-1">
@@ -58,7 +58,8 @@
         currentChat: 0,
         messages: [],
         unreadMessages: [],
-        unreadMessagesCount: 0
+        unreadMessagesCount: 0,
+        positions: []
       }
     },
     directives: {
@@ -136,9 +137,15 @@
           if (err) console.log(err, 'asd')
         })
       },
+      loadPositions() {
+        return this.$api('get', 'positions?all=true').then(response => {
+          this.positions = response.data.positions
+        })
+      }
     },
     beforeMount () {
       this.getMessages()
+      this.loadPositions()
     },
     sockets: {
       newMessage (data) {

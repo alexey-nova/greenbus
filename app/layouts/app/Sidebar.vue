@@ -4,8 +4,14 @@
       <div class="info-container">
         <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
         <img v-else :src="avatar" alt="Аватар">
-        <p class="light">{{ $auth().user.fullname }}</p>
-        <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
+        <div class="mob-none">
+          <p class="light">{{ $auth().user.fullname }}</p>
+          <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
+        </div>
+        <div class="mob-flex mob-block">
+          <p class="light">{{ $auth().user.fullname }}</p>
+          <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
+        </div>
       </div>
       <button class="italic" @click="toggle">Мой профиль</button>
     </div>
