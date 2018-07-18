@@ -36,7 +36,7 @@
                       </div>
                       <div :class="['', {'has-error': errors.has('position')}]">
                         <label for="field-position">Должность *</label>
-                        <input type="text" id="field-position" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.position" disabled>
+                        <input type="text" id="field-position" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="position" v-model="model.positionName" disabled>
                         <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
                       </div>
                       <div :class="['', {'has-error': errors.has('phone')}]">
@@ -57,9 +57,9 @@
                             v-model="model.files"
                             ref="upload">
                             <i class="fa fa-plus"></i>
-                            Выбрерите файл
+                            Выберите файл
                           </file-upload>
-                          <ul style="list-style: none; padding: 0; position: absolute; left: 12.5em; top: -0.1em">
+                          <ul style="list-style: none; padding: 0; position: absolute; left: 13.5em; top: -0.1em">
                             <li v-for="(file, index) in model.files" :key="index">
                                <span class="label label-success">1</span>
                             </li>
@@ -67,7 +67,7 @@
                           <!-- <input type="file" class="jfilestyle profile-file" data-input="false" id="field-files" lang="ru" @change="addFiles"> -->
                         </div>
                         <div class="select-item right">
-                          <label>Уведомления</label>
+                          <label>Уведомления&nbsp</label>
                           <input type="checkbox">
                         </div>
                       </div>
@@ -222,7 +222,7 @@
     async mounted () {
       this.loadDepartments()
       await this.loadPositions()
-      this.model.position = this.getPositionName(this.model.position)
+      this.model.positionName = this.getPositionName(this.model.position)
     },
     methods: {
       changePassword (event) {

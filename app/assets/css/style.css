@@ -1585,6 +1585,9 @@ span.bold{
     max-height: 26em;
     overflow: auto;
 }
+.notifications-menu-left{
+    text-align: left;
+}
 ul.notifications-menu li{
     padding: 0;
 }

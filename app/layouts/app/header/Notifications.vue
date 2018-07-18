@@ -12,7 +12,7 @@
             <li class="bold">Уведомления</li>
           </ul>
           <ul class="notifications-menu">
-            <li v-for="n in pending" :key="n._id">
+            <li v-for="n in pending" :key="n._id" class="notifications-menu-left">
               <a v-if="n.module" href="#" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
                 {{n.description}}
               </a>
