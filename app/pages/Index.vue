@@ -211,7 +211,7 @@ export default {
     }
   },
   computed: {
-    filteredBids() {
+    filteredBids () {
       return this.bids.map(item => {
         const user = this.users.find(u => u._id === item.createdBy)
         item.userFrom = user ? user.fullname : ''
@@ -220,15 +220,15 @@ export default {
     }
   },
   methods: {
-    nextMonth() {
+    nextMonth () {
       this.$refs.calendar.fireMethod('next')
       this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
     },
-    prevMonth() {
+    prevMonth () {
       this.$refs.calendar.fireMethod('prev')
       this.currentMonth = this.$refs.calendar.fireMethod('getDate')._d
     },
-    getMonthName(date) {
+    getMonthName (date) {
       const arr = [
         'Январь',
         'Февраль',
@@ -250,7 +250,7 @@ export default {
         prevMonth: arr[new Date(this.currentMonth).getMonth() - 1]
       }
     },
-    loadUsers() {
+    loadUsers () {
       this.$api('get', 'users')
         .then(response => {
           this.users = response.data
@@ -259,14 +259,14 @@ export default {
           this.notify(e, 'danger')
         })
     },
-    getUser(_id) {
+    getUser (_id) {
       let user = this.$_.find(this.users, u => u._id === _id)
       return user ? user : {}
     },
-    goTo(name, params, query) {
+    goTo (name, params, query) {
       this.$router.push({ name, params, query })
     },
-    renderTasks(date) {
+    renderTasks (date) {
       this.dateTasks = []
       this.tasks.map(task => {
         if (new Date(date).toDateString() === new Date(task.deadline).toDateString()) {
@@ -315,7 +315,7 @@ export default {
       })
     }
   },
-  mounted() {
+  mounted () {
     this.loadUsers()
     this.loadTasks()
     this.loadBids()

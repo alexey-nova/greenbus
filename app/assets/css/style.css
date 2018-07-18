@@ -2505,12 +2505,6 @@ tr.green2{
 .con-table{
     width: 80%;
 }
-.el-cascader {
-	width: 100%;
-}
-.el-input__suffix {
-	height: auto;
-}
 
 /* full-calendar */
 .fc-day-number {
@@ -2559,4 +2553,12 @@ li.active .router-link-active {
 .datepicker-input input {
     margin: 0;
     margin-right: 10px;
+}
+
+/* el-cascader */
+.el-cascader {
+	width: 100%;
+}
+.el-input__suffix {
+	height: auto;
 }

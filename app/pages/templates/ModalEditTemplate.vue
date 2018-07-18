@@ -1,5 +1,5 @@
 <template>
-  <Modal :isOpen="model" @onSubmit="submit">
+  <Modal :isOpen="model" @onSubmit="submit" type="lg">
     <div class="modal-dialog " role="document" slot="content">
       <div class="modal-content">
         <div class="modal-header">
@@ -18,7 +18,7 @@
             <input type="text" v-validate="'required'" name="name" v-model="currentModel.name">
             <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
           </div>
-          <div class="flex" v-for="(n, index) in currentModel.order">
+          <div class="flex aic" v-for="(n, index) in currentModel.order" :key="index">
             <div :class="['form-group', {'has-error': errors.has('department')}]">
               <label for="field-dept">Департамент/Отдел</label>
               <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" change-on-select @change="setVal"></el-cascader>
@@ -194,3 +194,19 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 900px;
+  }
+}
+
+.aic {
+  align-items: center;
+}
+
+.form-group:not(:first-child) {
+  margin-left: 10px;
+}
+</style>
