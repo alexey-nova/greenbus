@@ -17,12 +17,12 @@
                       </div>
                       <div :class="['', {'has-error': errors.has('fullname')}]">
                         <label for="field-fullname">ФИО *</label>
-                        <input type="text" id="field-fullname" v-validate="'required'" name="fullname" v-model="model.fullname">
+                        <input type="text" id="field-fullname" class="form-control" v-validate="'required'" name="fullname" v-model="model.fullname" disabled>
                         <span v-show="errors.has('fullname')" class="help-block">{{ errors.first('fullname') }}</span>
                       </div>
                       <div :class="['', {'has-error': errors.has('email')}]">
                         <label for="field-email">E-mail *</label>
-                        <input type="text" id="field-email" :readonly="!$auth().user.admin" v-validate="'required|email'" name="email" v-model="model.email">
+                        <input type="text" id="field-email" class="form-control" :readonly="!$auth().user.admin" v-validate="'required|email'" name="email" v-model="model.email" disabled>
                         <span v-show="errors.has('email')" class="help-block">{{ errors.first('email') }}</span>
                       </div>
                     </div>
@@ -56,15 +56,13 @@
                             :multiple="false"
                             v-model="model.files"
                             ref="upload">
-                            <i class="fa fa-plus"></i>
                             Выбрерите файл
                           </file-upload>
                           <ul style="list-style: none; padding: 0; position: absolute; left: 12.5em; top: -0.1em">
-                            <li v-for="(file, index) in model.files" :key="index">
+                            <li v-if="model.files">
                                <span class="label label-success">1</span>
                             </li>
                           </ul>
-                          <!-- <input type="file" class="jfilestyle profile-file" data-input="false" id="field-files" lang="ru" @change="addFiles"> -->
                         </div>
                         <div class="select-item right">
                           <label>Уведомления</label>
@@ -249,15 +247,13 @@
       },
       submit (event) {
         event.preventDefault()
-        if (this.model.files) {
-          this.model.avatar = this.model.files[0]
-        }
         this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position').then(() => {
           this.save(this.model)
         }).catch(() => {
         })
       },
       save (data) {
+        data.avatar = data.files[0].file
         let formData = this.$createFormData(data)
         this.$api('put', 'users/' + data._id, formData).then(response => {
           this.notify(response.data.message)

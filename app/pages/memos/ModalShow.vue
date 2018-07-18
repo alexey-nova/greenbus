@@ -94,7 +94,7 @@
                   </div>
                   <div class="forum-box fixed">
                     <div class="forum-info">
-                      <c-messages :main="true" :comments="groupedComments" @submit="loadComments"></c-messages>
+                      <c-messages :main="true" :comments="groupedComments" @onSubmit="loadComments()"></c-messages>
                     </div>
                   </div>
               </div>
@@ -305,7 +305,7 @@ export default {
     },
     sendComment () {
       this.$api('post', `comments`, { moduleId: this.model._id, comment: this.comment }).then(response => {
-        console.log('response', response.data)
+        this.comment = ''
         this.loadComments(this.model._id)
       })
     },

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '#/store'
 import core from './../plugins/core'
 
 import App from '#/layouts/App'
@@ -13,7 +12,6 @@ import Memos from '#/pages/Memos'
 import Contragents from '#/pages/Contragents'
 import Calendar from '#/pages/Calendar'
 import Template from '#/pages/Template'
-// import PaymentSchedule from '#/pages/PaymentSchedule'
 
 import Auth from '#/layouts/Auth'
 import Login from '#/pages/Login'
@@ -45,37 +43,37 @@ var router = new Router({
         {
           path: '/users',
           name: 'users',
-          component: Users,
+          component: Users
         },
         {
           path: '/users/dep/:param1',
           name: 'usersByDep',
-          component: Users,
+          component: Users
         },
         {
           path: '/tasks',
           name: 'tasks',
-          component: Tasks,
+          component: Tasks
         },
         {
           path: '/tasks/:param1',
           name: 'tasksByFilter',
-          component: Tasks,
+          component: Tasks
         },
         {
           path: '/documents',
           name: 'documents',
-          component: Memos,
+          component: Memos
         },
         {
           path: '/documents/:param1',
           name: 'documentsByFilter',
-          component: Memos,
+          component: Memos
         },
         {
           path: '/documents1',
           name: 'documentsByFilter1',
-          component: Memos,
+          component: Memos
         },
         {
           path: '/ca',
@@ -90,23 +88,13 @@ var router = new Router({
         {
           path: '/calendar',
           name: 'calendar',
-          component: Calendar,
+          component: Calendar
         },
         {
           path: '/templates',
           name: 'templates',
-          component: Template,
-        },
-        // {
-        //   path: '/ps',
-        //   name: 'ps',
-        //   component: PaymentSchedule,
-        // },
-        // {
-        //   path: '/ps/:param1',
-        //   name: 'psByFilter',
-        //   component: PaymentSchedule
-        // }
+          component: Template
+        }
       ]
     },
     {
@@ -122,7 +110,7 @@ var router = new Router({
           path: '/logout',
           name: 'logout',
           component: Logout
-        },
+        }
       ]
     }
   ]

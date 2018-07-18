@@ -13,14 +13,14 @@
           </ul>
           <ul class="notifications-menu">
             <li v-for="n in pending" :key="n._id">
-              <a v-if="n.module" href="#" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
+              <a v-if="n.module" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
                 {{n.description}}
               </a>
               <p v-else>
                 {{n.description}}
               </p>
             </li>
-            <li v-if="$_.size(pending)"><a class="read-all" href="#" @click="readNots">Прочитать все уведомления</a></li>
+            <li v-if="$_.size(pending)"><a class="read-all" @click="readNots">Прочитать все уведомления</a></li>
             <li v-if="!$_.size(pending)"><a href="#">У вас нет уведомлений</a></li>
           </ul>
         </div>
@@ -67,7 +67,7 @@
       },
       goTo (location, context) {
         if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
-        else if (location === 'memos') return this.$router.push({ name: 'documents', query: { type: 'show', memo: context.moduleId }})
+        else if (location === 'bids') return this.$router.push({ name: 'documents', query: { type: 'show', bid: context.moduleId }})
         else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
       }
     },

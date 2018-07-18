@@ -1,6 +1,6 @@
 <template>
   <ul class="list" data-widget="tree">
-    <li v-for="item in sidebar" :key="item.name" :class="[{active: item.isActive(), 'menu-open': item.isActive() && item.children, 'treeview': item.children,}]">
+    <li v-for="item in sidebar" :key="item.name" :class="[{'active': item.isActive(), 'menu-open': item.isActive() && item.children, 'treeview': item.children}]">
 
       <router-link v-if="item.children" :to="item.link">
         <img :src="require(`assets/img/${item.imgSrc}`)"> <span :class="{'active-span': item.isActive()}">{{item.name}}</span>
@@ -74,7 +74,7 @@ import Tree from './Tree'
               name: 'Служебные записки',
               link: {name: 'documents'},
               imgSrc: 'left_menu/1.png',
-              isActive: () => this.$isRoute('documents', 'documentsByFilter'),
+              isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
               children: [
                 {
                   link: {name: 'documentsByFilter', params: {param1: 'in'}},
@@ -107,10 +107,10 @@ import Tree from './Tree'
                   isActive: () => this.$isRoute('documentsByFilter', 'param1', 'done'),
                 },
                 {
-                  link: {name: 'documents'},
+                  link: { name: 'documents' },
                   name: 'Все',
                   imgSrc: 'left_menu/3.png',
-                  isActive: () => this.$isRoute('documents'),
+                  isActive: () => this.$isRoute(['documents'], '', ''),
                 },
               ],
             },

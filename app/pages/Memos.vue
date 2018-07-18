@@ -289,6 +289,7 @@ export default {
   watch: {
     '$route' (to, from) {
       this.loadBids()
+      this.showBidFromQuery()
     }
   },
   sockets: {

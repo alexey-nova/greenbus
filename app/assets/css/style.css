@@ -2546,10 +2546,6 @@ tr.green2{
     color: #1b8442;
 }
 
-li.active .router-link-active {
-    color: #1b8442;
-}
-
 .datepicker-input input {
     margin: 0;
     margin-right: 10px;

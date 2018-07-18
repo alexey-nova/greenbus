@@ -9,7 +9,7 @@
             <p class="italic">{{ posName(chainItem.user.positionId) }}</p>
           </div>
           <div v-if="type !== 'create'"  class="stage-date">
-            <span>{{$dateFormat(chainItem.deadline, 'dd.mm.yyyy')}}</span>
+            <span class="chain-date">{{$dateFormat(chainItem.deadline, 'dd.mm.yyyy HH:MM')}}</span>
           </div>
         </div>
       </div>
@@ -95,5 +95,7 @@ export default {
 </script>
 
 <style>
-
+.chain-date {
+  text-align: center
+}
 </style>

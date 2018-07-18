@@ -22,7 +22,7 @@
                 <img src="~assets/img/add2.png">
                 <span>Поставить задачу</span>
               </button>
-              <a @click="toggleModal('showUser', { fullname: props.row.fullname, phone: props.row.phone, email: props.row.email, department: props.row.deptName, position: props.row.posName})" class="green_anchor">Подробнее</a>
+              <a @click="toggleModal('showUser', props.row)" class="green_anchor">Подробнее</a>
             </div>
             <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(props.row))"></button>
@@ -43,7 +43,7 @@
             :items="filteredUsers"
             :fields="mobTableData.fields">
             <template slot="fullname" slot-scope="row">
-              <span>{{row.value}} (<a @click="toggleModal('showUser', { fullname: row.value, phone: row.item.phone, email: row.item.email, department: row.item.deptName, position: row.item.posName})" class="green_anchor">Подробнее</a>)</span>
+              <span>{{row.value}} (<a @click="toggleModal('showUser', row.item)" class="green_anchor">Подробнее</a>)</span>
             </template>
             <template slot="actions" slot-scope="row">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(row.item))"></button>
@@ -58,7 +58,7 @@
     <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
     <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
-    <ModalShowUser :model="modal.showUser" :departments="allDepartments" :positions="positions" @onClose="toggleModal('showUser')"></ModalShowUser>
+    <ModalShowUser v-if="modal.showUser" :model="modal.showUser" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
   </div>
 </template>

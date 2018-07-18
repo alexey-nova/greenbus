@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="item.children" :key="item.name" class="treeview-menu" style="display:none;margin: 10px;">
+  <ul v-if="item.children" :key="item.name" class="treeview-menu" :style="[{margin: `10px`}, { display: item.isActive() ? 'block' : 'none' }]">
     <li v-for="(child, index) in item.children" :key="index" :class="[{active: child.isActive(), 'menu-open': child.isActive() && child.children, 'treeview': item.children}]">
       <router-link :to="child.link">
         <img v-if="child.isActive()" :src="item.imgSrc2 ? require(`assets/img/${item.imgSrc2}`) : require(`assets/img/${item.imgSrc}`)">

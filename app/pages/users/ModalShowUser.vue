@@ -26,11 +26,11 @@
 							</div>
 							<div class="cart-inside flex">
 								<span>Должность:</span>
-								<p>{{model.position}}</p>
+								<p>{{model.posName}}</p>
 							</div>
 							<div class="cart-inside flex">
 								<span>Отдел:</span>
-								<p>{{model.department}}</p>
+								<p>{{model.deptName}}</p>
 							</div>
 							<div class="cart-inside flex">
 								<span>Телефон:</span>
@@ -60,26 +60,17 @@
     components: {
       Modal,
     },
-    props: ['model', 'departments', 'positions', 'onClose'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-    },
+    props: ['model', 'onClose'],
     computed: {
-     departmentName () {
-      //  if (this.departments.filter(item => item._id === ))
-       let dep = this.$_.find(this.departments, '_id', this.model.departmentId)
-       return dep ? dep.name : ''
-     },
-     positionName () {
-       let position = this.$_.find(this.positions, '_id', this.model.positionId)
-       return position ? position.name : ''
-     },
      avatar () {
        return this.model.avatar ? `${this.$config('app.fileUrl')}${this.model.avatar}` : false
      }
-    }
+		},
+		methods: {
+      close () {
+        this.$emit('onClose')
+      }
+		}
   }
 </script>
 

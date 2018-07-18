@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(com, index) in comments" :key="`comment-${index}`" :class="[{ 'forum-response': com.replyTo && !main }]">
-      <div v-if="!(!com.comment && com.type === 'default')" :class="[{ 'forum-response-box': com.replyTo && !main }, { 'anti-margin': child }]">
+      <div :class="[{ 'forum-response-box': com.replyTo && !main }, { 'anti-margin': child }]">
         <div class="forum-title flex">
           <p class="forum-name">{{com.user.fullname}} {{ commentType(com.type) }}</p>
           <p class="forum-date">{{$dateFormat(com.createdAt, 'dd mmm yyyy, HH:MM')}}</p>
@@ -10,7 +10,7 @@
           <span>{{com.comment}}</span>
         </div>
         <div class="flex flex-end forum-button">
-          <button v-if="com.type === 'default'" type="button" class="add-button auto-width reply" @click="toggleReplyArea(index)">{{ replyBox[index] ? 'Закрыть' : 'Ответить' }}</button>
+          <button type="button" class="add-button auto-width reply" @click="toggleReplyArea(index)">{{ replyBox[index] ? 'Закрыть' : 'Ответить' }}</button>
         </div>
         <div v-if="replyBox[index]">
           <div class="forum-response">
@@ -19,16 +19,14 @@
                 <textarea placeholder="Введите текст" v-model="reply[index]"></textarea>
               </div>
               <div class="flex flex-end forum-button">
-                <button type="button" class="add-button auto-width" @click="replyMessage(com, reply[index])">Отправить</button>
+                <button type="button" class="add-button auto-width" @click="replyMessage(com, reply[index], index)">Отправить</button>
               </div>
             </div>
           </div>
         </div>
-        <c-messages v-if="com.replies" :child="main ? false : true" :comments="com.replies"></c-messages>
+        <c-messages v-if="com.replies" :child="main ? false : true" :comments="com.replies" @onSubmit="$emit('onSubmit')"></c-messages>
       </div>
-      
     </div>
-    
   </div>
 </template>
 
@@ -56,7 +54,7 @@ export default {
     },
     child: {
       type: Boolean
-    }
+    },
   },
   methods: {
     commentType (type) {
@@ -69,9 +67,13 @@ export default {
     toggleReplyArea (index) {
       this.$set(this.replyBox, index, !this.replyBox[index])
     },
-    replyMessage (comment, text) {
+    replyMessage (comment, text, index) {
       this.$api('post', `comments`, { moduleId: comment.moduleId, comment: text, replyTo: comment._id }).then(response => {
-        this.$emit('submit')
+        this.$emit('onSubmit')
+        this.reply[index] = ''
+        this.$set(this.replyBox, index, !this.replyBox[index])
+      }).catch(e => {
+        console.log(e.message)
       })
     }
   }
