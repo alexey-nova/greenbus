@@ -1436,9 +1436,10 @@ a.categories.active .white-menu-img{
 .categories-item:hover .categories-item-img{
     background-image: url("../img/file-h.png");
 }
-.categories-item:hover .button-table.edit{
+/* .categories-item:hover .button-table.edit{
     background-color: #1b8442;
-}
+} */
+
 .categories-item:hover{
     border-color: #1b8442;
     -webkit-box-shadow: 0px 2px 5px 0px rgba(156,156,156,1);
@@ -2061,6 +2062,9 @@ span.date{
 .margin-helper.margin2-helper{
     padding: 0;
     margin-left: 1.5%;
+}
+.margin-t2{
+    margin-top: 2em;
 }
 select{
 	background-size: 16px;

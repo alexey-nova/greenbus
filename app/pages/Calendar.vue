@@ -109,422 +109,406 @@
 </template>
 
 <script>
-    import PageTitle from "@/PageTitle"
-    import Box from "@/Box"
-    import PageButtons from "@/PageButtons"
-    import ModalCreate from './calendar/ModalCreateMeeting'
-    import CalendarView from "vue-simple-calendar"
-    import CalendarMathMixin from "vue-simple-calendar/dist/calendar-math-mixin.js"
-    import { FullCalendar } from 'vue-full-calendar'
-    require('../assets/fullcalendar.css')
-    require("vue-simple-calendar/dist/static/css/default.css")
+import PageTitle from "@/PageTitle"
+import Box from "@/Box"
+import PageButtons from "@/PageButtons"
+import ModalCreate from './calendar/ModalCreateMeeting'
+import CalendarView from "vue-simple-calendar"
+import CalendarMathMixin from "vue-simple-calendar/dist/calendar-math-mixin.js"
+import { FullCalendar } from 'vue-full-calendar'
+require('../assets/fullcalendar.css')
+require("vue-simple-calendar/dist/static/css/default.css")
 
-    const arr = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь'
-    ]
+const arr = [
+  'Январь',
+  'Февраль',
+  'Март',
+  'Апрель',
+  'Май',
+  'Июнь',
+  'Июль',
+  'Август',
+  'Сентябрь',
+  'Октябрь',
+  'Ноябрь',
+  'Декабрь'
+]
 
-    export default {
-      name: "App",
-      components: {
-        PageButtons,
-        PageTitle,Box,
-        CalendarView,
-        CalendarMathMixin,
-        ModalCreate,
-        FullCalendar
+export default {
+  name: "App",
+  components: {
+    PageButtons,
+    PageTitle,Box,
+    CalendarView,
+    CalendarMathMixin,
+    ModalCreate,
+    FullCalendar
+  },
+  data() {
+    return {
+      dateEvents: [],
+      tasks: [],
+      selectedDate: new Date(),
+      currentMonth: this.selectedDate || new Date(),//old
+      currentYear: (new Date()).getFullYear(),
+      monday: new Date(),
+      sunday: new Date(),
+      selectedView: 'month',
+      config: {
+        slotLabelFormat: "HH:mm",
+        allDaySlot: false,
+        weekends: true,
+        locale: 'ru',
+        defaultView: 'month',
+        themeSystem: 'bootstrap3',
+        contentHeight: 'auto',
+        selectable: true,
+        dayClick: (date, jsEvent, view) => {
+          this.selectedDate = date._d
+          // this.currentMonth = date._d
+          this.renderEvents(date._d)
+        },
+        eventClick: (event) => {
+          this.getMeeting(event.id)
+          this.message = `You clicked: ${event.title}`
+        },
       },
-      data() {
-        return {
-          dateEvents: [],
-          tasks: [],
-          selectedDate: new Date(),
-          currentMonth: this.selectedDate || new Date(),//old
-          currentYear: (new Date()).getFullYear(),
-          monday: new Date(),
-          sunday: new Date(),
-          selectedView: 'month',
-          config: {
-            allDaySlot: false,
-            weekends: true,
-            locale: 'ru',
-            defaultView: 'month',
-            themeSystem: 'bootstrap3',
-            contentHeight: 'auto',
-            selectable: true,
-            dayClick: (date, jsEvent, view) => {
-              this.selectedDate = date._d
-              // this.currentMonth = date._d
-              this.renderEvents(date._d)
-            },
-            eventClick: (event) => {
-              this.getMeeting(event.id)
-              this.message = `You clicked: ${event.title}`
-            },
-          },
-          configMobile: {
-            allDaySlot: false,
-            weekends: true,
-            locale: 'ru',
-            defaultView: 'month',
-            themeSystem: 'bootstrap3',
-            contentHeight: 'auto',
-            selectable: true,
-            dayClick: (date, jsEvent, view) => {
-              this.selectedDate = date._d
-              this.renderEvents(date._d)
-            }
-          },
-          eventClick: (event) => {
-            this.getMeeting(event.id)
-            this.message = `You clicked: ${event.title}`
-          },
-          meetings: [],
-          header: {
-            left: '',
-            center: '',
-            right: ''
-          },
-          modal: {
-            create: false,
-            edit: false,
-          },
-          showDate: this.thisMonth(1),
-          message: "Click a date or event...",
-          alreadyAdded: false,
-          startingDayOfWeek: 1,
-          disablePast: false,
-          disableFuture: false,
-          displayPeriodUom: 'month',
-          displayPeriodCount: 1,
-          //showEventTimes: true,
-          events: [],
-          users: [],
-          type: 'create',
+      configMobile: {
+        allDaySlot: false,
+        weekends: true,
+        locale: 'ru',
+        defaultView: 'month',
+        themeSystem: 'bootstrap3',
+        contentHeight: 'auto',
+        selectable: true,
+        dayClick: (date, jsEvent, view) => {
+          this.selectedDate = date._d
+          this.renderEvents(date._d)
         }
       },
-      computed: {
-        userLocale () {
-          return CalendarMathMixin.methods.getDefaultBrowserLocale
-        },
-        dayNames () {
-          return CalendarMathMixin.methods.getFormattedWeekdayNames(
-              this.userLocale,
-              "long",
-              0
-          )
-        },
-        eventsForComponent: {
-          get: function () {
-            return this.$_.map(this.events, event => {
-              let e = {
-                id: event._id,
-                title: event.name,
-                start: event.startDate,
-                end: event.endDate,
-              }
-              if (event.status === 'confirmed') {
-                e.classes = "green"
-              } else if (event.status === 'rejected') {
-                e.classes = "red"
-              } else {
-                e.classes = "grey"
-              }
-
-              return e
-            })
-          },
-          set: function (eventsForComponent) {
-            return this.$_.map(eventsForComponent, event => {
-              return {
-                _id: event.id,
-                name: event.title,
-                start: event.startDate,
-                end: event.endDate,
-              }
-            })
-          }
-        },
-        eventsForMobile: {
-
-          get: function () {
-            const groups = this.events.reduce((groups, event) => {
-              const date = event.startDate
-              if (!groups[date]) groups[date] = []
-              groups[date].push(event)
-              return groups
-            }, {})
-
-            return this.$_.map(groups, event => {
-              let e = {
-                title: event.length,
-                start: event[0].startDate
-              }
-              if (event[0].status === 'confirmed') {
-                e.classes = "green"
-              } else if (event[0].status === 'rejected') {
-                e.classes = "red"
-              } else {
-                e.classes = "grey"
-              }
-              return e
-            })
-
-          },
-
-        }
+      eventClick: (event) => {
+        this.getMeeting(event.id)
+        this.message = `You clicked: ${event.title}`
       },
-      methods: {
-        toggleModal (name, model, type) {
-          this.modal[name] = model === undefined ? !this.modal[name] : model
-          this.type = type
-        },
-        loadMeetings() {
-          return this.$api('get', 'meetings').then(response => {
-            this.events = response.data.map(item => {
-              item.startDate = new Date(item.startDate)
-              item.endDate = new Date(item.endDate)
-              return item
-            })
-            return this.events
-          }).catch(e => {
-            console.log(e)
-            return this.notify(e, 'danger')
-          })
-          this.getMonday()
-          this.getSunday()
-        },
-        createMeeting (meeting) {
-          // let newDate = new Date(meeting.startDate)
-          // let endDate = new Date(meeting.startDate)
-          // let startTime = meeting.startTime.split(':')
-          // newDate.setHours(startTime[0])
-          // newDate.setMinutes(startTime[1])
-
-          // let endTime = meeting.endTime.split(':')
-          // endDate.setHours(endTime[0])
-          // endDate.setMinutes(endTime[1])
-
-          // let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate, place: meeting.place, description: meeting.description}
-          this.$api('post', 'meetings', meeting).then(response => {
-            this.modal.createMeeting = false
-            this.notify(response.data.message)
-            this.loadMeetings()
-            this.toggleModal('create')
-          }).catch(e => {
-            this.notify('Временно нельзя создать событие', 'info')
-            this.$log(e, 'danger')
-          })
-        },
-        editMeeting (meeting) {
-          meeting.participants = this.$_.map(meeting.participants, p => {
-            return p.user
-          })
-          this.$api('put', 'meetings/' + meeting._id, meeting).then(response => {
-            this.loadMeetings()
-            this.toggleModal('edit')
-            this.notify(response.data.message)
-          }).catch(e => {
-            this.notify('Временно нельзя редактировать событие', 'info')
-            this.$log(e, 'danger')
-          })
-        },
-        thisMonth(d, h, m) {
-          const t = new Date()
-          return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
-        },
-        onClickDay(d) {
-          this.message = `You clicked: ${d.toLocaleDateString()}`
-        },
-        onClickEvent(e) {
-          this.getMeeting(e.id)
-          this.message = `You clicked: ${e.title}`
-        },
-        setShowDate(d) {
-          this.message = `Changing calendar view to ${d.toLocaleDateString()}`
-          this.showDate = d
-        },
-        onDrop(event, date) {
-          this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
-          const fixedStartDate = CalendarMathMixin.methods.toLocalDate(
-            event.startDate
-          )
-          const fixedEndDate = CalendarMathMixin.methods.toLocalDate(
-            event.endDate || fixedStartDate
-          )
-          const eLength = CalendarMathMixin.methods.dayDiff(fixedStartDate, date)
-          event.startDate = CalendarMathMixin.methods.addDays(
-            fixedStartDate,
-            eLength
-          )
-          event.endDate = CalendarMathMixin.methods.addDays(fixedEndDate, eLength)
-          this.dropMeeting(event.id, date.getDate(), date.getMonth(), date.getFullYear())
-        },
-        dropMeeting (id, newDay, newMonth, newYear) {
-          this.$api('get', 'meetings/' + id).then(response => {
-            let oldDate = new Date(response.data.startDate)
-            let endDate = new Date(response.data.endDate)
-
-            oldDate.setDate(newDay)
-            oldDate.setMonth(newMonth)
-            oldDate.setFullYear(newYear)
-
-            endDate.setDate(newDay)
-            endDate.setMonth(newMonth)
-            endDate.setFullYear(newYear)
-            const data = { 'id': id, 'startDate': oldDate, 'endDate': endDate }
-            this.$api('put', 'meetings/' + id, data).then(response => {
-              this.loadMeetings()
-              this.notify(response.data.message)
-            }).catch(e => {
-              this.notify('Вы не можете переносить чужие встречи', 'info')
-              this.$log(e, 'danger')
-            })
-          }).catch(e => {
-            this.notify(e, 'danger')
-          })
-
-          /*const data = {'id':id, 'startDate':newDate}
-          this.$api('put', 'meetings/' + id, data).then(response => {
-            this.loadMeetings()
-            console.log(data)
-            //this.modal.editUser = false
-            this.notify(response.data.message)
-          }).catch(e => {
-            this.notify('Временно нельзя редактировать событие', 'info')
-            //this.modal.editUser = false
-            this.$log(e, 'danger')
-          })*/
-        },
-        getFullMinutes (date) {
-          if (date.getMinutes() < 10) {
-            return '0' + date.getMinutes()
+      meetings: [],
+      header: {
+        left: '',
+        center: '',
+        right: ''
+      },
+      modal: {
+        create: false,
+        edit: false,
+      },
+      showDate: this.thisMonth(1),
+      message: "Click a date or event...",
+      alreadyAdded: false,
+      startingDayOfWeek: 1,
+      disablePast: false,
+      disableFuture: false,
+      displayPeriodUom: 'month',
+      displayPeriodCount: 1,
+      //showEventTimes: true,
+      events: [],
+      users: [],
+      type: 'create',
+    }
+  },
+  computed: {
+    userLocale () {
+      return CalendarMathMixin.methods.getDefaultBrowserLocale
+    },
+    dayNames () {
+      return CalendarMathMixin.methods.getFormattedWeekdayNames(this.userLocale, 'long', 0)
+    },
+    eventsForComponent: {
+      get: function () {
+        return this.$_.map(this.events, event => {
+          let e = {
+            id: event._id,
+            title: event.name,
+            start: event.startDate,
+            end: event.endDate,
           }
-          return date.getMinutes()
-        },
-        getMeeting(id) {
-          this.$api('get', 'meetings/' + id).then(response => {
-            
-            const startTime = `${(new Date(response.data.startDate)).getHours()}:${this.getFullMinutes(new Date(response.data.startDate))}`
-            
-            const endTime = `${(new Date(response.data.endDate)).getHours()}:${this.getFullMinutes(new Date(response.data.endDate))}`
-
-            response.data['startTime'] = startTime
-            response.data['endTime'] = endTime
-            this.toggleModal('edit', response.data, 'edit')
-          }).catch(e => {
-            this.notify(e, 'danger')
-          })
-        },
-        updateMeeting() {
-          this.toggleModal('create')
-          this.loadMeetings()
-        },
-        updateEditMeeting() {
-          this.toggleModal('edit')
-          this.loadMeetings()
-        },
-        /* ----- Форма -------*/
-        loadUsers () {
-          this.$api('get', 'users').then(response => {
-            this.users = response.data
-          }).catch(e => {
-            this.notify(e, 'danger')
-          })
-        },
-        showMeetingFromQuery () {
-          let type = this.$_.get(this.$route, 'query.type', '')
-          let meetingId = this.$_.get(this.$route, 'query.meeting', '')
-          if (type && meetingId) {
-            this.loadMeetings().then(meetings => {
-              this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])),
-              'edit')
-            })
+          if (event.status === 'confirmed') {
+            e.classes = 'green'
+          } else if (event.status === 'rejected') {
+            e.classes = 'red'
           } else {
-            this.loadMeetings()
+            e.classes = 'grey'
           }
-        },
-        renderEvents(date) {
-          this.dateEvents = []
-          this.events.map(event => {
-            if (
-              new Date(date).toDateString() ===
-              new Date(event.startDate).toDateString()
-            ) {
-              this.dateEvents.push(event)
-            }
-          })
-        },
-        nextMonth() {
-          this.$refs.calendarMobile.fireMethod('next')
-          this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
-        },
-        prevMonth() {
-          this.$refs.calendarMobile.fireMethod('prev')
-          this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
-        },
-        getMonthName(date) {
-          return {
-            thisMonth: arr[new Date(this.currentMonth).getMonth()],
-            nextMonth: arr[new Date(this.currentMonth).getMonth() + 1],
-            prevMonth: arr[new Date(this.currentMonth).getMonth() - 1]
-          }
-        },
-        getMonths() {
-          return arr.map((month, index) => {
-            return {
-              index: index,
-              name: month,
-              isCurrent: index == this.selectedDate.getMonth()
-            }
-          })
-        },
-        changeCurrentMonth (index) {
-          this.selectedDate = new Date(this.currentYear, index, 1)
-          this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
-        },
-        nextYear () {
-          this.currentYear++
-          this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
-          this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
-        },
-        prevYear () {
-          this.currentYear--
-          this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
-          this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
-        },
-        changeView () {
-          if (this.displayPeriodUom === 'week') {
-            this.selectedView = 'week'
-            this.$refs.calendar.fireMethod('changeView', 'basicWeek')
-          } else if (this.displayPeriodUom === 'month') {
-            this.selectedView = 'month'
-            this.$refs.calendar.fireMethod('changeView', 'month')
-          } else if (this.displayPeriodUom === 'day') {
-            this.selectedView = 'day'
-            this.$refs.calendar.fireMethod('changeView', 'agendaDay', this.selectedDate)
-          }
-        }
+
+          return e
+        })
       },
-      mounted () {
-        this.showMeetingFromQuery()
-        this.loadUsers()
-        this.getMonths()
-        this.loadMeetings().then(data => {
-          this.renderEvents(this.selectedDate)
+      set: function (eventsForComponent) {
+        return this.$_.map(eventsForComponent, event => {
+          return {
+            _id: event.id,
+            name: event.title,
+            start: event.startDate,
+            end: event.endDate,
+          }
+        })
+      }
+    },
+    eventsForMobile: {
+      get: function () {
+        const groups = this.events.reduce((groups, event) => {
+          const date = event.startDate
+          if (!groups[date]) groups[date] = []
+          groups[date].push(event)
+          return groups
+        }, {})
+
+        return this.$_.map(groups, event => {
+          let e = {
+            title: event.length,
+            start: event[0].startDate
+          }
+          if (event[0].status === 'confirmed') {
+            e.classes = 'green'
+          } else if (event[0].status === 'rejected') {
+            e.classes = 'red'
+          } else {
+            e.classes = 'grey'
+          }
+          return e
         })
       }
     }
+  },
+  methods: {
+    toggleModal (name, model, type) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+      this.type = type
+    },
+    loadMeetings() {
+      return this.$api('get', 'meetings').then(response => {
+        this.events = response.data.map(item => {
+          item.startDate = new Date(item.startDate)
+          item.endDate = new Date(item.endDate)
+          return item
+        })
+        return this.events
+      }).catch(e => {
+        console.log(e)
+        return this.notify(e, 'danger')
+      })
+      this.getMonday()
+      this.getSunday()
+    },
+    createMeeting (meeting) {
+      // let newDate = new Date(meeting.startDate)
+      // let endDate = new Date(meeting.startDate)
+      // let startTime = meeting.startTime.split(':')
+      // newDate.setHours(startTime[0])
+      // newDate.setMinutes(startTime[1])
+
+      // let endTime = meeting.endTime.split(':')
+      // endDate.setHours(endTime[0])
+      // endDate.setMinutes(endTime[1])
+
+      // let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate, place: meeting.place, description: meeting.description}
+      this.$api('post', 'meetings', meeting).then(response => {
+        this.modal.createMeeting = false
+        this.notify(response.data.message)
+        this.loadMeetings()
+        this.toggleModal('create')
+      }).catch(e => {
+        this.notify('Временно нельзя создать событие', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    editMeeting (meeting) {
+      meeting.participants = this.$_.map(meeting.participants, p => {
+        return p.user
+      })
+      this.$api('put', 'meetings/' + meeting._id, meeting).then(response => {
+        this.loadMeetings()
+        this.toggleModal('edit')
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя редактировать событие', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    thisMonth(d, h, m) {
+      const t = new Date()
+      return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
+    },
+    onClickDay(d) {
+      this.message = `You clicked: ${d.toLocaleDateString()}`
+    },
+    onClickEvent(e) {
+      this.getMeeting(e.id)
+      this.message = `You clicked: ${e.title}`
+    },
+    setShowDate(d) {
+      this.message = `Changing calendar view to ${d.toLocaleDateString()}`
+      this.showDate = d
+    },
+    onDrop(event, date) {
+      this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
+      const fixedStartDate = CalendarMathMixin.methods.toLocalDate(event.startDate)
+      const fixedEndDate = CalendarMathMixin.methods.toLocalDate(event.endDate || fixedStartDate)
+      const eLength = CalendarMathMixin.methods.dayDiff(fixedStartDate, date)
+      event.startDate = CalendarMathMixin.methods.addDays(fixedStartDate,eLength)
+      event.endDate = CalendarMathMixin.methods.addDays(fixedEndDate, eLength)
+      this.dropMeeting(event.id, date.getDate(), date.getMonth(), date.getFullYear())
+    },
+    dropMeeting (id, newDay, newMonth, newYear) {
+      this.$api('get', 'meetings/' + id).then(response => {
+        let oldDate = new Date(response.data.startDate)
+        let endDate = new Date(response.data.endDate)
+
+        oldDate.setDate(newDay)
+        oldDate.setMonth(newMonth)
+        oldDate.setFullYear(newYear)
+
+        endDate.setDate(newDay)
+        endDate.setMonth(newMonth)
+        endDate.setFullYear(newYear)
+        const data = { 'id': id, 'startDate': oldDate, 'endDate': endDate }
+        this.$api('put', 'meetings/' + id, data).then(response => {
+          this.loadMeetings()
+          this.notify(response.data.message)
+        }).catch(e => {
+          this.notify('Вы не можете переносить чужие встречи', 'info')
+          this.$log(e, 'danger')
+        })
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+
+      /*const data = {'id':id, 'startDate':newDate}
+      this.$api('put', 'meetings/' + id, data).then(response => {
+        this.loadMeetings()
+        console.log(data)
+        //this.modal.editUser = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя редактировать событие', 'info')
+        //this.modal.editUser = false
+        this.$log(e, 'danger')
+      })*/
+    },
+    getFullMinutes (date) {
+      if (date.getMinutes() < 10) {
+        return '0' + date.getMinutes()
+      }
+      return date.getMinutes()
+    },
+    getMeeting(id) {
+      this.$api('get', 'meetings/' + id).then(response => {
+
+        const startTime = `${(new Date(response.data.startDate)).getHours()}:${this.getFullMinutes(new Date(response.data.startDate))}`
+
+        const endTime = `${(new Date(response.data.endDate)).getHours()}:${this.getFullMinutes(new Date(response.data.endDate))}`
+
+        response.data['startTime'] = startTime
+        response.data['endTime'] = endTime
+        this.toggleModal('edit', response.data, 'edit')
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+    },
+    updateMeeting() {
+      this.toggleModal('create')
+      this.loadMeetings()
+    },
+    updateEditMeeting() {
+      this.toggleModal('edit')
+      this.loadMeetings()
+    },
+    /* ----- Форма -------*/
+    loadUsers () {
+      this.$api('get', 'users').then(response => {
+        this.users = response.data
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+    },
+    showMeetingFromQuery () {
+      let type = this.$_.get(this.$route, 'query.type', '')
+      let meetingId = this.$_.get(this.$route, 'query.meeting', '')
+      if (type && meetingId) {
+        this.loadMeetings().then(meetings => {
+          this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])),
+          'edit')
+        })
+      } else {
+        this.loadMeetings()
+      }
+    },
+    renderEvents(date) {
+      this.dateEvents = []
+      this.events.map(event => {
+        if (new Date(date).toDateString() === new Date(event.startDate).toDateString()) {
+          this.dateEvents.push(event)
+        }
+      })
+    },
+    nextMonth() {
+      this.$refs.calendarMobile.fireMethod('next')
+      this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
+    },
+    prevMonth() {
+      this.$refs.calendarMobile.fireMethod('prev')
+      this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
+    },
+    getMonthName(date) {
+      return {
+        thisMonth: arr[new Date(this.currentMonth).getMonth()],
+        nextMonth: arr[new Date(this.currentMonth).getMonth() + 1],
+        prevMonth: arr[new Date(this.currentMonth).getMonth() - 1]
+      }
+    },
+    getMonths() {
+      return arr.map((month, index) => {
+        return {
+          index: index,
+          name: month,
+          isCurrent: index == this.selectedDate.getMonth()
+        }
+      })
+    },
+    changeCurrentMonth (index) {
+      this.selectedDate = new Date(this.currentYear, index, 1)
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+    },
+    nextYear () {
+      this.currentYear++
+      this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+    },
+    prevYear () {
+      this.currentYear--
+      this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+    },
+    changeView () {
+      if (this.displayPeriodUom === 'week') {
+        this.selectedView = 'week'
+        this.$refs.calendar.fireMethod('changeView', 'basicWeek')
+      } else if (this.displayPeriodUom === 'month') {
+        this.selectedView = 'month'
+        this.$refs.calendar.fireMethod('changeView', 'month')
+      } else if (this.displayPeriodUom === 'day') {
+        this.selectedView = 'day'
+        this.$refs.calendar.fireMethod('changeView', 'agendaDay', this.selectedDate)
+      }
+    }
+  },
+  mounted () {
+    this.showMeetingFromQuery()
+    this.loadUsers()
+    this.getMonths()
+    this.loadMeetings().then(data => {
+      this.renderEvents(this.selectedDate)
+    })
+  }
+}
 </script>
 <style lang="scss" scoped>
 </style>
