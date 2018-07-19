@@ -30,6 +30,11 @@
                 </ckeditor>
                 <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
               </div>
+              <div :class="['form-group', {'has-error': errors.has('urgency')}]">
+                <label for="field-urgency">Важно</label>
+                <el-switch id="field-urgency" v-validate="'required'" name="urgency" v-model="model.urgency"></el-switch>
+                <span v-show="errors.has('urgency')" class="help-block">{{ errors.first('urgency') }}</span>
+              </div>
             </div>
             <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('to')}]">
@@ -41,12 +46,13 @@
                   v-model="selectedUser"
                   :options="usersForSelect"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
               </div>
               <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
-                <label for="field-to">Соисполнители *</label>
+                <label for="field-to">Соисполнители</label>
                 <Multiselect
                   id="field-coExecutives"
                   name="coExecutives"
@@ -57,7 +63,8 @@
                   :clear-on-select="false"
                   :multiple="true"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
               </div>
@@ -77,11 +84,6 @@
               </div>
               <div class="flex align-end column m-center m-align">
                 <div class="select-file">
-                  <div :class="['form-group', {'has-error': errors.has('urgency')}]">
-                    <label for="field-urgency">Важно</label>
-                    <el-switch id="field-urgency" v-validate="'required'" name="urgency" v-model="model.urgency"></el-switch>
-                    <span v-show="errors.has('urgency')" class="help-block">{{ errors.first('urgency') }}</span>
-                  </div>
                   <file-upload
                     class="btn btn-default"
                     :multiple="true"
@@ -91,17 +93,22 @@
                   </file-upload>
                   <ul style="list-style: none; padding: 0;">
                     <li v-for="(file, index) in model.files" :key="index">
+                      <span class="file-remove" @click="removeFile(index)">x</span>
                       <span>{{file.name}}</span> -
                       <span>{{Math.ceil(file.size / 1024)}} КБ</span>
                     </li>
                   </ul>
                 </div>
-                <button type="submit" class="save pad2">Сохранить</button>
+                
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer"></div>
+        <div class="modal-footer">
+          <div class="flex center">
+            <button type="submit" class="save pad2">Сохранить</button>
+          </div>
+        </div>
       </div>
     </div>
   </Modal>
@@ -169,6 +176,9 @@
         let user = this.$_.find(this.$props.users, u => u._id === _id)
         return user ? user : {}
       },
+      removeFile (index) {
+        this.model.files.splice(index, 1)
+      },
       submit () {
         if (!this.model.to) {
           this.errors.items.push({
@@ -189,5 +199,13 @@
 </script>
 
 <style lang="scss" scoped>
-
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
 </style>

@@ -132,13 +132,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .file {
-    padding: 3px;
-    &-remove {
-      color: #ff0000;
-      padding: 0 5px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
   }
+}
 </style>

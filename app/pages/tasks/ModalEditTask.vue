@@ -41,12 +41,13 @@
                   v-model="selectedUser"
                   :options="usersForSelect"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
               </div>
               <div :class="['form-group', {'has-error': errors.has('coExecutives')}]">
-                <label for="field-to">Соисполнители *</label>
+                <label for="field-to">Соисполнители</label>
                 <Multiselect
                   id="field-coExecutives"
                   name="coExecutives"
@@ -57,7 +58,8 @@
                   :clear-on-select="false"
                   :multiple="true"
                   track-by="name"
-                  label="name">
+                  label="name"
+                  placeholder="Выберите">
                 </Multiselect>
                 <span v-show="errors.has('coExecutives')" class="help-block">{{ errors.first('coExecutives') }}</span>
               </div>
@@ -90,17 +92,25 @@
                     Прикрепить файлы
                   </file-upload>
                   <ul style="list-style: none; padding: 0;">
-                    <li v-for="(file, index) in model.files" :key="index">
+                    <li v-for="(file, index) in model.files" :key="index" class="file">
+                      <span class="file-remove" @click="removeFile('files', index)">x</span>
+                      <span>{{file.name}}</span>
+                    </li>
+                    <li v-for="(file, index) in newFiles" :key="index" class="file">
+                      <span class="file-remove" @click="removeFile('newFiles', index)">x</span>
                       <span>{{file.name}}</span>
                     </li>
                   </ul>
                 </div>
-                <button type="submit" class="save pad2">Сохранить</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer"></div>
+        <div class="modal-footer">
+          <div class="flex center">
+            <button type="submit" class="save pad2">Сохранить</button>
+          </div>
+        </div>
       </div>
     </div>
   </Modal>
@@ -139,7 +149,8 @@
           highlighted: {
             dates: [ new Date() ]
           }
-        }
+        },
+        newFiles: []
       }
     },
     computed: {
@@ -186,6 +197,15 @@
         let user = this.$_.find(this.$props.users, u => u._id === _id)
         return user ? user : {}
       },
+      removeFile (target, index) {
+        if (target === 'files') {
+          this.model[target].splice(index, 1)
+        } else if (target === 'newFiles') {
+          this.newFiles.splice(index, 1)
+        } else {
+          return
+        }
+      },
       submit () {
         if (!this.model.to) {
           this.errors.items.push({
@@ -196,6 +216,7 @@
           })
         }
         this.model.coExecutives = this.selectedUsers
+        this.model.newFiles = this.newFiles
         this.$validator.validateAll().then(() => {
           if (!this.$_.size(this.errors.items)) {
             this.$emit('onSubmit', this.model)
@@ -203,10 +224,22 @@
         }).catch(() => {
         })
       }
+    },
+    mounted () {
+      this.newFiles = this.$_.clone(this.model.files)
+      this.model.files = []
     }
   }
 </script>
 
 <style lang="scss" scoped>
-
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
 </style>

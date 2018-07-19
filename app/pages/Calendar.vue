@@ -6,9 +6,9 @@
           <form>
             <span>Выбрать период:</span>
             <select @change="changeView()" v-model="displayPeriodUom">
-                <option value="month">месяц</option>
-                <option value="week">неделя</option>
-                <option value="day">день</option>
+              <option value="month">месяц</option>
+              <option value="week">неделя</option>
+              <option value="day">день</option>
             </select>
           </form>
         </div>
@@ -35,18 +35,18 @@
               </span>
             </div>
             <div class="month-mobile mob-block">
-               <div class="flex align-center">
-                   <a href="#" class="left-arr">
-                       <img src="~assets/img/arr-left.png" @click="prevMonth()">
-                   </a>
-                   <div class="center-arr">
-                       <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
-                       <span>{{ currentYear }}</span>
-                   </div>
-                   <a href="#" class="right-arr">
-                       <img src="~assets/img/arr-right.png" @click="nextMonth()">
-                   </a>
+             <div class="flex align-center">
+               <a href="#" class="left-arr">
+                 <img src="~assets/img/arr-left.png" @click="prevMonth()">
+               </a>
+               <div class="center-arr">
+                 <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
+                 <span>{{ currentYear }}</span>
                </div>
+               <a href="#" class="right-arr">
+                 <img src="~assets/img/arr-right.png" @click="nextMonth()">
+               </a>
+             </div>
            </div>
             <div class="month mob-none">
               <a v-for="(month, index) in getMonths()" :key="`month-${index}`" :class="{'active': month.isCurrent}" @click="changeCurrentMonth(month.index)">
@@ -54,10 +54,29 @@
               </a>
             </div>
           </div>
+          <div v-if="selectedView === 'week'" class="calendar-top">
+            <span class="week_day">
+              <a href="#" class="left-arr" @click="prevWeek()">
+                <img src="~assets/img/arr-left.png">
+              </a>
+              <span>{{$dateFormat(monday, 'd')}} {{$dateFormat(monday, 'mmmm')}} - </span>
+              <span>{{$dateFormat(sunday, 'd')}} {{$dateFormat(sunday, 'mmmm')}}, {{currentYear}}</span>
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextWeek()">
+              </a>
+            </span>
+          </div>
           <div v-if="selectedView === 'day'" class="calendar-top">
             <span class="week_day">
+              <a href="#" class="left-arr" @click="prevDay()">
+                <img src="~assets/img/arr-left.png">
+              </a>
               {{$dateFormat(selectedDate, 'd')}}
-              {{$dateFormat(selectedDate, 'mmmm')}}
+              {{$dateFormat(selectedDate, 'mmmm')}},
+              {{currentYear}}
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextDay()">
+              </a>
             </span>
           </div>
           <div class="days">
@@ -78,10 +97,10 @@
         </div>
       </div>
       <div class="mob-block mob-task">
-          <a v-for="event in dateEvents" :key="event._id" class="mob-task-item green-i" @click="getMeeting(event._id)">
-              <span class="img-span"></span>
-              <span>{{event.name}}</span>
-          </a>
+        <a v-for="event in dateEvents" :key="event._id" class="mob-task-item green-i" @click="getMeeting(event._id)">
+          <span class="img-span"></span>
+          <span>{{event.name}}</span>
+        </a>
       </div>
     </div>
     <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
@@ -116,7 +135,7 @@
     ]
 
     export default {
-      name: 'g-calendar',
+      name: "App",
       components: {
         PageButtons,
         PageTitle,Box,
@@ -132,8 +151,11 @@
           selectedDate: new Date(),
           currentMonth: this.selectedDate || new Date(),//old
           currentYear: (new Date()).getFullYear(),
+          monday: new Date(),
+          sunday: new Date(),
           selectedView: 'month',
           config: {
+            allDaySlot: false,
             weekends: true,
             locale: 'ru',
             defaultView: 'month',
@@ -142,6 +164,7 @@
             selectable: true,
             dayClick: (date, jsEvent, view) => {
               this.selectedDate = date._d
+              // this.currentMonth = date._d
               this.renderEvents(date._d)
             },
             eventClick: (event) => {
@@ -150,6 +173,7 @@
             },
           },
           configMobile: {
+            allDaySlot: false,
             weekends: true,
             locale: 'ru',
             defaultView: 'month',
@@ -160,6 +184,10 @@
               this.selectedDate = date._d
               this.renderEvents(date._d)
             }
+          },
+          eventClick: (event) => {
+            this.getMeeting(event.id)
+            this.message = `You clicked: ${event.title}`
           },
           meetings: [],
           header: {
@@ -273,6 +301,8 @@
             console.log(e)
             return this.notify(e, 'danger')
           })
+          this.getMonday()
+          this.getSunday()
         },
         createMeeting (meeting) {
           // let newDate = new Date(meeting.startDate)

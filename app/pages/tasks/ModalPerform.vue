@@ -1,29 +1,41 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-    <div slot="content" class="modal-dialog small">
+    <div slot="content" class="modal-dialog small2">
       <div class="modal-content">
         <div class="modal-header">
           <div class="list_header">
             <div class="flex">
-              <span>Завершить задачу</span>
+              <div>
+                <span>Завершить задачу</span>
+              </div>
               <div class="buttons">
-                <button class="button-top close" type="button" @click="close"></button>
+                <button type="button" class="button-top close close-add-class" @click="close"></button>
               </div>
             </div>
           </div>
         </div>
         <div class="profile full modal-body">
-          <div class="form-item">
-            <label for="field-comment">Комментарий</label>
-            <textarea id="field-comment" v-model="model.comment"></textarea>
+          <div :class="['form-group']">
+            <label>Комментарий</label>
+            <textarea name="comment" v-model="model.comment"></textarea>
           </div>
-          <div class="form-item">
-            <label class="custom-file-label" for="field-files">Прикрепить файлы</label>
-            <input type="file" multiple id="field-files" lang="ru" @change="addFiles">
+          <div class="select-file">
+            <file-upload
+              class="btn btn-default"
+              :multiple="true"
+              v-model="model.newFiles"
+              ref="upload">
+              Прикрепить файлы
+            </file-upload>
+            <ul style="list-style: none; padding: 0;">
+              <li v-for="(file, index) in model.newFiles" :key="index">
+                <span>{{file.name}}</span> -
+                <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+              </li>
+            </ul>
           </div>
-          <div class="flex flex-end">
-            <button type="button" class="save pad2" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-            <button type="submit" class="save pad2"><i class="fa fa-check"></i>&nbsp;&nbsp;Завершить</button>
+          <div class="flex center">
+            <button class="add-button auto-width form-submit">Отправить</button>
           </div>
         </div>
       </div>
@@ -33,24 +45,30 @@
 
 <script>
   import Modal from '@/Modal'
+  import FileUpload from 'vue-upload-component'
 
   export default {
     components: {
       Modal,
+      FileUpload,
     },
     props: ['model', 'onSubmit', 'onClose'],
+    computed: {
+      setTypeName () {
+        return this.model.type === 'confirm' ? 'Согласовать задачу' : this.model.type === 'reject' ? 'Отклонить задачу на шаг' : 'Отклонить задачу до заявителя'
+      }
+    },
     methods: {
       close () {
         this.$emit('onClose')
       },
       submit () {
         this.$emit('onSubmit', this.model)
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+        // this.$validator.validateAll().then(() => {
+        //   if (!this.$_.size(this.errors.items)) {
 
-        this.$props.model.files = files
+        //   }
+        // }).catch(() => {})
       }
     }
   }

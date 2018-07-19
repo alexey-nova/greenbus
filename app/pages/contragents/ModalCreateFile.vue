@@ -27,6 +27,7 @@
             </file-upload>
             <ul style="list-style: none; padding: 0;">
               <li v-for="(file, index) in files" :key="index">
+                <span class="file-remove" @click="removeFile(index)">x</span>
                 <span>{{file.name}}</span> -
                 <span>{{Math.ceil(file.size / 1024)}} КБ</span>
               </li>
@@ -77,15 +78,22 @@
           console.log('t')
         })
       },
-      addFiles(e){
-        console.log(e)
+      removeFile (index) {
+        this.files.splice(index, 1)
       }
     },
     computed: {}
   }
 </script>
 
-<!-- <style src="vue-multiselect/dist/vue-multiselect.min.css"></style> -->
 <style lang="scss" scoped>
-
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
 </style>

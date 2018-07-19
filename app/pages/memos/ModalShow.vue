@@ -82,21 +82,21 @@
               </div>
               <div class="info-container2" v-if="tabs === 2">
                 <div class="forum-response">
-                    <div class="forum-response-box full">
-                      <p class="forum-name">Оставить комментарий</p>
-                      <div class="forum-textarea">
-                        <textarea placeholder="Введите текст" v-model="comment"></textarea>
-                      </div>
-                      <div class="flex flex-end forum-button">
-                        <button :disabled="!comment.trim()" class="add-button auto-width" @click="sendComment()">Отправить</button>
-                      </div>
+                  <div class="forum-response-box full">
+                    <p class="forum-name">Оставить комментарий</p>
+                    <div class="forum-textarea">
+                      <textarea placeholder="Введите текст" v-model="comment"></textarea>
+                    </div>
+                    <div class="flex flex-end forum-button">
+                      <button :disabled="!comment.trim()" class="add-button auto-width" @click="sendComment()">Отправить</button>
                     </div>
                   </div>
-                  <div class="forum-box fixed">
-                    <div class="forum-info">
-                      <c-messages :main="true" :comments="groupedComments" @onSubmit="loadComments()"></c-messages>
-                    </div>
+                </div>
+                <div class="forum-box fixed">
+                  <div class="forum-info">
+                    <c-messages :main="true" :comments="groupedComments" @onSubmit="loadComments()"></c-messages>
                   </div>
+                </div>
               </div>
             </div>
           </div>
@@ -289,7 +289,7 @@ export default {
       } catch (e) {
         console.log('dead', e)
       }
-      
+
     },
     nextWorkDay(date, weekends = [0, 6]) {
       const tempDate = new Date(date)

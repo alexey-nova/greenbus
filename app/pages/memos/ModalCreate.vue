@@ -54,7 +54,7 @@
                   <input id="field-name" v-validate="'required'" name="name" v-model="model.name" />
                   <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
                 </div>
-                <div class="select-file">
+                <div class="select-file form-group">
                   <file-upload
                     class="btn btn-default"
                     :multiple="true"
@@ -64,6 +64,7 @@
                   </file-upload>
                   <ul style="list-style: none; padding: 0;">
                     <li v-for="(file, index) in model.files" :key="index">
+                      <span class="file-remove" @click="removeFile(index)">x</span>
                       <span>{{file.name}}</span> -
                       <span>{{Math.ceil(file.size / 1024)}} КБ</span>
                     </li>
@@ -139,6 +140,9 @@ export default {
 
       this.$props.model.files = files
     },
+    removeFile (index) {
+      this.model.files.splice(index, 1)
+    },
     loadCategories () {
       this.$api('get', 'bids/categories').then(response => {
         this.categories = response.data.categories
@@ -172,5 +176,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
 </style>

@@ -81,7 +81,7 @@
       </div>
     </div>
 		<ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalEdit :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
+    <ModalEdit v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
     <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
@@ -228,6 +228,7 @@
         })
       },
       performTask (task) {
+        task.files = task.newFiles && task.newFiles.map(f => f.file)
         let data = this.$createFormData(task)
         this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
           this.modal.show = false
@@ -239,6 +240,7 @@
         })
       },
       confirmTask (model) {
+        model.files = model.newFiles && model.newFiles.map(f => f.file)
         let formData = this.$createFormData(model)
         this.$api('post', 'tasks/confirm/' + model._id, formData).then(response => {
           this.modal.show = false
@@ -249,9 +251,10 @@
           this.$log(e, 'danger')
         })
       },
-      rejectTask (data) {
-        let formData = this.$createFormData(data)
-        this.$api('post', 'tasks/reject/' + data._id, formData).then(response => {
+      rejectTask (model) {
+        model.files = model.newFiles && model.newFiles.map(f => f.file)
+        let formData = this.$createFormData(model)
+        this.$api('post', 'tasks/reject/' + model._id, formData).then(response => {
           this.modal.show = false
           this.loadTasks()
           this.notify(response.data.message)
@@ -263,7 +266,7 @@
       loadTasks () {
         let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
 				this.tasks = []
-				
+
         return this.$api('get', 'tasks' + filter).then(response => {
           return this.tasks = response.data.tasks
         }).catch(e => {

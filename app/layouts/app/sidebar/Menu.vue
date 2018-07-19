@@ -8,7 +8,7 @@
       <Tree :item="item"></Tree>
 
       <router-link v-if="!item.children" :to="item.link">
-        <img :src="require(`assets/img/${item.imgSrc}`)"> <span>{{item.name}}</span>
+        <img :src="require(`assets/img/${item.imgSrc}`)"> <span :class="{'active-span': item.isActive()}">{{item.name}}</span>
       </router-link>
     </li>
   </ul>
