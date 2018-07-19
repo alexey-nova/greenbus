@@ -45,6 +45,7 @@
               <div :class="['form-group input-exc', {'has-error': errors.has('position')}]">
                 <label for="field-position">Должность</label>
                 <Multiselect
+                  placeholder="Выберите должность"
                   id="field-position"
                   name="position"
                   v-validate="'required'"
