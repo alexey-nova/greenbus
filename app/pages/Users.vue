@@ -48,7 +48,7 @@
             <template slot="actions" slot-scope="row">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(row.item))"></button>
               <button class="button-table remove" @click="toggleModal('deleteUser', row.item) "></button>
-              <button class="button-table add" @click="toggleModal('createTask')"></button>
+              <button class="button-table add" @click="toggleModal('createTask', { urgency: false, to: row.item._id })"></button>
             </template>
           </b-table>
           <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
