@@ -185,6 +185,7 @@
             sunday: new Date(),
             selectedView: 'month',
             config: {
+              slotLabelFormat: "HH:mm",
               allDaySlot: false,
               weekends: true,
               locale: 'ru',
