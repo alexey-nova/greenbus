@@ -19,43 +19,23 @@
               </div>
             </div>
             <div class="categories-block" id="categories-id-1">
-							<div class="add" v-if="$auth().hasRole('admin')">
+							<div class="add margin-t2" v-if="$auth().hasRole('admin')">
 								<button v-if="activeCategory" class="add-button" @click="toggleModal('createTemplate', { category: activeCategory })"><img src="~assets/img/add.png">Добавить шаблон</button>
 							</div>
-              <!-- <div class="margin2-helper">
+              <div class="margin-helper margin2-helper margin-t2">
                 <div class="white-menu-box">
-                  <a class="categories-item order" v-for="template in templates" :key="template._id">
+                  <div class="categories-item" v-if="templates" v-for="template in templates" :key="template._id">
                     <div class="flex flex-start" @click="toggleModal('showTemplate', template)">
                       <div class="categories-item-img"></div>
                       <div class="categories-item-text">
-                        <span>{{template.name}}</span>
-                      </div>
-                    </div>
-                    <div class="folder-buttons">
-                      <button type="button" class="button-table" @click="">...</button>
-                      <button type="button" class="button-table edit" @click=""></button>
-                    </div>
-                     <button class="button-table remove" @click="removeTemplate(template._id)"></button>
-                  </a>
-                </div>
-              </div> -->
-              <div class="">
-                <div class="white-menu-box">
-                  <a class="fol-box templates-item" v-if="templates" v-for="template in templates" :key="template._id">
-                    <div class="folder-border" @click="toggleModal('showTemplate', template)">
-                      <div class="folder-img sm-img">
-                        <img src="~assets/img/file.png" class="block">
-                        <img src="~assets/img/file-h.png" class="none">
-                      </div>
-                      <div class="folder-text">
                         <span>{{ template.name }}</span>
                       </div>
                     </div>
-                    <div class="folder-buttons">
-                      <button type="button" class="button-table remove" @click="toggleModal('deleteTemplate', template)"></button>
+                    <div class="template-buttons">
+                      <button type="button" class="button-table remove" @click="toggleModal('deleteTemplate', template)" style="top: -0.1em"></button>
                       <button type="button" class="button-table edit" @click="toggleModal('editTemplate', $_.clone(template))"></button>
                     </div>
-                  </a>
+                  </div>
                 </div>
               </div>
             </div>
