@@ -150,6 +150,10 @@
                       </span>
                       <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
                     </div>
+                    <span class="title" v-if="!(m._id === $auth().user._id && !model.participants[index].answer)">
+                      {{statuses[model.participants[index].answer]}}
+                    </span>
+                    <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
                   </div>
                 </div>
               </div>

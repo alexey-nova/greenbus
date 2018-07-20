@@ -103,8 +103,8 @@
         </a>
       </div>
     </div>
-    <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
+    <ModalCreate :model="modal.create" :users="users" :positions="positions" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalCreate :model="modal.edit" :users="users" :positions="positions" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
   </div>
 </template>
 
@@ -146,6 +146,7 @@ export default {
   },
   data() {
     return {
+      positions: [],
       dateEvents: [],
       tasks: [],
       selectedDate: new Date(),
@@ -185,10 +186,6 @@ export default {
           this.selectedDate = date._d
           this.renderEvents(date._d)
         }
-      },
-      eventClick: (event) => {
-        this.getMeeting(event.id)
-        this.message = `You clicked: ${event.title}`
       },
       meetings: [],
       header: {

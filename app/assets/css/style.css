@@ -249,7 +249,7 @@ header{
 .hidden-zapis li{
     padding-left: 0.5em;
 }
-.list li a:hover, .list li a.active{
+.list li a:hover, .list li a.active, .list li a.router-link-exact-active{
     color: #1b8442;
 }
 

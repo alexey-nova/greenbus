@@ -1,6 +1,6 @@
 <template>
     <Modal :isOpen="model" @onSubmit="submit">
-      <div slot="content" class="modal-dialog">
+      <div slot="content" class="modal-dialog small2">
         <div class="modal-content">
           <div class="modal-header">
             <div class="list_header">
@@ -13,10 +13,8 @@
             </div>
           </div>
           <div class="profile full modal-body">
-            <div class="flex column">
-              <div class="form-item">
-                Вы действительно хотите удалить эту встречу?
-              </div>
+            <div class="form-group">
+              Вы действительно хотите удалить эту встречу?
             </div>
             <div class="flex flex-end m-center">
               <button type="button" class="save pad2" data-dismiss="modal" @click="close">Отмена</button>
