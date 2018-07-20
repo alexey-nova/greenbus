@@ -495,9 +495,15 @@ export default {
         this.selectedView = 'day'
         this.$refs.calendar.fireMethod('changeView', 'agendaDay', this.selectedDate)
       }
-    }
+    },
+    loadPositions() {
+      return this.$api('get', 'positions?all=true').then(response => {
+        this.positions = response.data.positions
+      })
+    },
   },
   mounted () {
+    this.loadPositions()
     this.showMeetingFromQuery()
     this.loadUsers()
     this.getMonths()

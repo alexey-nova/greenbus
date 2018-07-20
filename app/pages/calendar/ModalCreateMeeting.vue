@@ -129,26 +129,18 @@
                 </div>
               </div>
             </div>
-              <div>
-                <label>Участники встречи:</label>
-                <div v-if="type !== 'create'" v-for="(m, index) in selectedUsers" class="row user" :key="index">
-                  <span>{{getUser(m._id).fullname}}</span>
-                  <span> </span>
-                  <!-- <div class="col-md-8">
-                    <div class="to">
-                      <strong>{{getUser(m._id).fullname}}</strong> <span v-if="getUser(m._id).position">({{getUser(m._id).position}})</span>
-                    </div>
-                  </div> -->
-                  <div class="col-md-4">
-                    <div class="to-status">
-                      <div v-if="m._id === $auth().user._id && !model.participants[index].answer" class="horizontal">
-                        <button class="btn btn-sm btn-success" type="button" @click="toggleModal('confirmed', model)">Согласовать</button>
-                        <button class="btn btn-sm btn-danger" type="button" @click="toggleModal('reject', model)">Отклонить</button>
-                      </div>
-                      <span class="title" v-if="!(m._id === $auth().user._id && !model.participants[index].answer)">
-                        {{statuses[model.participants[index].answer]}}
-                      </span>
-                      <span class="date" v-if="model.participants[index].answer">{{$dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM')}}</span>
+            <div class="form-group" v-if="type !== 'create'">
+              <div class="flex column" v-for="(m, index) in selectedUsers" :key="index">
+                <div class="form-item">
+                  <div class="to">
+                    <strong>{{getUser(m._id).fullname}}</strong> <span v-if="getUser(m._id).position">({{getPositionName(getUser(m._id).position)}})</span>
+                  </div>
+                </div>
+                <div class="form-item">
+                  <div class="to-status">
+                    <div v-if="m._id === $auth().user._id && !model.participants[index].answer" class="horizontal">
+                      <button class="save pad2 btn-success" type="button" @click="toggleModal('confirmed', model)">Согласовать</button>
+                      <button class="save pad2 btn-danger" type="button" @click="toggleModal('reject', model)">Отклонить</button>
                     </div>
                     <span class="title" v-if="!(m._id === $auth().user._id && !model.participants[index].answer)">
                       {{statuses[model.participants[index].answer]}}
@@ -157,6 +149,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             <div class="flex flex-end m-center">
                 <span v-if="isAnswered">
                   <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="save pad2" data-dismiss="modal" @click="toggleModal('confirmed', {id:model._id})">Согласовать</button>
@@ -237,7 +230,7 @@ export default {
       }
     }
   },
-  props: ['model', 'users', 'type', 'onSubmit', 'onClose'],
+  props: ['model', 'users', 'type', 'onSubmit', 'onClose', 'positions'],
   computed: {
     isAnswered () {
       return !this.$_.find(this.model.participants, ['user', this.$auth().user._id])
@@ -345,6 +338,10 @@ export default {
       this.model.endDate = new Date(endDate)
 
       this.submit()
+    },
+    getPositionName (id) {
+      const position = this.positions.find(p => p._id === id)
+      return position && position.name
     }
   }
 }
