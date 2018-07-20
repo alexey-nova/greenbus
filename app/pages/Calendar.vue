@@ -188,11 +188,6 @@ export default {
         }
       },
       meetings: [],
-      header: {
-        left: '',
-        center: '',
-        right: ''
-      },
       modal: {
         create: false,
         edit: false,
@@ -334,17 +329,6 @@ export default {
       const t = new Date()
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
-    onClickDay(d) {
-      this.message = `You clicked: ${d.toLocaleDateString()}`
-    },
-    onClickEvent(e) {
-      this.getMeeting(e.id)
-      this.message = `You clicked: ${e.title}`
-    },
-    setShowDate(d) {
-      this.message = `Changing calendar view to ${d.toLocaleDateString()}`
-      this.showDate = d
-    },
     onDrop(event, date) {
       this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
       const fixedStartDate = CalendarMathMixin.methods.toLocalDate(event.startDate)
@@ -484,10 +468,55 @@ export default {
       this.selectedDate = new Date(this.currentYear, this.selectedDate.getMonth(), 1)
       this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
     },
+    getMonday () {
+      var date = new Date(this.selectedDate)
+      var diff = this.selectedDate.getDay() - 1
+      date.setDate(date.getDate() - diff)
+      this.monday = date
+    },
+    getSunday () {
+      var date = new Date(this.selectedDate)
+      var diff = 7 - this.selectedDate.getDay()
+      date.setDate(date.getDate() + diff)
+      this.sunday = date
+    },
+    nextWeek () {
+      var date = this.selectedDate
+      date.setDate(date.getDate() + 7)
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+      this.getMonday()
+      this.getSunday()
+      this.updateCurrentYear()
+    },
+    prevWeek () {
+      var date = this.selectedDate
+      date.setDate(date.getDate() - 7)
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+      this.getMonday()
+      this.getSunday()
+      this.updateCurrentYear()
+    },
+    prevDay () {
+      var date = this.selectedDate
+      this.selectedDate = new Date(date.setDate(date.getDate() - 1))
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+      this.updateCurrentYear()
+    },
+    nextDay () {
+      var date = this.selectedDate
+      this.selectedDate = new Date(date.setDate(date.getDate() + 1))
+      this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
+      this.updateCurrentYear()
+    },
+    updateCurrentYear () {
+      this.currentYear = this.selectedDate.getFullYear()
+    },
     changeView () {
       if (this.displayPeriodUom === 'week') {
         this.selectedView = 'week'
-        this.$refs.calendar.fireMethod('changeView', 'basicWeek')
+        this.$refs.calendar.fireMethod('changeView', 'basicWeek', this.selectedDate)
+        this.getMonday()
+        this.getSunday()
       } else if (this.displayPeriodUom === 'month') {
         this.selectedView = 'month'
         this.$refs.calendar.fireMethod('changeView', 'month')
@@ -510,6 +539,8 @@ export default {
     this.loadMeetings().then(data => {
       this.renderEvents(this.selectedDate)
     })
+    this.getMonday()
+    this.getSunday()
   }
 }
 </script>
