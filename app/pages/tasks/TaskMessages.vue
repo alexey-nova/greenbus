@@ -14,11 +14,15 @@
             <a :href="$config('app.fileUrl') + file.path" target="_blank" :class="['info-button clicked left-margin']"><img src="~assets/img/2.png">{{file.name}}</a>
           </div>
         </div>
+        <div v-if="$auth().user._id === from && status === 1 && (com && com.taskId && !com.status)" class="flex flex-end">
+          <button type="button" class="save pad2 btn-danger" data-dismiss="modal" @click="$emit('onReject', { _id: com._id })">Отказать</button>
+          <button type="button" class="save pad2" data-dismiss="modal" @click="$emit('onConfirm', { _id: com._id })">Согласовать</button>
+        </div>
         <div class="forum-response">
           <div v-if="com.replies && com.replies[0]" class="forum-response-box">
           <div class="forum-title flex">
             <p class="forum-name">{{getUser(from).fullname}}</p>
-            <p class="forum-date">{{$dateFormat(com.replies[0].createdAt, 'dd mmm yyyy, HH:MM')}}</p>
+            <p class="forum-date">{{$dateFormat(com.replies[0].createdAt, 'dd mmm yyyy, HH:mm')}}</p>
           </div>
           <div v-if="com.replies[0].comment" class="forum-text">
             <span>{{com.replies[0].comment}}</span>
@@ -86,7 +90,8 @@ export default {
       type: Boolean
     },
     getUser: Function,
-    from: String
+    from: String,
+    status: Number
   },
   methods: {
     commentType (type) {

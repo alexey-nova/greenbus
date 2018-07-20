@@ -320,6 +320,13 @@
         this.showTaskFromQuery()
       }
     },
+    sockets: {
+      notification: function (val) {
+        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+          this.loadTasks()
+        }
+      },
+    }
   }
 </script>
 

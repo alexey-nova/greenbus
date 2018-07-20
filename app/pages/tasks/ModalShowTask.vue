@@ -95,7 +95,7 @@
                 </div>
               </div>
               <div class="forum-box fixed">
-                <task-messages :main="true" :from="model.from"  :comments="groupedComments" :getUser="getUser" @onSubmit="loadTask"></task-messages>
+                <task-messages :main="true" :from="model.from" :status="model.status"  :comments="groupedComments" :getUser="getUser" @onSubmit="loadTask" @onConfirm="toggleModal('confirmTask', $event)" @onReject="toggleModal('rejectTask', $event)"></task-messages>
                 <div v-if="model.status !== 1">
                   <strong>{{statuses[model.status].toUpperCase()}}</strong>
                 </div>
@@ -116,8 +116,8 @@
   </Modal>
 
   <ModalPerform v-if="modal.performTask" :model="modal.performTask" @onSubmit="performTask" @onClose="toggleModal('performTask')"></ModalPerform>
-  <ModalReject :model="modal.rejectTask" @onSubmit="rejectTask" @onClose="toggleModal('rejectTask')"></ModalReject>
-  <ModalConfirm :model="modal.confirmTask" @onSubmit="confirmTask" @onClose="toggleModal('confirmTask')"></ModalConfirm>
+  <ModalReject v-if="modal.rejectTask" :model="modal.rejectTask" @onSubmit="rejectTask" @onClose="toggleModal('rejectTask')"></ModalReject>
+  <ModalConfirm v-if="modal.confirmTask" :model="modal.confirmTask" @onSubmit="confirmTask" @onClose="toggleModal('confirmTask')"></ModalConfirm>
 
 </div>
 </template>

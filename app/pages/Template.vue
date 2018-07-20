@@ -114,16 +114,17 @@ export default {
       })
 		},
     editTemplate (data) {
-      console.log(data)
-      this.modal.editTemplate = false
+      this.$api('put', `bids/templates/${data._id}`).then(response => {
+        this.modal.editTemplate = false
+        this.loadTemplates(this.activeCategory)
+      })
 		},
     deleteTemplate (data) {
-      console.log(data)
-      this.modal.deleteTemplate = false
-		},
-    // removeTemplate (_id) {
-
-    // }
+      this.$api('delete', `bids/templates/${data._id}`).then(response => {
+        this.templates = this.templates.filter(item => item._id !== data._id)
+        this.modal.deleteTemplate = false
+      })
+		}
   },
   mounted () {
     this.getCategories()

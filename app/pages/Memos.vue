@@ -217,11 +217,11 @@ export default {
         this.$log(e, 'danger')
       })
     },
-    
+
     isCreator (model) {
       return this.$auth().user._id === model.createdBy && model.currentUser === 0
     },
-    
+
     deleteBid (data) {
       this.$api('delete', `bids/${data._id}`).then(response => {
         this.modal.delete = false
@@ -298,12 +298,11 @@ export default {
         this.loadBids()
       }
     },
-  },
+  }
 }
 </script>
 
 <style lang="scss">
-
-  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
-  .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
+.table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
+.table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 </style>

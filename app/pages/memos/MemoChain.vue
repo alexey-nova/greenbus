@@ -1,6 +1,6 @@
 <template>
   <div class="stage2">
-    <a :class="['stage2-item', setOrderClass(chainItem, index)]" v-for="(chainItem, index) in modifiedBidOrder" :key="chainItem._id">
+    <a v-if="splice(index)" :class="['stage2-item', setOrderClass(chainItem, index)]" v-for="(chainItem, index) in modifiedBidOrder" :key="chainItem._id">
       <img :src="avatar(chainItem.user._id) || require(`assets/img/user.jpg`)">
       <div class="absolut-box">
         <div :class="['stage-flex flex', setOrderClass(chainItem, index)]">
@@ -42,6 +42,7 @@ export default {
     type: String
   },
   computed: {
+
     modifiedBidOrder () {
       if (this.type === 'create') return this.order
       return this.model.order.reduce((newArray, item, i) => {
@@ -67,6 +68,10 @@ export default {
     },
   },
   methods: {
+    splice (index) {
+      if (this.type === 'create') { return true }
+      return ( index !== 0 )
+    },
     posName (positionId) {
       return (this.positions.find(item => item._id === positionId) || {}).name
     },
