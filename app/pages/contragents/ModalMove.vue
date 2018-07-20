@@ -18,7 +18,7 @@
           <div :class="['form-group', {'has-error': errors.has('name')}]">
             <label for="field-name">Выберите папку для перемещения *</label>
             <select name="dest" v-model="model.dest">
-              <option v-for="folder in folders" :value="folder._id">{{ folder.finalStr }}</option>
+              <option v-for="(folder, index) in folders" :value="folder._id" :key="`folder-${index}`">{{ folder.finalStr }}</option>
             </select>
           </div>
           <div class="flex center">

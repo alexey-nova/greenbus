@@ -30,7 +30,7 @@
                       <div :class="['', {'has-error': errors.has('department')}]">
                         <label for="field-department">Отдел *</label>
                         <select id="field-department" class="form-control" :readonly="!$auth().user.admin" v-validate="'required'" name="department" v-model="model.department" disabled>
-                          <option v-for="dep in departments" :value="dep.value">{{dep.text}}</option>
+                          <option v-for="dep in departments" :key="dep._id" :value="dep.value">{{dep.text}}</option>
                         </select>
                         <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
                       </div>

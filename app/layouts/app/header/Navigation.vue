@@ -100,8 +100,7 @@ export default {
   },
   computed: {
     count () {
-      this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount']
-      return this.unreadMessagesCount
+      return (this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount'])
     }
   },
   methods: {
