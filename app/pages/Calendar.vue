@@ -133,8 +133,8 @@
         </a>
       </div>
     </div>
-    <ModalCreate :model="modal.create" :users="users" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalCreate :model="modal.edit" :users="users" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
+    <ModalCreate :model="modal.create" :users="users" :positions="positions" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalCreate :model="modal.edit" :users="users" :positions="positions" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
   </div>
 </template>
 
@@ -176,6 +176,7 @@
         },
         data() {
 					return {
+            positions: [],
             dateEvents: [],
             tasks: [],
             selectedDate: new Date(),
@@ -313,6 +314,7 @@
           }
         },
         mounted () {
+          this.loadPositions()
 					this.showMeetingFromQuery()
 					this.loadUsers()
           this.getMonths()
@@ -334,6 +336,11 @@
 							return this.notify(e, 'danger')
 						})
 					},
+          loadPositions() {
+            return this.$api('get', 'positions?all=true').then(response => {
+              this.positions = response.data.positions
+            })
+          },
 					createMeeting (meeting) {
 						let newDate = new Date(meeting.startDate)
 						let endDate = new Date(meeting.startDate)
