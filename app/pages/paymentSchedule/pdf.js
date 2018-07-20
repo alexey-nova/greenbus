@@ -4,7 +4,7 @@ export default {
     let content = [
       { image: logo, margin: [150, 10, 0, 0] },
       { text: '', margin: [0, 20] },
-      { table: { widths: ['*'], headerRows: 1, body: [[''],['']] }, layout: 'headerLineOnly' },
+      { table: { widths: ['*'], headerRows: 1, body: [[''], ['']] }, layout: 'headerLineOnly' },
       {
         table: {
           widths: [10, '*', 10],
@@ -16,12 +16,12 @@ export default {
                 text: 'ПЛАТЕЖНЫЙ КАЛЕНДАРЬ №' + model.id,
                 margin: [0, 20],
                 style: {
-                  fontSize: 18,
+                  fontSize: 18
                 },
                 alignment: 'center'
               },
               ''
-            ],
+            ]
           ]
         },
         layout: 'headerLineOnly'
@@ -42,7 +42,7 @@ export default {
               {
                 text: model.provider,
                 style: 'tr'
-              },
+              }
             ],
             [
               {
@@ -52,7 +52,7 @@ export default {
               {
                 text: model.contractNo,
                 style: 'tr'
-              },
+              }
             ],
             [
               {
@@ -62,7 +62,7 @@ export default {
               {
                 text: model.comment,
                 style: 'tr'
-              },
+              }
             ],
             [
               {
@@ -72,7 +72,7 @@ export default {
               {
                 text: model.totalAmount,
                 style: 'tr'
-              },
+              }
             ],
             [
               {
@@ -82,17 +82,13 @@ export default {
               {
                 text: model.prepayment,
                 style: 'tr'
-              },
-            ],
+              }
+            ]
           ]
         },
         layout: 'headerLineOnly'
-      },
+      }
     ]
-
-
-
-
 
     let u = _.map(model.to, m => {
       let date = m.answer !== 'undefined' ? ' ' + $dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM') : ''
@@ -161,17 +157,16 @@ export default {
                   [
                     {text: 'Дата:', style: 'trHeader2'},
                     {text: $dateFormat(model.createdAt, 'd mmm yyyy, hh:MM'), style: 'tr'}
-                  ],
+                  ]
                 ]
               },
               layout: 'noBorders'
             }, '', ''
-          ],
+          ]
         ]
       },
       layout: 'headerLineOnly'
     }
-
 
     let text = {
       table: {
@@ -184,8 +179,8 @@ export default {
               text: '',
               margin: [0, 10, 0, 30],
               style: 'tr'
-            },
-          ],
+            }
+          ]
         ]
       },
       layout: 'headerLineOnly'
@@ -206,7 +201,7 @@ export default {
               style: 'tr'
             },
             ''
-          ],
+          ]
         ]
       },
       layout: 'noBorders'
@@ -220,20 +215,20 @@ export default {
       trHeader: {
         fontSize: 10,
         margin: [0, 15, 0, 5],
-        bold: true,
+        bold: true
       },
       trHeader2: {
         fontSize: 10,
-        bold: true,
+        bold: true
       },
       trHeader3: {
         fontSize: 10,
         margin: [0, 5, 0, 0],
-        bold: true,
+        bold: true
       },
       tr: {
         fontSize: 10,
-        margin: [0, 0, 0, 5],
+        margin: [0, 0, 0, 5]
       }
     }
 

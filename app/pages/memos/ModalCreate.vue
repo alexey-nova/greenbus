@@ -118,7 +118,7 @@ export default {
       categories: [],
       activeCategory: null,
       templates: [],
-      step: 0,
+      step: 0
     }
   },
   methods: {

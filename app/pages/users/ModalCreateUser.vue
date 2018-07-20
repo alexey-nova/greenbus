@@ -74,65 +74,65 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
-  import Multiselect from 'vue-multiselect'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
+import Multiselect from 'vue-multiselect'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
-      Multiselect
-    },
-    props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels', 'positions'],
-    data () {
-      return {
-        filteredOtdels: [],
-        filteredPositions: []
-      }
-    },
-    methods: {
-      setVal (val) {
-        this.model.department = val[val.length - 1]
-        this.filteredPositions = this.positions.filter(item => item.department._id === this.model.department)
-        this.model.deptHierarchy = val
-      },
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        // this.model.department = this.model.department && this.model.department._id
-        // this.model.otdel = this.model.otdel && this.model.otdel._id
-        this.model.position = this.model.position && this.model.position._id
-        this.$validator.validateAll().then(() => {
-          if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
-            this.errors.items.push({
-              field: 'login',
-              scope: null,
-              msg: 'Пользователь с таким логином уже существует',
-            })
-          } else if (!this.errors.has('login')) {
-            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'login')
-          }
-          if (this.$_.find(this.$props.users, u => u.email === this.$props.model.email)) {
-            this.errors.items.push({
-              field: 'email',
-              scope: null,
-              msg: 'Пользователь с такой почтой уже существует',
-            })
-          } else if (!this.errors.has('login')) {
-            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'email')
-          }
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {
-        })
-      },
-    },
-    mounted () {
+export default {
+  components: {
+    Modal,
+    MaskedInput,
+    Multiselect
+  },
+  props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels', 'positions'],
+  data () {
+    return {
+      filteredOtdels: [],
+      filteredPositions: []
     }
+  },
+  methods: {
+    setVal (val) {
+      this.model.department = val[val.length - 1]
+      this.filteredPositions = this.positions.filter(item => item.department._id === this.model.department)
+      this.model.deptHierarchy = val
+    },
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      // this.model.department = this.model.department && this.model.department._id
+      // this.model.otdel = this.model.otdel && this.model.otdel._id
+      this.model.position = this.model.position && this.model.position._id
+      this.$validator.validateAll().then(() => {
+        if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
+          this.errors.items.push({
+            field: 'login',
+            scope: null,
+            msg: 'Пользователь с таким логином уже существует'
+          })
+        } else if (!this.errors.has('login')) {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'login')
+        }
+        if (this.$_.find(this.$props.users, u => u.email === this.$props.model.email)) {
+          this.errors.items.push({
+            field: 'email',
+            scope: null,
+            msg: 'Пользователь с такой почтой уже существует'
+          })
+        } else if (!this.errors.has('login')) {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'email')
+        }
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {
+      })
+    }
+  },
+  mounted () {
   }
+}
 </script>
 
 <style scoped>

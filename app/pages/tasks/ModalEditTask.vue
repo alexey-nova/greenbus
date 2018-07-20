@@ -117,119 +117,119 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import Multiselect from 'vue-multiselect'
-  import FileUpload from 'vue-upload-component'
-  import Ckeditor from 'vue-ckeditor2'
+import Modal from '@/Modal'
+import Datepicker from 'vuejs-datepicker'
+import { Switch } from 'element-ui'
+import Multiselect from 'vue-multiselect'
+import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
-  export default {
-    components: {
-      Modal,
-      Datepicker,
-      'el-switch': Switch,
-      Multiselect,
-      FileUpload,
-      Ckeditor
-    },
-    props: ['model', 'users', 'onSubmit', 'onClose'],
-    data () {
-      return {
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
-        },
-        datepickerState: {
-          disabled: {
-            to: new Date((new Date()).setDate((new Date()).getDate() - 1))
-          },
-          highlighted: {
-            dates: [ new Date() ]
-          }
-        },
-        newFiles: []
-      }
-    },
-    computed: {
-      usersForSelect () {
-        return this.$_.map(this.$props.users, u => {
-          return {name: u.fullname, _id: u._id}
-        })
+export default {
+  components: {
+    Modal,
+    Datepicker,
+    'el-switch': Switch,
+    Multiselect,
+    FileUpload,
+    Ckeditor
+  },
+  props: ['model', 'users', 'onSubmit', 'onClose'],
+  data () {
+    return {
+      ckEditorConfig: {
+        toolbar: [
+          [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+        ],
+        height: 150
       },
-      selectedUser: {
-        get: function () {
-          if (this.$props.model.to) return { name: this.getUser(this.$props.model.to.user).fullname, _id: this.$props.model.to}
-          return {}
+      datepickerState: {
+        disabled: {
+          to: new Date((new Date()).setDate((new Date()).getDate() - 1))
         },
-        set: function (newValue) {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
-          this.$props.model.to = newValue ? newValue._id : ''
+        highlighted: {
+          dates: [ new Date() ]
         }
       },
-      selectedUsers: {
-        get: function () {
-          if (this.$_.size(this.$props.model.coExecutives) > 10) {
-            this.errors.items.push({
-              field: 'participants',
-              scope: null,
-              msg: 'Допустимо не больше 10 участников',
-            })
-          }
-          return this.$_.map(this.$props.model.coExecutives, m => {
-            return (m && m.user) ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
-          })
-        },
-        set: function (newValue) {
-          this.$props.model.coExecutives = this.$_.map(newValue, m => {
-            return {_id: m._id, user: m._id, name: this.getUser(m._id).fullname}
-          })
-        }
-      }
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      removeFile (target, index) {
-        if (target === 'files') {
-          this.model[target].splice(index, 1)
-        } else if (target === 'newFiles') {
-          this.newFiles.splice(index, 1)
-        } else {
-          return
-        }
-      },
-      submit () {
-        if (!this.model.to) {
-          this.errors.items.push({
-            id: '100',
-            field: 'to',
-            scope: null,
-            msg: 'Поле Кому обязательно для заполнения',
-          })
-        }
-        this.model.coExecutives = this.selectedUsers
-        this.model.newFiles = this.newFiles
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {
-        })
-      }
-    },
-    mounted () {
-      this.newFiles = this.$_.clone(this.model.files)
-      this.model.files = []
+      newFiles: []
     }
+  },
+  computed: {
+    usersForSelect () {
+      return this.$_.map(this.$props.users, u => {
+        return {name: u.fullname, _id: u._id}
+      })
+    },
+    selectedUser: {
+      get: function () {
+        if (this.$props.model.to) return { name: this.getUser(this.$props.model.to.user).fullname, _id: this.$props.model.to}
+        return {}
+      },
+      set: function (newValue) {
+        this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
+        this.$props.model.to = newValue ? newValue._id : ''
+      }
+    },
+    selectedUsers: {
+      get: function () {
+        if (this.$_.size(this.$props.model.coExecutives) > 10) {
+          this.errors.items.push({
+            field: 'participants',
+            scope: null,
+            msg: 'Допустимо не больше 10 участников'
+          })
+        }
+        return this.$_.map(this.$props.model.coExecutives, m => {
+          return (m && m.user) ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
+        })
+      },
+      set: function (newValue) {
+        this.$props.model.coExecutives = this.$_.map(newValue, m => {
+          return {_id: m._id, user: m._id, name: this.getUser(m._id).fullname}
+        })
+      }
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    getUser (_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id)
+      return user || {}
+    },
+    removeFile (target, index) {
+      if (target === 'files') {
+        this.model[target].splice(index, 1)
+      } else if (target === 'newFiles') {
+        this.newFiles.splice(index, 1)
+      } else {
+
+      }
+    },
+    submit () {
+      if (!this.model.to) {
+        this.errors.items.push({
+          id: '100',
+          field: 'to',
+          scope: null,
+          msg: 'Поле Кому обязательно для заполнения'
+        })
+      }
+      this.model.coExecutives = this.selectedUsers
+      this.model.newFiles = this.newFiles
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {
+      })
+    }
+  },
+  mounted () {
+    this.newFiles = this.$_.clone(this.model.files)
+    this.model.files = []
   }
+}
 </script>
 
 <style lang="scss" scoped>

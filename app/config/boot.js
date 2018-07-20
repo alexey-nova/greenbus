@@ -1,4 +1,3 @@
-
 import app from './../plugins/app'
 import auth from './../plugins/auth'
 import seo from './../plugins/seo'
@@ -9,6 +8,6 @@ export default {
     app,
     auth,
     seo,
-    translate,
+    translate
   }
 }

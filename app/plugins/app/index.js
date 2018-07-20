@@ -4,5 +4,5 @@ import plugin from './plugin'
 
 export default {
   // store,
-  plugin,
+  plugin
 }

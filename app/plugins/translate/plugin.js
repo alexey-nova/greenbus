@@ -14,7 +14,6 @@ export default {
     }).catch(e => {
       core.$log(e)
     })
-
   },
-  mixin: {},
+  mixin: {}
 }

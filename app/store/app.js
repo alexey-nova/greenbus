@@ -4,19 +4,19 @@ export default {
   namespaced: true,
   state: {
     header: {
-      color: 'white',
+      color: 'white'
     },
     sidebar: {},
     alert: {
       title: '',
       content: '',
       type: '',
-      isShowed: false,
+      isShowed: false
     },
     excelUsers: [],
     departments: [],
     isChatOpen: false,
-    unreadMessagesCount: 0,
+    unreadMessagesCount: 0
   },
   getters: {
     excelUsers: state => {
@@ -46,7 +46,7 @@ export default {
         title: '',
         content: '',
         type: '',
-        isShowed: false,
+        isShowed: false
       }
     },
     setExcelUsers (state, data) {
@@ -64,5 +64,5 @@ export default {
     setUnreadMessagesCount (state, count) {
       state.unreadMessagesCount = count
     }
-  },
+  }
 }

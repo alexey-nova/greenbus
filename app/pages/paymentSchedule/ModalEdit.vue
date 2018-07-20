@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="col-lg-6">
-        
+
       </div>
       <div class="col-lg-6">
         <div :class="['form-group', {'has-error': errors.has('memoTo')}]">
@@ -90,108 +90,108 @@
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import Multiselect from 'vue-multiselect'
-  import FileUpload from 'vue-upload-component'
-  import Ckeditor from 'vue-ckeditor2'
+import 'element-ui/lib/theme-chalk/index.css'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
+import Datepicker from 'vuejs-datepicker'
+import { Switch } from 'element-ui'
+import Multiselect from 'vue-multiselect'
+import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
-      Datepicker,
-      'el-switch': Switch,
-      Multiselect,
-      FileUpload,
-      Ckeditor
+export default {
+  components: {
+    Modal,
+    MaskedInput,
+    Datepicker,
+    'el-switch': Switch,
+    Multiselect,
+    FileUpload,
+    Ckeditor
+  },
+  data () {
+    return {
+      to: null,
+      prepayment: '',
+      totalAmount: '',
+      ckEditorConfig: {
+        toolbar: [
+          [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+        ],
+        height: 150
+      }
+    }
+  },
+  props: ['model', 'users', 'onSubmit', 'onClose'],
+  watch: {
+    prepayment (value) {
+      value = value.replace(/(\s|\D)/g, '')
+      this.prepayment = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
     },
-    data () {
-      return {
-        to: null,
-        prepayment: '',
-        totalAmount: '',
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
+    totalAmount (value) {
+      value = value.replace(/(\s|\D)/g, '')
+      this.totalAmount = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
+    }
+  },
+  mounted () {
+    this.prepayment = this.model.prepayment || ''
+    this.totalAmount = this.model.totalAmount || ''
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.model.prepayment = this.prepayment.replace(/\s/g, '')
+      this.model.totalAmount = this.totalAmount.replace(/\s/g, '')
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          model.to = this.$_.map(model.to, u => u.user)
+          this.$emit('onSubmit', model)
         }
-      }
+      }).catch(() => {
+      })
     },
-    props: ['model', 'users', 'onSubmit', 'onClose',],
-    watch: {
-      prepayment (value) {
-        value = value.replace(/(\s|\D)/g, '')
-        this.prepayment = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
-      },
-      totalAmount (value) {
-        value = value.replace(/(\s|\D)/g, '')
-        this.totalAmount = value.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ')
-      },
+    getUser (_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id)
+      return user || {}
     },
-    mounted () {
-      this.prepayment = this.model.prepayment || ''
-      this.totalAmount = this.model.totalAmount || ''
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.model.prepayment = this.prepayment.replace(/\s/g, '')
-        this.model.totalAmount = this.totalAmount.replace(/\s/g, '')
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            model.to = this.$_.map(model.to, u => u.user)
-            this.$emit('onSubmit', model)
-          }
-        }).catch(() => {
-        })
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+    addFiles (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
 
-        this.$props.model.files = files
-      }
+      this.$props.model.files = files
+    }
+  },
+  computed: {
+    usersForSelect () {
+      return this.$_.map(this.$props.users, u => {
+        return {name: u.fullname, _id: u._id}
+      })
     },
-    computed: {
-      usersForSelect () {
-        return this.$_.map(this.$props.users, u => {
-          return {name: u.fullname, _id: u._id}
-        })
-      },
-      selectedUsers: {
-        get: function () {
-          if (this.$_.size(this.$props.model.to) > 10) {
-            this.errors.items.push({
-              field: 'memoTo',
-              scope: null,
-              msg: 'Допустимо не больше 10 согласующих',
-            })
-          }
-          return this.$_.map(this.$props.model.to, m => {
-            return m ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
-          })
-        },
-        set: function (newValue) {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'memoTo')
-          this.$props.model.to = this.$_.map(newValue, m => {
-            return {user: m._id}
+    selectedUsers: {
+      get: function () {
+        if (this.$_.size(this.$props.model.to) > 10) {
+          this.errors.items.push({
+            field: 'memoTo',
+            scope: null,
+            msg: 'Допустимо не больше 10 согласующих'
           })
         }
+        return this.$_.map(this.$props.model.to, m => {
+          return m ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
+        })
+      },
+      set: function (newValue) {
+        this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'memoTo')
+        this.$props.model.to = this.$_.map(newValue, m => {
+          return {user: m._id}
+        })
       }
     }
   }
+}
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

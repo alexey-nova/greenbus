@@ -25,22 +25,22 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
+export default {
+  components: {
+    Modal
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    props: ['model', 'onSubmit', 'onClose'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$emit('onSubmit', this.model)
-      },
+    submit () {
+      this.$emit('onSubmit', this.model)
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

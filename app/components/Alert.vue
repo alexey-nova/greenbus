@@ -14,21 +14,21 @@
 </template>
 
 <script>
-  export default {
+export default {
+  data () {
+    return {}
+  },
+  computed: {
     data () {
-      return {}
-    },
-    computed: {
-      data () {
-        return this.$store.state.app.alert
-      }
-    },
-    methods: {
-      onClose () {
-        this.$store.commit('app/hideAlert')
-      }
-    },
+      return this.$store.state.app.alert
+    }
+  },
+  methods: {
+    onClose () {
+      this.$store.commit('app/hideAlert')
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

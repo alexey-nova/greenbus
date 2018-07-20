@@ -46,21 +46,21 @@ export default {
   install: (token, user) => install(token, user),
   destroy: () => destroy(),
 
-  mixin: {},
+  mixin: {}
 }
 
 let editUser = (user) => {
   install(core.$session.get('jwt'), user)
 }
 let install = (token, user) => {
-    token = token || core.$session.get('jwt')
-    user = user || core.$session.get('user')
-    if (token && user) {
-      core.$session.set('user', user)
-      core.$session.set('jwt', token)
-      core.$setToken(token)
-      store.commit('auth/init', { token, user: core.$_.clone(user) })
-    }
+  token = token || core.$session.get('jwt')
+  user = user || core.$session.get('user')
+  if (token && user) {
+    core.$session.set('user', user)
+    core.$session.set('jwt', token)
+    core.$setToken(token)
+    store.commit('auth/init', { token, user: core.$_.clone(user) })
+  }
 }
 let destroy = () => {
   core.$session.remove('user')

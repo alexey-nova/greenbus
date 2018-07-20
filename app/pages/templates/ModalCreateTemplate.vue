@@ -77,7 +77,7 @@ import Multiselect from 'vue-multiselect'
 export default {
   components: {
     Modal,
-    Multiselect,
+    Multiselect
   },
   data () {
     return {
@@ -119,20 +119,20 @@ export default {
         }
       }).catch(() => {})
     },
-    loadPositions() {
+    loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },
-    loadDepartments() {
+    loadDepartments () {
       this.$api('get', 'departments')
-      .then(response => {
-        this.departments = response.data.departments
-        this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
-      })
-      .catch(e => {
-        this.notify(e.response.data, 'danger')
-      })
+        .then(response => {
+          this.departments = response.data.departments
+          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
+        })
+        .catch(e => {
+          this.notify(e.response.data, 'danger')
+        })
     },
     setVal (val) {
       this.model.department = val[val.length - 1]
@@ -153,7 +153,7 @@ export default {
       return result
     },
     exists (arr, key, val) {
-      return arr.filter( item => item[key] === val).length > 0
+      return arr.filter(item => item[key] === val).length > 0
     },
     setChildren (arr, item) {
       const target = { ...item }
@@ -176,7 +176,7 @@ export default {
           }
         }
       }
-    },
+    }
   },
   mounted () {
     if (this.model) {

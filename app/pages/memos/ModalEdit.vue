@@ -120,7 +120,7 @@ export default {
       } else if (target === 'newFiles') {
         this.newFiles.splice(index, 1)
       } else {
-        return
+
       }
     }
   },

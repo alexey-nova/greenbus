@@ -20,29 +20,29 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
+export default {
+  components: {
+    Modal,
+    MaskedInput
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    props: ['model', 'onSubmit', 'onClose'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {
-        })
-      },
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {
+      })
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

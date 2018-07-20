@@ -173,7 +173,6 @@
       </div>
     </Modal>
 
-
     <ModalDelete :model="modal.delete" @onSubmit="deleteMeeting" @onClose="toggleModal('delete')"></ModalDelete>
     <ModalConfirmed :model="modal.confirmed" @onSubmit="confirmedMeeting" @onClose="toggleModal('confirmed')"></ModalConfirmed>
     <ModalReject :model="modal.reject" @onSubmit="rejectMeeting" @onClose="toggleModal('reject')"></ModalReject>
@@ -214,12 +213,12 @@ export default {
       modal: {
         delete: false,
         confirmed: false,
-        reject: false,
+        reject: false
       },
       statuses: {
         'undefined': 'На согласовании',
         'confirm': 'Согласовано',
-        'reject': 'Отклонено',
+        'reject': 'Отклонено'
       },
       ckEditorConfig: {
         toolbar: [
@@ -253,7 +252,7 @@ export default {
           this.errors.items.push({
             field: 'participants',
             scope: null,
-            msg: 'Допустимо не больше 10 участников',
+            msg: 'Допустимо не больше 10 участников'
           })
         }
         return this.$_.map(this.$props.model.participants, m => {
@@ -286,7 +285,7 @@ export default {
     },
     getUser (_id) {
       let user = this.$_.find(this.$props.users, u => u._id === _id)
-      return user ? user : {}
+      return user || {}
     },
     deleteMeeting (meeting) {
       this.$api('delete', 'meetings/' + meeting.id).then(response => {
@@ -322,7 +321,7 @@ export default {
     },
     getUser (_id) {
       let user = this.$_.find(this.$props.users, u => u._id === _id)
-      return user ? user : {}
+      return user || {}
     },
     setMeetingDate () {
       const date = new Date(this.model.startDate)

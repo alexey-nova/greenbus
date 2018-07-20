@@ -41,8 +41,8 @@
 </template>
 
 <script>
-  import avatar from '../../../assets/design/avatar.jpg'
-  export default {}
+import avatar from '../../../assets/design/avatar.jpg'
+export default {}
 </script>
 
 <style lang="scss" scoped>

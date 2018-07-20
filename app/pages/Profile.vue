@@ -191,109 +191,109 @@
 </template>
 
 <script>
-  import FileUpload from 'vue-upload-component'
-  import PageTitle from '@/PageTitle'
-  import Box from '@/Box'
-  import MaskedInput from 'vue-masked-input'
-  import { Switch } from 'element-ui'
+import FileUpload from 'vue-upload-component'
+import PageTitle from '@/PageTitle'
+import Box from '@/Box'
+import MaskedInput from 'vue-masked-input'
+import { Switch } from 'element-ui'
 
-  export default {
-    components: {
-      PageTitle,
-      Box,
-      MaskedInput,
-      SwitchInput: Switch,
-      FileUpload,
-    },
-    data () {
-      return {
-        model: this.$_.cloneDeep(this.$store.state.auth.user),
-        departments: [],
-        positions: []
-      }
-    },
-    watch: {
-      '$store.state.auth.user' () {
-        this.model = this.$_.cloneDeep(this.$store.state.auth.user)
-      },
-    },
-    async mounted () {
-      this.loadDepartments()
-      await this.loadPositions()
-      this.model.positionName = this.getPositionName(this.model.position)
-    },
-    methods: {
-      changePassword (event) {
-        event.preventDefault()
+export default {
+  components: {
+    PageTitle,
+    Box,
+    MaskedInput,
+    SwitchInput: Switch,
+    FileUpload
+  },
+  data () {
+    return {
+      model: this.$_.cloneDeep(this.$store.state.auth.user),
+      departments: [],
+      positions: []
+    }
+  },
+  watch: {
+    '$store.state.auth.user' () {
+      this.model = this.$_.cloneDeep(this.$store.state.auth.user)
+    }
+  },
+  async mounted () {
+    this.loadDepartments()
+    await this.loadPositions()
+    this.model.positionName = this.getPositionName(this.model.position)
+  },
+  methods: {
+    changePassword (event) {
+      event.preventDefault()
 
-        this.$validator.validateAll(['password', 'currentPassword', 'confirmPassword']).then(() => {
-          if (!(this.fields.password.invalid || this.fields.currentPassword.invalid || this.fields.confirmPassword.invalid)) {
-            let data = {
-              password: this.model.password,
-              currentPassword: this.model.currentPassword,
-            }
-            let formData = this.$createFormData(data)
-            this.$api('put', 'users/' + this.model._id, formData).then(response => {
-              this.notify(response.data.message)
-              this.model.password = ''
-              this.model.currentPassword = ''
-              this.model.confirmPassword = ''
-            }).catch((e) => {
-              this.notify('Неверный пароль', 'danger')
-              this.$log(e, 'danger')
-            })
+      this.$validator.validateAll(['password', 'currentPassword', 'confirmPassword']).then(() => {
+        if (!(this.fields.password.invalid || this.fields.currentPassword.invalid || this.fields.confirmPassword.invalid)) {
+          let data = {
+            password: this.model.password,
+            currentPassword: this.model.currentPassword
           }
-        }).catch((e) => {})
-      },
-      submit (event) {
-        event.preventDefault()
-        this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position').then(() => {
-          this.save(this.model)
-        }).catch(() => {
-        })
-      },
-      save (data) {
-        data.avatar = data.files[0].file
-        let formData = this.$createFormData(data)
-        this.$api('put', 'users/' + data._id, formData).then(response => {
-          this.notify(response.data.message)
-
-          let user = response.data.user
-          this.$auth().editUser(user)
-        }).catch(e => {
-          this.notify('Временно нельзя сохранить', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      loadDepartments () {
-        this.$api('get', 'departments').then(response => {
-          this.departments = response.data.departments.map(item => {
-            return {
-              text: item.name,
-              value: item._id
-            }
+          let formData = this.$createFormData(data)
+          this.$api('put', 'users/' + this.model._id, formData).then(response => {
+            this.notify(response.data.message)
+            this.model.password = ''
+            this.model.currentPassword = ''
+            this.model.confirmPassword = ''
+          }).catch((e) => {
+            this.notify('Неверный пароль', 'danger')
+            this.$log(e, 'danger')
           })
-        }).catch(e => {
-          this.notify(e.response.data, 'danger')
-        })
-      },
-      loadPositions() {
-        return this.$api('get', 'positions?all=true').then(response => {
-          this.positions = response.data.positions
-        })
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+        }
+      }).catch((e) => {})
+    },
+    submit (event) {
+      event.preventDefault()
+      this.$validator.validateAll('login', 'fullname', 'email', 'department', 'position').then(() => {
+        this.save(this.model)
+      }).catch(() => {
+      })
+    },
+    save (data) {
+      data.avatar = data.files[0].file
+      let formData = this.$createFormData(data)
+      this.$api('put', 'users/' + data._id, formData).then(response => {
+        this.notify(response.data.message)
 
-        this.model.avatar = files[0]
-      },
-      getPositionName (id) {
-        const dept = this.positions.find(d => d._id === id)
-        return dept && dept.name
-      }
+        let user = response.data.user
+        this.$auth().editUser(user)
+      }).catch(e => {
+        this.notify('Временно нельзя сохранить', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    loadDepartments () {
+      this.$api('get', 'departments').then(response => {
+        this.departments = response.data.departments.map(item => {
+          return {
+            text: item.name,
+            value: item._id
+          }
+        })
+      }).catch(e => {
+        this.notify(e.response.data, 'danger')
+      })
+    },
+    loadPositions () {
+      return this.$api('get', 'positions?all=true').then(response => {
+        this.positions = response.data.positions
+      })
+    },
+    addFiles (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+
+      this.model.avatar = files[0]
+    },
+    getPositionName (id) {
+      const dept = this.positions.find(d => d._id === id)
+      return dept && dept.name
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

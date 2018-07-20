@@ -23,30 +23,30 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        loginData: {
-          login: '',
-          password: '',
-        }
-      }
-    },
-    methods: {
-      login (event) {
-        this.$validator.validateAll().then(result => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$api('post', 'auth/login', this.loginData).then(response => {
-              this.$login(response.data.token)
-              this.$router.push({ name: 'index' })
-            }).catch(e => {
-              this.notify('Неверный логин или пароль', 'danger')
-            })
-          }
-        })
+export default {
+  data () {
+    return {
+      loginData: {
+        login: '',
+        password: ''
       }
     }
+  },
+  methods: {
+    login (event) {
+      this.$validator.validateAll().then(result => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$api('post', 'auth/login', this.loginData).then(response => {
+            this.$login(response.data.token)
+            this.$router.push({ name: 'index' })
+          }).catch(e => {
+            this.notify('Неверный логин или пароль', 'danger')
+          })
+        }
+      })
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

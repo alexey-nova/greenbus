@@ -9,26 +9,26 @@
 </template>
 
 <script>
-  import BoxHeader from './box/Header'
-  import BoxFooter from './box/Footer'
+import BoxHeader from './box/Header'
+import BoxFooter from './box/Footer'
 
-  export default {
-    components: {
-      BoxHeader,
-      BoxFooter,
-    },
-    props: [
-      'title',
-      'controls',
-      'footer',
-      'type',
-    ],
-    computed: {
-      classType () {
-        return (this.$props.type) ? ' box-' + this.$props.type : ''
-      }
+export default {
+  components: {
+    BoxHeader,
+    BoxFooter
+  },
+  props: [
+    'title',
+    'controls',
+    'footer',
+    'type'
+  ],
+  computed: {
+    classType () {
+      return (this.$props.type) ? ' box-' + this.$props.type : ''
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

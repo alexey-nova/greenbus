@@ -12,13 +12,13 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-      }
-    },
-    props: ['title', 'content', 'color']
-  }
+export default {
+  data () {
+    return {
+    }
+  },
+  props: ['title', 'content', 'color']
+}
 </script>
 
 <style lang="scss" scoped>

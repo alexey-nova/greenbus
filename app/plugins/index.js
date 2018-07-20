@@ -27,7 +27,6 @@ Vue.use({
 
     Vue.prototype.$trans = plugins.translate.trans
 
-
     // mixins
     // Vue.mixin(plugins.auth.mixin)
     Vue.mixin(plugins.seo.mixin)

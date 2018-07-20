@@ -25,48 +25,48 @@
 </template>
 
 <script>
-  import Animation from '@/Animation'
+import Animation from '@/Animation'
 
-  export default {
-    components: {
-      Animation,
+export default {
+  components: {
+    Animation
+  },
+  props: {
+    isOpen: {},
+    type: {},
+    onSubmit: {
+      default: () => {}
     },
-    props: {
-      isOpen: {},
-      type: {},
-      onSubmit: {
-        default: () => {}
-      },
-      onClose: {},
-    },
-    computed: {
-      typeClasses () {
-        let type = this.$props.type
-        let classes = []
-        if (this.$_.isArray(type)) {
-          classes = this.$_.map(type, t => 'type-' + t)
-        } else {
-          classes = (type) ? ['type-' + type] : []
-        }
-        return classes
-      },
-    },
-    methods: {
-      submit (event) {
-        event.preventDefault()
-        this.$emit('onSubmit')
+    onClose: {}
+  },
+  computed: {
+    typeClasses () {
+      let type = this.$props.type
+      let classes = []
+      if (this.$_.isArray(type)) {
+        classes = this.$_.map(type, t => 'type-' + t)
+      } else {
+        classes = (type) ? ['type-' + type] : []
       }
-    },
-    watch: {
-      isOpen () {
-        if (this.$props.isOpen) {
-          document.body.classList.add('modal-open')
-        } else {
-          document.body.classList.remove('modal-open')
-        }
+      return classes
+    }
+  },
+  methods: {
+    submit (event) {
+      event.preventDefault()
+      this.$emit('onSubmit')
+    }
+  },
+  watch: {
+    isOpen () {
+      if (this.$props.isOpen) {
+        document.body.classList.add('modal-open')
+      } else {
+        document.body.classList.remove('modal-open')
       }
     }
   }
+}
 </script>
 
 <style lang="scss">

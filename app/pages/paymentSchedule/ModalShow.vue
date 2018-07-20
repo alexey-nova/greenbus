@@ -128,7 +128,6 @@
         </div>
       </div>
 
-
       <ul v-if="tabs === 1">
         <li v-for="file in model.files">
           <div><a :href="$config('app.fileUrl') + file.path" target="_blank">{{file.name}}</a></div>
@@ -160,108 +159,107 @@
 </div></template>
 
 <script>
-  import Modal from '@/Modal'
-  import ModalConfirm from './ModalConfirm'
-  import ModalReject from './ModalReject'
-  import 'pdfmake/build/pdfmake.js'
-  import pdfFonts from 'pdfmake/build/vfs_fonts.js'
-  pdfMake.vfs = pdfFonts.pdfMake.vfs
-  import pdf from './pdf'
-  import logo1 from '#/assets/design/logos/logo1.png'
-  import logo2 from '#/assets/design/logos/logo2.jpg'
-  import logo3 from '#/assets/design/logos/logo3.jpg'
+import Modal from '@/Modal'
+import ModalConfirm from './ModalConfirm'
+import ModalReject from './ModalReject'
+import 'pdfmake/build/pdfmake.js'
+import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+import pdf from './pdf'
+import logo1 from '#/assets/design/logos/logo1.png'
+import logo2 from '#/assets/design/logos/logo2.jpg'
+import logo3 from '#/assets/design/logos/logo3.jpg'
 //  import '#/assets/pdfmake/vfs_fonts.js'
 
-  export default {
-    components: {
-      Modal,
-      ModalConfirm,
-      ModalReject,
+export default {
+  components: {
+    Modal,
+    ModalConfirm,
+    ModalReject
+  },
+  data () {
+    return {
+      selectedLogo: 'logo1',
+      comments: [],
+      modal: {
+        confirm: false,
+        reject: false
+      },
+      statuses: {
+        'undefined': 'На согласовании',
+        'confirm': 'Согласовано',
+        'reject': 'Отклонено'
+      },
+      tabs: 0,
+      controlUser: {}
+    }
+  },
+  props: ['model', 'users', 'onConfirm', 'onReject', 'onClose', 'tab'],
+  watch: {
+    model () {
+      if (this.$props.model) { this.loadPS() }
     },
-    data () {
-      return {
-        selectedLogo: 'logo1',
-        comments: [],
-        modal: {
-          confirm: false,
-          reject: false,
-        },
-        statuses: {
-          'undefined': 'На согласовании',
-          'confirm': 'Согласовано',
-          'reject': 'Отклонено',
-        },
-        tabs: 0,
-        controlUser: {}
+    tab () {
+      this.tabs = this.$props.tab
+    }
+  },
+  computed: {
+    logo () {
+      let logo = logo1
+      if (this.selectedLogo === 'logo2') {
+        logo = logo2
       }
-    },
-    props: ['model', 'users', 'onConfirm', 'onReject', 'onClose', 'tab'],
-    watch: {
-      model () {
-        if (this.$props.model)
-          this.loadPS()
-      },
-      tab () {
-        this.tabs = this.$props.tab
+      if (this.selectedLogo === 'logo3') {
+        logo = logo3
       }
+      return logo
+    }
+  },
+  methods: {
+    getDate (date) {
+      date = new Date(date)
+      const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+      return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
     },
-    computed: {
-      logo () {
-        let logo = logo1
-        if (this.selectedLogo === 'logo2') {
-          logo = logo2
-        }
-        if (this.selectedLogo === 'logo3') {
-          logo = logo3
-        }
-        return logo
-      },
+    getCreatedAt (comment) {
+      return comment && comment.createdAt ? comment.createdAt : null
     },
-    methods: {
-      getDate (date) {
-        date = new Date(date)
-        const dates = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
-        return `${date.getDate()} ${dates[date.getMonth()]} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
-      },
-      getCreatedAt (comment) {
-        return comment && comment.createdAt ? comment.createdAt : null
-      },
-      toggleTab(tab) {
-        this.tab = tab
-      },
-      toggleModal (name, model) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-      },
-      confirm (model) {
-        this.modal.confirm = false
-        this.$emit('onConfirm', model)
-      },
-      reject (model) {
-        this.modal.reject = false
-        this.$emit('onReject', model)
-      },
-      close () {
-        this.$emit('onClose')
-      },
-      pdf () {
-        let docDefinition = pdf.create(this.logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
-        pdfMake.createPdf(docDefinition).download()
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      loadPS () {
-        if (this.model._id) {
-          this.$api('get', 'paymentSchedules/' + this.model._id).then(response => {
-            this.comments = response.data.replies
-          }).catch(e => {
-            this.notify(e, 'danger')
-          })
-        }
-      },
+    toggleTab (tab) {
+      this.tab = tab
+    },
+    toggleModal (name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+    },
+    confirm (model) {
+      this.modal.confirm = false
+      this.$emit('onConfirm', model)
+    },
+    reject (model) {
+      this.modal.reject = false
+      this.$emit('onReject', model)
+    },
+    close () {
+      this.$emit('onClose')
+    },
+    pdf () {
+      let docDefinition = pdf.create(this.logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
+      pdfMake.createPdf(docDefinition).download()
+    },
+    getUser (_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id)
+      return user || {}
+    },
+    loadPS () {
+      if (this.model._id) {
+        this.$api('get', 'paymentSchedules/' + this.model._id).then(response => {
+          this.comments = response.data.replies
+        }).catch(e => {
+          this.notify(e, 'danger')
+        })
+      }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

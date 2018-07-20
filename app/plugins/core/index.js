@@ -4,7 +4,7 @@ import dateFormat from 'dateformat'
 import config from './../../config'
 import boot from './../../config/boot'
 
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt');
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt')
 
 dateFormat.i18n = {
   dayNames: [
@@ -35,7 +35,7 @@ export default {
     },
     remove (key) {
       localStorage.removeItem(key)
-    },
+    }
   },
 
   $http (type, url, data = {}, options = {}) {
@@ -53,7 +53,7 @@ export default {
       path += (process.env.NODE_ENV === 'development') ? 'app/assets/copy/api/' : 'assets/api/'
       mockApiUrl = path
     }
-    url = mockApiUrl + url +'.json'
+    url = mockApiUrl + url + '.json'
     return _.get(axios, type)(url, data, options)
   },
   $setToken (token) {
@@ -66,7 +66,7 @@ export default {
       let plugin = name.shift()
       cfg = _.get(boot.plugins, `${plugin}.config.${name[0]}`)
     }
-    return cfg ? cfg : false
+    return cfg || false
   },
   $log (message, color = false) {
     if (color) {
@@ -77,7 +77,7 @@ export default {
       console.log(message)
     }
   },
-  $dateFormat(date, format) {
+  $dateFormat (date, format) {
     return dateFormat(date, format)
-  },
+  }
 }

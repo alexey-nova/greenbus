@@ -123,148 +123,146 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import ModalPerform from './ModalPerform'
-  import ModalReject from './ModalRejectTask'
-  import ModalConfirm from './ModalConfirm'
-  import ModalShowUser from './../users/ModalShowUser'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Ckeditor from 'vue-ckeditor2'
-  import FileUpload from 'vue-upload-component'
-  import TaskMessages from './TaskMessages'
+import Modal from '@/Modal'
+import ModalPerform from './ModalPerform'
+import ModalReject from './ModalRejectTask'
+import ModalConfirm from './ModalConfirm'
+import ModalShowUser from './../users/ModalShowUser'
+import Datepicker from 'vuejs-datepicker'
+import { Switch } from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import Ckeditor from 'vue-ckeditor2'
+import FileUpload from 'vue-upload-component'
+import TaskMessages from './TaskMessages'
 
-  export default {
-    components: {
-      Modal,
-      ModalPerform,
-      ModalReject,
-      ModalConfirm,
-      ModalShowUser,
-      Datepicker,
-      'el-switch': Switch,
-      Ckeditor,
-      FileUpload,
-      TaskMessages
-    },
-    data () {
-      return {
-        comments: [],
-        modal: {
-          performTask: false,
-          rejectTask: false,
-          confirmTask: false,
-        },
-        tabs: 0,
-        statuses: [
-          'В работе',
-          'На согласовании',
-          'Согласовано',
-          'Отказано',
+export default {
+  components: {
+    Modal,
+    ModalPerform,
+    ModalReject,
+    ModalConfirm,
+    ModalShowUser,
+    Datepicker,
+    'el-switch': Switch,
+    Ckeditor,
+    FileUpload,
+    TaskMessages
+  },
+  data () {
+    return {
+      comments: [],
+      modal: {
+        performTask: false,
+        rejectTask: false,
+        confirmTask: false
+      },
+      tabs: 0,
+      statuses: [
+        'В работе',
+        'На согласовании',
+        'Согласовано',
+        'Отказано'
+      ],
+      ckEditorConfig: {
+        toolbar: [
+          [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
         ],
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
-        },
-        newComment: '',
-        newFiles: []
-      }
-    },
-    props: ['model', 'users', 'tab'],
-    computed: {
-      groupedComments () {
-        const targetArray = this.comments.filter(item => !item.replyTo)
-        const dataArray = JSON.parse(JSON.stringify(this.comments))
-        let joinedArray = this.join(targetArray, this.comments)
-        return joinedArray.sort((a, b) => {
-          return new Date(b.createdAt) - new Date(a.createdAt)
-        })
-      }
-    },
-    methods: {
-      join (targetArray, dataArray) {
-        let result = JSON.parse(JSON.stringify(targetArray))
-        dataArray.forEach(item => {
-          const i = result.reduce((prev, target, i) => (target._id === item.replyTo) ? i : prev, -1)
-          if (i < 0) return
-          if (!result[i].replies) result[i].replies = []
-          result[i].replies.push(item)
-        })
-        return result.map(item => {
-          if (item.replies) {
-            item.replies = this.join(item.replies, dataArray)
-          }
-          return item
-        })
+        height: 150
       },
-      toggleTab(tab) {
-        this.tabs = tab
-      },
-      toggleModal (name, model) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-      },
-      performTask (task) {
-        this.$emit('performTask', task)
-        this.toggleModal('performTask')
-        this.close()
-      },
-      rejectTask (task) {
-        this.$emit('rejectTask', task)
-        this.toggleModal('rejectTask')
-        this.close()
-      },
-      confirmTask (model) {
-        this.$emit('confirmTask', model)
-        this.toggleModal('confirmTask')
-        this.close()
-      },
-      sendComment () {
-        let data = this.$createFormData({
-          files: this.$_.map(this.model.files, (f) => f.file),
-          comment: this.newComment,
-          moduleId: this.model._id
-        })
-        this.$api('post', 'comments', data).then(response => {
-          this.comments.push(response.data.comment)
-          this.notify('Комментарий успешно добавлен')
-          this.model.files = []
-          this.newComment = ''
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      close () {
-        this.tabs = 0
-        this.$emit('onClose')
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      loadTask () {
-        this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
-
-          this.comments = [...response.data.executions.map(item => { item.isExecution = true; return item }), ...response.data.comments]
-        }).catch(e => {
-          console.log(e)
-//          this.notify(e, 'danger')
-        })
-      },
-    },
-    watch: {
-      model () {
-        if (this.$props.model) {
-          this.loadTask()
+      newComment: '',
+      newFiles: []
+    }
+  },
+  props: ['model', 'users', 'tab'],
+  computed: {
+    groupedComments () {
+      const targetArray = this.comments.filter(item => !item.replyTo)
+      const dataArray = JSON.parse(JSON.stringify(this.comments))
+      let joinedArray = this.join(targetArray, this.comments)
+      return joinedArray.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      })
+    }
+  },
+  methods: {
+    join (targetArray, dataArray) {
+      let result = JSON.parse(JSON.stringify(targetArray))
+      dataArray.forEach(item => {
+        const i = result.reduce((prev, target, i) => (target._id === item.replyTo) ? i : prev, -1)
+        if (i < 0) return
+        if (!result[i].replies) result[i].replies = []
+        result[i].replies.push(item)
+      })
+      return result.map(item => {
+        if (item.replies) {
+          item.replies = this.join(item.replies, dataArray)
         }
-      },
-      tab () {
-        this.tabs = this.$props.tab
+        return item
+      })
+    },
+    toggleTab (tab) {
+      this.tabs = tab
+    },
+    toggleModal (name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+    },
+    performTask (task) {
+      this.$emit('performTask', task)
+      this.toggleModal('performTask')
+      this.close()
+    },
+    rejectTask (task) {
+      this.$emit('rejectTask', task)
+      this.toggleModal('rejectTask')
+      this.close()
+    },
+    confirmTask (model) {
+      this.$emit('confirmTask', model)
+      this.toggleModal('confirmTask')
+      this.close()
+    },
+    sendComment () {
+      let data = this.$createFormData({
+        files: this.$_.map(this.model.files, (f) => f.file),
+        comment: this.newComment,
+        moduleId: this.model._id
+      })
+      this.$api('post', 'comments', data).then(response => {
+        this.comments.push(response.data.comment)
+        this.notify('Комментарий успешно добавлен')
+        this.model.files = []
+        this.newComment = ''
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    close () {
+      this.tabs = 0
+      this.$emit('onClose')
+    },
+    getUser (_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id)
+      return user || {}
+    },
+    loadTask () {
+      this.$api('get', 'tasks/executions/' + this.model._id).then(response => {
+        this.comments = [...response.data.executions.map(item => { item.isExecution = true; return item }), ...response.data.comments]
+      }).catch(e => {
+        console.log(e)
+      })
+    }
+  },
+  watch: {
+    model () {
+      if (this.$props.model) {
+        this.loadTask()
       }
     },
+    tab () {
+      this.tabs = this.$props.tab
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

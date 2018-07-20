@@ -24,7 +24,7 @@
           </tr>
           <tr v-else v-for="dept in departments" :key="dept._id">
             <td  class="td_center">{{dept.name}}</td>
-            
+
             <td class="border-none">
               <div class="flex">
                 <button class="button-table edit" @click="toggleModal('edit', { type: 'department', name: dept.name, _id: dept._id })"></button>
@@ -107,7 +107,7 @@
           <tr v-else v-for="position in positions" :key="position._id">
             <td width="50%" class="td_center">{{position.name}}</td>
             <td width="50%" class="td_center">{{position.department && position.department.name}}</td>
-            
+
             <td class="border-none">
               <div class="flex">
                 <button class="button-table edit" @click="toggleModal('edit', { type: 'position', name: position.name, _id: position._id, department: position.department._id })"></button>
@@ -115,7 +115,7 @@
               </div>
             </td>
           </tr>
-          
+
         </table>
       </div>
     </div>
@@ -148,7 +148,7 @@ export default {
         create: false,
         edit: false,
         delete: false
-      },
+      }
     }
   },
   methods: {
@@ -160,9 +160,9 @@ export default {
       }
     },
     toggleModal (name, model, tab) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-        this.modal.tab = tab ? tab : 0
-      },
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+      this.modal.tab = tab || 0
+    },
     loadDepartments () {
       this.$api('get', 'departments').then(response => {
         this.allDepartments = response.data.departments
@@ -186,7 +186,7 @@ export default {
       return result
     },
     exists (arr, key, val) {
-      return arr.filter( item => item[key] === val).length > 0
+      return arr.filter(item => item[key] === val).length > 0
     },
     setChildren (arr, item) {
       const target = { ...item }
@@ -315,5 +315,3 @@ export default {
 <style lang="scss" scoped>
 
 </style>
-
-

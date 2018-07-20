@@ -23,28 +23,28 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
+export default {
+  components: {
+    Modal
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    props: ['model', 'onSubmit', 'onClose'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$emit('onSubmit', this.model)
-      },
-      addFiles (e) {
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
+    submit () {
+      this.$emit('onSubmit', this.model)
+    },
+    addFiles (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
 
-        this.$props.model.files = files
-      }
+      this.$props.model.files = files
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

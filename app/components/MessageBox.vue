@@ -2,28 +2,28 @@
 </template>
 
 <script>
-  import Chat from './Chat'
-  export default {
-    components: {
-      Chat
-    },
-    props: ['users'],
-    data () {
-      return {
-        currentUser: {}
-      }
-    },
-    computed: {
+import Chat from './Chat'
+export default {
+  components: {
+    Chat
+  },
+  props: ['users'],
+  data () {
+    return {
+      currentUser: {}
+    }
+  },
+  computed: {
 
-    },
-    beforeMount () {
-    },
-    methods: {
-      openChat (user) {
-        this.currentUser = user
-      }
+  },
+  beforeMount () {
+  },
+  methods: {
+    openChat (user) {
+      this.currentUser = user
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

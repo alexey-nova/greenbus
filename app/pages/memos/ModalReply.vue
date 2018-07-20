@@ -45,39 +45,39 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  // import FileUpload from 'vue-upload-component'
+import Modal from '@/Modal'
+// import FileUpload from 'vue-upload-component'
 
-  export default {
-    components: {
-      Modal,
-      // FileUpload,
-    },
-    props: ['model', 'onSubmit', 'onClose'],
-    computed: {
-      setTypeName () {
-        return this.model.type === 'confirm' ? 'Согласовать задачу' : this.model.type === 'reject' ? 'Отклонить задачу на шаг' : 'Отклонить задачу до заявителя'
-      }
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {})
-      },
-      // addFiles (e) {
-      //   let files = e.target.files || e.dataTransfer.files
-      //   if (!files.length) return
-
-      //   this.$props.model.files = files
-      // }
+export default {
+  components: {
+    Modal
+    // FileUpload,
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  computed: {
+    setTypeName () {
+      return this.model.type === 'confirm' ? 'Согласовать задачу' : this.model.type === 'reject' ? 'Отклонить задачу на шаг' : 'Отклонить задачу до заявителя'
     }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {})
+    }
+    // addFiles (e) {
+    //   let files = e.target.files || e.dataTransfer.files
+    //   if (!files.length) return
+
+    //   this.$props.model.files = files
+    // }
   }
+}
 </script>
 
 <style lang="scss" scoped>

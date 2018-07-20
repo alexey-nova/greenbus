@@ -84,56 +84,57 @@
 </template>
 
 <script>
-  import Chat from '@/Chat'
-  import Notifications from './Notifications'
+import Chat from '@/Chat'
+import Notifications from './Notifications'
 
-  export default {
-    name: 'Navigation',
-    components: {
-      Chat,
-      Notifications,
+export default {
+  name: 'Navigation',
+  components: {
+    Chat,
+    Notifications
+  },
+  data () {
+    return {
+      unreadMessagesCount: this.$store.getters['app/unreadMessagesCount']
+    }
+  },
+  computed: {
+    count () {
+      this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount']
+      return this.unreadMessagesCount
+    }
+  },
+  methods: {
+    getMessages () {
+      this.$api('get', 'conversations').then(response => {
+        this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
+        this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
+      }).catch(err => console.log(err))
     },
-    data () {
-      return {
-        unreadMessagesCount: this.$store.getters['app/unreadMessagesCount'],
+    toggleOrLink () {
+      if (window.innerWidth > 414) {
+        this.$router.push({
+          name: 'index'
+        })
       }
-    },
-    computed: {
-      count() {
-        return this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount']
-      }
-    },
-    methods: {
-      getMessages () {
-        this.$api('get', 'conversations').then(response => {
-          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
-          this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
-        }).catch(err => console.log(err))
-      },
-      toggleOrLink () {
-        if (window.innerWidth > 414) {
-          this.$router.push({
-            name: 'index'
-          })
+      if (window.innerWidth <= 414) {
+        var current = document.getElementById('nav')
+        if (current) {
+          current.className += ' active'
         }
-        if (window.innerWidth <= 414) {
-          var current = document.getElementById('nav')
-          if (current) {
-            current.className += ' active'
-          }
-        }
-      }
-    },
-    mounted () {
-       this.getMessages()
-    },
-    sockets: {
-      newMessage (data) {
-        this.$store.commit('app/setUnreadMessagesCount', ++this.unreadMessagesCount)
-        this.notify('У вас новое сообщение')
       }
     }
+  },
+  mounted () {
+    this.getMessages()
+  },
+  sockets: {
+    newMessage (data) {
+      this.$store.commit('app/setUnreadMessagesCount', ++this.unreadMessagesCount)
+      this.notify('У вас новое сообщение')
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

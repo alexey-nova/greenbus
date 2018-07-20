@@ -24,17 +24,17 @@
 </template>
 
 <script>
-  import Box from '@/Box'
+import Box from '@/Box'
 
-  export default {
-    components: {
-      Box,
-    },
-    props: [
-      'title',
-      'subtitle'
-    ]
-  }
+export default {
+  components: {
+    Box
+  },
+  props: [
+    'title',
+    'subtitle'
+  ]
+}
 </script>
 
 <style lang="scss" scoped>

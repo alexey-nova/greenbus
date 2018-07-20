@@ -34,7 +34,7 @@ export default {
       required: true
     },
     model: {
-      type: Object,
+      type: Object
       // required: function (value) {
       //   return this.$props.type !== 'create'
       // }
@@ -50,11 +50,11 @@ export default {
         if (i === 0) {
           prevDate = new Date(this.model.createdAt)
         } else {
-          prevDate = new Date(newArray[i - 1].deadline||123)
+          prevDate = new Date(newArray[i - 1].deadline || 123)
         }
         prevDate = this.nextWorkDay(prevDate)
         let nextDeadline = new Date(prevDate)
-        for(let ind = 0; ind < item.hours; ind++) {
+        for (let ind = 0; ind < item.hours; ind++) {
           nextDeadline.setHours(nextDeadline.getHours() + 1)
           nextDeadline = this.nextWorkDay(nextDeadline)
         }
@@ -65,12 +65,12 @@ export default {
         newArray[i] = item
         return newArray
       }, [])
-    },
+    }
   },
   methods: {
     splice (index) {
       if (this.type === 'create') { return true }
-      return ( index !== 0 )
+      return (index !== 0)
     },
     posName (positionId) {
       return (this.positions.find(item => item._id === positionId) || {}).name
@@ -88,13 +88,13 @@ export default {
       if (index === this.model.currentUser) return 'yellow'
       return 'gray'
     },
-    nextWorkDay(date, weekends = [0, 6]) {
+    nextWorkDay (date, weekends = [0, 6]) {
       const tempDate = new Date(date)
       while (weekends.includes(tempDate.getDay())) {
         tempDate.setHours(tempDate.getHours() + 24)
       }
       return tempDate
-    },
+    }
   }
 }
 </script>

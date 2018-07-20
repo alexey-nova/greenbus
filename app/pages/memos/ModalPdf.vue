@@ -58,7 +58,7 @@ export default {
   },
   data () {
     return {
-      selectedLogo: 'logo1',
+      selectedLogo: 'logo1'
     }
   },
   computed: {

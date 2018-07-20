@@ -98,14 +98,13 @@ export default {
         showUser: false,
         createTask: false,
         createUser: false,
-        deleteUser: false,
+        deleteUser: false
       },
       tableData: {
         columns: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email', 'tools', 'admin'],
         options: {
           headings: {
             id: 'ID',
-            admin: '',
             fullname: 'ФИО',
             posName: 'Должность',
             deptName: 'Отдел',
@@ -121,12 +120,12 @@ export default {
           sortable: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email'],
           filterable: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email'],
           customSorting: {
-            id: function(ascending) {
+            id: function (ascending) {
               return (a, b) => {
                 a = a.id * 1
                 b = b.id * 1
-                if (ascending) return a >= b ? 1 : -1;
-                return a <= b ? 1 : -1;
+                if (ascending) return a >= b ? 1 : -1
+                return a <= b ? 1 : -1
               }
             }
           },
@@ -138,12 +137,12 @@ export default {
       },
       mobTableData: {
         fields: [
-          { key: 'fullname', label: 'ФИО'},
-          { key: 'posName', label: 'Должность'},
-          { key: 'deptName', label: 'Департамент'},
-          { key: 'phone', label: 'Телефон'},
-          { key: 'email', label: 'E-mail'},
-          { key: 'actions', label: 'Действия'},
+          { key: 'fullname', label: 'ФИО' },
+          { key: 'posName', label: 'Должность' },
+          { key: 'deptName', label: 'Департамент' },
+          { key: 'phone', label: 'Телефон' },
+          { key: 'email', label: 'E-mail' },
+          { key: 'actions', label: 'Действия' }
         ],
         currentPage: 1,
         perPage: 5,
@@ -151,11 +150,11 @@ export default {
         // pageOptions: [ 5, 10, 15 ],
         filter: null
       }
-    };
+    }
   },
   computed: {
     filteredUsers: {
-      get: function() {
+      get: function () {
         let users = _.clone(this.users)
         if (this.filter !== false) {
           users = _.filter(users, ['departmentId', this.filter])
@@ -173,7 +172,7 @@ export default {
             positions[item._id] = item.name
           })
         }
-        
+
         users = users.map(item => {
           item.deptName = departments[item.departmentId]
           item.posName = positions[item.positionId]
@@ -184,10 +183,10 @@ export default {
     }
   },
   methods: {
-    toggleModal(name, model) {
-      this.modal[name] = model === undefined ? !this.modal[name] : model;
+    toggleModal (name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
     },
-    createUser(user) {
+    createUser (user) {
       user.departmentId = user.department
       user.positionId = user.position
       this.$api('post', 'users', user)
@@ -214,7 +213,7 @@ export default {
           this.$log(e, 'danger')
         })
     },
-    deleteUser(user) {
+    deleteUser (user) {
       this.$api('delete', 'users/' + user._id)
         .then(response => {
           this.users = this.$_.remove(this.users, u => u._id !== user._id)
@@ -227,7 +226,7 @@ export default {
           this.$log(e, 'danger')
         })
     },
-    createTask(task) {
+    createTask (task) {
       task.files = this.$_.map(task.files, f => f.file)
       let data = this.$createFormData(task)
       this.$api('post', 'tasks', data)
@@ -240,7 +239,7 @@ export default {
           this.$log(e, 'danger')
         })
     },
-    loadUsers() {
+    loadUsers () {
       this.$api('get', 'users')
         .then(response => {
           if (response.data && response.data.length > 0) {
@@ -251,7 +250,7 @@ export default {
           this.notify(e, 'danger')
         })
     },
-    loadDepartments() {
+    loadDepartments () {
       this.$api('get', 'departments')
         .then(response => {
           this.allDepartments = response.data.departments
@@ -268,14 +267,14 @@ export default {
             }
           ]
           sidebar = [...sidebar, ...this.group(this.departments)]
-          
+
           this.$store.commit('app/setSidebar', sidebar)
         })
         .catch(e => {
           this.notify(e.response.data, 'danger')
         })
     },
-    group(array) {
+    group (array) {
       var self = this
       let heads = array.map(item => {
         item.value = item._id
@@ -293,10 +292,10 @@ export default {
       result = [...heads]
       return result
     },
-    exists(arr, key, val) {
+    exists (arr, key, val) {
       return arr.filter(item => item[key] === val).length > 0
     },
-    setChildren(arr, item) {
+    setChildren (arr, item) {
       var self = this
       const target = JSON.parse(JSON.stringify(item))
       for (let i = 0; i < arr.length; i++) {
@@ -322,32 +321,32 @@ export default {
             target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
             target.imgSrc2 = 'folder-h.png'
             target.imgSrc = 'folder.png'
-            
+
             arr[i].children = [target]
           }
         }
       }
     },
-    loadPositions() {
+    loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },
-    departmentName(_id) {
+    departmentName (_id) {
       if (this.allDepartments.length > 0) {
         if (this.allDepartments.filter(item => item._id === _id).length > 0) {
           return this.allDepartments.filter(item => item._id === _id)[0].name
         }
       }
     },
-    positionName(_id) {
+    positionName (_id) {
       if (this.positions.length > 0) {
         if (this.positions.filter(item => item._id === _id).length > 0) {
           return this.positions.filter(item => item._id === _id)[0].name
         }
       }
     },
-    updateFilter() {
+    updateFilter () {
       let department = this.$route.params.param1
       if (department === undefined) {
         department = false
@@ -373,11 +372,11 @@ export default {
     this.$store.commit('app/setSidebar', {})
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       this.updateFilter()
-    },
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

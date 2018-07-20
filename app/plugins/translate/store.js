@@ -10,7 +10,7 @@ export default {
   getters: {
     trans: (state) => (id) => {
       return core.$_.get(state.lang, id)
-    },
+    }
   },
   mutations: {
     init (state, lang) {
@@ -18,6 +18,6 @@ export default {
     },
     changeLocale (state, locale) {
       state.current = locale
-    },
-  },
+    }
+  }
 }

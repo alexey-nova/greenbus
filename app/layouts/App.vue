@@ -22,61 +22,61 @@
   </div>
 </template>
 <script>
-  import '#/assets/jquery/jquery.min'
-  import '#/assets/adminlte/js/adminlte.min'
-  import Chat from '@/Chat'
-  import 'element-ui/lib/theme-chalk/index.css'
-  import offline from 'v-offline'
+import '#/assets/jquery/jquery.min'
+import '#/assets/adminlte/js/adminlte.min'
+import Chat from '@/Chat'
+import 'element-ui/lib/theme-chalk/index.css'
+import offline from 'v-offline'
 
-  import AppHeader from './app/Header.vue'
-  import AppFooter from './app/Footer.vue'
-  import AppSidebar from './app/Sidebar.vue'
-  import Alert from '@/Alert.vue'
-  import VueFlashMessage from 'vue-flash-message';
+import AppHeader from './app/Header.vue'
+import AppFooter from './app/Footer.vue'
+import AppSidebar from './app/Sidebar.vue'
+import Alert from '@/Alert.vue'
+import VueFlashMessage from 'vue-flash-message'
 
-  export default {
-    name: 'app',
-    components: {
-      AppHeader,
-      AppFooter,
-      AppSidebar,
-      Alert,
-      VueFlashMessage,
-      Chat,
-      offline
+export default {
+  name: 'app',
+  components: {
+    AppHeader,
+    AppFooter,
+    AppSidebar,
+    Alert,
+    VueFlashMessage,
+    Chat,
+    offline
+  },
+  data () {
+    return {
+      height: 0,
+      showMessageBox: false,
+      users: [],
+      onlineStatus: true
+    }
+  },
+  methods: {
+    loadUsers () {
+      this.$api('get', 'users').then(response => {
+        this.users = response.data
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
     },
-    data () {
-      return {
-        height: 0,
-        showMessageBox: false,
-        users: [],
-        onlineStatus: true
-      }
-    },
-    methods: {
-      loadUsers () {
-        this.$api('get', 'users').then(response => {
-          this.users = response.data
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
-      },
-      handleConnectivityChange(status) {
-        this.onlineStatus = status
-      }
-    },
-    beforeMount () {
-      if (this.$auth().user) {
-        this.$socket.emit('joinroom', this.$auth().user._id)
-      }
-    },
-    mounted () {
-      this.height = window.innerHeight - 101
-      if (this.$auth().user) {
-        this.loadUsers()
-      }
+    handleConnectivityChange (status) {
+      this.onlineStatus = status
+    }
+  },
+  beforeMount () {
+    if (this.$auth().user) {
+      this.$socket.emit('joinroom', this.$auth().user._id)
+    }
+  },
+  mounted () {
+    this.height = window.innerHeight - 101
+    if (this.$auth().user) {
+      this.loadUsers()
     }
   }
+}
 </script>
 
 <style src="#/assets/css/style.css"></style>

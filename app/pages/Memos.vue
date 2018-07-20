@@ -110,7 +110,7 @@ export default {
             status: 'Статус',
             nameFrom: 'От кого',
             currentUserName: 'Текущий исполнитель',
-            tools: 'Подробнее',
+            tools: 'Подробнее'
           },
           orderBy: {
             column: 'id',
@@ -123,19 +123,16 @@ export default {
               return (a, b) => {
                 a = a.id * 1
                 b = b.id * 1
-
-                if (ascending)
-                  return a >= b ? 1 : -1
-
+                if (ascending) return a >= b ? 1 : -1
                 return a <= b ? 1 : -1
               }
             }
           },
           columnsClasses: {
-            admin: 'admin',
+            admin: 'admin'
           },
-          skin: 'table table-bordered',
-        },
+          skin: 'table table-bordered'
+        }
       },
       mobTableData: {
         fields: [
@@ -143,7 +140,7 @@ export default {
           { key: 'name', label: 'Тема' },
           { key: 'nameFrom', label: 'От кого' },
           { key: 'currentUserName', label: 'Текущий исполнитель' },
-          { key: 'actions', label: 'Действия' },
+          { key: 'actions', label: 'Действия' }
         ],
         currentPage: 1,
         perPage: 5,
@@ -167,7 +164,7 @@ export default {
         })
         return data
       }
-    },
+    }
   },
   methods: {
     posName (positionId) {
@@ -181,7 +178,7 @@ export default {
     },
     toggleModal (name, model, tab) {
       this.modal[name] = model === undefined ? !this.modal[name] : model
-      this.modal.tab = tab ? tab : 0
+      this.modal.tab = tab || 0
     },
     getCommentsCount (model) {
       return this.$_.reduce(model.to, (result, m) => {
@@ -217,16 +214,14 @@ export default {
         this.$log(e, 'danger')
       })
     },
-
     isCreator (model) {
       return this.$auth().user._id === model.createdBy && model.currentUser === 0
     },
-
     deleteBid (data) {
       this.$api('delete', `bids/${data._id}`).then(response => {
         this.modal.delete = false
         this.notify(response.data.message)
-        this.bids = this.bids.filter(bid => bid._id != response.data.bid._id)
+        this.bids = this.bids.filter(bid => bid._id !== response.data.bid._id)
       }).catch(error => {
         Object.keys(error.response.data.errors).forEach(err => {
           this.notify(error.response.data.errors[err].msg, 'danger')
@@ -237,7 +232,8 @@ export default {
     loadBids () {
       let filter = this.$route.params.param1 ? `/?filter=${this.$route.params.param1}` : ''
       return this.$api('get', 'bids' + filter).then(response => {
-        return this.bids = response.data.bids
+        this.bids = response.data.bids
+        return this.bids
       }).catch(e => {
         this.notify(e, 'danger')
       })
@@ -297,7 +293,7 @@ export default {
       if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
         this.loadBids()
       }
-    },
+    }
   }
 }
 </script>

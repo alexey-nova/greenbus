@@ -44,34 +44,34 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import FileUpload from 'vue-upload-component'
+import Modal from '@/Modal'
+import FileUpload from 'vue-upload-component'
 
-  export default {
-    components: {
-      Modal,
-      FileUpload,
+export default {
+  components: {
+    Modal,
+    FileUpload
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  computed: {
+    setTypeName () {
+      return this.model.type === 'confirm' ? 'Согласовать задачу' : this.model.type === 'reject' ? 'Отклонить задачу на шаг' : 'Отклонить задачу до заявителя'
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    props: ['model', 'onSubmit', 'onClose'],
-    computed: {
-      setTypeName () {
-        return this.model.type === 'confirm' ? 'Согласовать задачу' : this.model.type === 'reject' ? 'Отклонить задачу на шаг' : 'Отклонить задачу до заявителя'
-      }
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$emit('onSubmit', this.model)
-        // this.$validator.validateAll().then(() => {
-        //   if (!this.$_.size(this.errors.items)) {
+    submit () {
+      this.$emit('onSubmit', this.model)
+      // this.$validator.validateAll().then(() => {
+      //   if (!this.$_.size(this.errors.items)) {
 
-        //   }
-        // }).catch(() => {})
-      }
+      //   }
+      // }).catch(() => {})
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

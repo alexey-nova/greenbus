@@ -3,11 +3,11 @@
 </template>
 
 <script>
-  export default {
-    props: [
-      'content'
-    ],
-  }
+export default {
+  props: [
+    'content'
+  ]
+}
 </script>
 
 <style lang="scss" scoped>

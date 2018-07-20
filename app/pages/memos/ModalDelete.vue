@@ -29,7 +29,7 @@ import Modal from '@/Modal'
 
 export default {
   components: {
-    Modal,
+    Modal
   },
   props: ['model', 'onSubmit', 'onClose'],
   methods: {
@@ -38,7 +38,7 @@ export default {
     },
     submit () {
       this.$emit('onSubmit', this.model)
-    },
+    }
   }
 }
 </script>

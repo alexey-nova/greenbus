@@ -16,7 +16,7 @@ let plugins = core.$_.reduce(boot.plugins, (result = {}, value, key) => {
 export default new Vuex.Store({
   modules: {
     app,
-    ...plugins,
+    ...plugins
   },
   strict: process.env.NODE_ENV !== 'production'
 })

@@ -32,99 +32,99 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
-  import ModalCreateDep from './ModalCreateDep'
-  import ModalEditDep from './ModalEditDep'
-  import ModalDeleteDep from './ModalDeleteDep'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
+import ModalCreateDep from './ModalCreateDep'
+import ModalEditDep from './ModalEditDep'
+import ModalDeleteDep from './ModalDeleteDep'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
-      ModalCreateDep,
-      ModalEditDep,
-      ModalDeleteDep,
-    },
-    data () {
-      return {
-        deps: [],
-        modal: {
-          edit: false,
-          deleting: false,
-          create: false,
-        },
-        tableData: {
-          columns: ['name', 'createdAt', 'tools'],
-          options: {
-            headings: {
-              name: 'Название',
-              createdAt: 'Создан',
-              tools: '',
-            },
-            orderBy: {
-              column: 'createdAt',
-              ascending: false
-            },
-            sortable: ['name', 'createdAt',],
-            filterable: ['name', 'createdAt',],
+export default {
+  components: {
+    Modal,
+    MaskedInput,
+    ModalCreateDep,
+    ModalEditDep,
+    ModalDeleteDep
+  },
+  data () {
+    return {
+      deps: [],
+      modal: {
+        edit: false,
+        deleting: false,
+        create: false
+      },
+      tableData: {
+        columns: ['name', 'createdAt', 'tools'],
+        options: {
+          headings: {
+            name: 'Название',
+            createdAt: 'Создан',
+            tools: ''
           },
-        },
+          orderBy: {
+            column: 'createdAt',
+            ascending: false
+          },
+          sortable: ['name', 'createdAt'],
+          filterable: ['name', 'createdAt']
+        }
       }
+    }
+  },
+  props: ['model'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    props: ['model'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      toggleModal (name, model) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-      },
-      createDep (dep) {
-        this.$api('post', 'departments', dep).then(response => {
-          this.loadDeps()
-          this.modal.create = false
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя создать отдел', 'info')
-          this.modal.create = false
-          this.$log(e, 'danger')
-        })
-      },
-      editDep (dep) {
-        this.$api('put', `departments/${dep._id}`, { name: dep.name }).then(response => {
-          this.loadDeps()
-          this.modal.edit = false
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя редактировать отдел', 'info')
-          this.modal.edit = false
-          this.$log(e, 'danger')
-        })
-      },
-      deleteDep (dep) {
-        this.$api('delete', 'departments/'+dep._id).then(response => {
-          this.loadDeps()
-          this.modal.deleting = false
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя удалить отдел', 'info')
-          this.modal.deleting = false
-          this.$log(e, 'danger')
-        })
-      },
-      loadDeps () {
-        this.$api('get', 'departments').then(response => {
-          this.deps = response.data
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
-      },
+    toggleModal (name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
     },
-    mounted () {
-      this.loadDeps()
+    createDep (dep) {
+      this.$api('post', 'departments', dep).then(response => {
+        this.loadDeps()
+        this.modal.create = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя создать отдел', 'info')
+        this.modal.create = false
+        this.$log(e, 'danger')
+      })
     },
+    editDep (dep) {
+      this.$api('put', `departments/${dep._id}`, { name: dep.name }).then(response => {
+        this.loadDeps()
+        this.modal.edit = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя редактировать отдел', 'info')
+        this.modal.edit = false
+        this.$log(e, 'danger')
+      })
+    },
+    deleteDep (dep) {
+      this.$api('delete', 'departments/' + dep._id).then(response => {
+        this.loadDeps()
+        this.modal.deleting = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя удалить отдел', 'info')
+        this.modal.deleting = false
+        this.$log(e, 'danger')
+      })
+    },
+    loadDeps () {
+      this.$api('get', 'departments').then(response => {
+        this.deps = response.data
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+    }
+  },
+  mounted () {
+    this.loadDeps()
   }
+}
 </script>
 
 <style lang="scss" scoped>

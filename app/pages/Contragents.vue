@@ -254,251 +254,250 @@
 </style>
 
 <script>
-  import PageTitle from '@/PageTitle'
-  import PageButtons from '@/PageButtons'
-  import Box from '@/Box'
-  import ModalCreate from './contragents/ModalCreate'
-  import ModalCreateFolder from './contragents/ModalCreateFolder'
-  import ModalCreateFile from './contragents/ModalCreateFile'
-  import ModalMove from './contragents/ModalMove'
-  import ModalRenameFolder from './contragents/ModalRenameFolder'
-  import ModalRenameFile from './contragents/ModalRenameFile'
-  import ModalDelete from './contragents/ModalDelete'
-  import ModalDeleteFilesAndFolders from './contragents/ModalDeleteFilesAndFolders'
+import PageTitle from '@/PageTitle'
+import PageButtons from '@/PageButtons'
+import Box from '@/Box'
+import ModalCreate from './contragents/ModalCreate'
+import ModalCreateFolder from './contragents/ModalCreateFolder'
+import ModalCreateFile from './contragents/ModalCreateFile'
+import ModalMove from './contragents/ModalMove'
+import ModalRenameFolder from './contragents/ModalRenameFolder'
+import ModalRenameFile from './contragents/ModalRenameFile'
+import ModalDelete from './contragents/ModalDelete'
+import ModalDeleteFilesAndFolders from './contragents/ModalDeleteFilesAndFolders'
 
-  export default {
-    components: {
-      PageTitle,
-      PageButtons,
-      Box,
-      ModalCreate,
-      ModalCreateFolder,
-      ModalCreateFile,
-      ModalMove,
-      ModalRenameFolder,
-      ModalRenameFile,
-      ModalDelete,
-      ModalDeleteFilesAndFolders
-    },
-    data () {
-      return {
-        users: [],
-        memos: [],
-        modal: {
-          create: false,
-          createFolder: false,
-          createFile: false,
-          moveFilesAndFolders: false,
-          renameFolder: false,
-          renameFile: false,
-          delete: false,
-          deleteFilesAndFolders: false
-        },
-        contragents: [],
-        content: {}, // для отображения содержимого папки: файлы, подпапки
-        uploadingFiles: [], // файлы для загрузки
-        chosenIds: [], // выбранные папки и файлы, для перемещения или удаления
-        query: '' // модель для поиска
-      }
-    },
-    computed: {
-      filteredData: {
-        get: function () {
-          let data = _.merge([], this.memos)
-
-          _.map(data, memo => {
-            let userFrom = _.find(this.users, u => u._id === memo.from)
-            memo.nameFrom = userFrom ? userFrom.fullname : ''
-
-            let to = memo.to[0] ? memo.to[0].user : false
-            let userTo = _.find(this.users, u => u._id === to)
-            memo.nameTo = userTo ? userTo.fullname : ''
-
-            return memo
-          })
-          return data
-        }
+export default {
+  components: {
+    PageTitle,
+    PageButtons,
+    Box,
+    ModalCreate,
+    ModalCreateFolder,
+    ModalCreateFile,
+    ModalMove,
+    ModalRenameFolder,
+    ModalRenameFile,
+    ModalDelete,
+    ModalDeleteFilesAndFolders
+  },
+  data () {
+    return {
+      users: [],
+      memos: [],
+      modal: {
+        create: false,
+        createFolder: false,
+        createFile: false,
+        moveFilesAndFolders: false,
+        renameFolder: false,
+        renameFile: false,
+        delete: false,
+        deleteFilesAndFolders: false
       },
-      mainFolders: {
-        get: function () {
-          return this.contragents.map(contragent =>  {
-            return {
-              ...contragent.mainFolder,
-              contragent: contragent._id,
-              bin: contragent.bin
-            }
-          })
-        }
+      contragents: [],
+      content: {}, // для отображения содержимого папки: файлы, подпапки
+      uploadingFiles: [], // файлы для загрузки
+      chosenIds: [], // выбранные папки и файлы, для перемещения или удаления
+      query: '' // модель для поиска
+    }
+  },
+  computed: {
+    filteredData: {
+      get: function () {
+        let data = _.merge([], this.memos)
 
+        _.map(data, memo => {
+          let userFrom = _.find(this.users, u => u._id === memo.from)
+          memo.nameFrom = userFrom ? userFrom.fullname : ''
+
+          let to = memo.to[0] ? memo.to[0].user : false
+          let userTo = _.find(this.users, u => u._id === to)
+          memo.nameTo = userTo ? userTo.fullname : ''
+
+          return memo
+        })
+        return data
       }
     },
-
-    methods: {
-      getCA () {
-        this.$api('get', 'ca').then(response => {
-          if (response.data) {
-            this.contragents = response.data
+    mainFolders: {
+      get: function () {
+        return this.contragents.map(contragent => {
+          return {
+            ...contragent.mainFolder,
+            contragent: contragent._id,
+            bin: contragent.bin
           }
         })
-      },
-      createCA (model) {
-        this.$api('post', `ca/`, model).then(response => {
-          this.getCA()
-          this.modal.create = false
+      }
+
+    }
+  },
+
+  methods: {
+    getCA () {
+      this.$api('get', 'ca').then(response => {
+        if (response.data) {
+          this.contragents = response.data
+        }
+      })
+    },
+    createCA (model) {
+      this.$api('post', `ca/`, model).then(response => {
+        this.getCA()
+        this.modal.create = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        console.log(e.response.data)
+        this.notify('Временно нельзя создать контрагент', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    getFolderContent () {
+      this.$api('get', `ca/${this.$route.params.folderId}`).then(response => {
+        if (response.data) {
+          this.content = response.data
+        }
+      })
+    },
+    createFolder (model) {
+      this.chosenIds = []
+      if (this.$route.params.folderId) {
+        this.$api('post', `ca/${this.$route.params.folderId}`, model).then(response => {
+          this.getFolderContent()
+          this.modal.createFolder = false
           this.notify(response.data.message)
         }).catch(e => {
           console.log(e.response.data)
-          this.notify('Временно нельзя создать контрагент', 'info')
+          this.notify('Временно нельзя создать папку', 'info')
           this.$log(e, 'danger')
         })
-      },
-      getFolderContent () {
-        this.$api('get', `ca/${this.$route.params.folderId}`).then(response => {
-          if (response.data) {
-            this.content = response.data
-          }
-        })
-      },
-      createFolder (model) {
-        this.chosenIds = []
-        if (this.$route.params.folderId) {
-          this.$api('post', `ca/${this.$route.params.folderId}`, model).then(response => {
-            this.getFolderContent()
-            this.modal.createFolder = false
-            this.notify(response.data.message)
-          }).catch(e => {
-            console.log(e.response.data)
-            this.notify('Временно нельзя создать папку', 'info')
-            this.$log(e, 'danger')
+      }
+    },
+    addFiles (e) {
+      this.chosenIds = []
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      // this.modal.createFile = false
+      this.uploadingFiles = files
+    },
+    uploadFiles (model) {
+      this.uploadingFiles = this.$_.map(model, (f) => f.file)
+      console.log('files', this.uploadingFiles)
+      const files = this.$createFormData({ files: this.uploadingFiles })
+      this.$api('post', `ca/${this.$route.params.folderId}/files`, files).then(response => {
+        this.modal.createFile = false
+        this.uploadingFiles = []
+        this.notify(response.data.message)
+        if (this.content.files) {
+          response.data.files.forEach(file => {
+            this.content.files.push(file)
           })
-        }
-      },
-      addFiles (e) {
-        this.chosenIds = []
-        let files = e.target.files || e.dataTransfer.files
-        if (!files.length) return
-        //this.modal.createFile = false
-        this.uploadingFiles = files
-      },
-      uploadFiles (model) {
-        this.uploadingFiles = this.$_.map(model, (f) => f.file)
-        console.log('files', this.uploadingFiles)
-        const files = this.$createFormData({ files: this.uploadingFiles })
-        this.$api('post', `ca/${this.$route.params.folderId}/files`, files).then(response => {
-          this.modal.createFile = false
-          this.uploadingFiles = []
-          this.notify(response.data.message)
-          if (this.content.files) {
-            response.data.files.forEach(file => {
-              this.content.files.push(file)
-            })
-          } else {
-            this.content.files = response.data.files
-          }
-        }).catch(e => {
-          console.log(e.response.data)
-          this.notify('Временно нельзя загрузить файлы', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      chooseId (id) {
-        if (!this.chosenIds.includes(id)) {
-          this.chosenIds.push(id)
         } else {
-          this.chosenIds = _.reduce(this.chosenIds, (result, cid) => {
-            if (cid !== id) {
-              result.push(cid)
-            }
-            return result
-          }, [])
+          this.content.files = response.data.files
         }
-      },
-      moveFilesAndFolders (model) {
-        this.$api('post', `ca/${this.$route.params.folderId}/move`, {
-          dest: model.dest,
-          ids: this.chosenIds
-        }).then(response => {
-          this.modal.moveFilesAndFolders = false
-          this.notify(response.data.message)
-          this.getFolderContent()
-        })
-      },
-      deleteFilesAndFolders () {
-        this.$api('post', 'ca/delete', { ids: this.chosenIds }).then(response => {
-          this.modal.deleteFilesAndFolders = false
-          this.notify(response.data.message)
-          this.chosenIds = []
-          this.getFolderContent()
-        }).catch(err => {
-          this.modal.moveFilesAndFolders = false
-          this.notify(err.response.data.message)
-        })
-      },
-      toggleModal (name, model) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-      },
-      renameFolder (model) {
+      }).catch(e => {
+        console.log(e.response.data)
+        this.notify('Временно нельзя загрузить файлы', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    chooseId (id) {
+      if (!this.chosenIds.includes(id)) {
+        this.chosenIds.push(id)
+      } else {
+        this.chosenIds = _.reduce(this.chosenIds, (result, cid) => {
+          if (cid !== id) {
+            result.push(cid)
+          }
+          return result
+        }, [])
+      }
+    },
+    moveFilesAndFolders (model) {
+      this.$api('post', `ca/${this.$route.params.folderId}/move`, {
+        dest: model.dest,
+        ids: this.chosenIds
+      }).then(response => {
+        this.modal.moveFilesAndFolders = false
+        this.notify(response.data.message)
+        this.getFolderContent()
+      })
+    },
+    deleteFilesAndFolders () {
+      this.$api('post', 'ca/delete', { ids: this.chosenIds }).then(response => {
+        this.modal.deleteFilesAndFolders = false
+        this.notify(response.data.message)
         this.chosenIds = []
-        this.$api('put', `ca/${model._id}`, { name: model.name }).then(response => {
-          this.modal.renameFolder = false
-          this.notify(response.data.message)
-          this.getFolderContent()
-        }).catch(err => {
-          this.notify(err.response.data.errors.folder.msg, 'danger')
-        })
-      },
-      renameFile (model) {
-        this.chosenIds = []
-        this.$api('put', `ca/files/${model._id}`, { name: model.name }).then(response => {
-          this.modal.renameFile = false
-          this.notify(response.data.message)
-          this.getFolderContent()
-        }).catch(err => {
-          this.notify(err.response.data.errors.file.msg, 'danger')
-        })
-      },
-      search () {
-        this.chosenIds = []
-        if (this.query) {
-          this.$api('get', `ca/search?search=${this.query}`).then(response => {
-            this.content.childFolders = response.data.folders
-            this.content.files = response.data.files
-          })
-        }
-      },
-      deleteCA (_id) {
-        this.$api('delete', `ca/${_id}`).then(response => {
-          this.modal.delete = false
-          this.getCA()
-          this.notify(response.data.message)
-        }).catch(err => {
-          this.modal.delete = false
-          this.notify(err.response.data.message)
+        this.getFolderContent()
+      }).catch(err => {
+        this.modal.moveFilesAndFolders = false
+        this.notify(err.response.data.message)
+      })
+    },
+    toggleModal (name, model) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+    },
+    renameFolder (model) {
+      this.chosenIds = []
+      this.$api('put', `ca/${model._id}`, { name: model.name }).then(response => {
+        this.modal.renameFolder = false
+        this.notify(response.data.message)
+        this.getFolderContent()
+      }).catch(err => {
+        this.notify(err.response.data.errors.folder.msg, 'danger')
+      })
+    },
+    renameFile (model) {
+      this.chosenIds = []
+      this.$api('put', `ca/files/${model._id}`, { name: model.name }).then(response => {
+        this.modal.renameFile = false
+        this.notify(response.data.message)
+        this.getFolderContent()
+      }).catch(err => {
+        this.notify(err.response.data.errors.file.msg, 'danger')
+      })
+    },
+    search () {
+      this.chosenIds = []
+      if (this.query) {
+        this.$api('get', `ca/search?search=${this.query}`).then(response => {
+          this.content.childFolders = response.data.folders
+          this.content.files = response.data.files
         })
       }
     },
-    mounted () {
+    deleteCA (_id) {
+      this.$api('delete', `ca/${_id}`).then(response => {
+        this.modal.delete = false
+        this.getCA()
+        this.notify(response.data.message)
+      }).catch(err => {
+        this.modal.delete = false
+        this.notify(err.response.data.message)
+      })
+    }
+  },
+  mounted () {
+    this.$route.params.folderId ? this.getFolderContent() : this.getCA()
+
+    this.$store.commit('app/setSidebar', 'documents')
+  },
+  destroyed () {
+    this.$store.commit('app/setSidebar', {})
+  },
+  watch: {
+    '$route' (to, from) {
+      this.chosenIds = []
       this.$route.params.folderId ? this.getFolderContent() : this.getCA()
-
-      this.$store.commit('app/setSidebar', 'documents')
     },
-    destroyed () {
-      this.$store.commit('app/setSidebar', {})
+    content: val => {
+      this.content = val
     },
-    watch: {
-      '$route' (to, from) {
-        this.chosenIds = []
-        this.$route.params.folderId ? this.getFolderContent() : this.getCA()
-      },
-      content: val => {
-        this.content = val
-      },
-      query: function (val) {
-        if (!val) {
-          this.getFolderContent()
-        }
-
+    query: function (val) {
+      if (!val) {
+        this.getFolderContent()
       }
-    },
+    }
   }
+}
 </script>

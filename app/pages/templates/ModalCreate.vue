@@ -31,32 +31,32 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
+export default {
+  components: {
+    Modal
+  },
+  data () {
+    return {
+    }
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  computed: {
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    data () {
-      return {
-      }
-    },
-    props: ['model', 'onSubmit', 'onClose'],
-    computed: {
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {})
-      },
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {})
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

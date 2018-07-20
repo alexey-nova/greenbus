@@ -7,20 +7,20 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      title: String,
-      value: String,
-      name: String,
-      validate: String,
-      require: Boolean,
-    },
-    methods: {
-      input (value) {
-        this.$emit('input', value)
-      }
+export default {
+  props: {
+    title: String,
+    value: String,
+    name: String,
+    validate: String,
+    require: Boolean
+  },
+  methods: {
+    input (value) {
+      this.$emit('input', value)
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

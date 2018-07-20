@@ -1,20 +1,20 @@
 <script>
-  export default {
-    props: ['users', 'current'],
-    methods: {
-      changeCurrent (id) {
-        this.$emit('changeCurrent', id)
-      },
-      readChat (chatId) {
-        if (chatId) {
-          this.$api('post', `conversations/read/${chatId}`).then(response => {})
-        }
-      },
-      avatar (user) {
-        return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
-      },
+export default {
+  props: ['users', 'current'],
+  methods: {
+    changeCurrent (id) {
+      this.$emit('changeCurrent', id)
+    },
+    readChat (chatId) {
+      if (chatId) {
+        this.$api('post', `conversations/read/${chatId}`).then(response => {})
+      }
+    },
+    avatar (user) {
+      return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
     }
   }
+}
 </script>
 
 <template>

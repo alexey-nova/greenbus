@@ -99,7 +99,7 @@
                     </li>
                   </ul>
                 </div>
-                
+
               </div>
             </div>
           </div>
@@ -115,87 +115,87 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
-  import Datepicker from 'vuejs-datepicker'
-  import { Switch } from 'element-ui'
-  import Multiselect from 'vue-multiselect'
-  import FileUpload from 'vue-upload-component'
-  import Ckeditor from 'vue-ckeditor2'
+import Modal from '@/Modal'
+import Datepicker from 'vuejs-datepicker'
+import { Switch } from 'element-ui'
+import Multiselect from 'vue-multiselect'
+import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
-  export default {
-    components: {
-      Modal,
-      Datepicker,
-      'el-switch': Switch,
-      Multiselect,
-      FileUpload,
-      Ckeditor
-    },
-    data () {
-      return {
-        ckEditorConfig: {
-          toolbar: [
-            [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
-          ],
-          height: 150
+export default {
+  components: {
+    Modal,
+    Datepicker,
+    'el-switch': Switch,
+    Multiselect,
+    FileUpload,
+    Ckeditor
+  },
+  data () {
+    return {
+      ckEditorConfig: {
+        toolbar: [
+          [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+        ],
+        height: 150
+      },
+      datepickerState: {
+        disabled: {
+          to: new Date((new Date()).setDate((new Date()).getDate() - 1))
         },
-        datepickerState: {
-          disabled: {
-            to: new Date((new Date()).setDate((new Date()).getDate() - 1))
-          },
-          highlighted: {
-            dates: [ new Date() ]
-          }
+        highlighted: {
+          dates: [ new Date() ]
         }
       }
+    }
+  },
+  props: ['model', 'users', 'onSubmit', 'onClose'],
+  computed: {
+    usersForSelect () {
+      return this.$props.users.filter(user => {
+        return (!user.admin || user.login !== 'admin') && user._id !== this.$auth().user._id
+      }).map(user => {
+        return {name: user.fullname, _id: user._id}
+      })
     },
-    props: ['model', 'users', 'onSubmit', 'onClose'],
-    computed: {
-      usersForSelect () {
-        return this.$props.users.filter(user => {
-          return (!user.admin || user.login !== 'admin') && user._id !== this.$auth().user._id
-        }).map(user => {
-          return {name: user.fullname, _id:user._id}
+    selectedUser: {
+      get: function () {
+        return {name: this.getUser(this.$props.model.to).fullname, _id: this.$props.model.to}
+      },
+      set: function (newValue) {
+        this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
+        this.$props.model.to = newValue ? newValue._id : ''
+      }
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    getUser (_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id)
+      return user || {}
+    },
+    removeFile (index) {
+      this.model.files.splice(index, 1)
+    },
+    submit () {
+      if (!this.model.to) {
+        this.errors.items.push({
+          id: '100',
+          field: 'to',
+          scope: null,
+          msg: 'Поле Кому обязательно для заполнения'
         })
-      },
-      selectedUser: {
-        get: function () {
-          return {name: this.getUser(this.$props.model.to).fullname, _id: this.$props.model.to}
-        },
-        set: function (newValue) {
-          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
-          this.$props.model.to = newValue ? newValue._id : ''
-        }
       }
-    },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.$props.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      removeFile (index) {
-        this.model.files.splice(index, 1)
-      },
-      submit () {
-        if (!this.model.to) {
-          this.errors.items.push({
-            id: '100',
-            field: 'to',
-            scope: null,
-            msg: 'Поле Кому обязательно для заполнения',
-          })
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
         }
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {})
-      },
+      }).catch(() => {})
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -177,7 +177,7 @@ export default {
     PageTitle,
     FullCalendar
   },
-  data() {
+  data () {
     return {
       bids: [],
       seoTitle: this.$trans('pages.index.seoTitle'),
@@ -261,7 +261,7 @@ export default {
     },
     getUser (_id) {
       let user = this.$_.find(this.users, u => u._id === _id)
-      return user ? user : {}
+      return user || {}
     },
     goTo (name, params, query) {
       this.$router.push({ name, params, query })

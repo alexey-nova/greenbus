@@ -37,7 +37,7 @@ import Modal from '@/Modal'
 
 export default {
   components: {
-    Modal,
+    Modal
   },
   data () {
     return {
@@ -51,7 +51,6 @@ export default {
     },
     loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
-        console.log('positions', response.data)
         this.positions = response.data.positions
       })
     },
@@ -74,7 +73,7 @@ export default {
   &-item {
     border: 1px solid #b9b9b9;
     padding: 10px;
-    
+
     &:not(:last-child) {
       margin-bottom: 10px;
     }
@@ -86,6 +85,6 @@ export default {
     padding: 10px;
     color: #fff;
   }
-  
+
 }
 </style>

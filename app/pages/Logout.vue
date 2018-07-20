@@ -3,11 +3,11 @@
 </template>
 
 <script>
-  export default {
-    mounted () {
-      this.$auth().logout()
-    },
+export default {
+  mounted () {
+    this.$auth().logout()
   }
+}
 </script>
 
 <style lang="scss" scoped>

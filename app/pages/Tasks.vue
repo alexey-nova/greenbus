@@ -88,246 +88,245 @@
 </template>
 
 <script>
-  import ModalCreate from './tasks/ModalCreateTask'
-  import ModalEdit from './tasks/ModalEditTask'
-  import ModalDelete from './tasks/ModalDeleteTask'
-	import ModalShow from './tasks/ModalShowTask'
-	import bTable from 'bootstrap-vue/es/components/table/table'
-	import bPagination from 'bootstrap-vue/es/components/pagination/pagination'
+import ModalCreate from './tasks/ModalCreateTask'
+import ModalEdit from './tasks/ModalEditTask'
+import ModalDelete from './tasks/ModalDeleteTask'
+import ModalShow from './tasks/ModalShowTask'
+import bTable from 'bootstrap-vue/es/components/table/table'
+import bPagination from 'bootstrap-vue/es/components/pagination/pagination'
 
-  export default {
-    components: {
-      ModalCreate,
-      ModalEdit,
-      ModalDelete,
-			ModalShow,
-			'b-table': bTable,
+export default {
+  components: {
+    ModalCreate,
+    ModalEdit,
+    ModalDelete,
+    ModalShow,
+    'b-table': bTable,
     	'b-pagination': bPagination
-    },
-    data () {
-      return {
-        tasks: [],
-        users: [],
-        modal: {
-          create: false,
-          edit: false,
-          deleted: false,
-          end: false,
-          show: false,
-          tab: 0,
-        },
-        statuses: [
-          'В работе',
-          'На согласовании',
-          'Завершена',
-          'Отказано',
-        ],
-        tableData: {
-          columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools', 'admin'],
-          options: {
-            headings: {
-              id: 'ID',
-              admin: 'Управление',
-              name: 'Задача',
-              description: 'Описание',
-              urgency: 'Приоритет',
-              status: 'Статус',
-              deadline: 'Срок до',
-              from: 'От кого',
-              to: 'Ответственный',
-              tools: 'Информация',
-            },
-            orderBy: {
-              column: 'id',
-              ascending: false
-            },
-            sortable: ['id', 'name', 'description', 'urgency', 'status', 'deadline', 'from', 'to',],
-            filterable: ['id', 'name', 'description', 'urgency', 'status', 'deadline', 'from', 'to',],
-            customSorting: {
-              id: function (ascending) {
-                return (a, b) => {
-                  a = a.id * 1
-                  b = b.id * 1
-                  if (ascending)
-                    return a >= b ? 1 : -1
-                  return a <= b ? 1 : -1
-                }
-              }
-            },
-            columnsClasses: {
-              admin: 'admin',
-            },
-            highlightMatches: true
+  },
+  data () {
+    return {
+      tasks: [],
+      users: [],
+      modal: {
+        create: false,
+        edit: false,
+        deleted: false,
+        end: false,
+        show: false,
+        tab: 0
+      },
+      statuses: [
+        'В работе',
+        'На согласовании',
+        'Завершена',
+        'Отказано'
+      ],
+      tableData: {
+        columns: ['id', 'name', 'urgency', 'status', 'deadline', 'from', 'to', 'tools', 'admin'],
+        options: {
+          headings: {
+            id: 'ID',
+            admin: 'Управление',
+            name: 'Задача',
+            description: 'Описание',
+            urgency: 'Приоритет',
+            status: 'Статус',
+            deadline: 'Срок до',
+            from: 'От кого',
+            to: 'Ответственный',
+            tools: 'Информация'
           },
-				},
-				mobTableData: {
-					fields: [
-						{ key: 'name', label: 'Задача'},
-						{ key: 'status', label: 'Статус'},
-						{ key: 'deadline', label: 'Срок до'},
-						{ key: 'from', label: 'От кого'},
-						{ key: 'to', label: 'Ответственный'},
-						{ key: 'actions', label: 'Управление'},
-					],
-					currentPage: 1,
-					perPage: 5,
-					totalRows: 0,
-					// pageOptions: [ 5, 10, 15 ],
-					filter: null
-				}
+          orderBy: {
+            column: 'id',
+            ascending: false
+          },
+          sortable: ['id', 'name', 'description', 'urgency', 'status', 'deadline', 'from', 'to'],
+          filterable: ['id', 'name', 'description', 'urgency', 'status', 'deadline', 'from', 'to'],
+          customSorting: {
+            id: function (ascending) {
+              return (a, b) => {
+                a = a.id * 1
+                b = b.id * 1
+                if (ascending) { return a >= b ? 1 : -1 }
+                return a <= b ? 1 : -1
+              }
+            }
+          },
+          columnsClasses: {
+            admin: 'admin'
+          },
+          highlightMatches: true
+        }
+      },
+      mobTableData: {
+        fields: [
+          { key: 'name', label: 'Задача'},
+          { key: 'status', label: 'Статус'},
+          { key: 'deadline', label: 'Срок до'},
+          { key: 'from', label: 'От кого'},
+          { key: 'to', label: 'Ответственный'},
+          { key: 'actions', label: 'Управление'}
+        ],
+        currentPage: 1,
+        perPage: 5,
+        totalRows: 0,
+        // pageOptions: [ 5, 10, 15 ],
+        filter: null
       }
+    }
+  },
+  methods: {
+    toggleModal (name, model, tab) {
+      this.modal[name] = model === undefined ? !this.modal[name] : model
+      this.modal.tab = tab || 0
     },
-    methods: {
-      toggleModal (name, model, tab) {
-        this.modal[name] = model === undefined ? !this.modal[name] : model
-        this.modal.tab = tab ? tab : 0
-      },
-      createTask (task) {
-        task.files = this.$_.map(task.files, (f) => f.file)
-        let data = this.$createFormData(task)
-        this.$api('post', 'tasks', data).then(response => {
-          this.modal.create = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя создать задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      editTask (task) {
-        task.to = JSON.stringify(task.to)
-        task.files = this.$_.reduce(task.files, (result, f) => {
-          if (f.file) {
-            result.push(f.file)
-          }
-          return result
-        }, [])
-        let data = this.$createFormData(task)
-        this.$api('put', 'tasks/' + task._id, data).then(response => {
-          this.modal.edit = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя редактировать задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      deleteTask (task) {
-        this.$api('delete', 'tasks/' + task._id).then(response => {
-          this.modal.deleted = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          if (e.response.data && e.response.data.errors) {
-            Object.keys(e.response.data.errors).forEach(key => {
-              this.notify(e.response.data.errors[key].msg, 'danger')
-            })
-          }
-          this.modal.deleted = false
-          this.$log(e, 'danger')
-        })
-      },
-      performTask (task) {
-        task.files = task.newFiles && task.newFiles.map(f => f.file)
-        let data = this.$createFormData(task)
-        this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
-          this.modal.show = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя завершить задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      confirmTask (model) {
-        model.files = model.newFiles && model.newFiles.map(f => f.file)
-        let formData = this.$createFormData(model)
-        this.$api('post', 'tasks/confirm/' + model._id, formData).then(response => {
-          this.modal.show = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя согласовать задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      rejectTask (model) {
-        model.files = model.newFiles && model.newFiles.map(f => f.file)
-        let formData = this.$createFormData(model)
-        this.$api('post', 'tasks/reject/' + model._id, formData).then(response => {
-          this.modal.show = false
-          this.loadTasks()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Временно нельзя отменить задачу', 'info')
-          this.$log(e, 'danger')
-        })
-      },
-      loadTasks () {
-        let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
-				this.tasks = []
-
-        return this.$api('get', 'tasks' + filter).then(response => {
-          return this.tasks = response.data.tasks
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
-      },
-      loadUsers () {
-        return this.$api('get', 'users').then(response => {
-          if (response.data && response.data.length > 0) {
-            this.users = response.data
-          }
-        }).catch(e => {
-          this.notify(e, 'danger')
-        })
-      },
-      setSidebar () {
-        this.$store.commit('app/setSidebar', 'tasks')
-      },
-      getUser (_id) {
-        let user = this.$_.find(this.users, u => u._id === _id)
-        return user ? user : {}
-      },
-      showTaskFromQuery () {
-        let type = this.$_.get(this.$route, 'query.type', '')
-        let taskId = this.$_.get(this.$route, 'query.task', '')
-        if (type && taskId) {
-          this.loadTasks().then((tasks) => {
-            this.toggleModal(type, (this.$_.find(tasks, ['_id', taskId])))
+    createTask (task) {
+      task.files = this.$_.map(task.files, (f) => f.file)
+      let data = this.$createFormData(task)
+      this.$api('post', 'tasks', data).then(response => {
+        this.modal.create = false
+        this.loadTasks()
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя создать задачу', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    editTask (task) {
+      task.to = JSON.stringify(task.to)
+      task.files = this.$_.reduce(task.files, (result, f) => {
+        if (f.file) {
+          result.push(f.file)
+        }
+        return result
+      }, [])
+      let data = this.$createFormData(task)
+      this.$api('put', 'tasks/' + task._id, data).then(response => {
+        this.modal.edit = false
+        this.loadTasks()
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя редактировать задачу', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    deleteTask (task) {
+      this.$api('delete', 'tasks/' + task._id).then(response => {
+        this.modal.deleted = false
+        this.loadTasks()
+        this.notify(response.data.message)
+      }).catch(e => {
+        if (e.response.data && e.response.data.errors) {
+          Object.keys(e.response.data.errors).forEach(key => {
+            this.notify(e.response.data.errors[key].msg, 'danger')
           })
         }
-			},
-			onFiltered (filteredItems) {
-				this.mobTableData.totalRows = filteredItems.length
-				this.mobTableData.currentPage = 1
-			}
+        this.modal.deleted = false
+        this.$log(e, 'danger')
+      })
     },
-
-    mounted () {
-      this.loadTasks()
-      this.loadUsers()
-      this.setSidebar()
-			this.showTaskFromQuery()
-    	this.mobTableData.totalRows = this.tasks.length
-    },
-    destroyed () {
-      this.$store.commit('app/setSidebar', {})
-    },
-    watch: {
-      '$route' (to, from) {
+    performTask (task) {
+      task.files = task.newFiles && task.newFiles.map(f => f.file)
+      let data = this.$createFormData(task)
+      this.$api('post', 'tasks/perform/' + task._id, data).then(response => {
+        this.modal.show = false
         this.loadTasks()
-        this.showTaskFromQuery()
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя завершить задачу', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    confirmTask (model) {
+      model.files = model.newFiles && model.newFiles.map(f => f.file)
+      let formData = this.$createFormData(model)
+      this.$api('post', 'tasks/confirm/' + model._id, formData).then(response => {
+        this.modal.show = false
+        this.loadTasks()
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя согласовать задачу', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    rejectTask (model) {
+      model.files = model.newFiles && model.newFiles.map(f => f.file)
+      let formData = this.$createFormData(model)
+      this.$api('post', 'tasks/reject/' + model._id, formData).then(response => {
+        this.modal.show = false
+        this.loadTasks()
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя отменить задачу', 'info')
+        this.$log(e, 'danger')
+      })
+    },
+    loadTasks () {
+      let filter = this.$route.params.param1 ? `/?f=${this.$route.params.param1}` : ''
+      this.tasks = []
+
+      return this.$api('get', 'tasks' + filter).then(response => {
+        return this.tasks = response.data.tasks
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+    },
+    loadUsers () {
+      return this.$api('get', 'users').then(response => {
+        if (response.data && response.data.length > 0) {
+          this.users = response.data
+        }
+      }).catch(e => {
+        this.notify(e, 'danger')
+      })
+    },
+    setSidebar () {
+      this.$store.commit('app/setSidebar', 'tasks')
+    },
+    getUser (_id) {
+      let user = this.$_.find(this.users, u => u._id === _id)
+      return user || {}
+    },
+    showTaskFromQuery () {
+      let type = this.$_.get(this.$route, 'query.type', '')
+      let taskId = this.$_.get(this.$route, 'query.task', '')
+      if (type && taskId) {
+        this.loadTasks().then((tasks) => {
+          this.toggleModal(type, (this.$_.find(tasks, ['_id', taskId])))
+        })
       }
     },
-    sockets: {
-      notification: function (val) {
-        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
-          this.loadTasks()
-        }
-      },
+    onFiltered (filteredItems) {
+      this.mobTableData.totalRows = filteredItems.length
+      this.mobTableData.currentPage = 1
+    }
+  },
+
+  mounted () {
+    this.loadTasks()
+    this.loadUsers()
+    this.setSidebar()
+    this.showTaskFromQuery()
+    	this.mobTableData.totalRows = this.tasks.length
+  },
+  destroyed () {
+    this.$store.commit('app/setSidebar', {})
+  },
+  watch: {
+    '$route' (to, from) {
+      this.loadTasks()
+      this.showTaskFromQuery()
+    }
+  },
+  sockets: {
+    notification: function (val) {
+      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+        this.loadTasks()
+      }
     }
   }
+}
 </script>
 
 <style lang="scss">

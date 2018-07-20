@@ -54,7 +54,7 @@ export default {
     },
     child: {
       type: Boolean
-    },
+    }
   },
   methods: {
     commentType (type) {

@@ -54,24 +54,24 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
-    },
-    props: ['model', 'onClose'],
-    computed: {
-     avatar () {
-       return this.model.avatar ? `${this.$config('app.fileUrl')}${this.model.avatar}` : false
-     }
-		},
-		methods: {
-      close () {
-        this.$emit('onClose')
-      }
-		}
+export default {
+  components: {
+    Modal
+  },
+  props: ['model', 'onClose'],
+  computed: {
+    avatar () {
+      return this.model.avatar ? `${this.$config('app.fileUrl')}${this.model.avatar}` : false
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>

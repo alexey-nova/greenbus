@@ -44,46 +44,46 @@
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
-  import Multiselect from 'vue-multiselect'
-  import FileUpload from 'vue-upload-component'
+import 'element-ui/lib/theme-chalk/index.css'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
+import Multiselect from 'vue-multiselect'
+import FileUpload from 'vue-upload-component'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
-      Multiselect,
-      FileUpload,
+export default {
+  components: {
+    Modal,
+    MaskedInput,
+    Multiselect,
+    FileUpload
+  },
+  data () {
+    return {
+      files: []
+    }
+  },
+  props: ['model', 'onSubmit', 'onClose', 'uploadingFiles'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    data () {
-      return {
-        files: []
-      }
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          this.$emit('onSubmit', this.files)
+          this.files = []
+        }
+      }).catch(() => {
+        console.log('t')
+      })
     },
-    props: ['model', 'onSubmit', 'onClose', 'uploadingFiles',],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            this.$emit('onSubmit', this.files)
-            this.files = []
-          }
-        }).catch(() => {
-          console.log('t')
-        })
-      },
-      removeFile (index) {
-        this.files.splice(index, 1)
-      }
-    },
-    computed: {}
-  }
+    removeFile (index) {
+      this.files.splice(index, 1)
+    }
+  },
+  computed: {}
+}
 </script>
 
 <style lang="scss" scoped>

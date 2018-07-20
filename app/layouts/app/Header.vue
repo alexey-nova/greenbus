@@ -7,13 +7,13 @@
 </template>
 
 <script>
-  import Navigation from './header/Navigation'
-  // import Notifications from './header/Notifications'
+import Navigation from './header/Navigation'
+// import Notifications from './header/Notifications'
 
-  export default {
-    components: {
-      Navigation,
-      // Notifications,
-    }
+export default {
+  components: {
+    Navigation
+    // Notifications,
   }
+}
 </script>

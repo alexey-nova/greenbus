@@ -1,4 +1,4 @@
 export default {
   apiUrl: 'trans',
-  fromLocal: true,
+  fromLocal: true
 }

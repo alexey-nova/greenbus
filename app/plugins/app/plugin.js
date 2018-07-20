@@ -34,5 +34,5 @@ export default {
     })
     return data
   },
-  mixin: {},
+  mixin: {}
 }

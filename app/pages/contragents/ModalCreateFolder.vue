@@ -31,35 +31,35 @@
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
+import 'element-ui/lib/theme-chalk/index.css'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
+export default {
+  components: {
+    Modal,
+    MaskedInput
+  },
+  data () {
+    return {}
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    data () {
-      return {}
-    },
-    props: ['model', 'onSubmit', 'onClose',],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            this.$emit('onSubmit', model)
-          }
-        }).catch(() => {
-        })
-      }
-    },
-    computed: {}
-  }
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          this.$emit('onSubmit', model)
+        }
+      }).catch(() => {
+      })
+    }
+  },
+  computed: {}
+}
 </script>
 
 <!-- <style src="vue-multiselect/dist/vue-multiselect.min.css"></style> -->

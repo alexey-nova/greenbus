@@ -1,39 +1,35 @@
 <script>
-  export default {
-    props: ['messages', 'users', 'me'],
-    filters: {
-      time (date) {
+export default {
+  props: ['messages', 'users', 'me'],
+  filters: {
+    time (date) {
+      date = new Date(date)
+      if (typeof date === 'string') {
         date = new Date(date)
-        if (typeof date === 'string') {
-          date = new Date(date)
-        }
-        return `${date.getDate()} ${date.getMonth()}, ${date.getHours()}:${date.getMinutes()}`
       }
-    },
-    directives: {
-      'scroll-bottom': function (el) {
-        _.defer(() => {
-          el.scrollTop = el.scrollHeight - el.clientHeight
-        })
+      return `${date.getDate()} ${date.getMonth()}, ${date.getHours()}:${date.getMinutes()}`
+    }
+  },
+  directives: {
+    'scroll-bottom': function (el) {
+      _.defer(() => {
+        el.scrollTop = el.scrollHeight - el.clientHeight
+      })
+    }
+  },
+  methods: {
+    avatar (author) {
+      if (!author) return false
+      if ((author._id ? author._id : author) === this.me && this.$auth().user.avatar) {
+        return `${this.$config('app.fileUrl')}${this.$auth().user.avatar}`
+      } else if (this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar) {
+        return `${this.$config('app.fileUrl')}${this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar}`
+      } else {
+        return false
       }
-    },
-    methods: {
-      avatar (author) {
-        if (!author) return false
-        if ((author._id ? author._id : author ) === this.me && this.$auth().user.avatar) {
-          return `${this.$config('app.fileUrl')}${this.$auth().user.avatar}`
-        } else if (this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar) {
-          return `${this.$config('app.fileUrl')}${this.users.filter(user => user._id === (author._id ? author._id : author))[0].avatar}`
-        } else {
-          return false
-        }
-      },
-    },
-    mounted () {
-      // console.log('users', this.users)
-      // console.log('me', this.me)
     }
   }
+}
 </script>
 
 <template>

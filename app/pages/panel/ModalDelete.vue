@@ -45,12 +45,12 @@ export default {
     }
   },
   methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$emit('onSubmit', this.model)
-      },
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.$emit('onSubmit', this.model)
     }
+  }
 }
 </script>

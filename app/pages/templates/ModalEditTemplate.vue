@@ -73,7 +73,7 @@ export default {
   name: 'ModalEditTemplate',
   components: {
     Modal,
-    Multiselect,
+    Multiselect
   },
   data () {
     return {
@@ -81,7 +81,7 @@ export default {
       otdels: [],
       positions: [],
       filteredPositions: [],
-      currentModel: JSON.parse(JSON.stringify(this.model)),
+      currentModel: JSON.parse(JSON.stringify(this.model))
     }
   },
   props: ['onSubmit', 'model', 'onClose'],
@@ -104,30 +104,28 @@ export default {
     submit () {
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
-
-          for (var i = 0; i < this.currentModel.order.length; i++){
+          for (var i = 0; i < this.currentModel.order.length; i++) {
             var pid = this.currentModel.order[i].position._id
             this.currentModel.order[i].position = pid
           }
-
           this.$emit('onSubmit', this.currentModel)
         }
       }).catch(() => {})
     },
-    loadPositions() {
+    loadPositions () {
       return this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },
-    loadDepartments() {
+    loadDepartments () {
       this.$api('get', 'departments')
-      .then(response => {
-        this.departments = response.data.departments
-        this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
-      })
-      .catch(e => {
-        this.notify(e.response.data, 'danger')
-      })
+        .then(response => {
+          this.departments = response.data.departments
+          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
+        })
+        .catch(e => {
+          this.notify(e.response.data, 'danger')
+        })
     },
     setVal (val) {
       this.currentModel.department = val[val.length - 1]
@@ -148,7 +146,7 @@ export default {
       return result
     },
     exists (arr, key, val) {
-      return arr.filter( item => item[key] === val).length > 0
+      return arr.filter(item => item[key] === val).length > 0
     },
     setChildren (arr, item) {
       const target = { ...item }
@@ -171,10 +169,9 @@ export default {
           }
         }
       }
-    },
+    }
   },
   mounted () {
-
     if (this.currentModel) {
       this.loadDepartments()
       this.loadPositions().then(data => {
@@ -188,7 +185,6 @@ export default {
             }
           }
         }
-
       })
     }
   }

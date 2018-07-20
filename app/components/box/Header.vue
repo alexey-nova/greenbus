@@ -13,20 +13,20 @@
 </template>
 
 <script>
-  export default {
-    props: [
-      'title',
-      'controls',
-    ],
-    computed: {
-      collapse () {
-        return this.controls.indexOf('collapse') !== -1
-      },
-      close () {
-        return this.controls.indexOf('close') !== -1
-      }
+export default {
+  props: [
+    'title',
+    'controls'
+  ],
+  computed: {
+    collapse () {
+      return this.controls.indexOf('collapse') !== -1
+    },
+    close () {
+      return this.controls.indexOf('close') !== -1
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,28 +1,28 @@
 <script>
-  export default {
-    props: ['user', 'search', 'positions'],
-    model: {
-      prop: 'search',
-      event: 'change'
+export default {
+  props: ['user', 'search', 'positions'],
+  model: {
+    prop: 'search',
+    event: 'change'
+  },
+  methods: {
+    onKeyup (e) {
+      const search = e.target.value.trim()
+      //        if (search.length > 0) {
+      this.$emit('change', search)
+      //        }
     },
-    methods: {
-      onKeyup (e) {
-        const search = e.target.value.trim()
-//        if (search.length > 0) {
-          this.$emit('change', search)
-//        }
-      },
-      getPositionName (id) {
-        const position = this.positions.find(p => p._id === id)
-        return position && position.name
-      }
-    },
-    computed: {
-      avatar () {
-        return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
-      },
-    },
+    getPositionName (id) {
+      const position = this.positions.find(p => p._id === id)
+      return position && position.name
+    }
+  },
+  computed: {
+    avatar () {
+      return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
+    }
   }
+}
 </script>
 
 <template>

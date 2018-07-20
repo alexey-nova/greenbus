@@ -31,36 +31,36 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
-    },
-    props: ['model', 'onSubmit', 'onClose'],
-    computed: {
-      setTypeName () {
-        const names = {
-          department: 'департамент',
-          otdel: 'отдел',
-          position: 'должность'
-        }
-        return names[this.model.type]
+export default {
+  components: {
+    Modal
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  computed: {
+    setTypeName () {
+      const names = {
+        department: 'департамент',
+        otdel: 'отдел',
+        position: 'должность'
       }
+      return names[this.model.type]
+    }
+  },
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(() => {})
-      },
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(() => {})
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

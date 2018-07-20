@@ -32,50 +32,50 @@
 </template>
 
 <script>
-  import 'element-ui/lib/theme-chalk/index.css'
-  import Modal from '@/Modal'
-  import MaskedInput from 'vue-masked-input'
+import 'element-ui/lib/theme-chalk/index.css'
+import Modal from '@/Modal'
+import MaskedInput from 'vue-masked-input'
 
-  export default {
-    components: {
-      Modal,
-      MaskedInput,
+export default {
+  components: {
+    Modal,
+    MaskedInput
+  },
+  data () {
+    return {
+      folders: []
+    }
+  },
+  props: ['model', 'onSubmit', 'onClose', 'ids'],
+  methods: {
+    close () {
+      this.$emit('onClose')
     },
-    data () {
-      return {
-        folders: []
-      }
-    },
-    props: ['model', 'onSubmit', 'onClose', 'ids'],
-    methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            let model = this.$_.clone(this.$props.model)
-            this.$emit('onSubmit', model)
-          }
-        }).catch(() => {
-        })
-      }
-    },
-    computed: {},
-    mounted () {
-      this.$api('get', 'ca/folders').then(response => {
-        const strings = []
-        response.data.map(folder => {
-          if (this.ids.includes(folder._id)) {
-            strings.push(folder.finalStr)
-          }
-        })
-        const starts = `^(${strings.join('|')})`
-        if(strings.length > 0) this.folders = response.data.filter(folder => !(new RegExp(starts).test(folder.finalStr)))
-        else this.folders = response.data
+    submit () {
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          let model = this.$_.clone(this.$props.model)
+          this.$emit('onSubmit', model)
+        }
+      }).catch(() => {
       })
     }
+  },
+  computed: {},
+  mounted () {
+    this.$api('get', 'ca/folders').then(response => {
+      const strings = []
+      response.data.map(folder => {
+        if (this.ids.includes(folder._id)) {
+          strings.push(folder.finalStr)
+        }
+      })
+      const starts = `^(${strings.join('|')})`
+      if (strings.length > 0) this.folders = response.data.filter(folder => !(new RegExp(starts).test(folder.finalStr)))
+      else this.folders = response.data
+    })
   }
+}
 </script>
 
 <!-- <style src="vue-multiselect/dist/vue-multiselect.min.css"></style> -->

@@ -12,14 +12,14 @@
 // <style src="#/assets/adminlte/css/adminlte.min.css"></style>
 import Chat from '@/Chat'
 
-  export default {
-    name: 'auth',
-    components: {
-      Chat,
-    },
-    created () {
-    }
+export default {
+  name: 'auth',
+  components: {
+    Chat
+  },
+  created () {
   }
+}
 </script>
 
 <style src="#/assets/bootstrap/css/bootstrap.min.css"></style>

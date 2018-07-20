@@ -29,22 +29,22 @@
 </template>
 
 <script>
-    import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-    export default {
-        components: {
-            Modal,
-        },
-        props: ['model', 'onSubmit', 'onClose'],
-        methods: {
-            close () {
-                this.$emit('onClose')
-            },
-            submit () {
-                this.$emit('onSubmit', this.$props.model)
-            },
-        }
+export default {
+  components: {
+    Modal
+  },
+  props: ['model', 'onSubmit', 'onClose'],
+  methods: {
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.$emit('onSubmit', this.$props.model)
     }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

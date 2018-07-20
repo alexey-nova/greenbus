@@ -41,7 +41,7 @@
                         <!-- <div class="date2-box">
                           <div class="date2">24.05.2018</div>
                         </div> -->
-                        <div class="flex align-center bottom-buttons m-button" v-if="model.order[model.currentUser].position === $auth().user.position">
+                        <div class="flex align-center bottom-buttons m-button" v-if="model.order[model.currentUser].position === $auth().user.positionId">
                           <div class="fl">
                             <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
                             <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'reject' })" type="button">Отклонить на шаг</button>
@@ -188,11 +188,11 @@ export default {
         if (i === 0) {
           prevDate = new Date(newBid.createdAt)
         } else {
-          prevDate = new Date(newArray[i - 1].deadline||123)
+          prevDate = new Date(newArray[i - 1].deadline || 123)
         }
         prevDate = this.nextWorkDay(prevDate)
         let nextDeadline = new Date(prevDate)
-        for(let ind = 0; ind < item.hours; ind++) {
+        for (let ind = 0; ind < item.hours; ind++) {
           nextDeadline.setHours(nextDeadline.getHours() + 1)
           nextDeadline = this.nextWorkDay(nextDeadline)
         }
@@ -289,9 +289,8 @@ export default {
       } catch (e) {
         console.log('dead', e)
       }
-
     },
-    nextWorkDay(date, weekends = [0, 6]) {
+    nextWorkDay (date, weekends = [0, 6]) {
       const tempDate = new Date(date)
       while (weekends.includes(tempDate.getDay())) {
         tempDate.setHours(tempDate.getHours() + 24)

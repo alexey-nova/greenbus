@@ -61,32 +61,32 @@ import ModalDeleteTemplate from './templates/ModalDeleteTemplate'
 export default {
   name: 'Template',
   components: {
-		ModalCreate,
-		ModalCreateTemplate,
+    ModalCreate,
+    ModalCreateTemplate,
     ModalShowTemplate,
     ModalEditTemplate,
     ModalDeleteTemplate
   },
   data () {
     return {
-			categories: [],
-			activeCategory: null,
-			templates: [],
+      categories: [],
+      activeCategory: null,
+      templates: [],
       modal: {
         create: false,
         edit: false,
-				delete: false,
-				createTemplate: false,
+        delete: false,
+        createTemplate: false,
         showTemplate: false,
         editTemplate: false,
         deleteTemplate: false
-      },
+      }
     }
   },
   methods: {
     toggleModal (name, model, tab) {
       this.modal[name] = model === undefined ? !this.modal[name] : model
-      this.modal.tab = tab ? tab : 0
+      this.modal.tab = tab || 0
     },
     getCategories () {
       this.$api('get', 'bids/categories').then(response => {
@@ -99,32 +99,32 @@ export default {
         this.categories.push(response.data.category)
         this.notify(response.data.message)
       })
-		},
-		loadTemplates (category) {
-        this.activeCategory = category
-        this.$api('get', `bids/templates/${category._id}`).then(response => {
-          this.templates = response.data.templates
-        })
-			},
-		createTemplate (data) {
+    },
+    loadTemplates (category) {
+      this.activeCategory = category
+      this.$api('get', `bids/templates/${category._id}`).then(response => {
+        this.templates = response.data.templates
+      })
+    },
+    createTemplate (data) {
       this.$api('post', `bids/templates/`, data).then(response => {
         this.modal.createTemplate = false
         this.notify(response.data.message)
         this.templates.push(response.data.template)
       })
-		},
+    },
     editTemplate (data) {
       this.$api('put', `bids/templates/${data._id}`).then(response => {
         this.modal.editTemplate = false
         this.loadTemplates(this.activeCategory)
       })
-		},
+    },
     deleteTemplate (data) {
       this.$api('delete', `bids/templates/${data._id}`).then(response => {
         this.templates = this.templates.filter(item => item._id !== data._id)
         this.modal.deleteTemplate = false
       })
-		}
+    }
   },
   mounted () {
     this.getCategories()

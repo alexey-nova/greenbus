@@ -34,12 +34,12 @@ export default {
   },
   props: ['onSubmit', 'model', 'onClose'],
   methods: {
-      close () {
-        this.$emit('onClose')
-      },
-      submit () {
-        this.$emit('onSubmit', this.model)
-      },
+    close () {
+      this.$emit('onClose')
+    },
+    submit () {
+      this.$emit('onSubmit', this.model)
     }
+  }
 }
 </script>

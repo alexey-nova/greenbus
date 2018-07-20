@@ -90,8 +90,7 @@
               <full-calendar
               :config="configMobile"
               ref="calendarMobile"
-              :events="eventsForMobile"
-        			/>
+              :events="eventsForMobile"/>
             </div>
           </div>
         </div>
@@ -109,15 +108,15 @@
 </template>
 
 <script>
-import PageTitle from "@/PageTitle"
-import Box from "@/Box"
-import PageButtons from "@/PageButtons"
+import PageTitle from '@/PageTitle'
+import Box from '@/Box'
+import PageButtons from '@/PageButtons'
 import ModalCreate from './calendar/ModalCreateMeeting'
-import CalendarView from "vue-simple-calendar"
-import CalendarMathMixin from "vue-simple-calendar/dist/calendar-math-mixin.js"
+import CalendarView from 'vue-simple-calendar'
+import CalendarMathMixin from 'vue-simple-calendar/dist/calendar-math-mixin.js'
 import { FullCalendar } from 'vue-full-calendar'
 require('../assets/fullcalendar.css')
-require("vue-simple-calendar/dist/static/css/default.css")
+require('vue-simple-calendar/dist/static/css/default.css')
 
 const arr = [
   'Январь',
@@ -135,28 +134,29 @@ const arr = [
 ]
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     PageButtons,
-    PageTitle,Box,
+    PageTitle,
+    Box,
     CalendarView,
     CalendarMathMixin,
     ModalCreate,
     FullCalendar
   },
-  data() {
+  data () {
     return {
       positions: [],
       dateEvents: [],
       tasks: [],
       selectedDate: new Date(),
-      currentMonth: this.selectedDate || new Date(),//old
+      currentMonth: this.selectedDate || new Date(), // old
       currentYear: (new Date()).getFullYear(),
       monday: new Date(),
       sunday: new Date(),
       selectedView: 'month',
       config: {
-        slotLabelFormat: "HH:mm",
+        slotLabelFormat: 'HH:mm',
         allDaySlot: false,
         weekends: true,
         locale: 'ru',
@@ -172,7 +172,7 @@ export default {
         eventClick: (event) => {
           this.getMeeting(event.id)
           this.message = `You clicked: ${event.title}`
-        },
+        }
       },
       configMobile: {
         allDaySlot: false,
@@ -195,20 +195,20 @@ export default {
       },
       modal: {
         create: false,
-        edit: false,
+        edit: false
       },
       showDate: this.thisMonth(1),
-      message: "Click a date or event...",
+      message: 'Click a date or event...',
       alreadyAdded: false,
       startingDayOfWeek: 1,
       disablePast: false,
       disableFuture: false,
       displayPeriodUom: 'month',
       displayPeriodCount: 1,
-      //showEventTimes: true,
+      // showEventTimes: true,
       events: [],
       users: [],
-      type: 'create',
+      type: 'create'
     }
   },
   computed: {
@@ -225,7 +225,7 @@ export default {
             id: event._id,
             title: event.name,
             start: event.startDate,
-            end: event.endDate,
+            end: event.endDate
           }
           if (event.status === 'confirmed') {
             e.classes = 'green'
@@ -244,7 +244,7 @@ export default {
             _id: event.id,
             name: event.title,
             start: event.startDate,
-            end: event.endDate,
+            end: event.endDate
           }
         })
       }
@@ -280,7 +280,9 @@ export default {
       this.modal[name] = model === undefined ? !this.modal[name] : model
       this.type = type
     },
-    loadMeetings() {
+    loadMeetings () {
+      this.getMonday()
+      this.getSunday()
       return this.$api('get', 'meetings').then(response => {
         this.events = response.data.map(item => {
           item.startDate = new Date(item.startDate)
@@ -292,8 +294,7 @@ export default {
         console.log(e)
         return this.notify(e, 'danger')
       })
-      this.getMonday()
-      this.getSunday()
+
     },
     createMeeting (meeting) {
       // let newDate = new Date(meeting.startDate)
@@ -330,27 +331,27 @@ export default {
         this.$log(e, 'danger')
       })
     },
-    thisMonth(d, h, m) {
+    thisMonth (d, h, m) {
       const t = new Date()
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
-    onClickDay(d) {
+    onClickDay (d) {
       this.message = `You clicked: ${d.toLocaleDateString()}`
     },
-    onClickEvent(e) {
+    onClickEvent (e) {
       this.getMeeting(e.id)
       this.message = `You clicked: ${e.title}`
     },
-    setShowDate(d) {
+    setShowDate (d) {
       this.message = `Changing calendar view to ${d.toLocaleDateString()}`
       this.showDate = d
     },
-    onDrop(event, date) {
+    onDrop (event, date) {
       this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
       const fixedStartDate = CalendarMathMixin.methods.toLocalDate(event.startDate)
       const fixedEndDate = CalendarMathMixin.methods.toLocalDate(event.endDate || fixedStartDate)
       const eLength = CalendarMathMixin.methods.dayDiff(fixedStartDate, date)
-      event.startDate = CalendarMathMixin.methods.addDays(fixedStartDate,eLength)
+      event.startDate = CalendarMathMixin.methods.addDays(fixedStartDate, eLength)
       event.endDate = CalendarMathMixin.methods.addDays(fixedEndDate, eLength)
       this.dropMeeting(event.id, date.getDate(), date.getMonth(), date.getFullYear())
     },
@@ -378,7 +379,7 @@ export default {
         this.notify(e, 'danger')
       })
 
-      /*const data = {'id':id, 'startDate':newDate}
+      /* const data = {'id':id, 'startDate':newDate}
       this.$api('put', 'meetings/' + id, data).then(response => {
         this.loadMeetings()
         console.log(data)
@@ -388,7 +389,7 @@ export default {
         this.notify('Временно нельзя редактировать событие', 'info')
         //this.modal.editUser = false
         this.$log(e, 'danger')
-      })*/
+      }) */
     },
     getFullMinutes (date) {
       if (date.getMinutes() < 10) {
@@ -396,9 +397,8 @@ export default {
       }
       return date.getMinutes()
     },
-    getMeeting(id) {
+    getMeeting (id) {
       this.$api('get', 'meetings/' + id).then(response => {
-
         const startTime = `${(new Date(response.data.startDate)).getHours()}:${this.getFullMinutes(new Date(response.data.startDate))}`
 
         const endTime = `${(new Date(response.data.endDate)).getHours()}:${this.getFullMinutes(new Date(response.data.endDate))}`
@@ -410,15 +410,15 @@ export default {
         this.notify(e, 'danger')
       })
     },
-    updateMeeting() {
+    updateMeeting () {
       this.toggleModal('create')
       this.loadMeetings()
     },
-    updateEditMeeting() {
+    updateEditMeeting () {
       this.toggleModal('edit')
       this.loadMeetings()
     },
-    /* ----- Форма -------*/
+    /* ----- Форма ------- */
     loadUsers () {
       this.$api('get', 'users').then(response => {
         this.users = response.data
@@ -432,13 +432,13 @@ export default {
       if (type && meetingId) {
         this.loadMeetings().then(meetings => {
           this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])),
-          'edit')
+            'edit')
         })
       } else {
         this.loadMeetings()
       }
     },
-    renderEvents(date) {
+    renderEvents (date) {
       this.dateEvents = []
       this.events.map(event => {
         if (new Date(date).toDateString() === new Date(event.startDate).toDateString()) {
@@ -446,22 +446,22 @@ export default {
         }
       })
     },
-    nextMonth() {
+    nextMonth () {
       this.$refs.calendarMobile.fireMethod('next')
       this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
     },
-    prevMonth() {
+    prevMonth () {
       this.$refs.calendarMobile.fireMethod('prev')
       this.currentMonth = this.$refs.calendarMobile.fireMethod('getDate')._d
     },
-    getMonthName(date) {
+    getMonthName (date) {
       return {
         thisMonth: arr[new Date(this.currentMonth).getMonth()],
         nextMonth: arr[new Date(this.currentMonth).getMonth() + 1],
         prevMonth: arr[new Date(this.currentMonth).getMonth() - 1]
       }
     },
-    getMonths() {
+    getMonths () {
       return arr.map((month, index) => {
         return {
           index: index,

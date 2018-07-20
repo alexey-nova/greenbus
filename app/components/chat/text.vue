@@ -1,27 +1,27 @@
 <script>
 
-  export default {
-    data () {
-      return {
-        content: ''
-      }
-    },
-    methods: {
-      onKeyup (e) {
-        if (!e.ctrlKey && e.keyCode === 13 && this.content.length) {
-          this.$emit('sendMessage', this.content)
-          this.content = ''
-        }
-        if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
-          this.content = this.content + '\n'
-        }
-      },
-      send () {
+export default {
+  data () {
+    return {
+      content: ''
+    }
+  },
+  methods: {
+    onKeyup (e) {
+      if (!e.ctrlKey && e.keyCode === 13 && this.content.length) {
         this.$emit('sendMessage', this.content)
         this.content = ''
       }
+      if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
+        this.content = this.content + '\n'
+      }
+    },
+    send () {
+      this.$emit('sendMessage', this.content)
+      this.content = ''
     }
   }
+}
 </script>
 
 <template>

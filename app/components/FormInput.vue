@@ -9,18 +9,18 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      title: String,
-      name: String,
-      require: Boolean,
-    },
-    methods: {
-      input (value) {
-        this.$emit('input', value)
-      }
+export default {
+  props: {
+    title: String,
+    name: String,
+    require: Boolean
+  },
+  methods: {
+    input (value) {
+      this.$emit('input', value)
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>

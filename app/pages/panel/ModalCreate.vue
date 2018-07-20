@@ -36,58 +36,58 @@
 </template>
 
 <script>
-  import Modal from '@/Modal'
+import Modal from '@/Modal'
 
-  export default {
-    components: {
-      Modal,
-    },
-    data () {
-      return {
-      }
-    },
-    props: ['model', 'users', 'onSubmit', 'onClose', 'departments'],
-    computed: {
-      setTypeName () {
-        const names = {
-          department: 'департамент',
-          otdel: 'отдел',
-          position: 'должность'
-        }
-        return names[this.model.type]
-      }
-    },
-    methods: {
-      setVal (val) {
-        this.model.department = val[val.length - 1]
-      },
-      close () {
-        this.errors.clear()
-        this.$emit('onClose')
-      },
-      submit () {
-        if (this.model.type === 'otdel' || this.model.type === 'position') {
-          if (!this.model.department) {
-            this.errors.items.push({
-              id: '100',
-              field: 'department',
-              scope: null,
-              msg: 'Поле Департамент/Отдел обязательно для заполнения',
-            })
-          } else {
-            this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
-          }
-        }
-        this.$validator.validateAll().then(() => {
-          if (!this.$_.size(this.errors.items)) {
-            this.$emit('onSubmit', this.model)
-          }
-        }).catch(e => console.log(e.message))
-      },
-    },
-    mounted () {
+export default {
+  components: {
+    Modal
+  },
+  data () {
+    return {
     }
+  },
+  props: ['model', 'users', 'onSubmit', 'onClose', 'departments'],
+  computed: {
+    setTypeName () {
+      const names = {
+        department: 'департамент',
+        otdel: 'отдел',
+        position: 'должность'
+      }
+      return names[this.model.type]
+    }
+  },
+  methods: {
+    setVal (val) {
+      this.model.department = val[val.length - 1]
+    },
+    close () {
+      this.errors.clear()
+      this.$emit('onClose')
+    },
+    submit () {
+      if (this.model.type === 'otdel' || this.model.type === 'position') {
+        if (!this.model.department) {
+          this.errors.items.push({
+            id: '100',
+            field: 'department',
+            scope: null,
+            msg: 'Поле Департамент/Отдел обязательно для заполнения'
+          })
+        } else {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'department')
+        }
+      }
+      this.$validator.validateAll().then(() => {
+        if (!this.$_.size(this.errors.items)) {
+          this.$emit('onSubmit', this.model)
+        }
+      }).catch(e => console.log(e.message))
+    }
+  },
+  mounted () {
   }
+}
 </script>
 
 <style lang="scss" scoped>

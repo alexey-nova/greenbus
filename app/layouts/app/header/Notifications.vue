@@ -31,53 +31,53 @@
 </template>
 
 <script>
-  import ClickOutside from 'vue-click-outside'
+import ClickOutside from 'vue-click-outside'
 
-  export default {
-    data () {
-      return {
-        isOpen: false,
-        pending: [],
-      }
-    },
-    sockets: {
-      notification: function (val) {
-        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
-          this.pending.push(val)
-          this.$notify(val.description, 'info')
-        }
-      },
-    },
-    methods: {
-      toggle () {
-        this.isOpen = !this.isOpen
-      },
-      close () {
-        this.isOpen = false
-      },
-      loadNots () {
-        this.$api('get', 'notifications').then(response => {
-          this.pending = response.data.pending
-        }).catch(e => {})
-      },
-      readNots () {
-        this.$api('post', 'notifications').then(response => {
-          this.loadNots()
-        }).catch(e => {})
-      },
-      goTo (location, context) {
-        if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
-        else if (location === 'bids') return this.$router.push({ name: 'documents', query: { type: 'show', bid: context.moduleId }})
-        else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
-      }
-    },
-    mounted () {
-      this.loadNots()
-    },
-    directives: {
-      ClickOutside
+export default {
+  data () {
+    return {
+      isOpen: false,
+      pending: []
     }
+  },
+  sockets: {
+    notification: function (val) {
+      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+        this.pending.push(val)
+        this.$notify(val.description, 'info')
+      }
+    }
+  },
+  methods: {
+    toggle () {
+      this.isOpen = !this.isOpen
+    },
+    close () {
+      this.isOpen = false
+    },
+    loadNots () {
+      this.$api('get', 'notifications').then(response => {
+        this.pending = response.data.pending
+      }).catch(e => {})
+    },
+    readNots () {
+      this.$api('post', 'notifications').then(response => {
+        this.loadNots()
+      }).catch(e => {})
+    },
+    goTo (location, context) {
+      if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
+      else if (location === 'bids') return this.$router.push({ name: 'documents', query: { type: 'show', bid: context.moduleId }})
+      else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
+    }
+  },
+  mounted () {
+    this.loadNots()
+  },
+  directives: {
+    ClickOutside
   }
+}
 </script>
 
 <style lang="scss" scoped>

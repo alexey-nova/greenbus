@@ -21,6 +21,6 @@ export default {
       seoKeys (newValue) {
         document.head.querySelector('meta[name=keys]').content = newValue
       }
-    },
-  },
+    }
+  }
 }

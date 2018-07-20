@@ -35,128 +35,128 @@
 </template>
 
 <script>
-  import Card from './chat/card'
-  import List from './chat/list'
-  import CText from './chat/text'
-  import Message from './chat/message'
-  import ClickOutside from 'vue-click-outside'
+import Card from './chat/card'
+import List from './chat/list'
+import CText from './chat/text'
+import Message from './chat/message'
+import ClickOutside from 'vue-click-outside'
 
-  export default {
-    components: {
-      Card,
-      List,
-      CText,
-      Message,
-    },
-    props: ['users'],
-    data () {
-      return {
-        search: '',
-        isOpen: this.$store.getters['app/isChatOpen'],
-        me: this.$auth().user._id,
-        currentUser: -1,
-        currentChat: 0,
-        messages: [],
-        unreadMessages: [],
-        unreadMessagesCount: 0,
-        positions: []
-      }
-    },
-    directives: {
-      ClickOutside
-    },
-    computed: {
-      filteredUsers () {
-        let users = []
-        if (this.search) {
-          users = this.$_.filter(this.$props.users, (user) => {
-            if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1 && user._id !== this.$auth().user._id) {
-              return user
-            }
-          })
-        } else {
-          users = this.$props.users.filter(user => user._id !== this.$auth().user._id)
-        }
-        users = users.map(user => {
-          return {
-            ...user,
-            unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
+export default {
+  components: {
+    Card,
+    List,
+    CText,
+    Message
+  },
+  props: ['users'],
+  data () {
+    return {
+      search: '',
+      isOpen: this.$store.getters['app/isChatOpen'],
+      me: this.$auth().user._id,
+      currentUser: -1,
+      currentChat: 0,
+      messages: [],
+      unreadMessages: [],
+      unreadMessagesCount: 0,
+      positions: []
+    }
+  },
+  directives: {
+    ClickOutside
+  },
+  computed: {
+    filteredUsers () {
+      let users = []
+      if (this.search) {
+        users = this.$_.filter(this.$props.users, (user) => {
+          if (user.fullname.toLowerCase().search(this.search.toLowerCase()) !== -1 && user._id !== this.$auth().user._id) {
+            return user
           }
         })
-
-        users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
-        return users
-      },
-    },
-    methods: {
-      openChat () {
-        this.isOpen = true
-      },
-      closeChat () {
-        this.$store.commit('app/closeChat')
-        this.isOpen = false
-        this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
-      },
-      changeCurrent (id) {
-        this.$api('post', 'conversations', { to: id }).then(response => {
-          this.currentUser = id
-          this.currentChat = response.data.conversation._id
-          this.messages = response.data.messages || []
-          this.messages.authorName = this.$props.users.filter(user => user._id === id)[0].fullname
-          this.getMessages()
-        }).catch(err => {
-          if (err) console.log(err.response, 'qwe')
-        })
-      },
-      getMessages () {
-        this.$api('get', 'conversations').then(response => {
-          this.unreadMessages = response.data.conversations.map(conversation => {
-            return {
-              count: conversation.unreadMessages,
-              lastMessage: conversation.message.body,
-              userId: conversation.chat.userId,
-              chatId: conversation.chat.chatId,
-              date: conversation.message.createdAt || new Date(2014, 1)
-            }
-          })
-          this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
-          this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
-        }).catch(err => console.log(err))
-      },
-      sendMessage (message) {
-        message = message.trim().replace(/\r\n|\r|\n/g,"<br />")
-        if (this.currentChat === 0 || this.currentChat.length !== 24) {
-          return
-        }
-        this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
-          var id = response.data.message.author
-          response.data.message.author = {}
-          response.data.message.author._id = id
-          this.messages.push(response.data.message)
-        }).catch(err => {
-          if (err) console.log(err, 'asd')
-        })
-      },
-      loadPositions() {
-        return this.$api('get', 'positions?all=true').then(response => {
-          this.positions = response.data.positions
-        })
+      } else {
+        users = this.$props.users.filter(user => user._id !== this.$auth().user._id)
       }
-    },
-    beforeMount () {
-      this.getMessages()
-      this.loadPositions()
-    },
-    sockets: {
-      newMessage (data) {
-        if (data.author === this.currentUser) {
-          this.messages.push(data)
-        } else {
-          this.notify('У вас новое сообщение')
+      users = users.map(user => {
+        return {
+          ...user,
+          unreadMessages: this.unreadMessages.filter(message => message.userId === user._id)[0]
         }
+      })
+
+      users = this.$_.orderBy(users, [(o) => o.unreadMessages || '', 'unreadMessages.date'], ['desc', 'desc'])
+      return users
+    }
+  },
+  methods: {
+    openChat () {
+      this.isOpen = true
+    },
+    closeChat () {
+      this.$store.commit('app/closeChat')
+      this.isOpen = false
+      this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
+    },
+    changeCurrent (id) {
+      this.$api('post', 'conversations', { to: id }).then(response => {
+        this.currentUser = id
+        this.currentChat = response.data.conversation._id
+        this.messages = response.data.messages || []
+        this.messages.authorName = this.$props.users.filter(user => user._id === id)[0].fullname
+        this.getMessages()
+      }).catch(err => {
+        if (err) console.log(err.response, 'qwe')
+      })
+    },
+    getMessages () {
+      this.$api('get', 'conversations').then(response => {
+        this.unreadMessages = response.data.conversations.map(conversation => {
+          return {
+            count: conversation.unreadMessages,
+            lastMessage: conversation.message.body,
+            userId: conversation.chat.userId,
+            chatId: conversation.chat.chatId,
+            date: conversation.message.createdAt || new Date(2014, 1)
+          }
+        })
+        this.unreadMessagesCount = response.data.conversations.map(c => c.unreadMessages).reduce((a, b) => a + b, 0)
+        this.$store.commit('app/setUnreadMessagesCount', this.unreadMessagesCount)
+      }).catch(err => console.log(err))
+    },
+    sendMessage (message) {
+      message = message.trim().replace(/\r\n|\r|\n/g, '<br />')
+      if (this.currentChat === 0 || this.currentChat.length !== 24) {
+        return
+      }
+      this.$api('post', `conversations/${this.currentChat}`, { message }).then(response => {
+        var id = response.data.message.author
+        response.data.message.author = {}
+        response.data.message.author._id = id
+        this.messages.push(response.data.message)
+      }).catch(err => {
+        if (err) console.log(err, 'asd')
+      })
+    },
+    loadPositions () {
+      return this.$api('get', 'positions?all=true').then(response => {
+        this.positions = response.data.positions
+      })
+    }
+  },
+  beforeMount () {
+    this.getMessages()
+    this.loadPositions()
+  },
+  sockets: {
+    newMessage (data) {
+      if (data.author === this.currentUser) {
+        this.messages.push(data)
+      } else {
+        this.notify('У вас новое сообщение')
       }
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
