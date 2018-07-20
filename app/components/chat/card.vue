@@ -15,6 +15,9 @@ export default {
     getPositionName (id) {
       const position = this.positions.find(p => p._id === id)
       return position && position.name
+    },
+    close () {
+      this.$emit('closeChat')
     }
   },
   computed: {
@@ -38,7 +41,7 @@ export default {
           </div>
         </a>
         <div class="mob-block-sm">
-          <img src="~assets/img/close.png" class="m-close">
+          <img src="~assets/img/close.png" class="m-close" @click="close()">
         </div>
       </li>
     </ul>

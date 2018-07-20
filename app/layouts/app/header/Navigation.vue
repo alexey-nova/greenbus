@@ -70,7 +70,7 @@
                     <img src="~assets/img/header/6.png">
                 </div>
             </router-link>
-            <a class="menu-item chat-call pointer mob-none" @click="$store.commit('app/openChat')">
+            <a class="menu-item chat-call pointer" @click="$store.commit('app/openChat')">
               <div class="center">
                 <img src="~assets/img/header/7.png">
                 <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>

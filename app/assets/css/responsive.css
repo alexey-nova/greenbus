@@ -818,6 +818,12 @@
         width: 100%;
         height: auto;
     }
+    .chat_open {
+        display: block;
+    }
+    .fixed-center {
+      height: 39em;
+    }
     .fixed-top{
         padding-right: 4.2em;
         position: relative;

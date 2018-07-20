@@ -10,6 +10,12 @@ export default {
         this.$api('post', `conversations/read/${chatId}`).then(response => {})
       }
     },
+    goToChat() {//for mobile
+      var chatRight = document.getElementById('chat_right')
+      if (chatRight) {
+        chatRight.className += ' chat_open'
+      }
+    },
     avatar (user) {
       return user.avatar ? this.$config('app.fileUrl') + user.avatar + '?' + Math.random() : false
     }
@@ -20,7 +26,7 @@ export default {
 <template>
   <div class="user_list style-15">
     <ul>
-      <li v-for="user in users" :key="user._id"  @click="changeCurrent(user._id); readChat(user.unreadMessages.chatId)">
+      <li v-for="user in users" :key="user._id"  @click="changeCurrent(user._id); goToChat(); readChat(user.unreadMessages.chatId)">
         <a href="#" data-id="1" :class="{ active: user._id === current }">
           <div class="user-block__image">
             <img v-if="!avatar(user)" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
