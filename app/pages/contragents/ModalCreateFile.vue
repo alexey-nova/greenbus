@@ -70,7 +70,7 @@ export default {
     submit () {
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
-          let model = this.$_.clone(this.$props.model)
+          // let model = this.$_.clone(this.$props.model)
           this.$emit('onSubmit', this.files)
           this.files = []
         }

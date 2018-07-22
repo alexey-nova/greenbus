@@ -156,7 +156,7 @@ export default {
   computed: {
     usersForSelect () {
       return this.$_.map(this.$props.users, u => {
-        return {name: u.fullname, _id: u._id}
+        return { name: u.fullname, _id: u._id }
       })
     },
     selectedUser: {
@@ -179,12 +179,12 @@ export default {
           })
         }
         return this.$_.map(this.$props.model.coExecutives, m => {
-          return (m && m.user) ? {name: this.getUser(m.user).fullname, _id: m.user} : {}
+          return (m && m.user) ? { name: this.getUser(m.user).fullname, _id: m.user } : {}
         })
       },
       set: function (newValue) {
         this.$props.model.coExecutives = this.$_.map(newValue, m => {
-          return {_id: m._id, user: m._id, name: this.getUser(m._id).fullname}
+          return { _id: m._id, user: m._id, name: this.getUser(m._id).fullname }
         })
       }
     }

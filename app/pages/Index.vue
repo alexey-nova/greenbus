@@ -279,7 +279,6 @@ export default {
         this.today = response.data.deadlines.today
         this.tomorrow = response.data.deadlines.tomorrow
         this.week = response.data.deadlines.week
-        const calendarTasks = []
         const groups = response.data.tasks.reduce((groups, task) => {
           const date = task.deadline.split('T')[0]
           if (!groups[date]) groups[date] = []
@@ -294,7 +293,7 @@ export default {
           })
         })
         this.tasks = response.data.tasks.sort((a, b) => {
-          let dateA = new Date(a.deadline),
+          const dateA = new Date(a.deadline),
             dateB = new Date(b.deadline)
           return dateA - dateB
         })

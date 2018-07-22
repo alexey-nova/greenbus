@@ -72,33 +72,21 @@ export default {
         documents: [
           {
             name: 'Служебные записки',
-            link: {name: 'documents'},
+            link: { name: 'documents' },
             imgSrc: 'left_menu/1.png',
             isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
             children: [
               {
-                link: {name: 'documentsByFilter', params: {param1: 'in'}},
+                link: { name: 'documentsByFilter', params: { param1: 'in' }},
                 name: 'Входящие',
                 imgSrc: 'left_menu/3.png',
                 isActive: () => this.$isRoute('documentsByFilter', 'param1', 'in')
               },
               {
-                link: {name: 'documentsByFilter', params: { param1: 'out' }},
+                link: { name: 'documentsByFilter', params: { param1: 'out' }},
                 name: 'Исходящие',
                 imgSrc: 'left_menu/3.png',
                 isActive: () => this.$isRoute('documentsByFilter', 'param1', 'out')
-              },
-              {
-                link: {name: 'documentsByFilter', params: { param1: 'on' }},
-                name: 'На согласовании',
-                imgSrc: 'left_menu/3.png',
-                isActive: () => this.$isRoute('documentsByFilter', 'param1', 'on')
-              },
-              {
-                link: { name: 'documentsByFilter', params: { param1: 'deadlined' }},
-                name: 'Просроченные',
-                imgSrc: 'left_menu/3.png',
-                isActive: () => this.$isRoute('documentsByFilter', 'param1', 'deadlined')
               },
               {
                 link: { name: 'documentsByFilter', params: { param1: 'done' }},

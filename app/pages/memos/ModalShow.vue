@@ -7,10 +7,9 @@
             <div class="list_header">
               <div class="flex">
                 <div>
-                  <!-- <span class="date">12.04.2018</span> -->
                 </div>
                 <div class="buttons flex">
-                  <button class="button-top pdf" @click="toggleModal('pdf', model)">PDF</button>
+                  <button class="button-top pdf" @click="pdf">PDF</button>
                   <button @click="close" class="button-top close" type="button"></button>
                 </div>
               </div>
@@ -21,26 +20,89 @@
               <memo-chain :model="model" :order="chain" :users="users" :positions="positions"></memo-chain>
               <div class="flex align-start border-bottom">
                 <div class="info-box-text">
-                  <span>Тема: {{ model.name }}</span>
                 </div>
                 <div class="info-box-button">
                   <button :class="['info-button clicked left-margin', tabs === 0 && 'active']" @click="toggleTab(0)"><img src="~assets/img/2.png">Информация</button>
-                  <button :class="['info-button clicked', tabs === 1 && 'active']" @click="toggleTab(1)"><img src="~assets/img/1.png" class="big-margin">Файлы</button>
-                  <button :class="['info-button clicked', tabs === 2 && 'active']" @click="toggleTab(2)"><img src="~assets/img/comment.png">Обсуждение</button>
+                  <button :class="['info-button clicked button-counter', tabs === 1 && 'active']" @click="toggleTab(1)">
+                    <span v-if="filesCount">{{filesCount}}</span>
+                    <img src="~assets/img/1.png" class="big-margin">Файлы
+                  </button>
+                  <button :class="['info-button clicked button-counter', tabs === 2 && 'active']" @click="toggleTab(2); readComments()">
+                    <span v-if="unreadCount">{{unreadCount}}</span>
+                    <img src="~assets/img/comment.png">Обсуждение
+                  </button>
                 </div>
               </div>
               <div class="info-container2" v-if="tabs === 0">
+                <div class="flex align-center m-button" v-if="model.order[model.currentUser].position === $auth().user.positionId">
+                  <div class="fl">
+                    <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
+                    <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'reject' })" type="button">Отклонить на шаг</button>
+                    <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'rejectFull' })" type="button">Отклонить до заявителя</button>
+                    <button v-if="model.currentUser === 0" class="add-button auto-width" @click="sendReply({ type: 'confirm' })">Переотправить</button>
+                  </div>
+                  <div class="paydate">
+                    <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
+                      <div :class="[{'has-error': errors.has('date')}]">
+                        <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date" placeholder="Дата оплаты *" class="datepicker-input"></Datepicker>
+                        <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
+                      </div>
+                      <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
+                    </div>
+                    <div v-else>
+                      <p>Дата оплаты: {{payDate}}</p>
+                    </div>
+                  </div>
+                </div>
                 <div class="forum-box">
                   <div class="flex column">
                     <div class="form-item-big">
-                      <div class="form-item-big-text">
+                      <center>
+                        <select class="select-logo" name="logo" v-model="selectedLogo">
+                          <option value="logo1">GreenBus</option>
+                          <option value="logo2">АТГ</option>
+                          <option value="logo3">КИ 2</option>
+                        </select>
+                      </center>
+                      <center>
+                        <div><img :src="logo"/></div>
+                      </center>
+                      <h3>Служебная записка №{{model.id}}</h3>
+                    <strong class="to-title">Исполнители:</strong>
+                    <div v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`" class="row user">
+                      <div class="col-md-4">
+                        <div class="to">
+                          {{getPositionName(orderItem.position)}}:
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="to-name">{{orderItem.user.fullname}}</div>
+                      </div>
+                      <div class="col-md-4">
+                        <span>{{setOrderStatus(orderItem, index + 1)}}</span>
+                      </div>
+                    </div>
+                    <div class="row theme">
+                      <div class="col-lg-12">
+                        <p>
+                          <strong>Тема: </strong>{{model.name}}
+                        </p>
+                        <p>
+                          <strong>Дата оплаты: {{payDate}}</strong>
+                        </p>
+                      </div>
+                    </div>
+                      <div class="description">
                         <span v-html="model.description"></span>
-                        <!-- <img src="~assets/img/doc.jpg"> -->
+                      </div>
+                      <div class="from-wrapper">
+                        <p>От кого:</p>
+                        <div class="row">
+                          <div class="col-md-4">{{getPositionName(getUser(model.createdBy).positionId)}}:</div>
+                          <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
+                        </div>
                       </div>
                       <div class="bottom-flex-item">
-                        <!-- <div class="date2-box">
-                          <div class="date2">24.05.2018</div>
-                        </div> -->
                         <div class="flex align-center bottom-buttons m-button" v-if="model.order[model.currentUser].position === $auth().user.positionId">
                           <div class="fl">
                             <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
@@ -103,20 +165,22 @@
         </div>
       </div>
     </Modal>
-
-    <ModalConfirm :model="modal.confirm" @onSubmit="confirm" @onClose="toggleModal('confirm')"></ModalConfirm>
-    <ModalReject :model="modal.reject" @onSubmit="reject" @onClose="toggleModal('reject')"></ModalReject>
-    <modal-reply v-if="modal.reply" :model="modal.reply" @onSubmit="sendReply" @onClose="toggleModal('reply')"></modal-reply>
-    <modal-pdf v-if="modal.pdf" :model="modal.pdf" :users="users" :positions="positions" @onClose="toggleModal('pdf')"></modal-pdf>
+    <modal-reply-bid v-if="modal.reply" :model="modal.reply" @onSubmit="sendReply" @onClose="toggleModal('reply')"></modal-reply-bid>
   </div>
 </template>
 
 <script>
 import Modal from '@/Modal'
-import ModalConfirm from './ModalConfirm'
-import ModalReject from './ModalReject'
+import 'pdfmake/build/pdfmake.js'
+import pdfFonts from 'pdfmake/build/vfs_fonts.js'
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+import pdf from './pdf'
+
+import logo1 from '#/assets/design/logos/logo1.png'
+import logo2 from '#/assets/design/logos/atg.jpg'
+import logo3 from '#/assets/design/logos/ki.jpg'
+
 import ModalReply from './ModalReply'
-import ModalPdf from './ModalPdf'
 import Datepicker from 'vuejs-datepicker'
 import CMessages from './CMessages'
 import MemoChain from './MemoChain'
@@ -125,10 +189,7 @@ export default {
   name: 'modal-show-memo',
   components: {
     Modal,
-    ModalConfirm,
-    ModalReject,
-    'modal-reply': ModalReply,
-    ModalPdf,
+    ModalReply,
     Datepicker,
     CMessages,
     MemoChain
@@ -146,16 +207,23 @@ export default {
       positions: [],
       comment: '',
       replies: {},
-      reply: []
+      reply: [],
+      selectedLogo: 'logo1'
     }
   },
   props: ['model', 'users', 'tab', 'onConfirm', 'onReject', 'onClose', 'getBids'],
-  watch: {
-    tab () {
-      this.tabs = this.$props.tab
-    }
-  },
   computed: {
+    filesCount () {
+      return this.model.files.length
+    },
+    unreadCount () {
+      return this.comments.filter(item => {
+        if (!this.$auth().user.position) {
+          return false
+        }
+        return item.unread.includes(this.$auth().user.position)
+      }).length
+    },
     logo () {
       let logo = logo1
       if (this.selectedLogo === 'logo2') {
@@ -242,33 +310,40 @@ export default {
     toggleModal (name, model) {
       this.modal[name] = model === undefined ? !this.modal[name] : model
     },
-    confirm (model) {
-      this.modal.confirm = false
-      this.$emit('confirm', model)
-    },
-    reject (model) {
-      this.modal.reject = false
-      this.$emit('onReject', model)
-    },
     close () {
       this.$emit('onClose')
     },
     pdf () {
-      let docDefinition = pdf.create(this.logo, this.$props.model, this.getUser, this.$dateFormat, this.statuses)
-      pdfMake.createPdf(docDefinition).download()
+      let docDefinition = pdf.create(this.logo, this.model, this.users, this.$dateFormat, this.positions, this.statuses)
+      try {
+        pdfMake.createPdf(docDefinition).download()
+      } catch (e) {
+        this.notify('Невозможно сгенерировать PDF файл', 'danger')
+      }
     },
     getUser (_id) {
-      return this.users.find(item = item._id === _id)
+      return this.users.find(item => item._id === _id)
     },
     loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
     },
+    /**
+     * находит и возвращает название должности по _id
+    */
     getPositionName (_id) {
       const position = this.positions.find(item => item._id === _id)
       if (position) return position.name
       return ''
+    },
+    readComments () {
+      this.$api('get', `comments/read/${this.model._id}`).then(response => {
+        this.comments = this.comments.map(item => {
+          item.unread = []
+          return item
+        })
+      })
     },
     async sendReply (data) {
       // data.files = this.$_.map(data.files, (f) => f.file)
@@ -297,10 +372,10 @@ export default {
       }
       return tempDate
     },
-    setOrderClass (orderItem, index) {
-      if (orderItem.confirmed) return 'green'
-      if (index === this.model.currentUser && orderItem.deadline.getTime() < new Date().getTime()) return 'red'
-      if (index === this.model.currentUser) return 'yellow'
+    setOrderStatus (orderItem, index) {
+      if (orderItem.confirmed) return `Согласовал ${this.$dateFormat(orderItem.confirmedDate, 'dd.mmm.yyyy HH:MM')}`
+      if (index === this.model.currentUser && orderItem.deadline.getTime() < new Date().getTime()) return `Просрочил`
+      if (index === this.model.currentUser) return 'На согласовании'
     },
     sendComment () {
       this.$api('post', `comments`, { moduleId: this.model._id, comment: this.comment }).then(response => {
@@ -325,11 +400,36 @@ export default {
   mounted () {
     this.loadPositions()
     this.loadComments(this.model._id)
-  }
+  },
+  watch: {
+    tab () {
+      this.tabs = this.$props.tab
+    }
+  },
 }
 </script>
 
 <style lang="scss" scoped>
+.row {
+  display: flex;
+  padding-bottom: 0.5em;
+}
+
+.to-title {
+  margin-bottom: 1em;
+  font-weight: 700;
+}
+
+select {
+  width: auto;
+}
+h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
+.theme { margin: 30px -15px 10px; }
+.description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
+.form-item-big {
+  border: none;
+}
+.from-wrapper { margin-top: 100px; }
 .fl {
   display: flex;
   flex-wrap: wrap;
@@ -356,5 +456,28 @@ export default {
 button:disabled {
   background-color: #fff;
   color: #a5a5a5;
+}
+
+.button-counter {
+  position: relative;
+
+  & span {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #1b8442;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: block;
+    text-align: center;
+    padding: 1px;
+    color: #fff;
+    transition: all 1s ease-in-out;
+
+    &:hover {
+      color: #fff;
+    }
+  }
 }
 </style>

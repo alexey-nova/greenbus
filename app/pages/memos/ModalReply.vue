@@ -49,6 +49,7 @@ import Modal from '@/Modal'
 // import FileUpload from 'vue-upload-component'
 
 export default {
+  name: 'modal-reply-bid',
   components: {
     Modal
     // FileUpload,
