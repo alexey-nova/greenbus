@@ -33,54 +33,54 @@
 
   </ul> -->
   <div class="header-box">
-        <div class="header-box-left">
-          <a class="logo" @click="toggleOrLink()">
-            <img src="~assets/img/logo.png">
-          </a>
-            <div class="top_menu_left">
-                <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
-                    <div class="center">
-                        <img src="~assets/img/header/1.png">
-                        <span>Рабочий стол</span>
-                    </div>
-                </router-link>
-                <router-link :to="{name: 'users'}" :class="[{active: $isRoute('users')}, 'menu-item']">
-                    <div class="center">
-                        <img src="~assets/img/header/2.png">
-                        <span>Сотрудники</span>
-                    </div>
-                </router-link>
-                <router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :class="['menu-item', { active: ($isRoute(['tasks', 'tasksByFilter'])) }]">
-                    <div class="center">
-                        <img src="~assets/img/header/3.png">
-                        <span>Задачи</span>
-                    </div>
-                </router-link>
-                <router-link :class="['menu-item', { active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents']) }]" :to="{name: 'documentsByFilter', params: { param1: 'in' }}">
-                  <div class="center">
-                    <img src="~assets/img/header/4.png">
-                    <span>Документы</span>
-                  </div>
-                </router-link>
-            </div>
-        </div>
-        <div class="top_menu_right">
-            <router-link :to="{name: 'calendar'}" class="menu-item">
-                <div class="center">
-                    <img src="~assets/img/header/6.png">
-                </div>
-            </router-link>
-            <a class="menu-item chat-call pointer mob-none" @click="$store.commit('app/openChat')">
-              <div class="center">
-                <img src="~assets/img/header/7.png">
-                <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
-              </div>
-            </a>
-            <a >
-                <Notifications></Notifications>
-            </a>
-        </div>
+    <div class="header-box-left">
+      <a class="logo" @click="toggleOrLink()">
+        <img src="~assets/img/logo.png">
+      </a>
+      <div class="top_menu_left">
+        <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
+          <div class="center">
+            <img src="~assets/img/header/1.png">
+            <span>Рабочий стол</span>
+          </div>
+        </router-link>
+        <router-link :to="{name: 'users'}" :class="[{active: $isRoute('users')}, 'menu-item']">
+          <div class="center">
+            <img src="~assets/img/header/2.png">
+            <span>Сотрудники</span>
+          </div>
+        </router-link>
+        <router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :class="['menu-item', { active: ($isRoute(['tasks', 'tasksByFilter'])) }]">
+          <div class="center">
+            <img src="~assets/img/header/3.png">
+            <span>Задачи</span>
+          </div>
+        </router-link>
+        <router-link :class="['menu-item', { active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents']) }]" :to="{name: 'documentsByFilter', params: { param1: 'in' }}">
+          <div class="center">
+            <img src="~assets/img/header/4.png">
+            <span>Документы</span>
+          </div>
+        </router-link>
+      </div>
     </div>
+    <div class="top_menu_right">
+      <router-link :to="{name: 'calendar'}" class="menu-item">
+        <div class="center">
+          <img src="~assets/img/header/6.png">
+        </div>
+      </router-link>
+      <a class="menu-item chat-call pointer mob-none" @click="$store.commit('app/openChat')">
+        <div class="center">
+          <img src="~assets/img/header/7.png">
+          <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
+        </div>
+      </a>
+      <a >
+        <Notifications></Notifications>
+      </a>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     count () {
-      return (this.unreadMessagesCount = this.$store.getters['app/unreadMessagesCount'])
+      return this.$store.getters['app/unreadMessagesCount']
     }
   },
   methods: {
