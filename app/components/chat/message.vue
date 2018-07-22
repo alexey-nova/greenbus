@@ -1,6 +1,11 @@
 <script>
 export default {
   props: ['messages', 'users', 'me'],
+  data () {
+    return {
+      chatRight: document.getElementById('chat_right')
+    }
+  },
   filters: {
     time (date) {
       date = new Date(date)
@@ -27,6 +32,12 @@ export default {
       } else {
         return false
       }
+    },
+    back () {
+      var chatRight = document.getElementById('chat_right')
+      if (chatRight && chatRight.classList.contains('chat_open')) {
+        chatRight.classList.remove('chat_open')
+      }
     }
   }
 }
@@ -37,7 +48,7 @@ export default {
     <div class="fixed-top">
       <p>{{$props.messages.authorName}}</p>
       <div class="mob-block-sm">
-        <a href="#" class="m-back">Назад</a>
+        <a type="button" class="m-back" @click="back()">Назад</a>
       </div>
     </div>
     <div class="fixed-center style-16" id="chat-1" v-scroll-bottom="messages">

@@ -6,15 +6,15 @@
       <div class="chat">
         <div class="flex">
           <div class="chat_left">
-            <card :user="users[me]" :positions="positions" v-model="search"></card>
+            <card :user="users[me]" :positions="positions" @closeChat="closeChat" v-model="search"></card>
             <list :users="filteredUsers" :current="currentUser" @changeCurrent="changeCurrent"></list>
           </div>
-          <div class="chat_right" v-if="currentUser==-1">
+          <div class="chat_right" id="chat_right" v-if="currentUser==-1">
             <div class="fixed-top">
               <p>Чат не выбран </p>
             </div>
           </div>
-          <div class="chat_right" v-else>
+          <div class="chat_right" id="chat_right" v-else>
             <message :messages="messages" :users="users" :me="me"></message>
             <CText @sendMessage="sendMessage"></CText>
           </div>

@@ -9,7 +9,7 @@
           <div class="flex margin-bottom align-center">
             <div class="search">
             </div>
-            <div class="add flex-end">
+            <div class="add flex-end" v-if="$auth().user.position">
               <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать заявку</button>
             </div>
           </div>
