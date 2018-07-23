@@ -2,7 +2,7 @@
 <div class="working_area">
   <div class="white-block no-padding">
     <div class="padding-block">
-      <div class="flex margin-bottom align-center">
+      <div class="flex margin-bottom align-center" v-if="$auth().user.position">
         <div></div>
         <div class="add flex-end">
           <button class="add-button auto-width" @click="toggleModal('create', { urgency: false })"><img src="~assets/img/add.png">Создать задачу</button>

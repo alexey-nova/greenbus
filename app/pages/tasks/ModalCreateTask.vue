@@ -60,7 +60,7 @@
                   :options="usersForSelect"
                   :close-on-select="false"
                   :hide-selected="true"
-                  :clear-on-select="false"
+                  :clear-on-select="true"
                   :multiple="true"
                   track-by="name"
                   label="name"

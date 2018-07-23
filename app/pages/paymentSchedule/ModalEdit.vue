@@ -41,7 +41,7 @@
             id="field-memoTo"
             v-model="selectedUsers"
             :options="usersForSelect"
-            :close-on-select="false"
+            :close-on-select="true"
             :hide-selected="true"
             :clear-on-select="false"
             :multiple="true"
