@@ -469,14 +469,15 @@ export default {
       this.$refs.calendar.fireMethod('gotoDate', this.selectedDate)
     },
     getMonday () {
+      //getDay returns 1/2/3/4/5/6/0 which is from monday to sunday
       var date = new Date(this.selectedDate)
-      var diff = this.selectedDate.getDay() - 1
+      var diff = this.selectedDate.getDay() > 0 ? this.selectedDate.getDay() - 1 : 6
       date.setDate(date.getDate() - diff)
       this.monday = date
     },
     getSunday () {
       var date = new Date(this.selectedDate)
-      var diff = 7 - this.selectedDate.getDay()
+      var diff = this.selectedDate.getDay() > 0 ? 7 - this.selectedDate.getDay() : 0
       date.setDate(date.getDate() + diff)
       this.sunday = date
     },
