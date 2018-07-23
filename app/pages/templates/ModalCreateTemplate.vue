@@ -38,7 +38,8 @@
               :options="filteredPositions"
               track-by="name"
               placeholder="Выберите должность"
-              label="name">
+              label="name"
+              v-validate="'required'">
             </Multiselect>
             <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
           </div>
