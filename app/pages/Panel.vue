@@ -180,7 +180,7 @@ export default {
       })
       let result = []
       this.otdels.forEach(item => {
-        this.setChildren(heads, {...item})
+        this.setChildren(heads, { ...item })
       })
       result = [...heads]
       return result

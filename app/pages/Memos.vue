@@ -18,6 +18,9 @@
               <div class="flex align-center sm-w" slot="tools" slot-scope="props">
                 <a @click.stop="toggleModal('show', $_.clone(props.row))" class="green_anchor">Подробнее</a>
               </div>
+              <div slot="status" slot-scope="props">
+                <span :class="['status-tag', setTag(props.row)]"></span>
+              </div>
               <div class="border-none" slot="admin" slot-scope="props" v-if="isCreator(props.row)">
                 <button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
                 <button class="button-table remove" @click="toggleModal('delete', props.row) "></button>
@@ -167,6 +170,10 @@ export default {
     }
   },
   methods: {
+    setTag (event) {
+      if (event.order[event.currentUser].position === this.$auth().user.position) return 'yellow'
+      // return 'yellow'
+    },
     posName (positionId) {
       return this.positions.find(item => item._id === positionId).name
     },
@@ -298,7 +305,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
 .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
+.status-tag {
+  width: 30px;
+  padding: 3px 0;
+  border-radius: 3px;
+  background-color: #5ba4cf;
+  display: inline-block;
+
+  &.yellow {
+    background-color: #fdd835;
+  }
+}
 </style>

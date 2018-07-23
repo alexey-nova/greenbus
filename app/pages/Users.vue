@@ -275,11 +275,10 @@ export default {
         })
     },
     group (array) {
-      var self = this
       let heads = array.map(item => {
         item.value = item._id
         item.label = item.name
-        item.link = { name: 'usersByDep', params: { param1: item._id } }
+        item.link = { name: 'usersByDep', params: { param1: item._id }}
         item.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
         item.imgSrc = 'folder.png'
         item.imgSrc2 = 'folder-h.png'
@@ -296,7 +295,6 @@ export default {
       return arr.filter(item => item[key] === val).length > 0
     },
     setChildren (arr, item) {
-      var self = this
       const target = JSON.parse(JSON.stringify(item))
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].children) {
@@ -304,7 +302,7 @@ export default {
             if (!this.exists(arr[i].children, '_id', target._id)) {
               target.label = target.name
               target.value = target._id
-              target.link = { name: 'usersByDep', params: { param1: target._id } }
+              target.link = { name: 'usersByDep', params: { param1: target._id }}
               target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
               target.imgSrc = 'folder.png'
               target.imgSrc2 = 'folder-h.png'
@@ -317,7 +315,7 @@ export default {
           if (arr[i]._id === target.parent) {
             target.label = target.name
             target.value = target._id
-            target.link = { name: 'usersByDep', params: { param1: target._id } }
+            target.link = { name: 'usersByDep', params: { param1: target._id }}
             target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
             target.imgSrc2 = 'folder-h.png'
             target.imgSrc = 'folder.png'

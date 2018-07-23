@@ -177,7 +177,7 @@ export default {
   computed: {
     groupedComments () {
       const targetArray = this.comments.filter(item => !item.replyTo)
-      const dataArray = JSON.parse(JSON.stringify(this.comments))
+      // const dataArray = JSON.parse(JSON.stringify(this.comments))
       let joinedArray = this.join(targetArray, this.comments)
       return joinedArray.sort((a, b) => {
         return new Date(b.createdAt) - new Date(a.createdAt)
@@ -292,6 +292,5 @@ button:disabled {
   &--item:not(:first-child) {
     margin-left: 1em;
   }
-
 }
 </style>

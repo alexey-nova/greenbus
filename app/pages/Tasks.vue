@@ -1,90 +1,90 @@
 <template>
-  <div class="working_area">
-    <div class="white-block no-padding">
-      <div class="padding-block">
-        <div class="flex margin-bottom align-center" v-if="$auth().user.position">
-					<div></div>
-					<div class="add flex-end">
-						<button class="add-button auto-width" @click="toggleModal('create', { urgency: false })"><img src="~assets/img/add.png">Создать задачу</button>
-					</div>
-        </div>
-        <div class="mob-none">
-          <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
-						<div slot="admin" slot-scope="props" v-if="props.row.from === $auth().user._id">
-							<button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
-							<button class="button-table remove" @click="toggleModal('deleted', props.row)"></button>
-						</div>
-            <div slot="info" slot-scope="props">
-              <span class="tools" @click="toggleModal('show', props.row, 2)">
-                <span v-if="props.row.comments" class="label label-success">{{props.row.comments}}</span>
-                <i class="fa fa-comment-o"></i>
-              </span>
-              <span class="tools" @click="toggleModal('show', props.row, 1)">
-                <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
-                <i class="fa fa-file-o"></i>
-              </span>
-            </div>
-            <div slot="tools" slot-scope="props">
-							<a class="green_anchor pointer" @click="toggleModal('show', props.row)">Подробнее</a>
-            </div>
-            <div slot="from" slot-scope="props">
-              {{getUser(props.row.from).fullname}}
-            </div>
-            <div slot="to" slot-scope="props">
-              {{getUser(props.row.to.user).fullname}}
-            </div>
-            <div slot="urgency" slot-scope="props">
-              <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
-            </div>
-            <div slot="status" slot-scope="props">
-              {{statuses[props.row.status]}}
-            </div>
-            <div slot="deadline" slot-scope="props">
-              {{$dateFormat(props.row.deadline, 'd mmm yyyy')}}
-            </div>
-          </v-client-table>
-        </div>
-        <div class="mob-block">
-					<div class="search">
-            <input type="text" placeholder="Поиск" name="search" v-model="mobTableData.filter">
-          </div>
-          <b-table
-            stacked
-            :current-page="mobTableData.currentPage"
-            :filter="mobTableData.filter"
-            @filtered="onFiltered"
-            :per-page="mobTableData.perPage"
-            :items="tasks"
-            :fields="mobTableData.fields">
-            <template slot="name" slot-scope="row">
-              <span>{{row.value}} (<a @click="toggleModal('show', row.item)" class="green_anchor">Подробнее</a>)</span>
-            </template>
-						<template slot="status" slot-scope="row">
-							{{statuses[row.value]}}
-						</template>
-						<template slot="deadline" slot-scope="row">
-							{{$dateFormat(row.value, 'd mmm yyyy')}}
-						</template>
-						<template slot="from" slot-scope="row">
-							{{getUser(row.value).fullname}}
-						</template>
-						<template slot="to" slot-scope="row">
-							{{getUser(row.value.user).fullname}}
-						</template>
-            <template slot="actions" slot-scope="row">
-              <button class="button-table edit" @click="toggleModal('edit', $_.clone(row.item))"></button>
-              <button class="button-table remove" @click="toggleModal('deleted', row.item) "></button>
-            </template>
-          </b-table>
-          <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
+<div class="working_area">
+  <div class="white-block no-padding">
+    <div class="padding-block">
+      <div class="flex margin-bottom align-center" v-if="$auth().user.position">
+        <div></div>
+        <div class="add flex-end">
+          <button class="add-button auto-width" @click="toggleModal('create', { urgency: false })"><img src="~assets/img/add.png">Создать задачу</button>
         </div>
       </div>
+      <div class="mob-none">
+        <v-client-table ref="table" v-bind="tableData" :data="tasks" :columnsDropdown="true">
+          <div slot="admin" slot-scope="props" v-if="props.row.from === $auth().user._id">
+            <button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
+            <button class="button-table remove" @click="toggleModal('deleted', props.row)"></button>
+          </div>
+          <div slot="info" slot-scope="props">
+            <span class="tools" @click="toggleModal('show', props.row, 2)">
+              <span v-if="props.row.comments" class="label label-success">{{props.row.comments}}</span>
+              <i class="fa fa-comment-o"></i>
+            </span>
+            <span class="tools" @click="toggleModal('show', props.row, 1)">
+              <span v-if="$_.size(props.row.files)" class="label label-success">{{$_.size(props.row.files)}}</span>
+              <i class="fa fa-file-o"></i>
+            </span>
+          </div>
+          <div slot="tools" slot-scope="props">
+            <a class="green_anchor pointer" @click="toggleModal('show', props.row)">Подробнее</a>
+          </div>
+          <div slot="from" slot-scope="props">
+            {{getUser(props.row.from).fullname}}
+          </div>
+          <div slot="to" slot-scope="props">
+            {{getUser(props.row.to.user).fullname}}
+          </div>
+          <div slot="urgency" slot-scope="props">
+            <span v-if="props.row.urgency" class="label label-danger urgency">Важная</span>
+          </div>
+          <div slot="status" slot-scope="props">
+            {{statuses[props.row.status]}}
+          </div>
+          <div slot="deadline" slot-scope="props">
+            {{$dateFormat(props.row.deadline, 'd mmm yyyy')}}
+          </div>
+        </v-client-table>
+      </div>
+      <div class="mob-block">
+        <div class="search">
+          <input type="text" placeholder="Поиск" name="search" v-model="mobTableData.filter">
+        </div>
+        <b-table
+          stacked
+          :current-page="mobTableData.currentPage"
+          :filter="mobTableData.filter"
+          @filtered="onFiltered"
+          :per-page="mobTableData.perPage"
+          :items="tasks"
+          :fields="mobTableData.fields">
+          <template slot="name" slot-scope="row">
+            <span>{{row.value}} (<a @click="toggleModal('show', row.item)" class="green_anchor">Подробнее</a>)</span>
+          </template>
+          <template slot="status" slot-scope="row">
+            {{statuses[row.value]}}
+          </template>
+          <template slot="deadline" slot-scope="row">
+            {{$dateFormat(row.value, 'd mmm yyyy')}}
+          </template>
+          <template slot="from" slot-scope="row">
+            {{getUser(row.value).fullname}}
+          </template>
+          <template slot="to" slot-scope="row">
+            {{getUser(row.value.user).fullname}}
+          </template>
+          <template slot="actions" slot-scope="row">
+            <button class="button-table edit" @click="toggleModal('edit', $_.clone(row.item))"></button>
+            <button class="button-table remove" @click="toggleModal('deleted', row.item) "></button>
+          </template>
+        </b-table>
+        <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
+      </div>
     </div>
-		<ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
-    <ModalEdit v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
-    <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
-    <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
   </div>
+  <ModalCreate :model="modal.create" :users="users" @onSubmit="createTask" @onClose="toggleModal('create')"></ModalCreate>
+  <ModalEdit v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editTask" @onClose="toggleModal('edit')"></ModalEdit>
+  <ModalDelete :model="modal.deleted" @onSubmit="deleteTask" @onClose="toggleModal('deleted')"></ModalDelete>
+  <ModalShow :model="modal.show" :tab="modal.tab" :users="users" @performTask="performTask" @rejectTask="rejectTask" @confirmTask="confirmTask" @onClose="toggleModal('show')"></ModalShow>
+</div>
 </template>
 
 <script>
@@ -102,7 +102,7 @@ export default {
     ModalDelete,
     ModalShow,
     'b-table': bTable,
-    	'b-pagination': bPagination
+    'b-pagination': bPagination
   },
   data () {
     return {
@@ -161,12 +161,12 @@ export default {
       },
       mobTableData: {
         fields: [
-          { key: 'name', label: 'Задача'},
-          { key: 'status', label: 'Статус'},
-          { key: 'deadline', label: 'Срок до'},
-          { key: 'from', label: 'От кого'},
-          { key: 'to', label: 'Ответственный'},
-          { key: 'actions', label: 'Управление'}
+          { key: 'name', label: 'Задача' },
+          { key: 'status', label: 'Статус' },
+          { key: 'deadline', label: 'Срок до' },
+          { key: 'from', label: 'От кого' },
+          { key: 'to', label: 'Ответственный' },
+          { key: 'actions', label: 'Управление' }
         ],
         currentPage: 1,
         perPage: 5,
@@ -267,7 +267,8 @@ export default {
       this.tasks = []
 
       return this.$api('get', 'tasks' + filter).then(response => {
-        return this.tasks = response.data.tasks
+        this.tasks = response.data.tasks
+        return this.tasks
       }).catch(e => {
         this.notify(e, 'danger')
       })
@@ -308,7 +309,7 @@ export default {
     this.loadUsers()
     this.setSidebar()
     this.showTaskFromQuery()
-    	this.mobTableData.totalRows = this.tasks.length
+    this.mobTableData.totalRows = this.tasks.length
   },
   destroyed () {
     this.$store.commit('app/setSidebar', {})

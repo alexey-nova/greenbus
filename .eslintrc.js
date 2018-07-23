@@ -16,7 +16,8 @@ module.exports = {
     'standard'
   ],
   globals: {
-    _: false
+    _: false,
+    pdfMake: false
   },
   // required to lint *.vue files
   plugins: [
@@ -29,6 +30,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'indent': [2, 2, { 'SwitchCase': 1 }],
-    'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }]
+    'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
+    'object-curly-spacing': ['error', 'always', { 'objectsInObjects': false }],
   }
 }

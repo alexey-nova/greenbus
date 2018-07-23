@@ -47,23 +47,37 @@ export default {
       ]
     })
 
+    function payDate () {
+      let date = 'Нет'
+      model.order.forEach((item) => {
+        if (Number(item.contextResult)) {
+          date = this.$dateFormat(new Date(Number(item.contextResult)), 'dd mmm yyyy')
+        }
+      })
+      return date
+    }
+
     let tableUsers = {
       table: {
         widths: [120, '*', '*'],
         headerRows: 1,
         body: [
           ['', '', ''],
-          [{text: 'Исполнители:', style: 'trHeader'}, '', ''],
+          [{ text: 'Исполнители:', style: 'trHeader' }, '', ''],
           ...u,
           [{ text: '', margin: [0, 5] }, '', ''],
           [
             {
               table: {
-                widths: ['*', 400],
+                widths: [100, 400],
                 body: [
                   [
-                    {text: 'Тема:', style: 'trHeader2'},
-                    {text: model.name, style: 'tr'}
+                    { text: 'Тема:', style: 'trHeader2' },
+                    { text: model.name, style: 'tr' }
+                  ],
+                  [
+                    { text: 'Дата оплаты:', style: 'trHeader2' },
+                    { text: payDate(), style: 'tr' }
                   ]
                 ]
               },
@@ -103,7 +117,7 @@ export default {
           [''],
           [
             {
-              text: htmlToText(model.description),
+              text: htmlToText(model.description).split('').join('\u200b'),
               margin: [0, 10, 0, 30],
               style: 'tr'
             }
@@ -117,7 +131,7 @@ export default {
         widths: [120, '*', '*'],
         headerRows: 1,
         body: [
-          [{text: 'От кого:', style: 'trHeader'}, '', ''],
+          [{ text: 'От кого:', style: 'trHeader' }, '', ''],
           [
             {
               text: positions.find(item => item._id === users.find(u => u._id === model.createdBy).positionId).name,
