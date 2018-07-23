@@ -38,12 +38,12 @@
             </div>
             <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('dept')}]">
-                <label for="field-dept">Департамент</label>
+                <label for="field-dept">Департамент *</label>
                 <el-cascader :options="departments" change-on-select @change="setVal" :value="model.deptHierarchy"></el-cascader>
                 <span v-show="errors.has('dept')" class="help-block">{{ errors.first('dept') }}</span>
               </div>
               <div :class="['form-group input-exc', {'has-error': errors.has('position')}]">
-                <label for="field-position">Должность</label>
+                <label for="field-position">Должность *</label>
                 <Multiselect
                   placeholder="Выберите должность"
                   id="field-position"
