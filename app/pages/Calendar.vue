@@ -323,9 +323,8 @@ export default {
     },
     getMeeting (id) {
       this.$api('get', 'meetings/' + id).then(response => {
-        const startTime = `${(new Date(response.data.startDate)).getHours()}:${this.getFullMinutes(new Date(response.data.startDate))}`
-
-        const endTime = `${(new Date(response.data.endDate)).getHours()}:${this.getFullMinutes(new Date(response.data.endDate))}`
+        const startTime = this.$dateFormat(response.data.startDate, 'HH:MM')
+        const endTime = this.$dateFormat(response.data.endDate, 'HH:MM')
 
         response.data['startTime'] = startTime
         response.data['endTime'] = endTime
