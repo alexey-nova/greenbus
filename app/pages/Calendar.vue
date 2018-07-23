@@ -148,7 +148,6 @@ export default {
     return {
       positions: [],
       dateEvents: [],
-      tasks: [],
       selectedDate: new Date(),
       currentMonth: this.selectedDate || new Date(), // old
       currentYear: (new Date()).getFullYear(),
@@ -187,32 +186,18 @@ export default {
           this.renderEvents(date._d)
         }
       },
-      meetings: [],
       modal: {
         create: false,
         edit: false
       },
-      showDate: this.thisMonth(1),
       message: 'Click a date or event...',
-      alreadyAdded: false,
-      startingDayOfWeek: 1,
-      disablePast: false,
-      disableFuture: false,
       displayPeriodUom: 'month',
-      displayPeriodCount: 1,
-      // showEventTimes: true,
       events: [],
       users: [],
       type: 'create'
     }
   },
   computed: {
-    userLocale () {
-      return CalendarMathMixin.methods.getDefaultBrowserLocale
-    },
-    dayNames () {
-      return CalendarMathMixin.methods.getFormattedWeekdayNames(this.userLocale, 'long', 0)
-    },
     eventsForComponent: {
       get: function () {
         return this.$_.map(this.events, event => {
@@ -330,51 +315,6 @@ export default {
       const t = new Date()
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
-    onDrop(event, date) {
-      this.message = `You dropped ${event.id} on ${date.toLocaleDateString()}`
-      const fixedStartDate = CalendarMathMixin.methods.toLocalDate(event.startDate)
-      const fixedEndDate = CalendarMathMixin.methods.toLocalDate(event.endDate || fixedStartDate)
-      const eLength = CalendarMathMixin.methods.dayDiff(fixedStartDate, date)
-      event.startDate = CalendarMathMixin.methods.addDays(fixedStartDate, eLength)
-      event.endDate = CalendarMathMixin.methods.addDays(fixedEndDate, eLength)
-      this.dropMeeting(event.id, date.getDate(), date.getMonth(), date.getFullYear())
-    },
-    dropMeeting (id, newDay, newMonth, newYear) {
-      this.$api('get', 'meetings/' + id).then(response => {
-        let oldDate = new Date(response.data.startDate)
-        let endDate = new Date(response.data.endDate)
-
-        oldDate.setDate(newDay)
-        oldDate.setMonth(newMonth)
-        oldDate.setFullYear(newYear)
-
-        endDate.setDate(newDay)
-        endDate.setMonth(newMonth)
-        endDate.setFullYear(newYear)
-        const data = { 'id': id, 'startDate': oldDate, 'endDate': endDate }
-        this.$api('put', 'meetings/' + id, data).then(response => {
-          this.loadMeetings()
-          this.notify(response.data.message)
-        }).catch(e => {
-          this.notify('Вы не можете переносить чужие встречи', 'info')
-          this.$log(e, 'danger')
-        })
-      }).catch(e => {
-        this.notify(e, 'danger')
-      })
-
-      /* const data = {'id':id, 'startDate':newDate}
-      this.$api('put', 'meetings/' + id, data).then(response => {
-        this.loadMeetings()
-        console.log(data)
-        //this.modal.editUser = false
-        this.notify(response.data.message)
-      }).catch(e => {
-        this.notify('Временно нельзя редактировать событие', 'info')
-        //this.modal.editUser = false
-        this.$log(e, 'danger')
-      }) */
-    },
     getFullMinutes (date) {
       if (date.getMinutes() < 10) {
         return '0' + date.getMinutes()
@@ -409,18 +349,6 @@ export default {
       }).catch(e => {
         this.notify(e, 'danger')
       })
-    },
-    showMeetingFromQuery () {
-      let type = this.$_.get(this.$route, 'query.type', '')
-      let meetingId = this.$_.get(this.$route, 'query.meeting', '')
-      if (type && meetingId) {
-        this.loadMeetings().then(meetings => {
-          this.toggleModal('edit', (this.$_.find(meetings, ['_id', meetingId])),
-            'edit')
-        })
-      } else {
-        this.loadMeetings()
-      }
     },
     renderEvents (date) {
       this.dateEvents = []
@@ -534,7 +462,6 @@ export default {
   },
   mounted () {
     this.loadPositions()
-    this.showMeetingFromQuery()
     this.loadUsers()
     this.getMonths()
     this.loadMeetings().then(data => {
