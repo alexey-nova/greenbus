@@ -84,11 +84,12 @@ export default {
     MaskedInput,
     Multiselect
   },
-  props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels', 'positions'],
+  props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels'],
   data () {
     return {
       filteredOtdels: [],
-      filteredPositions: []
+      filteredPositions: [],
+      positions: []
     }
   },
   methods: {
@@ -101,8 +102,6 @@ export default {
       this.$emit('onClose')
     },
     submit () {
-      // this.model.department = this.model.department && this.model.department._id
-      // this.model.otdel = this.model.otdel && this.model.otdel._id
       this.model.position = this.model.position && this.model.position._id
       this.$validator.validateAll().then(() => {
         if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
@@ -128,9 +127,15 @@ export default {
         }
       }).catch(() => {
       })
+    },
+    loadPositions () {
+      this.$api('get', 'positions').then(response => {
+        this.positions = response.data.positions
+      })
     }
   },
   mounted () {
+    this.loadPositions()
   }
 }
 </script>

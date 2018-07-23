@@ -11,15 +11,29 @@
             </div>
             <div class="add flex-end" v-if="$auth().user.position">
               <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать заявку</button>
+              <download-excel
+                v-if="computedBids.length > 0"
+                class = "add-button auto-width"
+                :data = "computedBids"
+                :fields = "jsonFields"
+                :name = "$dateFormat(new Date(), 'dd-mm-yyyy-HHMMss') + `.xls`">
+                Скачать Excel файл
+              </download-excel>
             </div>
           </div>
           <div class="mob-none">
-            <v-client-table ref="table" v-bind="tableData" :data="filteredData" :columnsDropdown="true" @row-click="showTableRow">
+            <v-client-table ref="table" v-bind="tableData" :data="sortBids(filteredData)" :columnsDropdown="true" @row-click="showTableRow">
+              <div slot="h__choose" slot-scope="props">
+                <input type="checkbox" @change="toggleAll">
+              </div>
+              <div slot="choose" slot-scope="props">
+                <input type="checkbox" @change.stop="chooseId(props.row, $event)" v-model="chosenRow[props.row._id]" :checked="chosenRow[props.row._id]">
+              </div>
               <div class="flex align-center sm-w" slot="tools" slot-scope="props">
                 <a @click.stop="toggleModal('show', $_.clone(props.row))" class="green_anchor">Подробнее</a>
               </div>
               <div slot="status" slot-scope="props">
-                <span :class="['status-tag', setTag(props.row)]"></span>
+                <span :class="['status-tag', setTag(props.row)]">{{setTagText(props.row)}}</span>
               </div>
               <div class="border-none" slot="admin" slot-scope="props" v-if="isCreator(props.row)">
                 <button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
@@ -90,6 +104,15 @@ export default {
       chain: [],
       positions: [],
       memoModel: null,
+      chosenBids: [],
+      chosenRow: {},
+      jsonFields: {
+        'ID': 'id',
+        'Тема': 'name',
+        'Статус': 'statusName',
+        'От кого': 'nameFrom',
+        'Текущий исполнитель': 'currentUserName'
+      },
       modal: {
         show: false,
         create: false,
@@ -107,6 +130,7 @@ export default {
         columns: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'tools', 'admin'],
         options: {
           headings: {
+            choose: '',
             id: 'ID',
             admin: '',
             name: 'Тема',
@@ -115,10 +139,10 @@ export default {
             currentUserName: 'Текущий исполнитель',
             tools: 'Подробнее'
           },
-          orderBy: {
-            column: 'id',
-            ascending: false
-          },
+          // orderBy: {
+          //   column: 'id',
+          //   ascending: false
+          // },
           sortable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
           filterable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
           customSorting: {
@@ -161,18 +185,33 @@ export default {
           let userFrom = _.find(this.users, u => u._id === bid.createdBy)
           bid.nameFrom = userFrom ? userFrom.fullname : ''
 
-          let currentUserName = _.find(this.users, u => u.positionId === bid.order[bid.currentUser].position)
+          let currentUserName = _.find(this.users, u => u.position === bid.order[bid.currentUser].position)
           bid.currentUserName = currentUserName ? currentUserName.fullname : ''
+          // active = в работе, declined = в работе, done = выполнено
+          bid.statusName = bid.status === 'done' ? 'Выполнено' : 'В работе'
           return bid
         })
         return data
       }
+    },
+    computedBids () {
+      const bids = []
+      let keys = Object.keys(this.chosenRow)
+      keys = keys.filter(item => this.chosenRow[item])
+      return this.filteredData.filter(item => keys.includes(item._id))
     }
   },
   methods: {
     setTag (event) {
-      if (event.order[event.currentUser].position === this.$auth().user.position) return 'yellow'
-      // return 'yellow'
+      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'yellow'
+      if (event.deadlined) return 'red'
+      if (event.status === 'done') return 'green'
+    },
+    setTagText (event) {
+      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'У вас'
+      if (event.deadlined) return 'Просрочено!'
+      if (event.status === 'done') return 'Готово'
+      return 'В работе'
     },
     posName (positionId) {
       return this.positions.find(item => item._id === positionId).name
@@ -236,6 +275,51 @@ export default {
         this.modal.delete = false
       })
     },
+    sortBids (bids) {
+      function isDeadlined(prevDeadline, hours) {
+        function nextWorkDay(date, weekends = [0, 6]) {
+          const tempDate = new Date(date)
+          while (weekends.includes(tempDate.getDay())) {
+            tempDate.setHours(tempDate.getHours() + 24)
+          }
+          return tempDate
+        }
+        function getDeadline(prevDeadline, hours, weekends) {
+          let nextDeadline = nextWorkDay(new Date(prevDeadline), weekends)
+          for (let ind = 0; ind < hours; ind++) {
+            nextDeadline.setHours(nextDeadline.getHours() + 1)
+            nextDeadline = nextWorkDay(nextDeadline, weekends)
+          }
+          return nextDeadline
+        }
+        const deadline = getDeadline(prevDeadline, hours)
+        return deadline.getDate() < new Date().getDate()
+      }
+
+      let result = []
+      let tempBids = [...bids].reverse()
+      tempBids = tempBids.filter(bid => {
+        if (bid.order[bid.currentUser].position !== this.$auth().user.position) { return true }
+        const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate : bid.createdAt)
+        const deadlineHours = bid.order[bid.currentUser].hours
+        if (isDeadlined(prevDeadline, deadlineHours)) {
+          bid.deadlined = true
+          result.push(bid)
+          return false
+        }
+        return true
+
+      })
+      tempBids = tempBids.filter(bid => {
+        if (bid.order[bid.currentUser].position === this.$auth().user.position) {
+          result.push(bid)
+          return false
+        }
+        return true
+      })
+      result = [...result, ...tempBids]
+      return result
+    },
     loadBids () {
       let filter = this.$route.params.param1 ? `/?filter=${this.$route.params.param1}` : ''
       return this.$api('get', 'bids' + filter).then(response => {
@@ -247,7 +331,7 @@ export default {
     },
     showTableRow (bid) {
       this.chain = bid.row.order.map(item => {
-        item.user = this.users.find(u => u.positionId === item.position)
+        item.user = this.users.find(u => u.position === item.position)
         return item
       })
       this.memoModel = bid.row
@@ -259,10 +343,31 @@ export default {
         this.notify(e, 'danger')
       })
     },
+    getMe () {
+      return this.$api('get', `users/${this.$auth().user._id}`).then(response => {
+        return response.data.user
+      })
+    },
     loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {
         this.positions = response.data.positions
       })
+    },
+    chooseId (data, type) {
+      if (type === 'all') {
+        if (this.chosenBids.length > 0) {
+          return this.chosenBids.length = 0
+        }
+        return this.bids
+      }
+      if (this.chosenBids.find(item => item._id === data._id)) this.chosenBids.filter(item => item._id !== data._id)
+      this.chosenBids.push(data)
+    },
+    toggleAll (event) {
+      this.chosenRow = this.bids.reduce((prev, item) => {
+        prev[item._id] = event.target.checked
+        return prev
+      }, {})
     },
     showBidFromQuery () {
       let type = this.$_.get(this.$route, 'query.type', '')
@@ -279,7 +384,11 @@ export default {
     }
   },
   mounted () {
-    this.loadBids()
+    this.loadBids().then(() => {
+      this.getMe().then(user => {
+        if (user.priveleges && user.priveleges.includes('excel')) this.tableData.columns.unshift('choose')
+      })
+    })
     this.loadUsers()
     this.showBidFromQuery()
     this.loadPositions()
@@ -309,14 +418,25 @@ export default {
 .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
 .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
 .status-tag {
-  width: 30px;
+  width: 100px;
+  text-align: center;
   padding: 3px 0;
   border-radius: 3px;
   background-color: #5ba4cf;
   display: inline-block;
+  color: #fff;
 
   &.yellow {
     background-color: #fdd835;
+    color: #000;
+  }
+
+  &.red {
+    background-color: #a32a2a;
+  }
+
+  &.green {
+    background-color: #1b8442;
   }
 }
 </style>

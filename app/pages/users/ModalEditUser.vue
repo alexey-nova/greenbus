@@ -39,7 +39,7 @@
             <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('dept')}]">
                 <label for="field-dept">Департамент</label>
-                <el-cascader :options="departments" change-on-select @change="setVal"></el-cascader>
+                <el-cascader :options="departments" v-model="model.deptHierarchy" change-on-select @change="setVal"></el-cascader>
                 <span v-show="errors.has('dept')" class="help-block">{{ errors.first('dept') }}</span>
               </div>
               <div :class="['form-group input-exc', {'has-error': errors.has('position')}]">
@@ -69,55 +69,6 @@
         <div class="modal-footer"></div>
       </div>
     </div>
-    <!-- <div slot="content" class="row">
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('login')}]">
-          <label for="field-login">Логин *</label>
-          <input id="field-login" class="form-control" v-validate="'required'" name="login" v-model="model.login">
-          <span v-show="errors.has('login')" class="help-block">{{ errors.first('login') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('password')}]">
-          <label for="field-password">Пароль *</label>
-          <input id="field-password" class="form-control" v-validate="'required'" name="password" type="password" v-model="model.password">
-          <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('fullname')}]">
-          <label for="field-fullname">Ф.И.О *</label>
-          <input id="field-fullname" class="form-control" v-validate="'required'" name="fullname" v-model="model.fullname">
-          <span v-show="errors.has('fullname')" class="help-block">{{ errors.first('fullname') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('email')}]">
-          <label for="field-email">Email *</label>
-          <input id="field-email" class="form-control" v-validate="'required|email'" name="email" v-model="model.email">
-          <span v-show="errors.has('email')" class="help-block">{{ errors.first('email') }}</span>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div :class="['form-group', {'has-error': errors.has('department')}]">
-          <label for="field-department">Отдел *</label>
-          <select id="field-department" class="form-control" v-validate="'required'" name="department" v-model="model.department">
-            <option v-for="dep in departments" :value="dep.name" :key="dep.name">{{dep.name}}</option>
-          </select>
-          <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('position')}]">
-          <label for="field-position">Должность *</label>
-          <input id="field-position" class="form-control" v-validate="'required'" name="position" v-model="model.position">
-          <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
-        </div>
-        <div :class="['form-group', {'has-error': errors.has('phone')}]">
-          <label for="field-phone">Телефон *</label>
-          <masked-input id="field-phone" class="form-control" mask="\+1 (111) 111-11-11" name="phone" v-validate="'required'" v-model="model.phone"></masked-input>
-          <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
-        </div>
-      </div>
-    </div> -->
-
-    <!-- <div slot="footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal" @click="close"><i class="fa fa-times"></i>&nbsp;&nbsp;Отмена</button>
-      <button type="submit" class="btn btn-success"><i class="fa fa-check"></i>&nbsp;&nbsp;Сохранить</button>
-    </div> -->
-
   </Modal>
 </template>
 
@@ -134,11 +85,12 @@ export default {
     InputBase,
     Multiselect
   },
-  props: ['isOpen', 'model', 'departments', 'onSubmit', 'onClose', 'otdels', 'positions'],
+  props: ['isOpen', 'model', 'departments', 'onSubmit', 'onClose', 'otdels'],
   data () {
     return {
       filteredOtdels: [],
-      filteredPositions: []
+      filteredPositions: [],
+      positions: []
     }
   },
   methods: {
@@ -175,7 +127,15 @@ export default {
         }
       }).catch(() => {
       })
+    },
+    loadPositions () {
+      this.$api('get', 'positions').then(response => {
+        this.positions = response.data.positions
+      })
     }
+  },
+  mounted () {
+    this.loadPositions()
   },
   watch: {
     'model.department': function (val) {

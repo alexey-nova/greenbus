@@ -162,7 +162,7 @@ export default {
     },
     chain () {
       return this.model.template.order.map(item => {
-        item.user = this.users.find(u => u.positionId === item.position)
+        item.user = this.users.find(u => u.position === item.position)
         return item
       })
     }

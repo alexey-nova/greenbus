@@ -34,7 +34,7 @@
                 </div>
               </div>
               <div class="info-container2" v-if="tabs === 0">
-                <div class="flex align-center m-button" v-if="model.order[model.currentUser].position === $auth().user.positionId">
+                <div class="flex align-center m-button" v-if="model.order[model.currentUser].position === $auth().user.position">
                   <div class="fl">
                     <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
                     <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'reject' })" type="button">Отклонить на шаг</button>
@@ -98,30 +98,8 @@
                       <div class="from-wrapper">
                         <p>От кого:</p>
                         <div class="row">
-                          <div class="col-md-4">{{getPositionName(getUser(model.createdBy).positionId)}}:</div>
+                          <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
-                        </div>
-                      </div>
-                      <div class="bottom-flex-item">
-                        <div class="flex align-center bottom-buttons m-button" v-if="model.order[model.currentUser].position === $auth().user.positionId">
-                          <div class="fl">
-                            <button v-if="isActiveConfirmButton" class="add-button auto-width" @click="toggleModal('reply', { type: 'confirm' })" type="button">Согласовать</button>
-                            <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'reject' })" type="button">Отклонить на шаг</button>
-                            <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'rejectFull' })" type="button">Отклонить до заявителя</button>
-                            <button v-if="model.currentUser === 0" class="add-button auto-width" @click="sendReply({ type: 'confirm' })">Переотправить</button>
-                          </div>
-                          <div class="paydate">
-                            <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
-                              <div :class="[{'has-error': errors.has('date')}]">
-                                <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date" placeholder="Дата оплаты *" class="datepicker-input"></Datepicker>
-                                <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
-                              </div>
-                              <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
-                            </div>
-                            <div v-else>
-                              <p>Дата оплаты: {{payDate}}</p>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -189,7 +167,7 @@ export default {
   name: 'modal-show-memo',
   components: {
     Modal,
-    ModalReply,
+    'modal-reply-bid': ModalReply,
     Datepicker,
     CMessages,
     MemoChain
@@ -235,7 +213,7 @@ export default {
       return logo
     },
     isActiveConfirmButton () {
-      return ((this.model.order[this.model.currentUser].confirmType === 'date' && this.model.order[this.model.currentUser].contextResult) || this.model.order[this.model.currentUser].confirmType === 'default') && (this.model.status === 'active' || this.model.status === 'declined')
+      return ((this.model.order[this.model.currentUser].confirmType === 'date' && this.model.order[this.model.currentUser].contextResult) || this.model.order[this.model.currentUser].confirmType === 'default') && (this.model.status === 'active' || this.model.status === 'declined') && this.model.currentUser !== 0
     },
     isActiveDeclineButton () {
       return this.model.currentUser !== 0 && (this.model.status === 'active' || this.model.status === 'declined')
@@ -280,7 +258,7 @@ export default {
     },
     chain () {
       return this.model.order.map(item => {
-        item.user = this.users.find(u => u.positionId === item.position)
+        item.user = this.users.find(u => u.position === item.position)
         return item
       })
     }

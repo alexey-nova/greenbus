@@ -1,3 +1,7 @@
+html {
+  font-size: 13px;
+}
+
 @font-face {
     font-family: 'cen';
     src: url('../fonts/cen.eot');
@@ -1130,7 +1134,6 @@ span.red{
     border: 1px solid #d1d1d1;
 }
 .multiselect__input {
-    width: auto !important;
     margin-bottom: 0 !important;
     margin-top: 0 !important;
     padding: 0 !important;
@@ -1139,6 +1142,7 @@ span.red{
 .multiselect input:focus {
     border: none !important;
 }
+
 .profile textarea{
     width: 100%;
     margin-bottom: 1em;

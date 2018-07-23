@@ -37,7 +37,7 @@ export default {
           style: 'tr'
         },
         {
-          text: users.find(item => item.positionId === m.position).fullname,
+          text: users.find(item => item.position === m.position).fullname,
           style: 'tr'
         },
         {
@@ -51,7 +51,7 @@ export default {
       let date = 'Нет'
       model.order.forEach((item) => {
         if (Number(item.contextResult)) {
-          date = this.$dateFormat(new Date(Number(item.contextResult)), 'dd mmm yyyy')
+          date = $dateFormat(new Date(Number(item.contextResult)), 'dd mmm yyyy')
         }
       })
       return date
@@ -134,7 +134,7 @@ export default {
           [{ text: 'От кого:', style: 'trHeader' }, '', ''],
           [
             {
-              text: positions.find(item => item._id === users.find(u => u._id === model.createdBy).positionId).name,
+              text: positions.find(item => item._id === users.find(u => u._id === model.createdBy).position).name,
               style: 'tr'
             },
             {

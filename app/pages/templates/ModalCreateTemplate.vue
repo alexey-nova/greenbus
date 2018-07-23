@@ -23,40 +23,55 @@
           <input type="text" v-validate="'required'" name="name" v-model="model.name">
           <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
         </div>
-        <div class="flex aic" v-for="(n, index) in steps" :key="n+'_step'">
-          <div :class="['form-group', {'has-error': errors.has('department')}]">
-            <label for="field-dept">Департамент/Отдел</label>
-            <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" change-on-select @change="setVal"></el-cascader>
-            <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
-          </div>
-          <div :class="['form-group', {'has-error': errors.has('position')}]">
-            <label for="field-position">Должность *</label>
-            <Multiselect
-              id="field-position"
-              name="position"
-              v-model="order[index].position"
-              :options="filteredPositions"
-              track-by="name"
-              placeholder="Выберите должность"
-              label="name">
-            </Multiselect>
-            <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
-          </div>
-          <div :class="['form-group', {'has-error': errors.has('confirmType')}]">
-            <label for="field-confirmType">Тип согласования *</label>
-            <select v-validate="'required'" name="confirmType" v-model="order[index].confirmType">
-              <option value="default" selected>Обычный</option>
-              <option value="date">С датой оплаты</option>
-            </select>
-            <span v-show="errors.has('confirmType')" class="help-block">{{ errors.first('type') }}</span>
-          </div>
-          <div :class="['form-group', {'has-error': errors.has('hours')}]">
-            <label for="field-hours">Срок согласования * (в часах)</label>
-            <input type="number" @change="sanitizeInput" step="24" min="24" v-validate="'required'" name="hours" v-model="order[index].hours">
-            <span v-show="errors.has('hours')" class="help-block">{{ errors.first('hours') }}</span>
-          </div>
-          <button v-if="index > 0" type="button" class="button-table" @click="stepDown(index)">-</button>
-        </div>
+        <table>
+          <tr class="green">
+            <td width="30%">Департамент</td>
+            <td width="30%">Должность</td>
+            <td width="15%">Тип согласования</td>
+            <td width="15%">Срок согласования * (в часах)</td>
+            <td width="10%">Действия</td>
+          </tr>
+          <tr v-for="(n, index) in steps" :key="n+'_step'">
+            <td>
+              <div :class="[{'has-error': errors.has('department')}]">
+                <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" change-on-select @change="setVal"></el-cascader>
+                <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
+              </div>
+            </td>
+            <td>
+              <div :class="[{'has-error': errors.has('position')}]">
+                <Multiselect
+                  id="field-position"
+                  name="position"
+                  v-model="order[index].position"
+                  :options="filteredPositions"
+                  track-by="name"
+                  placeholder="Выберите должность"
+                  label="name">
+                </Multiselect>
+                <span v-show="errors.has('position')" class="help-block">{{ errors.first('position') }}</span>
+              </div>
+            </td>
+            <td>
+              <div :class="[{'has-error': errors.has('confirmType')}]">
+                <select v-validate="'required'" name="confirmType" class="select" v-model="order[index].confirmType">
+                  <option value="default" selected>Обычный</option>
+                  <option value="date">С датой оплаты</option>
+                </select>
+                <span v-show="errors.has('confirmType')" class="help-block">{{ errors.first('type') }}</span>
+              </div>
+            </td>
+            <td>
+              <div :class="[{'has-error': errors.has('hours')}]">
+                <input type="number" @change="sanitizeInput" step="24" min="24" v-validate="'required'" name="hours" v-model="order[index].hours">
+                <span v-show="errors.has('hours')" class="help-block">{{ errors.first('hours') }}</span>
+              </div>
+            </td>
+            <td>
+              <button v-if="index > 0" type="button" class="button-table" @click="stepDown(index)">-</button>
+            </td>
+          </tr>
+        </table>
         <div class="flex">
           <button type="button" class="button-table" @click="stepUp">+</button>
         </div>

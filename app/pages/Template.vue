@@ -43,6 +43,30 @@
       </div>
     </div>
   </div>
+  <div class="white-block">
+    <div class="row">
+      <div class="col-md-6">
+        <div :class="['form-group']">
+        <label for="field-users">Сотрудники с доступом для excel</label><br />
+        <Multiselect
+          id="field-users"
+          v-model="selectedUsers"
+          :options="users"
+          placeholder="Выберите сотрудников"
+          :close-on-select="false"
+          :hide-selected="true"
+          :clear-on-select="true"
+          :multiple="true"
+          track-by="fullname"
+          label="fullname">
+        </Multiselect>
+      </div>
+      <div class="form-group">
+        <button class="add-button" @click="addExcelUsers()">Применить</button>
+      </div>
+      </div>
+    </div>
+  </div>
   <ModalCreate :model="modal.create" @onClose="toggleModal('create')" @onSubmit="addCategory"></ModalCreate>
   <ModalCreateTemplate v-if="modal.createTemplate" :model="modal.createTemplate" @onClose="toggleModal('createTemplate')" @onSubmit="createTemplate"></ModalCreateTemplate>
   <ModalShowTemplate v-if="modal.showTemplate" :model="modal.showTemplate" @onClose="toggleModal('showTemplate')"></ModalShowTemplate>
@@ -57,6 +81,7 @@ import ModalCreateTemplate from './templates/ModalCreateTemplate'
 import ModalShowTemplate from './templates/ModalShowTemplate'
 import ModalEditTemplate from './templates/ModalEditTemplate'
 import ModalDeleteTemplate from './templates/ModalDeleteTemplate'
+import Multiselect from 'vue-multiselect'
 
 export default {
   name: 'Template',
@@ -65,13 +90,16 @@ export default {
     ModalCreateTemplate,
     ModalShowTemplate,
     ModalEditTemplate,
-    ModalDeleteTemplate
+    ModalDeleteTemplate,
+    Multiselect
   },
   data () {
     return {
       categories: [],
       activeCategory: null,
       templates: [],
+      users: [],
+      selectedUsers: [],
       modal: {
         create: false,
         edit: false,
@@ -97,7 +125,6 @@ export default {
       this.$api('post', 'bids/categories', data).then(response => {
         this.modal.create = false
         this.categories.push(response.data.category)
-        this.notify(response.data.message)
       })
     },
     loadTemplates (category) {
@@ -114,8 +141,9 @@ export default {
       })
     },
     editTemplate (data) {
-      this.$api('put', `bids/templates/${data._id}`).then(response => {
+      this.$api('put', `bids/templates/${data._id}`, data).then(response => {
         this.modal.editTemplate = false
+        this.notify(response.data.message)
         this.loadTemplates(this.activeCategory)
       })
     },
@@ -124,10 +152,24 @@ export default {
         this.templates = this.templates.filter(item => item._id !== data._id)
         this.modal.deleteTemplate = false
       })
+    },
+    loadUsers () {
+      return this.$api('get', 'users').then(response => {
+        this.users = response.data
+        this.selectedUsers = response.data.filter(item => item.priveleges && item.priveleges.includes('excel'))
+      }).catch(e => {
+        this.notify(e.message, 'danger')
+      })
+    },
+    addExcelUsers () {
+      this.$api('post', 'users/excel', { users: this.selectedUsers.map(item => item._id) }).then(response => {
+        this.notify(response.data.message)
+      })
     }
   },
   mounted () {
     this.getCategories()
+    this.loadUsers()
   }
 }
 </script>

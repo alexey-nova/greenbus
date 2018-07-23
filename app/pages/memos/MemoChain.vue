@@ -6,7 +6,7 @@
         <div :class="['stage-flex flex', setOrderClass(chainItem, index)]">
           <div :class="['stage-text', setOrderClass]">
             <p>{{chainItem.user.fullname}}</p>
-            <p class="italic">{{ posName(chainItem.user.positionId) }}</p>
+            <p class="italic">{{ posName(chainItem.user.position) }}</p>
           </div>
           <div v-if="type !== 'create'"  class="stage-date">
             <span class="chain-date">{{$dateFormat(chainItem.deadline, 'dd.mm.yyyy HH:MM')}}</span>
@@ -45,7 +45,7 @@ export default {
 
     modifiedBidOrder () {
       if (this.type === 'create') return this.order
-      return this.model.order.reduce((newArray, item, i) => {
+      return JSON.parse(JSON.stringify(this.model.order)).reduce((newArray, item, i) => {
         let prevDate = new Date()
         if (i === 0) {
           prevDate = new Date(this.model.createdAt)

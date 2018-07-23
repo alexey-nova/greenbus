@@ -55,9 +55,9 @@
         </div>
       </div>
     </div>
-    <ModalCreateUser :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+    <ModalCreateUser v-if="modal.createUser" :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
-    <ModalEditUser :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
+    <ModalEditUser v-if="modal.editUser" :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
     <ModalShowUser v-if="modal.showUser" :model="modal.showUser" @onClose="toggleModal('showUser')"></ModalShowUser>
     <ModalCreateTask :model="modal.createTask" :users="users" @onSubmit="createTask" @onClose="toggleModal('createTask')"></ModalCreateTask>
   </div>
@@ -157,7 +157,7 @@ export default {
       get: function () {
         let users = _.clone(this.users)
         if (this.filter !== false) {
-          users = _.filter(users, ['departmentId', this.filter])
+          users = _.filter(users, ['department', this.filter])
         }
 
         const departments = {}
@@ -174,8 +174,8 @@ export default {
         }
 
         users = users.map(item => {
-          item.deptName = departments[item.departmentId]
-          item.posName = positions[item.positionId]
+          item.deptName = departments[item.department]
+          item.posName = positions[item.position]
           return item
         })
         return users
@@ -187,8 +187,6 @@ export default {
       this.modal[name] = model === undefined ? !this.modal[name] : model
     },
     createUser (user) {
-      user.departmentId = user.department
-      user.positionId = user.position
       this.$api('post', 'users', user)
         .then(response => {
           this.loadUsers()
