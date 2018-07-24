@@ -203,13 +203,13 @@ export default {
   },
   methods: {
     setTag (event) {
-      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'yellow'
       if (event.deadlined) return 'red'
+      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'yellow'
       if (event.status === 'done') return 'green'
     },
     setTagText (event) {
-      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'У вас'
       if (event.deadlined) return 'Просрочено!'
+      if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'На согласовании'
       if (event.status === 'done') return 'Готово'
       return 'В работе'
     },
@@ -300,7 +300,7 @@ export default {
       let tempBids = [...bids].reverse()
       tempBids = tempBids.filter(bid => {
         if (bid.order[bid.currentUser].position !== this.$auth().user.position) { return true }
-        const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate : bid.createdAt)
+        const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate || bid.createdAt : bid.createdAt)
         const deadlineHours = bid.order[bid.currentUser].hours
         if (isDeadlined(prevDeadline, deadlineHours)) {
           bid.deadlined = true
@@ -417,6 +417,9 @@ export default {
 <style lang="scss" scoped>
 .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
 .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
+.text2 {
+  min-height: 54px;
+}
 .status-tag {
   width: 100px;
   text-align: center;
