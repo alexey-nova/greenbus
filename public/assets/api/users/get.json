@@ -1,0 +1,50 @@
+{
+  "1": {
+    "id": "1",
+    "fullname": "Алексей",
+    "position": "программист",
+    "department": 1,
+    "phone": "+7 (707) 324-34-34",
+    "email": "alexey@test.kz"
+  },
+  "2": {
+    "id": "2",
+    "fullname": "Иван",
+    "position": "менеджер",
+    "department": 2,
+    "phone": "+7 (707) 342-56-34",
+    "email": "ivan@test.kz"
+  },
+  "3": {
+    "id": "3",
+    "fullname": "Сергей",
+    "position": "менеджер",
+    "department": 2,
+    "phone": "+7 (707) 676-34-64",
+    "email": "sergey@test.kz"
+  },
+  "4": {
+    "id": "4",
+    "fullname": "Дмитрий",
+    "position": "менеджер",
+    "department": 1,
+    "phone": "+7 (707) 973-34-34",
+    "email": "dmitriy@test.kz"
+  },
+  "5": {
+    "id": "5",
+    "fullname": "Василий",
+    "position": "директор",
+    "department": 3,
+    "phone": "+7 (707) 234-34-34",
+    "email": "vasiliy@test.kz"
+  },
+  "6": {
+    "id": "6",
+    "fullname": "Игорь",
+    "position": "директор",
+    "department": 3,
+    "phone": "+7 (707) 756-34-34",
+    "email": "igor@test.kz"
+  }
+}
