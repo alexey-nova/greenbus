@@ -5,7 +5,7 @@
         <div class="modal-header">
           <div class="list_header">
             <div class="flex">
-              <div>Создать новую служебную записку</div>
+              <div>Создать новую заявку</div>
               <div class="buttons">
                 <button class="button-top close" @click="close" type="button"></button>
               </div>

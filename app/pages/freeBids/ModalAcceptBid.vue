@@ -6,7 +6,7 @@
           <div class="list_header">
             <div class="flex">
               <div>
-                <span>Принять служебную записку к исполнению</span>
+                <span>Принять заявку к исполнению</span>
               </div>
               <div class="buttons">
                 <button type="button" class="button-top close close-add-class" @click="close"></button>

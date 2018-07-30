@@ -5,7 +5,7 @@
         <div class="modal-header">
           <div class="list_header">
             <div class="flex">
-              <span>Удалить служебную записку</span>
+              <span>Удалить заявку</span>
               <div class="buttons">
                 <button class="button-top close body-add" type="button" @click="close"></button>
               </div>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="profile full modal-body">
-          <span>Вы действительно хотите удалить эту служебную записку?</span>
+          <span>Вы действительно хотите удалить эту заявку?</span>
           <div class="flex flex-end red">
             <button type="button" class="save pad" @click="close">Отмена</button>
             <button class="save pad btn-danger">Удалить</button>

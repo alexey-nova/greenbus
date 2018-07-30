@@ -1,7 +1,7 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
 
-    <h3 slot="header" class="modal-title">Отклонить служебную записку?</h3>
+    <h3 slot="header" class="modal-title">Отклонить заявку?</h3>
 
     <div slot="content">
       <div class="form-group">

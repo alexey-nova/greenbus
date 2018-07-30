@@ -70,8 +70,8 @@
           </div>
         </div>
         <div class="white-block">
-          <p class="title">Служебные записки на согласовании</p>
-          <p v-if="filteredBids.length === 0" class="title2">Служебных записок нет</p>
+          <p class="title">Заявки на согласовании</p>
+          <p v-if="filteredBids.length === 0" class="title2">Заявок нет</p>
           <div v-else class="mini-table">
             <table class="mob-none">
               <tr class="green">
