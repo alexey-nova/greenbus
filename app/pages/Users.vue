@@ -18,10 +18,10 @@
               <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
             </div> -->
             <div class="flex align-center sm-w" slot="tools" slot-scope="props">
-              <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
+              <!-- <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
                 <img src="~assets/img/add2.png">
                 <span>Поставить задачу</span>
-              </button>
+              </button> -->
               <a @click="toggleModal('showUser', props.row)" class="green_anchor">Подробнее</a>
             </div>
             <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
@@ -48,7 +48,7 @@
             <template slot="actions" slot-scope="row">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(row.item))"></button>
               <button class="button-table remove" @click="toggleModal('deleteUser', row.item) "></button>
-              <button class="button-table add" @click="toggleModal('createTask', { urgency: false, to: row.item._id })"></button>
+              <!-- <button class="button-table add" @click="toggleModal('createTask', { urgency: false, to: row.item._id })"></button> -->
             </template>
           </b-table>
           <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>

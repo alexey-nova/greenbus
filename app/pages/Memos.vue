@@ -10,7 +10,7 @@
             <div class="search">
             </div>
             <div class="add flex-end" v-if="$auth().user.position">
-              <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать заявку</button>
+              <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать документ</button>
               <download-excel
                 v-if="computedBids.length > 0"
                 class = "add-button auto-width"

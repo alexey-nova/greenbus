@@ -71,7 +71,7 @@ export default {
         ],
         documents: [
           {
-            name: 'Служебные записки',
+            name: 'Заявки',
             link: { name: 'documents' },
             imgSrc: 'left_menu/1.png',
             isActive: () => this.$isRoute(['documents', 'documentsByFilter']),
@@ -104,7 +104,7 @@ export default {
           },
           {
             link: { name: 'freebids' },
-            name: 'Служебные записки свободной формы',
+            name: 'Служебные записки',
             imgSrc: 'left_menu/1.png',
             isActive: () => this.$isRoute(['freebids', 'freebidsByFilter']),
             children: [
@@ -121,12 +121,6 @@ export default {
                 isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'out')
               },
               {
-                link: { name: 'freebidsByFilter', params: { param1: 'deadlined' }},
-                name: 'Просроченные',
-                imgSrc: 'left_menu/deadlined.png',
-                isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'done')
-              },
-              {
                 link: { name: 'freebids' },
                 name: 'Все',
                 imgSrc: 'left_menu/1.png',
@@ -136,7 +130,7 @@ export default {
           },
           {
             link: { name: 'contragents' },
-            name: 'Контрагенты',
+            name: 'Хранилище',
             imgSrc: 'left_menu/3.png',
             isActive: () => this.$isRoute(['folder', 'contragents'])
           }

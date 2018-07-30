@@ -17,12 +17,12 @@
             <span>Сотрудники</span>
           </div>
         </router-link>
-        <router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :class="['menu-item', { active: ($isRoute(['tasks', 'tasksByFilter'])) }]">
+        <!-- <router-link :to="{name: 'tasksByFilter', params: { param1: 'in' }}" :class="['menu-item', { active: ($isRoute(['tasks', 'tasksByFilter'])) }]">
           <div class="center">
             <img src="~assets/img/header/3.png">
             <span>Задачи</span>
           </div>
-        </router-link>
+        </router-link> -->
         <router-link :class="['menu-item', { active: $isRoute(['documents', 'documentsByFilter', 'folder', 'contragents', 'freebids', 'freebidsByFilter']) }]" :to="{name: 'documentsByFilter', params: { param1: 'in' }}">
           <div class="center">
             <img src="~assets/img/header/4.png">

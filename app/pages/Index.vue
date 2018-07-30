@@ -2,7 +2,7 @@
   <div class="working_area">
     <div class="flex mobile-reverse">
       <div class="flex-left">
-        <div class="white-block">
+        <div class="white-block" v-if="1 === 2"> <!-- УБРАТЬ КОГДА ВЕРНУТ ЗАДАЧИ -->
           <p class="title">Просроченные задачи</p>
           <p v-if="deadlined.length === 0" class="title2">Просроченных задач нет</p>
           <div v-else class="flex mobile-block">
