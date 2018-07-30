@@ -79,5 +79,11 @@ export default {
   },
   $dateFormat (date, format) {
     return dateFormat(date, format)
+  },
+  $ckEditorConfig: {
+    toolbar: [
+      ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
+    ],
+    height: 150
   }
 }

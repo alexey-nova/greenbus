@@ -60,9 +60,9 @@ export default {
   watch: {
     isOpen () {
       if (this.$props.isOpen) {
-        document.body.classList.add('modal-open')
+        // document.body.classList.add('modal-open')
       } else {
-        document.body.classList.remove('modal-open')
+        // document.body.classList.remove('modal-open')
       }
     }
   }

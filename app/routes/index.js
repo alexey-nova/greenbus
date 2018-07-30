@@ -9,6 +9,7 @@ import Index from '#/pages/Index'
 import Users from '#/pages/Users'
 import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
+import FreeBids from '#/pages/FreeBids'
 import Contragents from '#/pages/Contragents'
 import Calendar from '#/pages/Calendar'
 import Template from '#/pages/Template'
@@ -71,9 +72,14 @@ var router = new Router({
           component: Memos
         },
         {
-          path: '/documents1',
-          name: 'documentsByFilter1',
-          component: Memos
+          path: '/freebids',
+          name: 'freebids',
+          component: FreeBids
+        },
+        {
+          path: '/freebids/:param1',
+          name: 'freebidsByFilter',
+          component: FreeBids
         },
         {
           path: '/ca',
@@ -117,9 +123,9 @@ var router = new Router({
 })
 router.beforeEach(function (to, from, next) {
   if (core.$session.get('jwt') === null && to.name !== 'login') {
-    next({name: 'login'})
+    next({ name: 'login' })
   } else if (core.$session.get('jwt') && to.name === 'login') {
-    next({name: 'index'})
+    next({ name: 'index' })
   } else {
     next()
   }

@@ -29,8 +29,8 @@ module.exports = {
     'generator-star-spacing': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'indent': [2, 2, { 'SwitchCase': 1 }],
-    'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
-    'object-curly-spacing': ['error', 'always', { 'objectsInObjects': false }],
+    // 'indent': [2, 2, { 'SwitchCase': 1 }],
+    // 'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
+    // 'object-curly-spacing': ['error', 'always', { 'objectsInObjects': false }],
   }
 }

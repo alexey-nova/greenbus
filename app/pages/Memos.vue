@@ -99,7 +99,6 @@ export default {
   data () {
     return {
       users: [],
-      memos: [],
       bids: [],
       chain: [],
       positions: [],

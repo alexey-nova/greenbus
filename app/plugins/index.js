@@ -26,6 +26,7 @@ Vue.use({
     Vue.prototype.$login = plugins.auth.login
 
     Vue.prototype.$trans = plugins.translate.trans
+    Vue.prototype.$ckEditorConfig = core.$ckEditorConfig
 
     // mixins
     // Vue.mixin(plugins.auth.mixin)

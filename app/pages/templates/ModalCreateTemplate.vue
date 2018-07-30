@@ -45,6 +45,7 @@
                   name="position"
                   v-model="order[index].position"
                   :options="filteredPositions"
+                  :show-labels="false"
                   track-by="name"
                   placeholder="Выберите должность"
                   label="name">
@@ -203,6 +204,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input, select, td {
+  font-size: 1rem;
+}
+
 .aic {
   align-items: center;
 }

@@ -103,6 +103,38 @@ export default {
             ]
           },
           {
+            link: { name: 'freebids' },
+            name: 'Служебные записки свободной формы',
+            imgSrc: 'left_menu/1.png',
+            isActive: () => this.$isRoute(['freebids', 'freebidsByFilter']),
+            children: [
+              {
+                link: { name: 'freebidsByFilter', params: { param1: 'in' }},
+                name: 'Входящие',
+                imgSrc: 'left_menu/3.png',
+                isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'in')
+              },
+              {
+                link: { name: 'freebidsByFilter', params: { param1: 'out' }},
+                name: 'Исходящие',
+                imgSrc: 'left_menu/4.png',
+                isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'out')
+              },
+              {
+                link: { name: 'freebidsByFilter', params: { param1: 'deadlined' }},
+                name: 'Просроченные',
+                imgSrc: 'left_menu/deadlined.png',
+                isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'done')
+              },
+              {
+                link: { name: 'freebids' },
+                name: 'Все',
+                imgSrc: 'left_menu/1.png',
+                isActive: () => this.$isRoute(['freebids'])
+              }
+            ]
+          },
+          {
             link: { name: 'contragents' },
             name: 'Контрагенты',
             imgSrc: 'left_menu/3.png',

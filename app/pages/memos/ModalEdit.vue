@@ -33,21 +33,18 @@
                     Прикрепить файлы
                   </file-upload>
                   <ul style="list-style: none; padding: 0;">
+                    <li v-for="(file, index) in newFiles" :key="index" class="file">
+                      <span class="file-remove" @click="removeFile('newFiles', index)">x</span>
+                      <span>{{file.name}}</span>
+                    </li>
+                  </ul>
+                  <ul style="list-style: none; padding: 0;">
                     <li v-for="(file, index) in model.files" :key="index" class="file">
                       <span class="file-remove" @click="removeFile('files', index)">x</span>
                       <span>{{file.name}}</span>
                     </li>
                   </ul>
                 </div>
-              </div>
-              <div class="form-item">
-                <p>Существующие файлы: </p>
-                <ul style="list-style: none; padding: 0;">
-                  <li v-for="(file, index) in newFiles" :key="index" class="file">
-                    <span class="file-remove" @click="removeFile('newFiles', index)">x</span>
-                    <span>{{file.name}}</span>
-                  </li>
-                </ul>
               </div>
             </div>
             <div :class="['form-group']">

@@ -12,9 +12,15 @@
         <div class="cat-box">
           <div class="white-menu top">
             <div class="white-menu-box">
-              <a :class="['categories', { active: activeCategory && activeCategory._id === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category)">
-                <div class="white-menu-img"></div>
-                <span>{{category.name}}</span>
+              <a :class="['folders-item categories', { active: activeCategory && activeCategory._id === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category)">
+                <div class="folder-border">
+                  <div class="white-menu-img"></div>
+                  <span>{{category.name}}</span>
+                </div>
+                <div class="folder-buttons">
+                  <button class="button-table edit" @click="toggleModal('edit', $_.clone(category))"></button>
+                  <button class="button-table remove" @click="toggleModal('remove', category)"></button>
+                </div>
               </a>
             </div>
           </div>
@@ -68,6 +74,8 @@
     </div>
   </div>
   <ModalCreate :model="modal.create" @onClose="toggleModal('create')" @onSubmit="addCategory"></ModalCreate>
+  <modal-edit-category v-if="modal.edit" :model="modal.edit" @onClose="toggleModal('edit')" @onSubmit="editCategory"></modal-edit-category>
+  <modal-remove-category v-if="modal.remove" :model="modal.remove" @onClose="toggleModal('remove')" @onSubmit="removeCategory"></modal-remove-category>
   <ModalCreateTemplate v-if="modal.createTemplate" :model="modal.createTemplate" @onClose="toggleModal('createTemplate')" @onSubmit="createTemplate"></ModalCreateTemplate>
   <ModalShowTemplate v-if="modal.showTemplate" :model="modal.showTemplate" @onClose="toggleModal('showTemplate')"></ModalShowTemplate>
   <ModalEditTemplate v-if="modal.editTemplate" :model="modal.editTemplate" @onClose="toggleModal('editTemplate')" @onSubmit="editTemplate"></ModalEditTemplate>
@@ -77,6 +85,8 @@
 
 <script>
 import ModalCreate from './templates/ModalCreate'
+import ModalEditCategory from './templates/ModalEdit'
+import ModalRemoveCategory from './templates/ModalRemove'
 import ModalCreateTemplate from './templates/ModalCreateTemplate'
 import ModalShowTemplate from './templates/ModalShowTemplate'
 import ModalEditTemplate from './templates/ModalEditTemplate'
@@ -87,6 +97,8 @@ export default {
   name: 'Template',
   components: {
     ModalCreate,
+    ModalEditCategory,
+    ModalRemoveCategory,
     ModalCreateTemplate,
     ModalShowTemplate,
     ModalEditTemplate,
@@ -103,7 +115,7 @@ export default {
       modal: {
         create: false,
         edit: false,
-        delete: false,
+        remove: false,
         createTemplate: false,
         showTemplate: false,
         editTemplate: false,
@@ -125,6 +137,23 @@ export default {
       this.$api('post', 'bids/categories', data).then(response => {
         this.modal.create = false
         this.categories.push(response.data.category)
+      })
+    },
+    editCategory (data) {
+      if (!data.name) return
+      this.$api('put', `bids/categories/${data._id}`, data).then(response => {
+        this.modal.edit = false
+        this.categories.find(item => item._id === data._id).name = data.name
+      })
+    },
+    removeCategory (data) {
+      this.$api('delete', `bids/categories/${data._id}`).then(response => {
+        this.modal.remove = false
+        this.categories = this.categories.filter(item => item._id !== data._id)
+        if (this.activeCategory._id === data._id) {
+          this.activeCategory = null
+          this.templates = []
+        }
       })
     },
     loadTemplates (category) {
@@ -175,5 +204,11 @@ export default {
 </script>
 
 <style scoped>
+.folders-item {
+  font-size: 1em;
+}
 
+a.categories {
+  width: 10%;
+}
 </style>
