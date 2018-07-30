@@ -312,10 +312,6 @@ export default {
         this.$log(e, 'danger')
       })
     },
-    getUser (_id) {
-      let user = this.$_.find(this.$props.users, u => u._id === _id)
-      return user || {}
-    },
     setMeetingDate () {
       const date = new Date(this.model.startDate)
       const startTime = this.model.startTime.split(':')
