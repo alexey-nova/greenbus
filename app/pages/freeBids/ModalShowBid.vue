@@ -71,6 +71,9 @@
                         <p>
                           <strong>Тема: </strong>{{model.name}}
                         </p>
+                        <p>
+                          <strong>Срок сдачи: </strong>{{$dateFormat(model.deadline, 'dd mmm yyyy')}}
+                        </p>
                       </div>
                     </div>
                       <div class="description">

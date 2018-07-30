@@ -64,6 +64,10 @@ export default {
                   [
                     { text: 'Тема:', style: 'trHeader2' },
                     { text: model.name, style: 'tr' }
+                  ],
+                  [
+                    { text: 'Срок сдачи:', style: 'trHeader2' },
+                    { text: $dateFormat(model.deadline, 'dd mmm yyyy'), style: 'tr' }
                   ]
                 ]
               },
