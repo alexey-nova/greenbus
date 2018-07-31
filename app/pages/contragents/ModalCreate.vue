@@ -6,7 +6,7 @@
           <div class="list_header">
             <div class="flex">
               <div>
-                <span>Создать контрагент</span>
+                <span>Создать папку</span>
               </div>
               <div class="buttons">
                 <button type="button" class="button-top close" data-dismiss="modal" @click="close"></button>
@@ -20,10 +20,10 @@
             <input id="field-name" v-validate="'required'" name="name" v-model="model.name">
             <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
           </div>
-          <div :class="['', {'has-error': errors.has('text')}]">
+          <!-- <div :class="['', {'has-error': errors.has('text')}]">
             <label for="field-text">БИН</label>
             <input id="field-name" name="bin" v-model="model.bin">
-          </div>
+          </div> -->
           <div class="flex center">
             <button type="submit" class="add-button auto-width form-submit">Создать</button>
           </div>

@@ -14,7 +14,7 @@
                   </form>
                 </div>
                 <div class="add flex-end">
-                  <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать контрагента</button>
+                  <button class="add-button auto-width" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Создать папку</button>
                 </div>
               </div>
 

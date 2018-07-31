@@ -121,6 +121,12 @@ export default {
                 isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'out')
               },
               {
+                link: { name: 'freebidsByFilter', params: { param1: 'done' }},
+                name: 'Завершенные',
+                imgSrc: 'left_menu/4.png',
+                isActive: () => this.$isRoute('freebidsByFilter', 'param1', 'done')
+              },
+              {
                 link: { name: 'freebids' },
                 name: 'Все',
                 imgSrc: 'left_menu/1.png',

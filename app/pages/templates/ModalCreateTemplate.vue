@@ -57,7 +57,7 @@
               <div :class="[{'has-error': errors.has('confirmType')}]">
                 <select v-validate="'required'" name="confirmType" class="select" v-model="order[index].confirmType">
                   <option value="default" selected>Обычный</option>
-                  <option value="date">С датой оплаты</option>
+                  <option value="date">С датой</option>
                 </select>
                 <span v-show="errors.has('confirmType')" class="help-block">{{ errors.first('type') }}</span>
               </div>

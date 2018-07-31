@@ -76,7 +76,7 @@ export default {
                     { text: model.name, style: 'tr' }
                   ],
                   [
-                    { text: 'Дата оплаты:', style: 'trHeader2' },
+                    { text: 'Дата:', style: 'trHeader2' },
                     { text: payDate(), style: 'tr' }
                   ]
                 ]
