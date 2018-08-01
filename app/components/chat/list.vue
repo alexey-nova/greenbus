@@ -8,6 +8,7 @@ export default {
     readChat (chatId) {
       if (chatId) {
         this.$api('post', `conversations/read/${chatId}`).then(response => {})
+        this.$store.commit('app/setUnreadMessagesCount', 0)
       }
     },
     goToChat() {//for mobile
@@ -133,4 +134,8 @@ export default {
       }
     }
   }
+
+.light {
+  white-space: normal;
+}
 </style>

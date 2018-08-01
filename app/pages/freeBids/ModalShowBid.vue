@@ -259,8 +259,6 @@ export default {
       })
     },
     sendReply (data) {
-      // data.files = this.$_.map(data.files, (f) => f.file)
-      // let formData = this.$createFormData(data)
       this.modal.accept = false
       this.$emit('onSubmit', data)
     },
@@ -304,19 +302,19 @@ export default {
       font-weight: 700;
     }
 
-    select {
-      width: auto;
-    }
-    h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
-    .theme { margin: 30px -15px 10px; }
-    .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
-    .form-item-big {
-      border: none;
-    }
-    .from-wrapper { margin-top: 100px; }
-    .fl {
-      display: flex;
-      flex-wrap: wrap;
+select {
+  width: auto;
+}
+h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
+.theme { margin: 30px -15px 10px; }
+.description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
+.form-item-big {
+  border: none !important;
+}
+.from-wrapper { margin-top: 100px; }
+.fl {
+  display: flex;
+  flex-wrap: wrap;
 
       &-aic {
         align-items: center;

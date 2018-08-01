@@ -43,8 +43,8 @@
           <span class="notificationse" v-if="unreadMessagesCount && unreadMessagesCount > 0">{{ count }}</span>
         </div>
       </a>
-      <a >
-          <Notifications></Notifications>
+      <a>
+        <Notifications></Notifications>
       </a>
     </div>
   </div>
@@ -96,7 +96,8 @@ export default {
   },
   sockets: {
     newMessage (data) {
-      this.$store.commit('app/setUnreadMessagesCount', ++this.unreadMessagesCount)
+      let count = this.$store.getters['app/unreadMessagesCount']
+      this.$store.commit('app/setUnreadMessagesCount', ++count)
       this.notify('У вас новое сообщение')
     }
   }

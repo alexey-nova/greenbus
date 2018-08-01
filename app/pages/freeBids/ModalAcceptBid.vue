@@ -19,7 +19,7 @@
             <label>Комментарий</label>
             <textarea name="comment" v-model="model.comment"></textarea>
           </div>
-          <!-- <div class="select-file">
+          <div class="select-file">
             <file-upload
               class="btn btn-default"
               :multiple="true"
@@ -29,11 +29,12 @@
             </file-upload>
             <ul style="list-style: none; padding: 0;">
               <li v-for="(file, index) in model.files" :key="index">
+                <span class="file-remove" @click="removeFile(index)">x</span>
                 <span>{{file.name}}</span> -
                 <span>{{Math.ceil(file.size / 1024)}} КБ</span>
               </li>
             </ul>
-          </div> -->
+          </div>
           <div class="flex center">
             <button class="add-button auto-width form-submit">Отправить</button>
           </div>
@@ -45,13 +46,13 @@
 
 <script>
 import Modal from '@/Modal'
-// import FileUpload from 'vue-upload-component'
+import FileUpload from 'vue-upload-component'
 
 export default {
   name: 'modal-accept-custom-bid',
   components: {
-    Modal
-    // FileUpload,
+    Modal,
+    FileUpload
   },
   props: ['model', 'onSubmit', 'onClose'],
   methods: {
@@ -64,17 +65,22 @@ export default {
           this.$emit('onSubmit', this.model)
         }
       }).catch(() => {})
-    }
-    // addFiles (e) {
-    //   let files = e.target.files || e.dataTransfer.files
-    //   if (!files.length) return
-
-    //   this.$props.model.files = files
-    // }
+    },
+    removeFile (index) {
+      this.model.files.splice(index, 1)
+    },
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.file {
+  padding: 3px;
+  &-remove {
+    color: #ff0000;
+    padding: 0 5px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+}
 </style>

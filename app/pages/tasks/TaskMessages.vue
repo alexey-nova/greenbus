@@ -133,6 +133,5 @@ export default {
   &--item:not(:first-child) {
     margin-left: 1em;
   }
-
 }
 </style>

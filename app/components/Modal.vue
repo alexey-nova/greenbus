@@ -70,7 +70,7 @@ export default {
 </script>
 
 <style lang="scss">
-.modal { overflow-y: auto; }
+.modal { overflow-y: auto !important; }
 .modal.type-lg .modal-dialog { max-width: 900px; width: auto; }
 .modal.type-read-only .form-control[readonly] { background: #fff }
 </style>
