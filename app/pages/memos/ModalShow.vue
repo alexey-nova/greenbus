@@ -324,18 +324,26 @@ export default {
       })
     },
     async sendReply (data) {
-      // data.files = this.$_.map(data.files, (f) => f.file)
-      // let formData = this.$createFormData(data)
+      data.files = this.$_.map(data.files, (f) => f.file)
+      data.bidId = this.model._id
+      let param = ''
+      if (data.type === 'confirmDate') {
+        data.date = data.date.getTime()
+      }
+      if (data.type === 'rejectFull') {
+        data.goToFirst = true
+      }
+      let formData = this.$createFormData(data)
       try {
         if (data.type === 'confirm') {
-          const response = await this.$api('post', `bids/confirm`, { bidId: this.model._id, ...data })
+          const response = await this.$api('post', `bids/confirm`, formData)
         } else if (data.type === 'confirmDate') {
           if (!data.date) return this.notify('Введите дату', 'danger')
-          const response = this.$api('post', `bids/confirm?confirmType=date`, { bidId: this.model._id, date: data.date.getTime() })
+          const response = await this.$api('post', `bids/confirm?confirmType=date`, formData)
         } else if (data.type === 'reject') {
-          const response = this.$api('post', `bids/decline`, { bidId: this.model._id, ...data })
+          const response = await this.$api('post', `bids/decline`, formData)
         } else if (data.type === 'rejectFull') {
-          const response = this.$api('post', `bids/decline`, { bidId: this.model._id, goToFirst: true, ...data })
+          const response = await this.$api('post', `bids/decline`, formData)
         }
         this.getBids()
         this.close()

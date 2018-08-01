@@ -203,7 +203,9 @@ export default {
       })
     },
     acceptBid (data) {
-      this.$api('post', `freebids/accept/${data._id}`, data).then(response => {
+      data.files = this.$_.map(data.files, (f) => f.file)
+      let formData = this.$createFormData(data)
+      this.$api('post', `freebids/accept/${data._id}`, formData).then(response => {
         this.notify(response.data.message)
         this.modal.show = false
         this.loadBids()

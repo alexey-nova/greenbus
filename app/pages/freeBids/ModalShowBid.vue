@@ -259,8 +259,6 @@ export default {
       })
     },
     sendReply (data) {
-      // data.files = this.$_.map(data.files, (f) => f.file)
-      // let formData = this.$createFormData(data)
       this.modal.accept = false
       this.$emit('onSubmit', data)
     },
@@ -310,7 +308,7 @@ h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; bo
 .theme { margin: 30px -15px 10px; }
 .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
 .form-item-big {
-  border: none;
+  border: none !important;
 }
 .from-wrapper { margin-top: 100px; }
 .fl {

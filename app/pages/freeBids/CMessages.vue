@@ -9,6 +9,11 @@
         <div v-if="com.comment" class="forum-text">
           <span>{{com.comment}}</span>
         </div>
+        <div class="file-button">
+          <div v-for="(file, index) in com.files" :key="`file-${index}`" class="file-button--item">
+            <a :href="$config('app.fileUrl') + file.path" target="_blank" :class="['info-button clicked left-margin']"><img src="~assets/img/2.png">{{file.name}}</a>
+          </div>
+        </div>
         <div class="flex flex-end forum-button">
           <button type="button" class="add-button auto-width reply" @click="toggleReplyArea(index)">{{ replyBox[index] ? 'Закрыть' : 'Ответить' }}</button>
         </div>
@@ -59,7 +64,7 @@ export default {
   methods: {
     commentType (type) {
       const types = {
-        'accept': 'Принял к исполнению'
+        'accept': '(Принял к исполнению)'
       }
       return types[type]
     },
@@ -75,16 +80,28 @@ export default {
         console.log(e.message)
       })
     }
+  },
+  mounted () {
+    console.log('mounted::', this.comments)
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .anti-margin {
   width: 100% !important;
 }
 
 .forum-title {
   margin-top: 10px;
+}
+
+.file-button {
+  display: flex;
+  margin-top: 0.5em;
+
+  &--item:not(:first-child) {
+    margin-left: 1em;
+  }
 }
 </style>
