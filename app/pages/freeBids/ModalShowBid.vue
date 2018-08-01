@@ -293,74 +293,76 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.row {
-  display: flex;
-  padding-bottom: 0.5em;
-}
+  div {
+    .row {
+      display: flex;
+      padding-bottom: 0.5em;
+    }
 
-.to-title {
-  margin-bottom: 1em;
-  font-weight: 700;
-}
+    .to-title {
+      margin-bottom: 1em;
+      font-weight: 700;
+    }
 
-select {
-  width: auto;
-}
-h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
-.theme { margin: 30px -15px 10px; }
-.description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
-.form-item-big {
-  border: none;
-}
-.from-wrapper { margin-top: 100px; }
-.fl {
-  display: flex;
-  flex-wrap: wrap;
+    select {
+      width: auto;
+    }
+    h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
+    .theme { margin: 30px -15px 10px; }
+    .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
+    .form-item-big {
+      border: none;
+    }
+    .from-wrapper { margin-top: 100px; }
+    .fl {
+      display: flex;
+      flex-wrap: wrap;
 
-  &-aic {
-    align-items: center;
-  }
-}
+      &-aic {
+        align-items: center;
+      }
+    }
 
-.ml1 {
-  margin-left: 1em;
-}
+    .ml1 {
+      margin-left: 1em;
+    }
 
-.pdf {
-  color: #fff; margin-right: 10px;
-}
-.forum-response-box.full {
-  width: 100%;
-}
-.forum-box.fixed {
-  max-height: 400px;
-  overflow-y: scroll;
-}
-button:disabled {
-  background-color: #fff;
-  color: #a5a5a5;
-}
+    .pdf {
+      color: #fff; margin-right: 10px;
+    }
+    .forum-response-box.full {
+      width: 100%;
+    }
+    .forum-box.fixed {
+      max-height: 400px;
+      overflow-y: scroll;
+    }
+    button:disabled {
+      background-color: #fff;
+      color: #a5a5a5;
+    }
 
-.button-counter {
-  position: relative;
+    .button-counter {
+      position: relative;
 
-  & span {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #1b8442;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    display: block;
-    text-align: center;
-    padding: 1px;
-    color: #fff;
-    transition: all 1s ease-in-out;
+      & span {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #1b8442;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        display: block;
+        text-align: center;
+        padding: 1px;
+        color: #fff;
+        transition: all 1s ease-in-out;
 
-    &:hover {
-      color: #fff;
+        &:hover {
+          color: #fff;
+        }
+      }
     }
   }
-}
 </style>
