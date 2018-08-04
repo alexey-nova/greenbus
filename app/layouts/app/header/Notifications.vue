@@ -1,8 +1,8 @@
 <template>
   <div class="menu-item notifications-call">
     <div class="center" @click="toggle">
-      <img src="~assets/img/header/8.png">
-      <span class="notificationse" v-if="$_.size(pending)">{{$_.size(pending)}}</span>
+      <img src="~assets/img/header/8.png" :class="[{'wobble animated infinite': $_.size(pending)}]">
+      <span class="notificationse" v-if="$_.size(pending)" :class="[{'wobble animated infinite': $_.size(pending)}]">{{$_.size(pending)}}</span>
     </div>
     <div v-if="isOpen" v-click-outside="close">
       <div class="not-bg"></div>
@@ -84,4 +84,8 @@ export default {
 <style lang="scss" scoped>
   .dropdown-menu { display: block; }
   .read-all { text-decoration: underline !important; }
+.notificationse {
+  font-size: 1.3em;
+  color: red;
+}
 </style>

@@ -186,13 +186,12 @@ header{
     font-size: 0.9em;
 }
 .info-box{
-    background-image: url("../img/left_menu/bg.jpg");
     background-size: cover;
     background-position: center center;
-    color: white;
     text-align: center;
     padding: 0.5em;
     font-size: 0.9em;
+    border-bottom: 1px solid #1b8442;
 }
 .info-box p{
     margin-top: 0.2em;
@@ -1627,6 +1626,48 @@ li.bold{
 @keyframes fadeOutRightBig{from{opacity:1;}
     to{opacity:0;transform:translate3d(2000px, 0, 0);}
 }
+
+@keyframes wobble {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  15% {
+    transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+  }
+
+  30% {
+    transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+  }
+
+  45% {
+    transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+  }
+
+  60% {
+    transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+  }
+
+  75% {
+    transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.wobble {
+  animation-name: wobble;
+}
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.animated.infinite {
+  animation-iteration-count: infinite;
+}
+
 .sm.inline{
     padding: 0.5em 1em;
     margin-top: 0.8em;

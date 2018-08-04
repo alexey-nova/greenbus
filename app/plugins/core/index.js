@@ -74,7 +74,7 @@ export default {
       if (color === 'danger') color = 'red'
       console.log('%c' + 'Core: ' + message, 'color: ' + color)
     } else {
-      console.log(message)
+      console.log(JSON.parse(JSON.stringify(message)))
     }
   },
   $dateFormat (date, format) {

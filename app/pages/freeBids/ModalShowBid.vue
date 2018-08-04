@@ -9,16 +9,16 @@
                 <div>
                 </div>
                 <div class="buttons flex">
-                  <button class="button-top pdf" @click="pdf">PDF</button>
                   <button @click="close" class="button-top close" type="button"></button>
                 </div>
               </div>
             </div>
           </div>
-          <div class="profile full modal-body no-padding">
+          <div class="full modal-body">
             <div class="info-block">
               <div class="flex align-start border-bottom">
                 <div class="info-box-text">
+                  <button class="add-button" @click="pdf">Скачать PDF</button>
                 </div>
                 <div class="info-box-button">
                   <button :class="['info-button clicked left-margin', tabs === 0 && 'active']" @click="toggleTab(0)"><img src="~assets/img/2.png">Информация</button>
@@ -51,7 +51,7 @@
                       <center>
                         <div><img :src="logo"/></div>
                       </center>
-                      <h3>Служебная записка №{{model.id}}</h3>
+                      <h3 class="lead">Служебная записка №{{model.id}}</h3>
                     <strong class="to-title">Исполнители:</strong>
                     <div v-for="(to, index) in model.to" :key="`user-${index}-${to.user}`" class="row user">
                       <div class="col-md-4">
@@ -80,7 +80,7 @@
                         <span v-html="model.description"></span>
                       </div>
                       <div class="from-wrapper">
-                        <p>От кого:</p>
+                        <strong>От кого:</strong>
                         <div class="row">
                           <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
@@ -104,7 +104,7 @@
                   </div>
                 </div>
               </div>
-              <div class="info-container2" v-if="tabs === 2">
+              <div class="info-container2 profile full" v-if="tabs === 2">
                 <div class="forum-response">
                   <div class="forum-response-box full">
                     <p class="forum-name">Оставить комментарий</p>
@@ -299,13 +299,24 @@ div {
 
   .to-title {
     margin-bottom: 1em;
-    font-weight: 700;
+    font-family: cbold;
+    font-weight: 400;
   }
-
+  strong {
+    font-family: cbold;
+    font-weight: 400
+  }
   select {
     width: auto;
   }
-  h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
+  h3 {
+    text-align: center;
+    padding: 30px 0;
+    margin: 30px 0;
+    border: solid #000;
+    border-width: 2px 0;
+    text-transform: uppercase;
+  }
   .theme { margin: 30px -15px 10px; }
   .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
   .form-item-big {

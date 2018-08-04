@@ -1,6 +1,6 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-    <div slot="content" class="modal-dialog small2">
+    <div slot="content" class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <div class="list_header">

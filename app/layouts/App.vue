@@ -7,23 +7,22 @@
     <div v-if="!onlineStatus" class="offline">
       <p class="offline-text"><i class="fa fa-exclamation-triangle"></i> Подключение к интернету отсутствует</p>
     </div>
-    <AppHeader></AppHeader>
+    <app-header></app-header>
 
     <div class="container">
-      <AppSidebar></AppSidebar>
+      <app-sidebar></app-sidebar>
 
       <div class="container-box">
         <div class="top-shadow"></div>
-          <!-- <Chat :users="users"></Chat> -->
           <router-view/>
       </div>
     </div>
-    <Chat v-if="$store.getters['app/isChatOpen']" :users="users"></Chat>
+    <app-chat v-if="$store.getters['app/isChatOpen']" :users="users"></app-chat>
   </div>
 </template>
 <script>
-import '#/assets/jquery/jquery.min'
-import '#/assets/adminlte/js/adminlte.min'
+// import '#/assets/jquery/jquery.min'
+// import '#/assets/adminlte/js/adminlte.min'
 import Chat from '@/Chat'
 import 'element-ui/lib/theme-chalk/index.css'
 import offline from 'v-offline'
@@ -31,18 +30,14 @@ import offline from 'v-offline'
 import AppHeader from './app/Header.vue'
 import AppFooter from './app/Footer.vue'
 import AppSidebar from './app/Sidebar.vue'
-import Alert from '@/Alert.vue'
-import VueFlashMessage from 'vue-flash-message'
 
 export default {
   name: 'app',
   components: {
-    AppHeader,
+    'app-header': AppHeader,
     AppFooter,
-    AppSidebar,
-    Alert,
-    VueFlashMessage,
-    Chat,
+    'app-sidebar': AppSidebar,
+    'app-chat': Chat,
     offline
   },
   data () {
@@ -50,7 +45,8 @@ export default {
       height: 0,
       showMessageBox: false,
       users: [],
-      onlineStatus: true
+      onlineStatus: true,
+      authorized: true
     }
   },
   methods: {
@@ -58,14 +54,21 @@ export default {
       this.$api('get', 'users').then(response => {
         this.users = response.data
       }).catch(e => {
-        this.notify(e, 'danger')
+        this.notify(e.response.data.message, 'danger')
       })
     },
     handleConnectivityChange (status) {
       this.onlineStatus = status
+    },
+    test () {
+      this.$api('get', 'test').then(response => {
+      }).catch(e => {
+        if (e.response.data.message === 'Доступ ограничен') this.$router.push('logout')
+      })
     }
   },
   beforeMount () {
+    this.test()
     if (this.$auth().user) {
       this.$socket.emit('joinroom', this.$auth().user._id)
     }

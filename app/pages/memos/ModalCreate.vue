@@ -13,7 +13,7 @@
           </div>
         </div>
         <div v-if="step === 0" :class="['active-categories']">
-          <div class="profile full modal-body no-padding">
+          <div class="profile full modal-body">
             <div class="cat-box">
               <div class="white-menu top">
                 <div class="white-menu-box">

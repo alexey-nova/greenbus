@@ -9,17 +9,17 @@
                 <div>
                 </div>
                 <div class="buttons flex">
-                  <button class="button-top pdf" @click="pdf">PDF</button>
                   <button @click="close" class="button-top close" type="button"></button>
                 </div>
               </div>
             </div>
           </div>
-          <div class="profile full modal-body no-padding">
+          <div class="full modal-body">
             <div class="info-block">
               <memo-chain :model="model" :order="chain" :users="users" :positions="positions"></memo-chain>
               <div class="flex align-start border-bottom">
                 <div class="info-box-text">
+                  <button class="add-button" @click="pdf">Скачать PDF</button>
                 </div>
                 <div class="info-box-button">
                   <button :class="['info-button clicked left-margin', tabs === 0 && 'active']" @click="toggleTab(0)"><img src="~assets/img/2.png">Информация</button>
@@ -88,7 +88,7 @@
                           <strong>Тема: </strong>{{model.name}}
                         </p>
                         <p>
-                          <strong>Дата: {{payDate}}</strong>
+                          <strong>Дата: </strong>{{payDate}}
                         </p>
                       </div>
                     </div>
@@ -96,7 +96,7 @@
                         <span v-html="model.description"></span>
                       </div>
                       <div class="from-wrapper">
-                        <p>От кого:</p>
+                        <strong>От кого:</strong>
                         <div class="row">
                           <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
@@ -120,7 +120,7 @@
                   </div>
                 </div>
               </div>
-              <div class="info-container2" v-if="tabs === 2">
+              <div class="info-container2 profile full" v-if="tabs === 2">
                 <div class="forum-response">
                   <div class="forum-response-box full">
                     <p class="forum-name">Оставить комментарий</p>
@@ -396,73 +396,80 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.row {
-  display: flex;
-  padding-bottom: 0.5em;
-}
-
-.to-title {
-  margin-bottom: 1em;
-  font-weight: 700;
-}
-
-select {
-  width: auto;
-}
-h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
-.theme { margin: 30px -15px 10px; }
-.description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
-.form-item-big {
-  border: none;
-}
-.from-wrapper { margin-top: 100px; }
-.fl {
-  display: flex;
-  flex-wrap: wrap;
-
-  &-aic {
-    align-items: center;
+div {
+  .row {
+    display: flex;
+    padding-bottom: 0.5em;
   }
-}
 
-.ml1 {
-  margin-left: 1em;
-}
+  .to-title {
+    margin-bottom: 1em;
+    font-family: cbold;
+    font-weight: 400;
+  }
+  strong {
+    font-family: cbold;
+    font-weight: 400
+  }
 
-.pdf {
-  color: #fff; margin-right: 10px;
-}
-.forum-response-box.full {
-  width: 100%;
-}
-.forum-box.fixed {
-  max-height: 400px;
-  overflow-y: scroll;
-}
-button:disabled {
-  background-color: #fff;
-  color: #a5a5a5;
-}
+  select {
+    width: auto;
+  }
+  h3 { text-align: center; padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0; text-transform: uppercase; }
+  .theme { margin: 30px -15px 10px; }
+  .description { padding: 30px 0; margin: 30px 0; border: solid #000; border-width: 2px 0 0; word-wrap: break-word; }
+  .form-item-big {
+    border: none;
+  }
+  .from-wrapper { margin-top: 100px; }
+  .fl {
+    display: flex;
+    flex-wrap: wrap;
 
-.button-counter {
-  position: relative;
+    &-aic {
+      align-items: center;
+    }
+  }
 
-  & span {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #1b8442;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    display: block;
-    text-align: center;
-    padding: 1px;
-    color: #fff;
-    transition: all 1s ease-in-out;
+  .ml1 {
+    margin-left: 1em;
+  }
 
-    &:hover {
+  .pdf {
+    color: #fff; margin-right: 10px;
+  }
+  .forum-response-box.full {
+    width: 100%;
+  }
+  .forum-box.fixed {
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+  button:disabled {
+    background-color: #fff;
+    color: #a5a5a5;
+  }
+
+  .button-counter {
+    position: relative;
+
+    & span {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #1b8442;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      display: block;
+      text-align: center;
+      padding: 1px;
       color: #fff;
+      transition: all 1s ease-in-out;
+
+      &:hover {
+        color: #fff;
+      }
     }
   }
 }

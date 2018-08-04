@@ -39,7 +39,7 @@ export default {
       this.$emit('onClose')
     },
     submit () {
-      this.$emit('onSubmit', this.model)
+      this.$emit('onSubmit', this.model.contragent)
     }
   }
 }
