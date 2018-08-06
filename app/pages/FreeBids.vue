@@ -86,7 +86,7 @@ export default {
         delete: false
       },
       tableData: {
-        columns: ['id', 'name', 'nameFrom', 'toUsersName', 'tools', 'admin'],
+        columns: ['id', 'name', 'nameFrom', 'toUsersName', 'prettyDeadline', 'tools', 'admin'],
         options: {
           headings: {
             choose: '',
@@ -94,6 +94,7 @@ export default {
             admin: '',
             name: 'Тема',
             nameFrom: 'От кого',
+            prettyDeadline: 'Срок сдачи',
             toUsersName: 'Кому',
             tools: 'Подробнее'
           },
@@ -144,6 +145,7 @@ export default {
 
         let users = this.users.filter(user => bid.to.map(t => t.user).includes(user._id)).map(user => user.fullname).join(', ')
         bid.toUsersName = users
+        bid.prettyDeadline = this.$dateFormat(bid.deadline, 'd mmmm yyyy')
         return bid
       })
       return data

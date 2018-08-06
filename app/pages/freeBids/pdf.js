@@ -1,5 +1,7 @@
 export default {
   create (logo, model, users, $dateFormat, positions, statuses) {
+    let from = positions.find(item => item._id === users.find(u => u._id === model.createdBy).position)
+    from = from ? from.name : '---'
     let pdf = {}
     let content = [
       { image: logo, margin: [150, 10, 0, 0], style: { alignment: 'center' } },
@@ -124,7 +126,7 @@ export default {
           [{ text: 'От кого:', style: 'trHeader' }, '', ''],
           [
             {
-              text: positions.find(item => item._id === users.find(u => u._id === model.createdBy).position).name,
+              text: from,
               style: 'tr'
             },
             {

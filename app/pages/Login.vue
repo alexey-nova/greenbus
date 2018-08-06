@@ -1,7 +1,7 @@
 <template>
   <section class="login">
       <div class="login-box">
-        <h1 class="center">Green Bus</h1>
+        <h1 class="center">Green Bus Company</h1>
         <div class="login-form">
           <p class="login-center">Вход в систему</p>
           <form @submit.prevent="login">

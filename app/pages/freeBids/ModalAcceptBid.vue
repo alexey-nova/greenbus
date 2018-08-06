@@ -1,6 +1,6 @@
 <template>
   <Modal :isOpen="model" @onSubmit="submit">
-    <div slot="content" class="modal-dialog small2">
+    <div slot="content" class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <div class="list_header">
@@ -34,6 +34,9 @@
                 <span>{{Math.ceil(file.size / 1024)}} КБ</span>
               </li>
             </ul>
+          </div>
+          <div class="progress-barr" v-if="$store.getters['app/progress'] !== 100 && $store.getters['app/progress'] !== 0">
+            <div class="progress-bar--status" :style="{ width: `${$store.getters['app/progress']}%` }"></div>
           </div>
           <div class="flex center">
             <button class="add-button auto-width form-submit">Отправить</button>

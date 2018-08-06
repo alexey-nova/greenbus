@@ -11,17 +11,7 @@
         </div>
         <div class="mob-none">
           <v-client-table ref="table" v-bind="tableData" :data="filteredUsers" :columnsDropdown="true">
-            <!-- <div slot="phone" slot-scope="props">
-              <a v-if="props.row.phone" :href="'tel:+'+parseInt(props.row.phone.replace(/\D+/g,''))">{{props.row.phone}}</a>
-            </div> -->
-            <!-- <div slot="email" slot-scope="props">
-              <a :href="'mailto:'+props.row.email">{{props.row.email}}</a>
-            </div> -->
             <div class="flex align-center sm-w" slot="tools" slot-scope="props">
-              <!-- <button @click="toggleModal('createTask', { urgency: false, to: props.row._id })" class="add-button transparent">
-                <img src="~assets/img/add2.png">
-                <span>Поставить задачу</span>
-              </button> -->
               <a @click="toggleModal('showUser', props.row)" class="green_anchor">Подробнее</a>
             </div>
             <div class="border-none" slot="admin" slot-scope="props" v-if="$auth().hasRole('admin')">
@@ -45,10 +35,9 @@
             <template slot="fullname" slot-scope="row">
               <span>{{row.value}} (<a @click="toggleModal('showUser', row.item)" class="green_anchor">Подробнее</a>)</span>
             </template>
-            <template slot="actions" slot-scope="row">
+            <template slot="actions" slot-scope="row" v-if="$auth().hasRole('admin')">
               <button class="button-table edit" @click="toggleModal('editUser', $_.clone(row.item))"></button>
               <button class="button-table remove" @click="toggleModal('deleteUser', row.item) "></button>
-              <!-- <button class="button-table add" @click="toggleModal('createTask', { urgency: false, to: row.item._id })"></button> -->
             </template>
           </b-table>
           <b-pagination :total-rows="mobTableData.totalRows" :per-page="mobTableData.perPage" v-model="mobTableData.currentPage"/>
@@ -245,7 +234,10 @@ export default {
           }
         })
         .catch(e => {
-          this.notify(e, 'danger')
+          if (e.response) {
+            return this.notify(e.response.data.message, 'danger')
+          }
+          this.notify('Временная ошибка', 'danger')
         })
     },
     loadDepartments () {
@@ -265,11 +257,13 @@ export default {
             }
           ]
           sidebar = [...sidebar, ...this.group(this.departments)]
-
           this.$store.commit('app/setSidebar', sidebar)
         })
         .catch(e => {
-          this.notify(e.response.data, 'danger')
+          if (e.response) {
+            return this.notify(e.response.data.message, 'danger')
+          }
+          this.notify('Временная ошибка', 'danger')
         })
     },
     group (array) {
@@ -355,9 +349,6 @@ export default {
     }
   },
   mounted () {
-    // if (this.$auth().hasRole('admin')) {
-    //   this.tableData.columns.push('admin')
-    // }
     this.loadUsers()
     this.loadDepartments()
     this.loadPositions()

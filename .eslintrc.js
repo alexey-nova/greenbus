@@ -26,9 +26,9 @@ module.exports = {
   // add your custom rules here
   rules: {
     // allow async-await
-    'generator-star-spacing': 'off',
+    // 'generator-star-spacing': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // 'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // 'indent': [2, 2, { 'SwitchCase': 1 }],
     // 'quotes': [2, 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
     // 'object-curly-spacing': ['error', 'always', { 'objectsInObjects': false }],

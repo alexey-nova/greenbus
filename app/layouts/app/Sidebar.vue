@@ -1,16 +1,16 @@
 <template>
-  <div class="nav" id="nav" v-click-outside="closeSidebar">
+  <div :class="['nav', { 'active': $store.getters['app/mobileSidebar'] }]" v-click-outside="closeSidebar">
     <div class="info-box">
       <div class="info-container">
-        <img v-if="!avatar" src="~assets/img/user.jpg" alt="Аватар">
-        <img v-else :src="avatar" alt="Аватар">
+        <img v-if="!avatar" class="img-circle" src="~assets/avatar.jpg" alt="Аватар">
+        <img v-else :src="avatar" class="img-circle" alt="Аватар">
         <div class="mob-none">
-          <p class="light">{{ $auth().user.fullname }}</p>
-          <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
+          <p>{{ $auth().user.fullname }}</p>
+          <p>{{ getPositionName($auth().user.position) }}</p>
         </div>
         <div class="mob-flex mob-block">
-          <p class="light">{{ $auth().user.fullname }}</p>
-          <p class="small italic">{{ getPositionName($auth().user.position) }}</p>
+          <p>{{ $auth().user.fullname }}</p>
+          <p>{{ getPositionName($auth().user.position) }}</p>
         </div>
       </div>
       <button class="italic" @click="toggle">Мой профиль</button>
@@ -51,13 +51,11 @@
 </template>
 
 <script>
-import User from './sidebar/User'
 import SidebarMenu from './sidebar/Menu'
 import ClickOutside from 'vue-click-outside'
 
 export default {
   components: {
-    User,
     'sidebar-menu': SidebarMenu
   },
   data () {
@@ -79,12 +77,15 @@ export default {
       this.isOpen = !this.isOpen
     },
     closeSidebar (e) {
-      if (window.innerWidth <= 414 && !e.path[2].classList.contains('header-box-left')) {
-        var current = document.getElementById('nav')
-        if (current && current.classList.contains('active')) {
-          current.classList.remove('active')
-        }
+      if (e.target.className !== 'logo-img' && this.$store.getters['app/mobileSidebar']) {
+        this.$store.commit('app/toggleMobSidebar', 'close')
       }
+      // if (window.innerWidth <= 414 && !e.path[2].classList.contains('header-box-left')) {
+      //   var current = document.getElementById('nav')
+      //   if (current && current.classList.contains('active')) {
+      //     current.classList.remove('active')
+      //   }
+      // }
     },
     loadPositions () {
       return this.$api('get', 'positions?all=true').then(response => {
@@ -103,13 +104,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  p { margin: 0.2em 0 }
+div {
   .sidebar .user-panel .info .name { white-space: normal; }
   .profile-toggler { background: #09101a; padding: 10px 15px; color: #ddd; font-size: .9em; cursor: pointer; }
 
   .profile-tools .item { padding: 15px 15px; border-bottom: 1px solid #09101a; box-shadow: 0 2px 10px -7px #fff; }
   .profile-tools a { color: #ddd; }
-  .info-container img {
-    padding: 10px;
+
+  .img-circle {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 5px solid #1b8442;
   }
+}
 </style>
