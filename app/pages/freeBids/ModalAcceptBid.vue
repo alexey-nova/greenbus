@@ -71,7 +71,7 @@ export default {
     },
     removeFile (index) {
       this.model.files.splice(index, 1)
-    },
+    }
   }
 }
 </script>

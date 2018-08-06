@@ -6,10 +6,10 @@
           <div class="list_header">
             <div class="flex">
               <div>
-                <span>Создать файл</span>
+                <span>Загрузить файлы</span>
               </div>
               <div class="buttons">
-                <button type="button" class="button-top close" data-dismiss="modal" aria-label="Close" @click="close"></button>
+                <button type="button" class="button-top close" @click="close"></button>
               </div>
             </div>
           </div>
@@ -89,13 +89,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.file {
-  padding: 3px;
-  &-remove {
-    color: #ff0000;
-    padding: 0 5px;
-    border-radius: 10px;
-    cursor: pointer;
+div {
+  .select-file {
+    margin-bottom: 10px;
+  }
+  .file {
+    padding: 3px;
+    &-remove {
+      color: #ff0000;
+      padding: 0 5px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   }
 }
 </style>
