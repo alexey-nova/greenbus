@@ -17,14 +17,16 @@ export default {
     departments: [],
     isChatOpen: false,
     unreadMessagesCount: 0,
-    mobileSidebar: false
+    mobileSidebar: false,
+    progress: 0
   },
   getters: {
     excelUsers: state => state.excelUsers,
     departments: state => state.departments,
     isChatOpen: state => state.isChatOpen,
     unreadMessagesCount: state => state.unreadMessagesCount,
-    mobileSidebar: state => state.mobileSidebar
+    mobileSidebar: state => state.mobileSidebar,
+    progress: state => state.progress
   },
   mutations: {
     setSidebar (state, data) {
@@ -64,8 +66,11 @@ export default {
     setUnreadMessagesCount (state, count) {
       state.unreadMessagesCount = count
     },
-    toggleMobSidebar (state, status) {
+    toggleMobSidebar (state) {
       state.mobileSidebar = !state.mobileSidebar
+    },
+    setUploadProgress (state, progress) {
+      state.progress = progress
     }
   }
 }

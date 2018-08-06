@@ -2618,3 +2618,20 @@ tr.green2{
 .el-input__suffix {
 	height: auto;
 }
+
+.progress-barr {
+    position: relative;
+    padding: 10px;
+    background-color: #eee;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.progress-bar--status {
+    border-radius: 8px;
+    background-color: green;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+}

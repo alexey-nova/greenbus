@@ -36,6 +36,9 @@
               </li>
             </ul>
           </div>
+          <div class="progress-barr" v-if="$store.getters['app/progress'] !== 100 && $store.getters['app/progress'] !== 0">
+            <div class="progress-bar--status" :style="{ width: `${$store.getters['app/progress']}%` }"></div>
+          </div>
           <div class="flex center">
             <button class="add-button auto-width form-submit">Отправить</button>
           </div>

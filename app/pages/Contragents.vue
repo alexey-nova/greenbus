@@ -57,7 +57,7 @@
                   <button class="add-button auto-width back"><img src="~assets/img/left.png"><span>Назад</span></button>
                 </router-link>
                 <div class="add auto">
-                  <button class="add-button auto-width" @click="toggleModal('createFile', {})" ><img src="~assets/img/left.png" class="rotate">Загрузить файл</button>
+                  <button class="add-button auto-width" @click="toggleModal('createFile')" ><img src="~assets/img/left.png" class="rotate">Загрузить файл</button>
                   <button class="add-button auto-width" @click="toggleModal('createFolder', {})"><img src="~assets/img/add.png">Создать папку</button>
                 </div>
               </div>

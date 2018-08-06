@@ -14,7 +14,10 @@
             </div>
           </div>
         </div>
-        <div class="profile full  modal-body">
+        <div class="full modal-body">
+          <div class="progress-barr" v-if="$store.getters['app/progress'] !== 100 && $store.getters['app/progress'] !== 0">
+            <div class="progress-bar--status" :style="{ width: `${$store.getters['app/progress']}%` }"></div>
+          </div>
           <label>Загрузить файлы</label>
           <!-- <input type="file" multiple id="field-files" lang="ru" @change="addFiles"> -->
           <div class="select-file">
@@ -70,7 +73,6 @@ export default {
     submit () {
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
-          // let model = this.$_.clone(this.$props.model)
           this.$emit('onSubmit', this.files)
           this.files = []
         }

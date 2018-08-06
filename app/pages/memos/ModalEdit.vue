@@ -57,6 +57,9 @@
             </div>
           </div>
           <div class="modal-footer">
+            <div class="progress-barr" v-if="$store.getters['app/progress'] !== 100 && $store.getters['app/progress'] !== 0">
+              <div class="progress-bar--status" :style="{ width: `${$store.getters['app/progress']}%` }"></div>
+            </div>
             <div class="flex center">
               <button class="add-button auto-width send">Сохранить изменения <img src="~assets/img/left.png"></button>
             </div>

@@ -3,6 +3,7 @@ import axios from 'axios'
 import dateFormat from 'dateformat'
 import config from './../../config'
 import boot from './../../config/boot'
+import store from './../../store'
 
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwt')
 
@@ -43,6 +44,9 @@ export default {
   },
   $api (type, url, data = {}, options = {}) {
     url = config.app.apiUrl + url
+    options.onUploadProgress = progressEvent => {
+      store.commit('app/setUploadProgress', Math.round((progressEvent.loaded * 100) / progressEvent.total))
+    }
     return _.get(axios, type)(url, data, options)
   },
   $mock (type, url, data = {}, options = {}) {

@@ -178,7 +178,7 @@
         <div class="calendar">
           <div class="calendar-top">
               <span class="week_day">
-                {{dateTasks.length > 0 ? $dateFormat(dateTasks[0].deadline, 'dddd') : $dateFormat(selectedDate, 'dddd')}}
+                {{$dateFormat(selectedDate, 'dddd')}}
               </span>
               <span class="week_day small">
                 <span>{{$dateFormat(selectedDate, 'd')}}</span>
@@ -188,30 +188,30 @@
               </span>
           </div>
           <div class="calendar-arrows">
-              <div class="flex">
-                  <a href="#" class="left-arr" @click="prevMonth()">
-                      <img src="~assets/img/arr-left.png">
-                  </a>
-                  <div class="center-arr">
-                      <span>{{getMonthName(currentMonth).prevMonth}}</span>
-                      <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
-                      <span>{{getMonthName(currentMonth).nextMonth}}</span>
-                  </div>
-                  <a href="#" class="right-arr">
-                      <img src="~assets/img/arr-right.png" @click="nextMonth()">
-                  </a>
+            <div class="flex">
+              <a href="#" class="left-arr" @click="prevMonth()">
+                <img src="~assets/img/arr-left.png">
+              </a>
+              <div class="center-arr">
+                <span>{{getMonthName(currentMonth).prevMonth}}</span>
+                <span class="upper">{{getMonthName(currentMonth).thisMonth}}</span>
+                <span>{{getMonthName(currentMonth).nextMonth}}</span>
               </div>
+              <a href="#" class="right-arr">
+                <img src="~assets/img/arr-right.png" @click="nextMonth()">
+              </a>
+            </div>
           </div>
           <div class="calendar-tasks">
-              <div class="tasks">
-                  <div class="tasks-item">
-                      <p v-for="task in dateTasks" :key="task._id">
-                        <router-link :to="{name: 'tasks', query: {type: 'show', task: task._id}}">
-                          {{task.name}}
-                        </router-link>
-                      </p>
-                  </div>
+            <div class="tasks">
+              <div>
+                <p v-for="bid in dateBids" :key="bid._id">
+                  <router-link :to="{name: 'freebids', query: {type: 'show', bid: bid._id}}">
+                    <strong>Служебная записка №{{bid.id}}</strong>: {{bid.name}}
+                  </router-link>
+                </p>
               </div>
+            </div>
           </div>
           <div class="days">
             <div class="flex-days">
@@ -235,13 +235,14 @@ export default {
     return {
       bids: [],
       freebids: [],
+      dateBids: [],
       seoTitle: this.$trans('pages.index.seoTitle'),
-      dateTasks: [],
-      deadlined: [],
-      today: '',
-      tomorrow: '',
-      week: '',
-      tasks: '',
+      // dateTasks: [],
+      // deadlined: [],
+      // today: '',
+      // tomorrow: '',
+      // week: '',
+      // tasks: '',
       selectedDate: new Date(),
       events: [],
       currentMonth: this.selectedDate || new Date(),
@@ -254,7 +255,7 @@ export default {
         selectable: true,
         dayClick: (date, jsEvent, view) => {
           this.selectedDate = date._d
-          this.renderTasks(date._d)
+          this.showBidsInCalendar(date._d)
         }
       },
       header: {
@@ -315,13 +316,11 @@ export default {
       }
     },
     loadUsers () {
-      this.$api('get', 'users')
-        .then(response => {
-          this.users = response.data
-        })
-        .catch(e => {
-          this.notify(e.response.data.message, 'danger')
-        })
+      this.$api('get', 'users').then(response => {
+        this.users = response.data
+      }).catch(e => {
+        this.notify(e.response.data.message, 'danger')
+      })
     },
     getUser (_id) {
       let user = this.$_.find(this.users, u => u._id === _id)
@@ -329,14 +328,6 @@ export default {
     },
     goTo (name, params, query) {
       this.$router.push({ name, params, query })
-    },
-    renderTasks (date) {
-      this.dateTasks = []
-      this.tasks.map(task => {
-        if (new Date(date).toDateString() === new Date(task.deadline).toDateString()) {
-          this.dateTasks.push(task)
-        }
-      })
     },
     loadTasks () {
       this.$api('get', 'tasks').then(response => {
@@ -380,12 +371,44 @@ export default {
     loadFreeBids () {
       this.$api('get', 'freebids/?filter=in').then(response => {
         this.freebids = response.data.bids
+        // группировка служебок по дедлайну
+        const groups = response.data.bids.reduce((prev, item) => {
+          const date = item.deadline.split('T')[0]
+          if (!prev.date) prev[date] = []
+          prev[date].push(item)
+        return prev
+        }, {})
+        Object.keys(groups).forEach((group, groupIndex) => {
+          this.events.push({
+            title: groups[group].length,
+            start: group,
+            editable: false
+          })
+        })
+        this.showBidsInCalendar(this.selectedDate)
+        // this.$log(response.data.bids)
+      })
+    },
+    renderTasks (date) {
+      this.dateTasks = []
+      this.tasks.map(task => {
+        if (new Date(date).toDateString() === new Date(task.deadline).toDateString()) {
+          this.dateTasks.push(task)
+        }
+      })
+    },
+    showBidsInCalendar (date) {
+      this.dateBids = []
+      this.freebids.map(bid => {
+        if (new Date(date).toDateString() === new Date(bid.deadline).toDateString()) {
+          this.dateBids.push(bid)
+        }
       })
     }
   },
   mounted () {
     this.loadUsers()
-    this.loadTasks()
+    // this.loadTasks()
     this.loadBids()
     this.loadFreeBids()
   }
@@ -402,6 +425,10 @@ div {
 
   .title {
     font-size: 1.5em;
+  }
+  .strong {
+    font-family: cbold;
+    font-weight: 400;
   }
 }
 </style>
