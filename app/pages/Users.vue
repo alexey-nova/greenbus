@@ -176,95 +176,83 @@ export default {
       this.modal[name] = model === undefined ? !this.modal[name] : model
     },
     createUser (user) {
-      this.$api('post', 'users', user)
-        .then(response => {
-          this.loadUsers()
-          this.modal.createUser = false
-          this.notify(response.data.message)
-        })
-        .catch(e => {
-          this.notify('Временно нельзя создать пользователя', 'info')
-          this.$log(e, 'danger')
-        })
+      this.$api('post', 'users', user).then(response => {
+        this.loadUsers()
+        this.modal.createUser = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя создать пользователя', 'info')
+        this.$log(e, 'danger')
+      })
     },
     editUser (user) {
-      this.$api('put', 'users/' + user._id, user)
-        .then(response => {
-          this.loadUsers()
-          this.modal.editUser = false
-          this.notify(response.data.message)
-        })
-        .catch(e => {
-          this.notify('Временно нельзя редактировать пользователя', 'info')
-          this.modal.editUser = false
-          this.$log(e, 'danger')
-        })
+      this.$api('put', 'users/' + user._id, user).then(response => {
+        this.loadUsers()
+        this.modal.editUser = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя редактировать пользователя', 'info')
+        this.modal.editUser = false
+        this.$log(e, 'danger')
+      })
     },
     deleteUser (user) {
-      this.$api('delete', 'users/' + user._id)
-        .then(response => {
-          this.users = this.$_.remove(this.users, u => u._id !== user._id)
-          this.modal.deleteUser = false
-          this.notify(response.data.message)
-        })
-        .catch(e => {
-          this.notify('Временно нельзя удалить пользователя', 'info')
-          this.modal.deleteUser = false
-          this.$log(e, 'danger')
-        })
+      this.$api('delete', 'users/' + user._id).then(response => {
+        this.users = this.$_.remove(this.users, u => u._id !== user._id)
+        this.modal.deleteUser = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя удалить пользователя', 'info')
+        this.modal.deleteUser = false
+        this.$log(e, 'danger')
+      })
     },
     createTask (task) {
       task.files = this.$_.map(task.files, f => f.file)
       let data = this.$createFormData(task)
-      this.$api('post', 'tasks', data)
-        .then(response => {
-          this.modal.createTask = false
-          this.notify(response.data.message)
-        })
-        .catch(e => {
-          this.notify('Временно нельзя создать задачу', 'info')
-          this.$log(e, 'danger')
-        })
+      this.$api('post', 'tasks', data).then(response => {
+        this.modal.createTask = false
+        this.notify(response.data.message)
+      }).catch(e => {
+        this.notify('Временно нельзя создать задачу', 'info')
+        this.$log(e, 'danger')
+      })
     },
     loadUsers () {
-      this.$api('get', 'users')
-        .then(response => {
-          if (response.data && response.data.length > 0) {
-            this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
-          }
-        })
-        .catch(e => {
-          if (e.response) {
-            return this.notify(e.response.data.message, 'danger')
-          }
-          this.notify('Временная ошибка', 'danger')
-        })
+      this.$api('get', 'users').then(response => {
+        if (response.data && response.data.length > 0) {
+          this.users = response.data.filter(user => user._id !== this.$auth().user._id && user.login !== 'admin')
+        }
+      }).catch(e => {
+        if (e.response) {
+          return this.notify(e.response.data.message, 'danger')
+        }
+        this.notify('Временная ошибка', 'danger')
+      })
     },
     loadDepartments () {
-      this.$api('get', 'departments')
-        .then(response => {
-          this.allDepartments = response.data.departments
-          this.departments = response.data.departments.filter(
-            item => item.departmentType === 'head'
-          )
-          this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
-          let sidebar = [
-            {
-              link: { name: 'users' },
-              isActive: () => this.$isRoute('users'),
-              name: 'Все',
-              imgSrc: 'folder.png'
-            }
-          ]
-          sidebar = [...sidebar, ...this.group(this.departments)]
-          this.$store.commit('app/setSidebar', sidebar)
-        })
-        .catch(e => {
-          if (e.response) {
-            return this.notify(e.response.data.message, 'danger')
+      this.$api('get', 'departments').then(response => {
+        this.allDepartments = response.data.departments
+        this.departments = response.data.departments.filter(
+          item => item.departmentType === 'head'
+        )
+        this.otdels = response.data.departments.filter(item => item.departmentType === 'common')
+        let sidebar = [
+          {
+            link: { name: 'users' },
+            isActive: () => this.$isRoute('users'),
+            name: 'Все',
+            imgSrc: 'left_menu/1.png'
           }
-          this.notify('Временная ошибка', 'danger')
-        })
+        ]
+        sidebar = [...sidebar, ...this.group(this.departments)]
+        this.$store.commit('app/setSidebar', sidebar)
+      }).catch(e => {
+        if (e.response) {
+          return this.notify(e.response.data.message, 'danger')
+        }
+        this.notify('Временная ошибка', 'danger')
+      })
     },
     group (array) {
       let heads = array.map(item => {
@@ -272,7 +260,7 @@ export default {
         item.label = item.name
         item.link = { name: 'usersByDep', params: { param1: item._id }}
         item.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
-        item.imgSrc = 'folder.png'
+        item.imgSrc = 'left_menu/1.png'
         item.imgSrc2 = 'folder-h.png'
         return item
       })

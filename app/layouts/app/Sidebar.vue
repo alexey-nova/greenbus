@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     avatar () {
-      return this.$store.state.auth.user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
+      return this.$auth().user.avatar ? this.$config('app.fileUrl') + this.$auth().user.avatar + '?' + Math.random() : false
     }
   },
   methods: {

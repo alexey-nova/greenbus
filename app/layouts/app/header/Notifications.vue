@@ -65,11 +65,18 @@ export default {
         this.loadNots()
       }).catch(e => {})
     },
+    readNotification (moduleId) {
+      return this.$api('post', `notifications/${moduleId}`).then(response => {
+        this.loadNots()
+      })
+    },
     goTo (location, context) {
-      if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
-      else if (location === 'bids') return this.$router.push({ name: 'documents', query: { type: 'show', bid: context.moduleId }})
-      else if (location === 'freebids') return this.$router.push({ name: 'freebids', query: { type: 'show', bid: context.moduleId }})
-      else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
+      this.readNotification(context.moduleId).then(() => {
+        if (location === 'tasks') return this.$router.push({ name: 'tasks', query: { type: 'show', task: context.moduleId }})
+        else if (location === 'bids') return this.$router.push({ name: 'documents', query: { type: 'show', bid: context.moduleId }})
+        else if (location === 'freebids') return this.$router.push({ name: 'freebids', query: { type: 'show', bid: context.moduleId }})
+        else if (location === 'meetings') return this.$router.push({ name: 'calendar', query: { type: 'create', meeting: context.moduleId }})
+      })
     }
   },
   mounted () {

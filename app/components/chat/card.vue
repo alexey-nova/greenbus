@@ -5,8 +5,8 @@
         <a>
           <img v-if="!avatar" src="./../../assets/design/avatar.jpg" width="40" height="40" class="img-circle" alt="User Image">
           <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
-          <div class="user_info">
-            <p class="light">{{$auth().user.fullname}}</p>
+          <div class="user_info" style="color: #fff;">
+            <p class="light" style="white-space: normal">{{$auth().user.fullname}}</p>
             <p class="small italic">{{getPositionName($auth().user.position)}}</p>
           </div>
         </a>
