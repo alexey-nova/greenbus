@@ -11,7 +11,12 @@
         </div>
         <div class="file-button">
           <div v-for="(file, index) in com.files" :key="`file-${index}`" class="file-button--item">
-            <a :href="$config('app.fileUrl') + file.path" target="_blank" :class="['info-button clicked left-margin']"><img src="~assets/img/2.png">{{file.name}}</a>
+            <a :href="$config('app.fileUrl') + file.path" 
+              target="_blank"
+              :class="['info-button clicked left-margin']">
+              <img src="~assets/img/2.png">
+              <span>{{file.name}}</span>
+            </a>
           </div>
         </div>
         <div class="flex flex-end forum-button">
@@ -100,8 +105,17 @@ export default {
   display: flex;
   margin-top: 0.5em;
 
-  &--item:not(:first-child) {
-    margin-left: 1em;
+  &--item {
+    &:not(:first-child) {
+      margin-left: 1em;
+    }
+
+    span {
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 </style>
