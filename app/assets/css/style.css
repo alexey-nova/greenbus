@@ -653,18 +653,15 @@ input:disabled,textarea:disabled{
 .chat_left_top{
     background: #114020;
 }
-.chat_left ul{
-    color: white;
-}
 
 .chat_left ul li a{
     display: flex;
     width: 100%;
     justify-content: flex-start;
-    color: white;
     align-items: center;
     padding: 1em 0.7em;
     font-size: 0.9em;
+    color: #000;
 }
 .chat_left ul li a .light{
     margin-bottom: 0.2em;
@@ -690,25 +687,25 @@ input:disabled,textarea:disabled{
     overflow: hidden;
 }
 .user_list ul li a:hover, .user_list ul li a.active{
-    background-color: rgba(27, 132, 66, 0.35);
+    background-color: rgba(27, 132, 66, 1);
+    color: #fff;
 }
 .user_list{
-    background-image: url("../img/cha-bgt.jpg");
-    background-size: cover;
-    background-position: center center;
-    overflow-y: auto;
-    height: 100%;
-    padding-bottom: 0.8em;
+  background-color: #fff;
+  border-right: 1px solid #1b8442;
+  overflow-y: auto;
+  height: 100%;
+  padding-bottom: 0.8em;
 }
 .fixed-top{
-    width: 100%;
-    padding: 0.5em;
-    padding-left: 1em;
-    -webkit-box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
-    -moz-box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
-    box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
-    z-index: 1;
-    font-size: 0.9em;
+  width: 100%;
+  padding: 0.5em;
+  padding-left: 1em;
+  -webkit-box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
+  -moz-box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
+  box-shadow: 0 4px 3px -2px rgba(171,171,171,1);
+  z-index: 1;
+  font-size: 0.9em;
 }
 .fixed-bottom{
     width: 100%;
@@ -2343,7 +2340,7 @@ select{
     margin: 0;
 }
 
-.user_info p{
+.user_info p {
     white-space: nowrap;
 }
 section.login{
