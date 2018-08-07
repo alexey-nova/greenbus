@@ -128,7 +128,27 @@
                       <textarea placeholder="Введите текст" v-model="comment"></textarea>
                     </div>
                     <div class="flex flex-end forum-button">
-                      <button :disabled="!comment.trim()" class="add-button auto-width" @click="sendComment()">Отправить</button>
+                      <div class="mr1">
+                        <div class="flex flex-end">
+                          <file-upload
+                            class="btn btn-default btn-sm"
+                            :multiple="true"
+                            v-model="model.newFiles"
+                            ref="upload">
+                            Прикрепить файлы
+                          </file-upload>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                          <li v-for="(file, index) in model.newFiles" :key="index">
+                            <span class="file-remove" @click="removeFile(index)">x</span>
+                            <span>{{file.name}}</span> -
+                            <span>{{Math.ceil(file.size / 1024)}} КБ</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div>
+                        <button :disabled="!comment.trim()" class="add-button auto-width" @click="sendComment()">Отправить</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -153,6 +173,7 @@ import 'pdfmake/build/pdfmake.js'
 import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 import pdf from './pdf'
+import FileUpload from 'vue-upload-component'
 
 import logo1 from '#/assets/design/logos/logo1.png'
 import logo2 from '#/assets/design/logos/atg.jpg'
@@ -170,7 +191,8 @@ export default {
     'modal-reply-bid': ModalReply,
     Datepicker,
     CMessages,
-    MemoChain
+    MemoChain,
+    FileUpload
   },
   data () {
     return {
@@ -363,9 +385,18 @@ export default {
       if (index === this.model.currentUser && orderItem.deadline.getTime() < new Date().getTime()) return `Просрочил`
       if (index === this.model.currentUser) return 'На согласовании'
     },
+    removeFile (index) {
+      this.model.newFiles.splice(index, 1)
+    },
     sendComment () {
-      this.$api('post', `comments`, { moduleId: this.model._id, comment: this.comment }).then(response => {
+      let model = this.$_.clone(this.model)
+      model.files = this.model.newFiles.map(f => f.file)
+      model.comment = this.comment
+      model.moduleId = this.model._id
+      let data = this.$createFormData(model)
+      this.$api('post', `comments`, data).then(response => {
         this.comment = ''
+        this.model.newFiles = []
         this.loadComments(this.model._id)
       })
     },
@@ -412,6 +443,16 @@ div {
     font-weight: 400
   }
 
+  .file {
+    padding: 3px;
+    &-remove {
+      color: #ff0000;
+      padding: 0 5px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  }
+
   select {
     width: auto;
   }
@@ -435,6 +476,10 @@ div {
     margin-left: 1em;
   }
 
+  .mr1 {
+    margin-right: 1em;
+  }
+
   .pdf {
     color: #fff; margin-right: 10px;
   }
@@ -448,6 +493,10 @@ div {
   button:disabled {
     background-color: #fff;
     color: #a5a5a5;
+  }
+
+  .my-button {
+    margin: 0;
   }
 
   .button-counter {

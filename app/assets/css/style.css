@@ -200,18 +200,18 @@ header{
     width: 9em;
 }
 .info-box button{
-    width: 100%;
-    padding: 0.45em 0.8em;
-    margin-top: 0.6em;
-    text-align: left;
-    background-image: url("../img/left_menu/button.png");
-    background-size: 100% 100%;
-    border: 1px solid black;
-    cursor: pointer;
-    color: white;
-    background-color: transparent;
-    position: relative;
-    transition: 0.5s;
+  font-family: cbold;
+  font-weight: 400;
+  width: 100%;
+  padding: 0.45em 0;
+  text-align: center;
+  margin-top: 0.6em;
+  background-color: #1b8442;
+  border: 1px solid black;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  transition: 0.5s;
 }
 .info-box button:hover, .info-box button.active{
     border-color: white;
@@ -297,7 +297,7 @@ header{
 }
 table{
     width: 100%;
-    font-size: 0.75em;
+    font-size: 0.85em;
     border-collapse: collapse;
 }
 table td{
@@ -1778,10 +1778,10 @@ span.date{
     margin-top: 2em;
 }
 .info-box-text{
-    width: 49%;
+    width: 34%;
 }
 .info-box-button{
-    width: 49%;
+    width: 65%;
     display: flex;
     justify-content: flex-end;
 }
@@ -2634,4 +2634,10 @@ tr.green2{
     left: 0;
     top: 0;
     height: 100%;
+}
+
+/* file-upload */
+
+.file-uploads {
+  width: auto !important;
 }

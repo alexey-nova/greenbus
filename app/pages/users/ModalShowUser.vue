@@ -34,7 +34,7 @@
             </div>
             <div class="cart-inside flex">
               <span>Телефон:</span>
-              <p>
+              <p style="white-space: nowrap">
                 <a class="td_link" :href="`tel:${model.phone}`">{{model.phone}}</a>
               </p>
             </div>
