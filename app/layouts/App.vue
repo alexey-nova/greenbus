@@ -78,7 +78,10 @@ export default {
     if (this.$auth().user) {
       this.loadUsers()
     }
-  }
+  },
+  onIdle () {
+    this.$router.push({ name: 'logout' })
+  },
 }
 </script>
 
