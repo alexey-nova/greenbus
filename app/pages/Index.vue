@@ -134,7 +134,7 @@
                 <td>{{bid.name}}</td>
                 <td>{{bid.nameFrom}}</td>
                 <td>{{bid.prettyDeadline}}</td>
-                <td><a href="#" class="green_anchor" @click="goTo('freebidsByFilter', { param1: 'in' }, {type: 'show', bid: bid._id})">Подробнее</a></td>
+                <td><a class="green_anchor" @click="goTo('freebidsByFilter', { param1: 'in' }, { type: 'show', bid: bid._id })">Подробнее</a></td>
               </tr>
             </table>
             <div class="mob-block">

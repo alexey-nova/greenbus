@@ -293,7 +293,7 @@ export default {
     },
     sendComment () {
       let model = this.$_.clone(this.model)
-      model.files = this.model.newFiles.map(f => f.file)
+      model.files = this.model.newFiles && this.model.newFiles.map(f => f.file)
       model.comment = this.comment
       model.moduleId = this.model._id
       let data = this.$createFormData(model)

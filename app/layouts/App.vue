@@ -21,8 +21,8 @@
   </div>
 </template>
 <script>
-// import '#/assets/jquery/jquery.min'
-// import '#/assets/adminlte/js/adminlte.min'
+import '#/assets/jquery/jquery.min'
+import '#/assets/adminlte/js/adminlte.min'
 import Chat from '@/Chat'
 import 'element-ui/lib/theme-chalk/index.css'
 import offline from 'v-offline'
