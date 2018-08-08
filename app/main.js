@@ -6,6 +6,7 @@ import './plugins'
 import { Cascader } from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/ru-RU'
 import locale from 'element-ui/lib/locale'
+import IdleVue from 'idle-vue'
 
 import JsonExcel from 'vue-json-excel'
 
@@ -13,6 +14,13 @@ Vue.component('downloadExcel', JsonExcel)
 
 locale.use(lang)
 Vue.use(Cascader)
+
+const eventsHub = new Vue()
+
+Vue.use(IdleVue, {
+  idleTime: 1000 * 60 * 10,
+  eventEmitter: eventsHub
+})
 
 /*
 * Config
