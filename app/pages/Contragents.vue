@@ -50,7 +50,7 @@
                     <button class="add-button" type="submit"><img src="~assets/img/search.png"></button>
                   </form>
                 </div>
-                <router-link v-if="!content.parentFolder" :to="{ name: 'contragents'}" tag="a">
+                <router-link v-if="!content.parentFolder" :to="{ name: 'contragents' }" tag="a">
                   <button class="add-button auto-width back"><img src="~assets/img/left.png"><span>Назад</span></button>
                 </router-link>
                 <router-link v-if="content.parentFolder" :to="{ name: 'folder', params: { folderId: content.parentFolder._id }}" tag="a">

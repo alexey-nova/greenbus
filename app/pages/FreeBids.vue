@@ -240,6 +240,7 @@ export default {
   },
   mounted () {
     this.$store.commit('app/setSidebar', 'documents')
+    this.showBidFromQuery()
   },
   destroyed () {
     this.$store.commit('app/setSidebar', {})

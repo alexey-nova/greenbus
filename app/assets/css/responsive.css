@@ -301,9 +301,9 @@
     div.add.auto .add-button{
         margin-left: 1em;
     }
-    .search{
+    /* .search{
       display: none;
-    }
+    } */
     .modal-body .search{
         display: block;
     }

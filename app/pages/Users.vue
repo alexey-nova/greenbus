@@ -136,7 +136,6 @@ export default {
         currentPage: 1,
         perPage: 5,
         totalRows: 0,
-        // pageOptions: [ 5, 10, 15 ],
         filter: null
       }
     }
@@ -259,7 +258,10 @@ export default {
         item.value = item._id
         item.label = item.name
         item.link = { name: 'usersByDep', params: { param1: item._id }}
-        item.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
+        item.isActive = () => {
+          const children = item.children && item.children.map(c => c._id) || []
+          return this.$isRoute('usersByDep', 'param1', item._id) || (children.length && children.some(elem => this.$isRoute('usersByDep', 'param1', elem)))
+        }
         item.imgSrc = 'left_menu/1.png'
         item.imgSrc2 = 'folder-h.png'
         return item
@@ -283,7 +285,9 @@ export default {
               target.label = target.name
               target.value = target._id
               target.link = { name: 'usersByDep', params: { param1: target._id }}
-              target.isActive = () => this.$isRoute('usersByDep', 'param1', item._id)
+              target.isActive = () => {
+                return this.$isRoute('usersByDep', 'param1', item._id)
+              }
               target.imgSrc = 'folder.png'
               target.imgSrc2 = 'folder-h.png'
               arr[i].children.push(target)
