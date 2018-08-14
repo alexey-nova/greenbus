@@ -2,7 +2,7 @@
   <div class="working_area">
     <div class="flex mobile-reverse">
       <div class="flex-left">
-        <div class="white-block" v-if="1 === 2"> <!-- УБРАТЬ КОГДА ВЕРНУТ ЗАДАЧИ -->
+        <div class="white-block"> <!-- УБРАТЬ КОГДА ВЕРНУТ ЗАДАЧИ -->
           <p class="title">Просроченные задачи</p>
           <p v-if="deadlined.length === 0" class="title2">Просроченных задач нет</p>
           <div v-else class="flex mobile-block">
@@ -238,11 +238,11 @@ export default {
       dateBids: [],
       seoTitle: this.$trans('pages.index.seoTitle'),
       // dateTasks: [],
-      // deadlined: [],
+      deadlined: [],
       // today: '',
       // tomorrow: '',
       // week: '',
-      // tasks: '',
+      tasks: [],
       selectedDate: new Date(),
       events: [],
       currentMonth: this.selectedDate || new Date(),
@@ -408,7 +408,7 @@ export default {
   },
   mounted () {
     this.loadUsers()
-    // this.loadTasks()
+    this.loadTasks()
     this.loadBids()
     this.loadFreeBids()
   }

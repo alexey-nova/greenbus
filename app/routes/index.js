@@ -7,7 +7,7 @@ import Profile from '#/pages/Profile'
 import Panel from '#/pages/Panel'
 import Index from '#/pages/Index'
 import Users from '#/pages/Users'
-// import Tasks from '#/pages/Tasks'
+import Tasks from '#/pages/Tasks'
 import Memos from '#/pages/Memos'
 import FreeBids from '#/pages/FreeBids'
 import Contragents from '#/pages/Contragents'
@@ -54,14 +54,12 @@ var router = new Router({
         {
           path: '/tasks',
           name: 'tasks',
-          redirect: '/freebids/in'
-          // component: Tasks
+          component: Tasks
         },
         {
           path: '/tasks/:param1',
           name: 'tasksByFilter',
-          redirect: '/freebids/in'
-          // component: Tasks
+          component: Tasks
         },
         {
           path: '/documents',
