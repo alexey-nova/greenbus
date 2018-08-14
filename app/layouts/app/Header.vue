@@ -3,10 +3,10 @@
   	<div class="header-box">
 	    <div class="header-box-left">
 	    	<router-link to="/" class="logo mob-none">
-	    		<img src="~assets/img/logo.png" >
+	    		<img src="~assets/img/maint.png" class="logo-img">
 	    	</router-link>
 	      <a class="logo mob-block" @click="toggleSidebar()">
-	        <img src="~assets/img/logo.png" class="logo-img">
+	        <img src="~assets/img/maint.png" class="logo-img">
 	      </a>
 	      <div class="top_menu_left">
 	        <router-link :to="{name: 'index'}" :class="[{active: $isRoute('index')}, 'menu-item']">
@@ -98,5 +98,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.mob-none .logo-img {
+  width: 200px !important;
+  height: 40px !important;
+  object-fit: contain;
+}
 
+.mob-block .logo-img {
+  width: 140px !important;
+  height: 40px !important;
+  object-fit: contain;
+}
 </style>

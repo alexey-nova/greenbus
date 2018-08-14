@@ -43,13 +43,13 @@
                     <div class="form-item-big">
                       <center>
                         <select class="select-logo" name="logo" v-model="selectedLogo">
-                          <option value="logo1">GreenBus</option>
-                          <option value="logo2">АТГ</option>
-                          <option value="logo3">КИ 2</option>
+                          <option value="logo1">Maint Control</option>
+                          <!-- <option value="logo2">АТГ</option> -->
+                          <!-- <option value="logo3">КИ 2</option> -->
                         </select>
                       </center>
                       <center>
-                        <div><img :src="logo"/></div>
+                        <div><img :src="logo" class="pdf-logo"/></div>
                       </center>
                       <h3 class="lead">Служебная записка №{{model.id}}</h3>
                     <strong class="to-title">Исполнители:</strong>
@@ -158,7 +158,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 import pdf from './pdf'
 
-import logo1 from '#/assets/design/logos/logo1.png'
+import logo1 from '#/assets/design/logos/maint.jpg'
 import logo2 from '#/assets/design/logos/atg.jpg'
 import logo3 from '#/assets/design/logos/ki.jpg'
 
@@ -346,6 +346,11 @@ div {
       border-radius: 10px;
       cursor: pointer;
     }
+  }
+
+  .pdf-logo {
+    margin-top: 1.5em;
+    width: 200px;
   }
 
   select {

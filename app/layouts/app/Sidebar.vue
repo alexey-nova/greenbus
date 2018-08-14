@@ -115,7 +115,7 @@ div {
     width: 120px;
     height: 120px;
     object-fit: cover;
-    border: 5px solid #1b8442;
+    border: 5px solid #ed702e;
   }
 }
 </style>

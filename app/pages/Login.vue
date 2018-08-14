@@ -1,7 +1,9 @@
 <template>
   <section class="login">
       <div class="login-box">
-        <h1 class="center">Green Bus Company</h1>
+        <div class="center">
+          <img src="~assets/img/maint.png" width="320px" class="logo-img">
+        </div>
         <div class="login-form">
           <p class="login-center">Вход в систему</p>
           <form @submit.prevent="login">
@@ -15,7 +17,7 @@
               <span class="glyphicon glyphicon-lock form-control-feedback"></span>
               <span v-show="errors.has('password')" class="help-block">{{ errors.first('password') }}</span>
             </div>
-            <button class="btn btn-success btn-block">Войти</button>
+            <button class="btn btn-block">Войти</button>
           </form>
         </div>
       </div>
@@ -50,4 +52,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.logo-img {
+  margin-bottom: 1.5em;
+}
+
+.btn {
+  color: #fff;
+}
 </style>

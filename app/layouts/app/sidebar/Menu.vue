@@ -166,6 +166,6 @@ export default {
 
 <style lang="scss" scoped>
 .active-span {
-  color :#1b8442 !important;
+  color :#ed702e !important;
 }
 </style>

@@ -263,7 +263,7 @@ export default {
           return this.$isRoute('usersByDep', 'param1', item._id) || (children.length && children.some(elem => this.$isRoute('usersByDep', 'param1', elem)))
         }
         item.imgSrc = 'left_menu/1.png'
-        item.imgSrc2 = 'folder-h.png'
+        item.imgSrc2 = 'maint/folder-o.png'
         return item
       })
       let result = []

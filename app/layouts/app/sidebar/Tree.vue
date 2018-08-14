@@ -24,6 +24,6 @@ export default {
 
 <style>
 .active-span {
-  color :#1b8442;
+  color :#ed702e;
 }
 </style>
