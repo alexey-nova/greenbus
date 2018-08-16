@@ -93,14 +93,14 @@
               <div class="info-container2" v-if="tabs === 1">
                 <div class="margin-helper margin2-helper">
                   <div class="white-menu-box">
-                    <div class="categories-item" v-for="(file, index) in model.files" :key="`file_${index}`">
-                      <div class="flex flex-start">
+                    <a class="categories-item"  v-for="(file, index) in model.files" :key="`file_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
+                      <div class="flex flex-start" >
                         <div class="categories-item-img"></div>
                         <div class="categories-item-text">
-                          <a :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">{{file.name}}</a>
+                          <span>{{file.name}}</span>
                         </div>
                       </div>
-                    </div>
+                    </a>
                   </div>
                 </div>
               </div>
