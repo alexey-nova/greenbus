@@ -129,7 +129,9 @@ export default {
       this.modal.tab = tab || 0
     },
     getCategories () {
-      this.$api('get', 'bids/categories').then(response => {
+      const filter = this.$route.name === 'templatesByFilter' ? `?parentId=${this.$route.params.parentId}` : ''
+      this.$api('get', `bids/categories${filter}`).then(response => {
+        console.log(response.data)
         this.categories = response.data.categories
       })
     },
@@ -199,7 +201,12 @@ export default {
   mounted () {
     this.getCategories()
     this.loadUsers()
-  }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.getCategories()
+    }
+  },
 }
 </script>
 
