@@ -102,6 +102,19 @@
                       </div>
                     </a>
                   </div>
+                  <div v-for="(comment, index) in groupedComments" v-if="comment.files.length" :key="`comment${index}`">
+                    <span class="ml-5">{{comment.user.fullname}}</span>
+                    <div class="white-menu-box">
+                      <a class="categories-item" v-for="(file, index) in comment.files" :key="`cfile_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
+                        <div class="flex flex-start">
+                          <div class="categories-item-img"></div>
+                          <div class="categories-item-text">
+                            <span>{{file.name}}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="info-container2 profile full" v-if="tabs === 2">
@@ -191,7 +204,11 @@ export default {
   props: ['model', 'users', 'tab', 'onClose'],
   computed: {
     filesCount () {
-      return this.model.files.length
+      const commentFilesCount = this.groupedComments.reduce((prev, item) => {
+        if (item && item.files) return item.files.length + prev
+        return prev
+      }, 0)
+      return this.model.files.length + commentFilesCount
     },
     unreadCount () {
       return this.comments.filter(item => {
