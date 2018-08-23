@@ -126,7 +126,7 @@ export default {
         done: 'Завершено'
       },
       tableData: {
-        columns: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'tools', 'admin'],
+        columns: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'prettyCreatedAt', 'tools', 'admin'],
         options: {
           headings: {
             choose: '',
@@ -136,6 +136,7 @@ export default {
             status: 'Статус',
             nameFrom: 'От кого',
             currentUserName: 'Текущий исполнитель',
+            prettyCreatedAt: 'Дата создания',
             tools: 'Подробнее'
           },
           // orderBy: {
@@ -166,7 +167,8 @@ export default {
           { key: 'name', label: 'Тема' },
           { key: 'nameFrom', label: 'От кого' },
           { key: 'currentUserName', label: 'Текущий исполнитель' },
-          { key: 'actions', label: 'Действия' }
+          { key: 'prettyCreatedAt', label: 'Дата создания' },
+          { key: 'actions', label: 'Действия' },
         ],
         currentPage: 1,
         perPage: 5,
@@ -188,6 +190,7 @@ export default {
           bid.currentUserName = currentUserName ? currentUserName.fullname : ''
           // active = в работе, declined = в работе, done = выполнено
           bid.statusName = bid.status === 'done' ? 'Выполнено' : 'В работе'
+          bid.prettyCreatedAt = this.$dateFormat(bid.createdAt, 'd mmmm yyyy')
           return bid
         })
         return data

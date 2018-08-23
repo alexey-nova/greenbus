@@ -108,6 +108,10 @@
                           <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
                         </div>
+                        <div>
+                          <strong>Дата создания:</strong>
+                          <p>{{$dateFormat(model.createdAt, 'dd mmm yyyy, HH:MM')}}</p>
+                        </div>
                       </div>
                     </div>
                   </div>

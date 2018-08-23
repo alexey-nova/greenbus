@@ -7,7 +7,7 @@
           <p class="forum-date">{{$dateFormat(com.createdAt, 'dd mmm yyyy, HH:MM')}}</p>
         </div>
         <div v-if="com.comment" class="forum-text">
-          <span>{{com.comment}}</span>
+          <span v-html="com.comment"></span>
         </div>
         <div class="file-button">
           <div v-for="(file, index) in com.files" :key="`file-${index}`" class="file-button--item">
