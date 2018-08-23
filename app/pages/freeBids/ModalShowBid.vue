@@ -85,6 +85,10 @@
                           <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
                         </div>
+                        <div>
+                          <strong>Дата создания:</strong>
+                          <p>{{$dateFormat(model.createdAt, 'dd mmm yyyy, HH:MM')}}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -93,13 +97,26 @@
               <div class="info-container2" v-if="tabs === 1">
                 <div class="margin-helper margin2-helper">
                   <div class="white-menu-box">
-                    <div class="categories-item" v-for="(file, index) in model.files" :key="`file_${index}`">
-                      <div class="flex flex-start">
+                    <a class="categories-item"  v-for="(file, index) in model.files" :key="`file_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
+                      <div class="flex flex-start" >
                         <div class="categories-item-img"></div>
                         <div class="categories-item-text">
-                          <a :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">{{file.name}}</a>
+                          <span>{{file.name}}</span>
                         </div>
                       </div>
+                    </a>
+                  </div>
+                  <div v-for="(comment, index) in groupedComments" v-if="comment.files.length" :key="`comment${index}`">
+                    <span class="ml-5">{{comment.user.fullname}}</span>
+                    <div class="white-menu-box">
+                      <a class="categories-item" v-for="(file, index) in comment.files" :key="`cfile_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
+                        <div class="flex flex-start">
+                          <div class="categories-item-img"></div>
+                          <div class="categories-item-text">
+                            <span>{{file.name}}</span>
+                          </div>
+                        </div>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -191,7 +208,11 @@ export default {
   props: ['model', 'users', 'tab', 'onClose'],
   computed: {
     filesCount () {
-      return this.model.files.length
+      const commentFilesCount = this.groupedComments.reduce((prev, item) => {
+        if (item && item.files) return item.files.length + prev
+        return prev
+      }, 0)
+      return this.model.files.length + commentFilesCount
     },
     unreadCount () {
       return this.comments.filter(item => {

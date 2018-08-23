@@ -7,7 +7,7 @@
           <img v-if="avatar" class="img-circle" width="40" height="40" :src="avatar">
           <div class="user_info" style="color: #fff;">
             <p class="light" style="white-space: normal">{{$auth().user.fullname}}</p>
-            <p class="small italic">{{getPositionName($auth().user.position)}}</p>
+            <p class="small">{{getPositionName($auth().user.position)}}</p>
           </div>
         </a>
         <div class="mob-block-sm">

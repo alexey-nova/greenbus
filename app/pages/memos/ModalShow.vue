@@ -44,7 +44,14 @@
                   <div class="paydate">
                     <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
                       <div :class="[{'has-error': errors.has('date')}]">
-                        <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date" placeholder="Дата *" class="datepicker-input"></Datepicker>
+                        <Datepicker
+                          :monday-first="true"
+                          language="ru"
+                          name="date"
+                          v-validate="'required'"
+                          v-model="model.date"
+                          placeholder="Дата *"
+                          class="datepicker-input"></Datepicker>
                         <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
                       </div>
                       <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
@@ -101,6 +108,10 @@
                           <div class="col-md-4">{{getPositionName(getUser(model.createdBy).position)}}:</div>
                           <div class="col-md-4">{{getUser(model.createdBy).fullname}}</div>
                         </div>
+                        <div>
+                          <strong>Дата создания:</strong>
+                          <p>{{$dateFormat(model.createdAt, 'dd mmm yyyy, HH:MM')}}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -109,13 +120,26 @@
               <div class="info-container2" v-if="tabs === 1">
                 <div class="margin-helper margin2-helper">
                   <div class="white-menu-box">
-                    <div class="categories-item" v-for="(file, index) in model.files" :key="`file_${index}`">
+                    <a class="categories-item" v-for="(file, index) in model.files" :key="`file_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
                       <div class="flex flex-start">
                         <div class="categories-item-img"></div>
                         <div class="categories-item-text">
-                          <a :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">{{file.name}}</a>
+                          <span>{{file.name}}</span>
                         </div>
                       </div>
+                    </a>
+                  </div>
+                  <div v-for="(comment, index) in groupedComments" :key="`comment${index}`">
+                    <span class="ml-5">{{comment.user.fullname}}</span>
+                    <div class="white-menu-box">
+                      <a class="categories-item" v-for="(file, index) in comment.files" :key="`cfile_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
+                        <div class="flex flex-start">
+                          <div class="categories-item-img"></div>
+                          <div class="categories-item-text">
+                            <span>{{file.name}}</span>
+                          </div>
+                        </div>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -214,7 +238,11 @@ export default {
   props: ['model', 'users', 'tab', 'onConfirm', 'onReject', 'onClose', 'getBids'],
   computed: {
     filesCount () {
-      return this.model.files.length
+      const commentFilesCount = this.groupedComments.reduce((prev, item) => {
+        if (item && item.files) return item.files.length + prev
+        return prev
+      }, 0)
+      return this.model.files.length + commentFilesCount
     },
     unreadCount () {
       return this.comments.filter(item => {
@@ -390,7 +418,7 @@ export default {
     },
     sendComment () {
       let model = this.$_.clone(this.model)
-      model.files = this.model.newFiles.map(f => f.file)
+      if (this.model.newFiles && this.model.newFiles.length) model.files = this.model.newFiles.map(f => f.file)
       model.comment = this.comment
       model.moduleId = this.model._id
       let data = this.$createFormData(model)

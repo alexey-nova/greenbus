@@ -4,6 +4,7 @@
     <div class="flex margin-bottom align-center">
       <p class="title">Категории шаблонов</p>
       <div class="add" v-if="$auth().hasRole('admin')">
+        <button v-if="$route.name === 'templatesByFilter'" class="add-button" @click="toggleModal('createTemplate', { category: activeCategory })">Добавить шаблон</button>
         <button class="add-button" @click="toggleModal('create', {})"><img src="~assets/img/add.png">Добавить категорию</button>
       </div>
     </div>
@@ -12,35 +13,31 @@
         <div class="cat-box">
           <div class="white-menu top">
             <div class="white-menu-box">
-              <a :class="['folders-item categories', { active: activeCategory && activeCategory._id === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category)">
+              <a v-if="$route.name === 'templatesByFilter'" @click="goBack()">
+                <button class="add-button auto-width back"><img src="~assets/img/left.png"><span>Назад</span></button>
+              </a>
+              <a @click="openCategory(category)" class="folders-item categories" v-for="category in categories" :key="category._id">
                 <div class="folder-border">
                   <div class="white-menu-img"></div>
                   <span>{{category.name}}</span>
                 </div>
                 <div class="folder-buttons">
-                  <button class="button-table edit" @click="toggleModal('edit', $_.clone(category))"></button>
-                  <button class="button-table remove" @click="toggleModal('remove', category)"></button>
+                  <button class="button-table edit" @click.stop="toggleModal('edit', $_.clone(category))"></button>
+                  <button class="button-table remove" @click.stop="toggleModal('remove', category)"></button>
                 </div>
               </a>
-            </div>
-          </div>
-          <div class="categories-block" id="categories-id-1">
-            <div class="add margin-t2" v-if="$auth().hasRole('admin')">
-              <button v-if="activeCategory" class="add-button" @click="toggleModal('createTemplate', { category: activeCategory })"><img src="~assets/img/add.png">Добавить шаблон</button>
-            </div>
-            <div class="margin-helper margin2-helper margin-t2">
-              <div class="white-menu-box">
-                <div class="categories-item" v-if="templates" v-for="template in templates" :key="template._id">
-                  <div class="flex flex-start" @click="toggleModal('showTemplate', template)">
-                    <div class="categories-item-img"></div>
-                    <div class="categories-item-text">
-                      <span>{{ template.name }}</span>
-                    </div>
+              <div v-for="template in templates" :key="template._id" class="folders-item fol-box" @click="toggleModal('showTemplate', template)">
+                <span target="_blank" class="folder-border">
+                  <div :class="['folder-img sm-img']">
+                    <img src="~assets/img/file.png">
                   </div>
-                  <div class="template-buttons">
-                    <button type="button" class="button-table remove" @click="toggleModal('deleteTemplate', template)" style="top: -0.1em"></button>
-                    <button type="button" class="button-table edit" @click="toggleModal('editTemplate', $_.clone(template))"></button>
+                  <div class="folder-text">
+                    <span>{{ template.name }}</span>
                   </div>
+                </span>
+                <div class="folder-buttons">
+                  <button type="button" class="button-table remove" @click.stop="toggleModal('deleteTemplate', template)" style="top: -0.1em"></button>
+                  <button type="button" class="button-table edit" @click.stop="toggleModal('editTemplate', $_.clone(template))"></button>
                 </div>
               </div>
             </div>
@@ -128,12 +125,23 @@ export default {
       this.modal[name] = model === undefined ? !this.modal[name] : model
       this.modal.tab = tab || 0
     },
+    goBack () {
+      this.$router.back()
+      this.getCategoryById(this.$router.currentRoute.params.parentId)
+    },
     getCategories () {
-      this.$api('get', 'bids/categories').then(response => {
+      const filter = this.$route.name === 'templatesByFilter' ? `?parentId=${this.$route.params.parentId}` : ''
+      return this.$api('get', `bids/categories${filter}`).then(response => {
         this.categories = response.data.categories
       })
     },
+    getCategoryById (categoryId) {
+      return this.$api('get', `bids/categories/${categoryId}`).then(response => {
+        this.activeCategory = response.data.category
+      })
+    },
     addCategory (data) {
+      if (this.$route.name === 'templatesByFilter') data.parent = this.$route.params.parentId
       this.$api('post', 'bids/categories', data).then(response => {
         this.modal.create = false
         this.categories.push(response.data.category)
@@ -150,14 +158,14 @@ export default {
       this.$api('delete', `bids/categories/${data._id}`).then(response => {
         this.modal.remove = false
         this.categories = this.categories.filter(item => item._id !== data._id)
-        if (this.activeCategory._id === data._id) {
-          this.activeCategory = null
-          this.templates = []
-        }
+        this.notify(response.data.message)
       })
     },
-    loadTemplates (category) {
+    openCategory (category) {
       this.activeCategory = category
+      this.$router.push({ name: 'templatesByFilter', params: { parentId: category._id }})
+    },
+    loadTemplates (category) {
       this.$api('get', `bids/templates/${category._id}`).then(response => {
         this.templates = response.data.templates
       })
@@ -199,7 +207,25 @@ export default {
   mounted () {
     this.getCategories()
     this.loadUsers()
-  }
+    if (this.$route.name === 'templatesByFilter') {
+      this.getCategoryById(this.$route.params.parentId).then(() => {
+        this.loadTemplates(this.activeCategory)
+      })
+
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.getCategories()
+      this.templates = []
+      if (this.$route.name === 'templatesByFilter') {
+        this.getCategoryById(this.$route.params.parentId).then(() => {
+          this.loadTemplates(this.activeCategory)
+        })
+
+      }
+    }
+  },
 }
 </script>
 

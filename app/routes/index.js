@@ -102,6 +102,11 @@ var router = new Router({
           path: '/templates',
           name: 'templates',
           component: Template
+        },
+        {
+          path: '/templates/:parentId',
+          name: 'templatesByFilter',
+          component: Template
         }
       ]
     },
