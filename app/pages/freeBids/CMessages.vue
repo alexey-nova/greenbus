@@ -11,7 +11,7 @@
         </div>
         <div class="file-button">
           <div v-for="(file, index) in com.files" :key="`file-${index}`" class="file-button--item">
-            <a :href="$config('app.fileUrl') + file.path" 
+            <a :href="$config('app.fileUrl') + file.path"
               target="_blank"
               :class="['info-button clicked left-margin']">
               <img src="~assets/img/2.png">
@@ -85,9 +85,6 @@ export default {
         console.log(e.message)
       })
     }
-  },
-  mounted () {
-    console.log('mounted::', this.comments)
   }
 }
 </script>

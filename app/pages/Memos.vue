@@ -302,7 +302,7 @@ export default {
         const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate || bid.createdAt : bid.createdAt)
         const deadlineHours = bid.order[bid.currentUser].hours
         if (isDeadlined(prevDeadline, deadlineHours)) {
-          bid.deadlined = true
+          bid.deadlined = bid.status === 'done' ? false : true
           result.push(bid)
           return false
         }

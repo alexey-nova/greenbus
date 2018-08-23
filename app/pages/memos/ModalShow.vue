@@ -44,7 +44,14 @@
                   <div class="paydate">
                     <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
                       <div :class="[{'has-error': errors.has('date')}]">
-                        <Datepicker language="ru" name="date" v-validate="'required'" v-model="model.date" placeholder="Дата *" class="datepicker-input"></Datepicker>
+                        <Datepicker
+                          :monday-first="true"
+                          language="ru"
+                          name="date"
+                          v-validate="'required'"
+                          v-model="model.date"
+                          placeholder="Дата *"
+                          class="datepicker-input"></Datepicker>
                         <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
                       </div>
                       <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>

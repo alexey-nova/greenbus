@@ -17,23 +17,24 @@
             <div class="cat-box">
               <div class="white-menu top">
                 <div class="white-menu-box">
-                  <a :class="['categories', { active: activeCategory === category._id }]" v-for="category in categories" :key="category._id" @click="loadTemplates(category._id)">
-                    <div class="white-menu-img"></div>
-                    <span>{{category.name}}</span>
+                  <div v-if="activeCategory">
+                    <button type="button" class="add-button auto-width back" @click="goBack()"><img src="~assets/img/left.png"><span>Назад</span></button>
+                  </div>
+                  <a class="folders-item categories" v-for="category in categories" :key="category._id" @click="openCategory(category)">
+                    <div class="folder-border">
+                      <div class="white-menu-img"></div>
+                      <span>{{category.name}}</span>
+                    </div>
                   </a>
-                </div>
-              </div>
-              <div class="categories-block" id="categories-id-1">
-                <div class="margin2-helper">
-                  <div class="white-menu-box">
-                    <a class="categories-item order" v-for="template in templates" :key="template._id" @click="chooseTemplate(template)">
-                      <div class="flex flex-start">
-                        <div class="categories-item-img"></div>
-                        <div class="categories-item-text">
-                          <span>{{template.name}}</span>
-                        </div>
+                  <div v-for="template in templates" :key="template._id" class="folders-item fol-box" @click="chooseTemplate(template)">
+                    <span target="_blank" class="folder-border">
+                      <div :class="['folder-img sm-img']">
+                        <img src="~assets/img/file.png">
                       </div>
-                    </a>
+                      <div class="folder-text">
+                        <span>{{ template.name }}</span>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -128,6 +129,18 @@ export default {
     close () {
       this.$emit('onClose')
     },
+    goBack () {
+      if (this.activeCategory.parent) {
+        this.getCategoryById(this.activeCategory.parent).then(() => {
+          this.loadCategories(this.activeCategory)
+          this.loadTemplates(this.activeCategory._id)
+        })
+      } else {
+        this.templates = []
+        this.activeCategory = null
+        this.loadCategories()
+      }
+    },
     submit () {
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
@@ -146,15 +159,25 @@ export default {
     removeFile (index) {
       this.model.files.splice(index, 1)
     },
-    loadCategories () {
-      this.$api('get', 'bids/categories').then(response => {
+    loadCategories (category) {
+      const filter = category ? `?parentId=${category._id}` : ''
+      this.$api('get', `bids/categories${filter}`).then(response => {
         this.categories = response.data.categories
       }).catch(e => {
         console.log('categories error', e.response)
       })
     },
+    getCategoryById (categoryId) {
+      return this.$api('get', `bids/categories/${categoryId}`).then(response => {
+        this.activeCategory = response.data.category
+      })
+    },
+    openCategory (category) {
+      this.activeCategory = category
+      this.loadCategories(category)
+      this.loadTemplates(category._id)
+    },
     loadTemplates (categoryId) {
-      this.activeCategory = categoryId
       this.$api('get', `bids/templates/${categoryId}`).then(response => {
         this.templates = response.data.templates
       })
