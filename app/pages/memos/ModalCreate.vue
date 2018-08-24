@@ -26,7 +26,6 @@
                       <span>{{category.name}}</span>
                     </div>
                   </a>
-
                 </div>
                 <div class="categories-block" id="categories-id-1">
                     <div class="margin2-helper">

@@ -13,11 +13,9 @@
           </ul>
           <ul class="notifications-menu">
             <li v-for="n in pending" :key="n._id" class="notifications-menu-left">
-              <a v-if="n.module" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
-                {{n.description}}
+              <a v-if="n.module" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })" v-html="n.description">
               </a>
-              <p v-else>
-                {{n.description}}
+              <p v-else v-html="n.description">
               </p>
             </li>
             <li v-if="$_.size(pending)"><a class="read-all" @click="readNots">Прочитать все уведомления</a></li>
@@ -42,9 +40,18 @@ export default {
   },
   sockets: {
     notification: function (val) {
-      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
-        this.pending.unshift(val)
-        this.$notify(val.description, 'info')
+      console.log(val)
+      if(val.to instanceof Array) {
+        if (val.to.find(item => item._id === this.$auth().user._id)) {
+          this.pending.unshift(val)
+          this.$notify(val.description, 'info')
+        }
+      }
+      else {
+        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+          this.pending.unshift(val)
+          this.$notify(val.description, 'info')
+        }
       }
     }
   },

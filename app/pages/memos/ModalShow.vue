@@ -153,7 +153,11 @@
                   <div class="forum-response-box full">
                     <p class="forum-name">Оставить комментарий</p>
                     <div class="forum-textarea">
-                      <textarea placeholder="Введите текст" v-model="comment"></textarea>
+                      <ckeditor
+                        id="field-description"
+                        v-model="comment"
+                        :config="$ckEditorConfig">
+                      </ckeditor>
                     </div>
                     <div class="flex flex-end forum-button">
                       <div class="mr1">
@@ -202,6 +206,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts.js'
 pdfMake.vfs = pdfFonts.pdfMake.vfs
 import pdf from './pdf'
 import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
 import logo1 from '#/assets/design/logos/logo1.png'
 import logo2 from '#/assets/design/logos/atg.jpg'
@@ -220,7 +225,8 @@ export default {
     Datepicker,
     CMessages,
     MemoChain,
-    FileUpload
+    FileUpload,
+    Ckeditor
   },
   data () {
     return {
