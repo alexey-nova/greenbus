@@ -17,7 +17,11 @@
         <div class="profile full modal-body">
           <div :class="['form-group', {'has-error': errors.has('comment')}]">
             <label>Комментарий <span v-if="model.type !== 'confirm'">*</span></label>
-            <textarea name="comment" v-validate="model.type !== 'confirm' && 'required'" v-model="model.comment"></textarea>
+            <ckeditor
+              id="field-description"
+              v-model="model.comment"
+              :config="$ckEditorConfig">
+            </ckeditor>
             <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
           </div>
           <div class="select-file">
@@ -51,12 +55,14 @@
 <script>
 import Modal from '@/Modal'
 import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
 export default {
   name: 'modal-reply-bid',
   components: {
     Modal,
-    FileUpload
+    FileUpload,
+    Ckeditor
   },
   props: ['model', 'onSubmit', 'onClose'],
   computed: {
@@ -69,6 +75,17 @@ export default {
       this.$emit('onClose')
     },
     submit () {
+      if (this.model.type !== 'confirm') {
+        if (!this.model.comment) {
+          this.errors.items.push({
+            field: 'comment',
+            scope: null,
+            msg: 'Поле Комментарий обязателен для заполнения'
+          })
+        } else {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'comment')
+        }
+      }
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
           this.$emit('onSubmit', this.model)

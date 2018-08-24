@@ -40,18 +40,9 @@ export default {
   },
   sockets: {
     notification: function (val) {
-      console.log(val)
-      if(val.to instanceof Array) {
-        if (val.to.find(item => item._id === this.$auth().user._id)) {
-          this.pending.unshift(val)
-          this.$notify(val.description, 'info')
-        }
-      }
-      else {
-        if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
-          this.pending.unshift(val)
-          this.$notify(val.description, 'info')
-        }
+      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+        this.pending.unshift(val)
+        this.$notify(val.description, 'info')
       }
     }
   },
