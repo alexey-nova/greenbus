@@ -129,8 +129,12 @@
                       </div>
                     </a>
                   </div>
-                  <div v-for="(comment, index) in groupedComments" :key="`comment${index}`">
-                    <span class="ml-5">{{comment.user.fullname}}</span>
+                  <div v-for="(comment, index) in groupedComments" :key="`comment${index}`" v-if="comment.files.length">
+                    <div class="ml-6">
+                      <p>Файл вложил (прикрепил):</p>
+                      <p>{{comment.user.fullname}}</p>
+                      <p>{{$dateFormat(comment.createdAt, 'dd.mm.yy HH:MM')}}</p>
+                    </div>
                     <div class="white-menu-box">
                       <a class="categories-item" v-for="(file, index) in comment.files" :key="`cfile_${index}`" :href="$config('app.fileUrl') + file.path" target="_blank" rel="noopener">
                         <div class="flex flex-start">

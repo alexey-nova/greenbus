@@ -27,7 +27,7 @@
                     </div>
                   </a>
                   <div v-for="template in templates" :key="template._id" class="folders-item fol-box" @click="chooseTemplate(template)">
-                    <span target="_blank" class="folder-border">
+                    <span class="folder-border">
                       <div :class="['folder-img sm-img']">
                         <img src="~assets/img/file.png">
                       </div>
