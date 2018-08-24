@@ -26,17 +26,22 @@
                       <span>{{category.name}}</span>
                     </div>
                   </a>
-                  <div v-for="template in templates" :key="template._id" class="folders-item fol-box" @click="chooseTemplate(template)">
-                    <span class="folder-border">
-                      <div :class="['folder-img sm-img']">
-                        <img src="~assets/img/file.png">
-                      </div>
-                      <div class="folder-text">
-                        <span>{{ template.name }}</span>
-                      </div>
-                    </span>
-                  </div>
+
                 </div>
+                <div class="categories-block" id="categories-id-1">
+                    <div class="margin2-helper">
+                      <div class="white-menu-box">
+                        <a class="categories-item order" v-for="template in templates" :key="template._id" @click="chooseTemplate(template)">
+                          <div class="flex flex-start">
+                            <div class="categories-item-img"></div>
+                            <div class="categories-item-text">
+                              <span>{{template.name}}</span>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
