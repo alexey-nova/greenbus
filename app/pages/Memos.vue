@@ -110,7 +110,10 @@ export default {
         'Тема': 'name',
         'Статус': 'statusName',
         'От кого': 'nameFrom',
-        'Текущий исполнитель': 'currentUserName'
+        'Текущий исполнитель': 'currentUserName',
+        'Дата создания': 'prettyCreatedAt',
+        'Дата оплаты': 'prettyPaymentDate',
+        'Дата отгрузки': 'prettyShipmentDate'
       },
       modal: {
         show: false,
@@ -126,7 +129,7 @@ export default {
         done: 'Завершено'
       },
       tableData: {
-        columns: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'prettyCreatedAt', 'tools', 'admin'],
+        columns: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'prettyCreatedAt', 'prettyPaymentDate', 'prettyShipmentDate', 'tools', 'admin'],
         options: {
           headings: {
             choose: '',
@@ -137,6 +140,8 @@ export default {
             nameFrom: 'От кого',
             currentUserName: 'Текущий исполнитель',
             prettyCreatedAt: 'Дата создания',
+            prettyPaymentDate: 'Дата оплаты',
+            prettyShipmentDate: 'Дата отгрузки',
             tools: 'Подробнее'
           },
           // orderBy: {
@@ -190,7 +195,16 @@ export default {
           bid.currentUserName = currentUserName ? currentUserName.fullname : ''
           // active = в работе, declined = в работе, done = выполнено
           bid.statusName = bid.status === 'done' ? 'Выполнено' : 'В работе'
-          bid.prettyCreatedAt = this.$dateFormat(bid.createdAt, 'd mmmm yyyy')
+          bid.prettyCreatedAt = this.$dateFormat(bid.createdAt, 'dd.mm.yy')
+          bid.prettyPaymentDate = ''
+          bid.prettyShipmentDate = ''
+          bid.order.forEach(item => {
+            if (item.confirmType === 'date' && Number(item.contextResult)) {
+              bid.prettyPaymentDate = this.$dateFormat(new Date(Number(item.contextResult)), 'dd.mm.yy')
+            } else if (item.confirmType === 'shipment' && Number(item.contextResult)) {
+              bid.prettyShipmentDate = this.$dateFormat(new Date(Number(item.contextResult)), 'dd.mm.yy')
+            }
+          })
           return bid
         })
         return data

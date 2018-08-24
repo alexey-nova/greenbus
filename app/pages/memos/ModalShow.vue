@@ -41,24 +41,21 @@
                     <button v-if="isActiveDeclineButton" class="info-button" @click="toggleModal('reply', { type: 'rejectFull' })" type="button">Отклонить до заявителя</button>
                     <button v-if="model.currentUser === 0" class="add-button auto-width" @click="sendReply({ type: 'confirm' })">Переотправить</button>
                   </div>
-                  <div class="paydate">
-                    <div v-if="(model.order[model.currentUser].confirmType === 'date' && !model.order[model.currentUser].contextResult)" class="fl fl-aic">
-                      <div :class="[{'has-error': errors.has('date')}]">
-                        <Datepicker
-                          :monday-first="true"
-                          language="ru"
-                          name="date"
-                          v-validate="'required'"
-                          v-model="model.date"
-                          placeholder="Дата *"
-                          class="datepicker-input"></Datepicker>
-                        <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
-                      </div>
-                      <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату</button>
+                </div>
+                <div class="add paydate">
+                  <div v-if="isDatepickerVisible" class="fl fl-aic">
+                    <div :class="[{'has-error': errors.has('date')}]">
+                      <Datepicker
+                        :monday-first="true"
+                        language="ru"
+                        name="date"
+                        v-validate="'required'"
+                        v-model="model.date"
+                        placeholder="Дата *"
+                        class="datepicker-input"></Datepicker>
+                      <span v-show="errors.has('date')" class="help-block">{{ errors.first('date') }}</span>
                     </div>
-                    <div v-else>
-                      <p>Дата: {{payDate}}</p>
-                    </div>
+                    <button class="add-button auto-width ml1" type="button" @click="sendReply({ type: 'confirmDate', date: model.date })">Записать дату {{dateType}}</button>
                   </div>
                 </div>
                 <div class="forum-box">
@@ -95,7 +92,10 @@
                           <strong>Тема: </strong>{{model.name}}
                         </p>
                         <p>
-                          <strong>Дата: </strong>{{payDate}}
+                          <strong>Дата оплаты: </strong>{{payDate.date}}
+                        </p>
+                        <p>
+                          <strong>Дата отгрузки: </strong>{{payDate.shipmentDate}}
                         </p>
                       </div>
                     </div>
@@ -273,19 +273,41 @@ export default {
       return logo
     },
     isActiveConfirmButton () {
-      return ((this.model.order[this.model.currentUser].confirmType === 'date' && this.model.order[this.model.currentUser].contextResult) || this.model.order[this.model.currentUser].confirmType === 'default') && (this.model.status === 'active' || this.model.status === 'declined') && this.model.currentUser !== 0
+      const currentOrder = this.model.order[this.model.currentUser]
+      return (
+        (currentOrder.confirmType === 'date' && currentOrder.contextResult)
+        || (currentOrder.confirmType === 'shipment' && currentOrder.contextResult)
+        || currentOrder.confirmType === 'default')
+      && (this.model.status === 'active' || this.model.status === 'declined')
+      && this.model.currentUser !== 0
     },
     isActiveDeclineButton () {
-      return this.model.currentUser !== 0 && (this.model.status === 'active' || this.model.status === 'declined')
+      return this.model.currentUser !== 0
+        && (this.model.status === 'active' || this.model.status === 'declined')
+    },
+    isDatepickerVisible () {
+      const currentOrder = this.model.order[this.model.currentUser]
+      return ['date', 'shipment'].includes(currentOrder.confirmType) && this.model.status !== 'done'
     },
     payDate () {
       let date = 'Нет'
+      let shipmentDate = 'Нет даты отгрузки'
       this.model.order.forEach((item) => {
-        if (Number(item.contextResult)) {
+        if (item.confirmType === 'date' && Number(item.contextResult)) {
           date = this.$dateFormat(new Date(Number(item.contextResult)), 'dd mmm yyyy')
+        } else if (item.confirmType === 'shipment' && Number(item.contextResult)) {
+          shipmentDate = this.$dateFormat(new Date(Number(item.contextResult)), 'dd mmm yyyy')
         }
       })
-      return date
+      return { date, shipmentDate }
+    },
+    dateType () {
+      const types = {
+        'date': 'оплаты',
+        'shipment': 'отгрузки'
+      }
+      const currentOrder = this.model.order[this.model.currentUser]
+      return types[currentOrder.confirmType]
     },
     modifiedBid () {
       const newBid = this.model
@@ -450,11 +472,18 @@ export default {
       this.$api('post', `comments`, { moduleId: this.model._id, comment, replyTo: commentId }).then(response => {
         this.loadComments(this.model._id)
       })
+    },
+    setContextDate () {
+      const currentOrder = this.model.order[this.model.currentUser]
+      if (currentOrder.contextResult && Number(currentOrder.contextResult)) {
+        this.model.date = new Date(Number(currentOrder.contextResult))
+      }
     }
   },
   mounted () {
     this.loadPositions()
     this.loadComments(this.model._id)
+    this.setContextDate()
   },
   watch: {
     tab () {
