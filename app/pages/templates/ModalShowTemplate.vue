@@ -21,7 +21,7 @@
               <div class="chain-index">{{index + 1}}</div>
               <div>
                 <p>Должность: {{getPositionName(orderItem.position)}}</p>
-                <p>Тип согласования: {{ orderItem.confirmType === 'default' ? 'Обычный' : 'С датой оплаты'}}</p>
+                <p>Тип согласования: {{ confirmType(orderItem.confirmType) }}</p>
                 <p>Сроки: {{orderItem.hours}} часов</p>
               </div>
             </div>
@@ -48,6 +48,15 @@ export default {
   methods: {
     close () {
       this.$emit('onClose')
+    },
+    confirmType (item) {
+      const types = {
+        default: 'Обычный',
+        date: 'С датой',
+        shipment: 'С датой отгрузки'
+      }
+
+      return types[item]
     },
     loadPositions () {
       this.$api('get', 'positions?all=true').then(response => {

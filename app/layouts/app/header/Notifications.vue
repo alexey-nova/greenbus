@@ -13,11 +13,9 @@
           </ul>
           <ul class="notifications-menu">
             <li v-for="n in pending" :key="n._id" class="notifications-menu-left">
-              <a v-if="n.module" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })">
-                {{n.description}}
+              <a v-if="n.module" @click="goTo(n.module.moduleType, { moduleId: n.module.moduleId })" v-html="n.description">
               </a>
-              <p v-else>
-                {{n.description}}
+              <p v-else v-html="n.description">
               </p>
             </li>
             <li v-if="$_.size(pending)"><a class="read-all" @click="readNots">Прочитать все уведомления</a></li>

@@ -17,7 +17,11 @@
         <div class="profile full modal-body">
           <div :class="['form-group']">
             <label>Комментарий</label>
-            <textarea name="comment" v-model="model.comment"></textarea>
+            <ckeditor
+              id="field-description"
+              v-model="model.comment"
+              :config="$ckEditorConfig">
+            </ckeditor>
           </div>
           <div class="select-file">
             <file-upload
@@ -50,12 +54,14 @@
 <script>
 import Modal from '@/Modal'
 import FileUpload from 'vue-upload-component'
+import Ckeditor from 'vue-ckeditor2'
 
 export default {
   name: 'modal-accept-custom-bid',
   components: {
     Modal,
-    FileUpload
+    FileUpload,
+    Ckeditor
   },
   props: ['model', 'onSubmit', 'onClose'],
   methods: {
