@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import core from './../plugins/core'
 import app from './app'
+import notifications from './notifications'
 import boot from '#/config/boot'
 
 Vue.use(Vuex)
@@ -16,7 +17,8 @@ let plugins = core.$_.reduce(boot.plugins, (result = {}, value, key) => {
 export default new Vuex.Store({
   modules: {
     app,
+    notifications,
     ...plugins
   },
-  strict: process.env.NODE_ENV !== 'production'
+  strict: false
 })

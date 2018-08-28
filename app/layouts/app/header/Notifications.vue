@@ -30,21 +30,18 @@
 
 <script>
 import ClickOutside from 'vue-click-outside'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       isOpen: false,
-      pending: []
     }
   },
-  sockets: {
-    notification: function (val) {
-      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
-        this.pending.unshift(val)
-        this.$notify(val.description, 'info')
-      }
-    }
+  computed: {
+    ...mapGetters({
+      pending: 'notifications/notifications'
+    })
   },
   methods: {
     toggle () {
@@ -55,17 +52,17 @@ export default {
     },
     loadNots () {
       this.$api('get', 'notifications').then(response => {
-        this.pending = response.data.pending
+        this.$store.commit('notifications/addNotifications', response.data.pending)
       }).catch(e => {})
     },
     readNots () {
       this.$api('post', 'notifications').then(response => {
-        this.loadNots()
+        this.$store.commit('notifications/readNotifications')
       }).catch(e => {})
     },
     readNotification (moduleId) {
       return this.$api('post', `notifications/${moduleId}`).then(response => {
-        this.loadNots()
+        this.$store.commit('notifications/readNotification', moduleId)
       })
     },
     goTo (location, context) {
@@ -82,7 +79,16 @@ export default {
   },
   directives: {
     ClickOutside
-  }
+  },
+  sockets: {
+    // TODO: this.pending.unshift -> this.$store.commit
+    notification: function (val) {
+      if (this.$_.indexOf(val.to, this.$auth().user._id) !== -1) {
+        this.pending.unshift(val)
+        this.$notify(val.description, 'info')
+      }
+    }
+  },
 }
 </script>
 
