@@ -15,13 +15,14 @@
           </div>
         </div>
         <div class="profile full modal-body">
-          <div :class="['form-group']">
-            <label>Комментарий</label>
+          <div :class="['form-group', {'has-error': errors.has('comment')}]">
+            <label>Комментарий <span v-if="model.type !== 'confirm'">*</span></label>
             <ckeditor
               id="field-description"
               v-model="model.comment"
               :config="$ckEditorConfig">
             </ckeditor>
+            <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
           </div>
           <div class="select-file">
             <file-upload
@@ -69,6 +70,17 @@ export default {
       this.$emit('onClose')
     },
     submit () {
+      if (this.model.type !== 'confirm') {
+        if (!this.model.comment) {
+          this.errors.items.push({
+            field: 'comment',
+            scope: null,
+            msg: 'Поле Комментарий обязателен для заполнения'
+          })
+        } else {
+          this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'comment')
+        }
+      }
       this.$validator.validateAll().then(() => {
         if (!this.$_.size(this.errors.items)) {
           this.$emit('onSubmit', this.model)

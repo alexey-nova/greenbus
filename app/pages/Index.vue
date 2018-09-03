@@ -256,6 +256,10 @@ export default {
         dayClick: (date, jsEvent, view) => {
           this.selectedDate = date._d
           this.showBidsInCalendar(date._d)
+        },
+        eventClick: (event) => {
+          this.selectedDate = event.start._d
+          this.showBidsInCalendar(event.start._d)
         }
       },
       header: {
@@ -327,6 +331,9 @@ export default {
       return user || {}
     },
     goTo (name, params, query) {
+      this.$api('post', `notifications/${query.bid}`).then(response => {
+        this.$store.commit('notifications/readNotification', query.bid)
+      })
       this.$router.push({ name, params, query })
     },
     loadTasks () {
@@ -370,13 +377,16 @@ export default {
     },
     loadFreeBids () {
       this.$api('get', 'freebids/?filter=in').then(response => {
-        this.freebids = response.data.bids
+        this.freebids = response.data.bids.filter(bid => {
+          if (bid.to.find(item => item.user === this.$auth().user._id && (item.status === 'confirmed' || item.status === 'declined'))) return false
+          return true
+        })
         // группировка служебок по дедлайну
-        const groups = response.data.bids.reduce((prev, item) => {
-          const date = item.deadline.split('T')[0]
+        const groups = this.freebids.reduce((prev, item) => {
+          const date = this.$dateFormat(new Date(item.deadline), 'yyyy-mm-dd')
           if (!prev.date) prev[date] = []
           prev[date].push(item)
-        return prev
+          return prev
         }, {})
         Object.keys(groups).forEach((group, groupIndex) => {
           this.events.push({

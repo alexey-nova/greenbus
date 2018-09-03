@@ -50,7 +50,7 @@
     </div>
     <modal-create-custom-bid v-if="modal.create" :model="modal.create" :users="users" :positions="positions" @onSubmit="createBid" @onClose="toggleModal('create')"></modal-create-custom-bid>
     <modal-edit-custom-bid v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editBid" @onClose="toggleModal('edit')"></modal-edit-custom-bid>
-    <modal-show-custom-bid v-if="modal.show" :model="modal.show" :tab="modal.tab" :users="users" @onSubmit="acceptBid" @onClose="toggleModal('show')"></modal-show-custom-bid>
+    <modal-show-custom-bid v-if="modal.show" :model="modal.show" :tab="modal.tab" :users="users" @onSubmit="replyBid" @onClose="toggleModal('show')"></modal-show-custom-bid>
     <modal-delete-custom-bid :model="modal.delete" @onSubmit="deleteBid" @onClose="toggleModal('delete')"></modal-delete-custom-bid>
   </div>
 </template>
@@ -204,10 +204,12 @@ export default {
         this.modal.delete = false
       })
     },
-    acceptBid (data) {
+    replyBid (data) {
+      this.$log(data)
       data.files = this.$_.map(data.files, (f) => f.file)
       let formData = this.$createFormData(data)
-      this.$api('post', `freebids/accept/${data._id}`, formData).then(response => {
+      if (!['decline', 'confirm'].includes(data.type)) return this.notify('Ошибка!', 'danger')
+      this.$api('post', `freebids/${data.type}/${data._id}`, formData).then(response => {
         this.notify(response.data.message)
         this.modal.show = false
         this.loadBids()

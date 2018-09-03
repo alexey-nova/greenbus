@@ -35,7 +35,8 @@
               <div class="info-container2" v-if="tabs === 0">
                 <div class="flex align-center m-button">
                   <div class="fl">
-                    <button v-if="isAcceptor" class="add-button auto-width" @click="toggleModal('accept', model)" type="button">Принять на исполнение</button>
+                    <button v-if="isAcceptor" class="add-button auto-width mr1" @click="toggleModal('reply', { type: 'confirm', _id: model._id })" type="button">Принять на исполнение</button>
+                    <button v-if="isAcceptor" class="info-button" @click="toggleModal('reply', { type: 'decline', _id: model._id })" type="button">Отклонить</button>
                   </div>
                 </div>
                 <div class="forum-box">
@@ -172,7 +173,7 @@
         </div>
       </div>
     </Modal>
-    <modal-accept-custom-bid v-if="modal.accept" :model="modal.accept" @onSubmit="sendReply" @onClose="toggleModal('accept')"></modal-accept-custom-bid>
+    <modal-reply-custom-bid v-if="modal.reply" :model="modal.reply" @onSubmit="sendReply" @onClose="toggleModal('reply')"></modal-reply-custom-bid>
   </div>
 </template>
 
@@ -188,7 +189,7 @@ import logo1 from '#/assets/design/logos/logo1.png'
 import logo2 from '#/assets/design/logos/atg.jpg'
 import logo3 from '#/assets/design/logos/ki.jpg'
 
-import ModalAcceptBid from './ModalAcceptBid'
+import ModalReplyBid from './ModalReplyBid'
 import CMessages from './CMessages'
 import FileUpload from 'vue-upload-component'
 
@@ -196,7 +197,7 @@ export default {
   name: 'modal-show-custom-bid',
   components: {
     Modal,
-    'modal-accept-custom-bid': ModalAcceptBid,
+    'modal-reply-custom-bid': ModalReplyBid,
     CMessages,
     FileUpload,
     Ckeditor
@@ -205,7 +206,7 @@ export default {
     return {
       comments: [],
       modal: {
-        accept: false
+        reply: false
       },
       tabs: 0,
       positions: [],
@@ -243,7 +244,7 @@ export default {
       return logo
     },
     isAcceptor () {
-      return this.model.to.map(t => t.user).includes(this.$auth().user._id) && !this.model.to.find(t => t.user === this.$auth().user._id).confirmed
+      return this.model.to.map(t => t.user).includes(this.$auth().user._id) && !['confirmed', 'declined'].includes(this.model.to.find(t => t.user === this.$auth().user._id).status)
     },
     groupedComments () {
       const targetArray = this.comments.filter(item => !item.replyTo)
@@ -316,7 +317,8 @@ export default {
       this.$emit('onSubmit', data)
     },
     setStatus (orderItem, index) {
-      if (orderItem.confirmed) return `Принял к исплонению ${this.$dateFormat(orderItem.confirmedDate, 'dd.mmm.yyyy HH:MM')}`
+      if (orderItem.status === 'confirmed') return `Принял к исплонению ${this.$dateFormat(orderItem.confirmedDate, 'dd.mm.yyyy HH:MM')}`
+      if (orderItem.status === 'declined') return `Отклонил ${this.$dateFormat(orderItem.confirmedDate, 'dd.mm.yyyy HH:MM')}`
       return '---'
     },
     removeFile (index) {

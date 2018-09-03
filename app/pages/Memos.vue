@@ -437,7 +437,7 @@ export default {
   min-height: 54px;
 }
 .status-tag {
-  width: 100px;
+  width: 75%;
   text-align: center;
   padding: 3px 0;
   border-radius: 3px;

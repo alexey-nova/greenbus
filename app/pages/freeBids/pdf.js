@@ -31,8 +31,7 @@ export default {
     ]
 
     let u = _.map(model.to, m => {
-      let date = m.confirmedDate ? ` ${$dateFormat(m.confirmedDate, 'd mmm yyyy, HH:MM')}` : ''
-      // let date = m.answer !== 'undefined' ? ' ' + $dateFormat(m.updatedAt, 'd mmm yyyy, hh:MM') : ''
+      let date = m.date ? ` ${$dateFormat(m.date, 'd mmm yyyy, HH:MM')}` : ''
       return [
         {
           text: positions.find(item => item._id === users.find(user => user._id === m.user).position).name,
@@ -43,7 +42,7 @@ export default {
           style: 'tr'
         },
         {
-          text: m.confirmed ? `Согласовал ${date}` : '---',
+          text: m.status === 'confirmed' ? `Согласовал ${date}` : m.status === 'declined' ? `Отклонил ${date}` : '---',
           style: 'tr'
         }
       ]

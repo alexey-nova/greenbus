@@ -113,10 +113,7 @@ export default {
       this.currentModel.order.push({_id: '', confirmType: '', hours: '', position: ''})
     },
     stepDown (index) {
-      const answer = confirm('Вы уверены что хотите убрать?')
-      if (answer) {
-        this.currentModel.order.splice(index, 1)
-      }
+      this.currentModel.order.splice(index, 1)
     },
     submit () {
       this.$validator.validateAll().then(() => {

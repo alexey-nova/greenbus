@@ -69,7 +69,8 @@ export default {
   methods: {
     commentType (type) {
       const types = {
-        'accept': '(Принял к исполнению)'
+        'confirm': '(Принял к исполнению)',
+        'decline': '(Отклонил)'
       }
       return types[type]
     },
