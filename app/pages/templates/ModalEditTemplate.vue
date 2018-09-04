@@ -66,6 +66,7 @@
               </td>
               <td>
                 <button type="button" class="button-table" @click="stepDown(index)">-</button>
+                <button type="button" class="button-table" @click="addStep(index)">+</button>
               </td>
             </tr>
           </table>
@@ -111,6 +112,9 @@ export default {
     },
     stepUp (event) {
       this.currentModel.order.push({_id: '', confirmType: '', hours: '', position: ''})
+    },
+    addStep (index) {
+      this.currentModel.order.splice(index + 1, 0, { _id: '', confirmType: '', hours: '', position: ''})
     },
     stepDown (index) {
       this.currentModel.order.splice(index, 1)

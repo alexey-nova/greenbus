@@ -17,7 +17,7 @@
         <div class="modal-body">
           <h2>Название шаблона: {{model.name}}</h2>
           <div class="chain">
-            <div v-for="(orderItem, index) in model.order" :key="orderItem._id" class="container chain-item">
+            <div v-for="(orderItem, index) in model.order" :key="`${orderItem._id}-${index}`" class="container chain-item">
               <div class="chain-index">{{index + 1}}</div>
               <div>
                 <p>Должность: {{getPositionName(orderItem.position)}}</p>
