@@ -148,8 +148,8 @@ export default {
           //   column: 'id',
           //   ascending: false
           // },
-          sortable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
-          filterable: ['id', 'name', 'status', 'nameFrom', 'currentUserName'],
+          sortable: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'prettyCreatedAt', 'prettyPaymentDate', 'prettyShipmentDate'],
+          filterable: ['id', 'name', 'status', 'nameFrom', 'currentUserName', 'prettyCreatedAt', 'prettyPaymentDate', 'prettyShipmentDate'],
           customSorting: {
             id: function (ascending) {
               return (a, b) => {
@@ -313,7 +313,7 @@ export default {
       }
 
       let result = []
-      let tempBids = [...bids].reverse()
+      let tempBids = [...bids]
       tempBids = tempBids.filter(bid => {
         if (bid.order[bid.currentUser].position !== this.$auth().user.position) { return true }
         const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate || bid.createdAt : bid.createdAt)
