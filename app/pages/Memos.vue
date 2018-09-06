@@ -315,6 +315,8 @@ export default {
       let result = []
       let tempBids = [...bids]
 
+      console.log('bids would be here', bids)
+
       tempBids = tempBids.filter(bid => {
         if (bid.currentUser >= bid.order.length) return false
         if (bid.order[bid.currentUser].position !== this.$auth().user.position) { return true }
