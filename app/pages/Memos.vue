@@ -314,6 +314,9 @@ export default {
 
       let result = []
       let tempBids = [...bids]
+
+      console.log('bids should be loaded', bids)
+
       tempBids = tempBids.filter(bid => {
         if (bid.order[bid.currentUser].position !== this.$auth().user.position) { return true }
         const prevDeadline = new Date(bid.currentUser ? bid.order[bid.currentUser - 1].confirmedDate || bid.createdAt : bid.createdAt)
