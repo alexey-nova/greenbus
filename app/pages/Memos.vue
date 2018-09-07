@@ -186,11 +186,12 @@ export default {
   computed: {
     filteredData: {
       get: function () {
+	console.log('bids in filterdData', this.bids)
         let data = _.merge([], this.bids)
         _.map(data, bid => {
           let userFrom = _.find(this.users, u => u._id === bid.createdBy)
           bid.nameFrom = userFrom ? userFrom.fullname : ''
-
+	  
           let currentUserName = _.find(this.users, u => u.position === bid.order[bid.currentUser].position)
           bid.currentUserName = currentUserName ? currentUserName.fullname : ''
           // active = в работе, declined = в работе, done = выполнено
