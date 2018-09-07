@@ -287,7 +287,7 @@ export default {
     },
     isDatepickerVisible () {
       const currentOrder = this.model.order[this.model.currentUser]
-      return ['date', 'shipment'].includes(currentOrder.confirmType) && this.model.status !== 'done'
+      return ['date', 'shipment'].includes(currentOrder.confirmType) && this.model.status !== 'done' && this.$auth().user.position === currentOrder.position
     },
     payDate () {
       let date = 'Нет'
