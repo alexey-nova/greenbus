@@ -21,7 +21,11 @@
           <div class="forum-response">
             <div class="forum-response-box">
               <div class="forum-textarea">
-                <textarea placeholder="Введите текст" v-model="reply[index]"></textarea>
+                <ckeditor
+                  v-model="reply[index]"
+                  placeholder="Введите текст"
+                  :config="$ckEditorConfig">
+                </ckeditor>
               </div>
               <div class="flex flex-end forum-button">
                 <button type="button" class="add-button auto-width" @click="replyMessage(com, reply[index], index)">Отправить</button>
@@ -37,11 +41,13 @@
 
 <script>
 import CMessages from './CMessages'
+import Ckeditor from 'vue-ckeditor2'
 
 export default {
   name: 'c-messages',
   components: {
-    'c-messages': CMessages
+    'c-messages': CMessages,
+    Ckeditor
   },
   data () {
     return {
