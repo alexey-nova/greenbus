@@ -158,6 +158,12 @@ export default {
                 if (ascending) return a >= b ? 1 : -1
                 return a <= b ? 1 : -1
               }
+            },
+            prettyCreatedAt: function (ascending) {
+              return (a, b) => {
+                if (ascending) return new Date(a.createdAt) >= new Date(b.createdAt) ? 1 : -1
+                return new Date(a.createdAt) <= new Date(b.createdAt) ? 1 : -1
+              }
             }
           },
           columnsClasses: {
@@ -191,7 +197,7 @@ export default {
         _.map(data, bid => {
           let userFrom = _.find(this.users, u => u._id === bid.createdBy)
           bid.nameFrom = userFrom ? userFrom.fullname : ''
-	  
+
           let currentUserName = _.find(this.users, u => u.position === bid.order[bid.currentUser].position)
           bid.currentUserName = currentUserName ? currentUserName.fullname : ''
           // active = в работе, declined = в работе, done = выполнено

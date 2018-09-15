@@ -24,20 +24,21 @@ export default {
         user.fullname = unescape(user.fullname)
         install(token, user)
         core.$setToken(token)
-        location.reload()
-        // core.$api('get', 'users').then(response => {
-        //   let newUser = core.$_.find(response.data, ['_id', user._id])
-        //   user.position = newUser.positionId
-        //   user.department = newUser.departmentId
-        //   user.fullname = newUser.fullname
-        //   user.phone = newUser.phone
-        //   user.whatsapp = newUser.whatsapp
-        //   install(token, user)
-        //   location.reload()
-        // }).catch(e => {
-        //   this.notify(e.response.data, 'danger')
-        // })
+        core.$api('get', 'users').then(response => {
+          let newUser = core.$_.find(response.data, ['_id', user._id])
+          user.position = newUser.position
+          user.department = newUser.department
+          user.fullname = newUser.fullname
+          user.phone = newUser.phone
+          user.admin = newUser.admin
+          user.priveleges = newUser.priveleges
+          install(token, user)
+          location.reload()
+        }).catch(e => {
+          this.notify(e.response.data, 'danger')
+        })
       } catch (e) {
+        console.log(e)
         destroy()
       }
     }

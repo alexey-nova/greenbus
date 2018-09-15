@@ -7,6 +7,10 @@
             <div class="list_header">
               <div class="flex">
                 <div>
+                  <p v-if="template">
+                    Шаблон: {{template.name}}
+                    <span v-if="template.categoryId">/ {{template.categoryId.name}}</span>
+                  </p>
                 </div>
                 <div class="buttons flex">
                   <button @click="close" class="button-top close" type="button"></button>
@@ -242,7 +246,8 @@ export default {
       comment: '',
       replies: {},
       reply: [],
-      selectedLogo: 'logo1'
+      selectedLogo: 'logo1',
+      template: {}
     }
   },
   props: ['model', 'users', 'tab', 'onConfirm', 'onReject', 'onClose', 'getBids'],
@@ -478,12 +483,21 @@ export default {
       if (currentOrder.contextResult && Number(currentOrder.contextResult)) {
         this.model.date = new Date(Number(currentOrder.contextResult))
       }
+    },
+    getTemplateById (id) {
+      this.$api('get', `bids/templates/byId/${id}`).then(response => {
+        this.template = response.data.template
+        console.log('sss', response.data.template)
+      })
     }
   },
   mounted () {
     this.loadPositions()
     this.loadComments(this.model._id)
     this.setContextDate()
+    if (this.model) {
+      this.getTemplateById(this.model.templateId)
+    }
   },
   watch: {
     tab () {

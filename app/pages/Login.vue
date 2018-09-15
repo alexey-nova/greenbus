@@ -38,7 +38,6 @@ export default {
         if (!this.$_.size(this.errors.items)) {
           this.$api('post', 'auth/login', this.loginData).then(response => {
             this.$login(response.data.token)
-            this.$router.push({ name: 'index' })
           }).catch(e => {
             this.notify('Неверный логин или пароль', 'danger')
           })

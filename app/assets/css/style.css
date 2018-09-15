@@ -2655,3 +2655,23 @@ tr.green2{
 .ml-6 {
   margin-left: 4em;
 }
+
+/* dragon drop */
+
+.smooth-dnd-draggable-wrapper {
+  display: table-row !important;
+}
+
+.card-ghost {
+  transition: transform 0.18s ease;
+  transform: rotateZ(5deg)
+}
+
+.card-ghost-drop{
+  transition: transform 0.18s ease-in-out;
+  transform: rotateZ(0deg)
+}
+
+.animated.smooth-dnd-draggable-wrapper td {
+  border: none;
+}

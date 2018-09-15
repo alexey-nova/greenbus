@@ -34,7 +34,7 @@
           <tr v-for="(n, index) in steps" :key="n+'_step'">
             <td>
               <div :class="[{'has-error': errors.has('department')}]">
-                <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" change-on-select @change="setVal"></el-cascader>
+                <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" change-on-select @change="setVal" expand-trigger="hover"></el-cascader>
                 <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
               </div>
             </td>
