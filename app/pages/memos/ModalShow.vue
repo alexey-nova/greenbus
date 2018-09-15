@@ -487,7 +487,6 @@ export default {
     getTemplateById (id) {
       this.$api('get', `bids/templates/byId/${id}`).then(response => {
         this.template = response.data.template
-        console.log('sss', response.data.template)
       })
     }
   },
