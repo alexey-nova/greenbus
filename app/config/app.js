@@ -7,9 +7,9 @@ if (process.env.NODE_ENV === 'development') {
   soketUrl = 'localhost:3333/'
   fileUrl = 'localhost:3333/'
 } else {
-  apiUrl = 'portal.greenbus.kz:3333/api/'
-  soketUrl = 'portal.greenbus.kz:3333/'
-  fileUrl = 'portal.greenbus.kz:3333/'
+  apiUrl = 'https://portal.greenbus.kz:3443/api/'
+  soketUrl = 'https://portal.greenbus.kz:3443/'
+  fileUrl = 'https://portal.greenbus.kz:3443/'
 }
 
 export default {
