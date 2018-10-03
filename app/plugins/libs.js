@@ -72,4 +72,4 @@ Vue.use(VeeValidate, {
   }
 })
 
-Vue.use(VueSocketio, core.$config('app.soketUrl'))
+Vue.use(VueSocketio, core.$config('app.soketUrl'), { secure: true })
