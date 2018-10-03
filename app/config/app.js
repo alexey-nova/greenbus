@@ -3,13 +3,13 @@ path = path.substring(0, path.lastIndexOf('/') + 1)
 path += (process.env.NODE_ENV === 'development') ? 'app/assets/copy/api/' : 'assets/api/'
 let apiUrl, soketUrl, fileUrl
 if (process.env.NODE_ENV === 'development') {
-  apiUrl = 'https://localhost:3333/api/'
-  soketUrl = 'https://localhost:3333/'
-  fileUrl = 'https://localhost:3333/'
+  apiUrl = 'localhost:3333/api/'
+  soketUrl = 'localhost:3333/'
+  fileUrl = 'localhost:3333/'
 } else {
-  apiUrl = 'https://portal.greenbus.kz:3333/api/'
-  soketUrl = 'https://portal.greenbus.kz:3333/'
-  fileUrl = 'https://portal.greenbus.kz:3333/'
+  apiUrl = 'portal.greenbus.kz:3333/api/'
+  soketUrl = 'portal.greenbus.kz:3333/'
+  fileUrl = 'portal.greenbus.kz:3333/'
 }
 
 export default {
