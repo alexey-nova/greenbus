@@ -4,11 +4,11 @@ path += (process.env.NODE_ENV === 'development') ? 'app/assets/copy/api/' : 'ass
 let apiUrl, soketUrl, fileUrl
 if (process.env.NODE_ENV === 'development') {
   apiUrl = 'https://localhost:3333/api/'
-  soketUrl = 'http://localhost:3333/'
+  soketUrl = 'https://localhost:3333/'
   fileUrl = 'https://localhost:3333/'
 } else {
   apiUrl = 'https://portal.greenbus.kz:3333/api/'
-  soketUrl = 'http://portal.greenbus.kz:3333/'
+  soketUrl = 'https://portal.greenbus.kz:3333/'
   fileUrl = 'https://portal.greenbus.kz:3333/'
 }
 
