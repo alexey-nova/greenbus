@@ -33,7 +33,7 @@
                 <Draggable tag="tr" v-for="(n, index) in currentModel.order" :key="index">
                   <td>
                     <div :class="[{'has-error': errors.has('department')}]">
-                      <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" @change="setVal" expand-trigger="hover"></el-cascader>
+                      <el-cascader :options="group(departments.filter(item => item.departmentType === 'head'))" @change="setVal" change-on-select expand-trigger="hover"></el-cascader>
                       <span v-show="errors.has('department')" class="help-block">{{ errors.first('department') }}</span>
                     </div>
                   </td>
