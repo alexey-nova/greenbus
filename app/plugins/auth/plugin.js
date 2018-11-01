@@ -1,6 +1,7 @@
 import store from '#/store'
 import core from './../core'
 
+
 export default {
   auth () {
     return {
@@ -12,32 +13,29 @@ export default {
       editUser (user) {
         return editUser(user)
       },
-      logout () {
-        destroy()
+      async logout () {
+        await destroy()
       }
     }
   },
-  login (token) {
+  async login (token) {
     if (token) {
       try {
         let user = JSON.parse(atob(token.split('.')[1]))
         user.fullname = unescape(user.fullname)
         install(token, user)
         core.$setToken(token)
-        core.$api('get', 'users').then(response => {
-          let newUser = core.$_.find(response.data, ['_id', user._id])
-          user.position = newUser.position
-          user.department = newUser.department
-          user.fullname = newUser.fullname
-          user.phone = newUser.phone
-          user.admin = newUser.admin
-          user.priveleges = newUser.priveleges
-          install(token, user)
-          location.reload()
-        }).catch(e => {
-          this.notify(e.response.data, 'danger')
-        })
+        const response = await core.$api('get', 'users')
+        let newUser = core.$_.find(response.data, ['_id', user._id])
+        user.position = newUser.position
+        user.department = newUser.department
+        user.fullname = newUser.fullname
+        user.phone = newUser.phone
+        user.admin = newUser.admin
+        user.priveleges = newUser.priveleges
+        install(token, user)
       } catch (e) {
+        this.notify(e.response.data, 'danger')
         console.log(e)
         destroy()
       }
@@ -63,9 +61,8 @@ let install = (token, user) => {
     store.commit('auth/init', { token, user: core.$_.clone(user) })
   }
 }
-let destroy = () => {
+let destroy = async () => {
   core.$session.remove('user')
   core.$session.remove('jwt')
   store.commit('auth/destroy')
-  location.reload()
 }

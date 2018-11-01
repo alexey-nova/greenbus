@@ -33,16 +33,18 @@ export default {
     }
   },
   methods: {
-    login (event) {
-      this.$validator.validateAll().then(result => {
+    async login (event) {
+      try {
+        const result = await this.$validator.validateAll() 
         if (!this.$_.size(this.errors.items)) {
-          this.$api('post', 'auth/login', this.loginData).then(response => {
-            this.$login(response.data.token)
-          }).catch(e => {
-            this.notify('Неверный логин или пароль', 'danger')
-          })
+          const response = await this.$api('post', 'auth/login', this.loginData)
+          console.log('====', {response})
+          await this.$login(response.data.token)
+          this.$router.push({path: '/'})
         }
-      })
+      } catch(e) {
+        this.notify('Неверный логин или пароль', 'danger')
+      }
     }
   }
 }

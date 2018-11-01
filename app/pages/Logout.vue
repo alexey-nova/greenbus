@@ -4,8 +4,9 @@
 
 <script>
 export default {
-  mounted () {
-    this.$auth().logout()
+  async mounted () {
+    await this.$auth().logout()
+    this.$router.push({name: 'login'})
   }
 }
 </script>
