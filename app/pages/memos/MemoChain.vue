@@ -1,6 +1,6 @@
 <template>
   <div class="stage2">
-    <a v-if="splice(index)" :class="['stage2-item', setOrderClass(chainItem, index)]" v-for="(chainItem, index) in modifiedBidOrder" :key="chainItem._id">
+    <a v-if="splice(index)" :class="['stage2-item', setOrderClass(chainItem, index)]" v-for="(chainItem, index) in modifiedBidOrder">
       <img :src="avatar(chainItem.user._id) || require(`assets/img/user.jpg`)">
       <div class="absolut-box">
         <div :class="['stage-flex flex', setOrderClass(chainItem, index)]">

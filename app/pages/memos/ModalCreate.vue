@@ -16,28 +16,28 @@
           <div class="profile full modal-body">
             <div class="cat-box">
               <div class="white-menu top">
+                <div v-if="activeCategory">
+                  <button type="button" class="add-button auto-width back" @click="goBack()"><img src="~assets/img/left.png"><span>Назад</span></button>
+                </div>
                 <div class="white-menu-box">
-                  <div v-if="activeCategory">
-                    <button type="button" class="add-button auto-width back" @click="goBack()"><img src="~assets/img/left.png"><span>Назад</span></button>
-                  </div>
-                  <a class="folders-item categories" v-for="category in categories" :key="category._id" @click="openCategory(category)">
+                  <div class="folders-item categories" v-for="category in categories" :key="category._id" @click="openCategory(category)">
                     <div class="folder-border">
                       <div class="white-menu-img"></div>
                       <span>{{category.name}}</span>
                     </div>
-                  </a>
+                  </div>
                 </div>
-                <div class="categories-block" id="categories-id-1">
+                <div class="categories-block mb-1" id="categories-id-1">
                     <div class="margin2-helper">
-                      <div class="white-menu-box">
-                        <a class="categories-item order" v-for="template in templates" :key="template._id" @click="chooseTemplate(template)">
+                      <div class="white-menu-files">
+                        <div class="categories-item p-1 order" v-for="template in templates" :key="template._id" @click="chooseTemplate(template)">
                           <div class="flex flex-start">
                             <div class="categories-item-img"></div>
                             <div class="categories-item-text">
                               <span>{{template.name}}</span>
                             </div>
                           </div>
-                        </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -206,13 +206,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.file {
-  padding: 3px;
-  &-remove {
-    color: #ff0000;
-    padding: 0 5px;
-    border-radius: 10px;
-    cursor: pointer;
+  .file {
+    padding: 3px;
+    &-remove {
+      color: #ff0000;
+      padding: 0 5px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
   }
-}
+  .white-menu-box {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .white-menu-files {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(auto-fit, minmax(200px, .5fr));
+  }
+
+  @media screen and (max-width: 488px){
+    .white-menu-files {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+  }
 </style>

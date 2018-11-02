@@ -77,18 +77,38 @@
                       </center>
                       <h3>Служебная записка №{{model.id}}</h3>
                     <strong class="to-title">Исполнители:</strong>
-                    <div v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`" class="row user">
-                      <div class="col-md-4">
-                        <div class="to">
-                          {{getPositionName(orderItem.position)}}:
+                    <div class="templateModal">
+                      <table>
+                        <tr>
+                          <td>Должность</td>
+                          <td>ФИО</td>
+                          <td>Дата</td>
+                        </tr>
+                        <tr v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`">
+                          <td>
+                            {{getPositionName(orderItem.position)}}:
+                          </td>
+                          <td>
+                            {{orderItem.user.fullname}}
+                          </td>
+                          <td>
+                            {{setOrderStatus(orderItem, index + 1)}}
+                          </td>
+                        </tr>
+                      </table>
+                      <!-- <div v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`" class="row user">
+                        <div class="col-sm-4">
+                          <div class="to">
+                            {{getPositionName(orderItem.position)}}:
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="to-name">{{orderItem.user.fullname}}</div>
-                      </div>
-                      <div class="col-md-4">
-                        <span>{{setOrderStatus(orderItem, index + 1)}}</span>
-                      </div>
+                        <div class="col-sm-4">
+                          <div class="to-name">{{orderItem.user.fullname}}</div>
+                        </div>
+                        <div class="col-sm-4">
+                          <span>{{setOrderStatus(orderItem, index + 1)}}</span>
+                        </div>
+                      </div> -->
                     </div>
                     <div class="row theme">
                       <div class="col-lg-12">
@@ -599,6 +619,12 @@ div {
       &:hover {
         color: #fff;
       }
+    }
+  }
+
+  @media screen and (max-width: 1000px){
+    .templateModal {
+      overflow-x: scroll;
     }
   }
 }

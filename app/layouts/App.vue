@@ -18,6 +18,7 @@
       </div>
     </div>
     <app-chat v-if="$store.getters['app/isChatOpen']" :users="users"></app-chat>
+    <app-footer></app-footer> 
   </div>
 </template>
 <script>

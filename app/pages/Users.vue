@@ -119,7 +119,12 @@ export default {
             }
           },
           columnsClasses: {
-            admin: 'admin'
+            admin: 'admin',
+            phone: 'w130',
+          },
+          rowClasses: {
+            admin: 'admin',
+            phone: 'w130',
           },
           highlightMatches: true
         }
@@ -129,7 +134,7 @@ export default {
           { key: 'fullname', label: 'ФИО' },
           { key: 'posName', label: 'Должность' },
           { key: 'deptName', label: 'Департамент' },
-          { key: 'phone', label: 'Телефон' },
+          { key: 'phone', label: 'Телефон'},
           { key: 'email', label: 'E-mail' },
           { key: 'actions', label: 'Действия' }
         ],
@@ -358,6 +363,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 body .wrapper .form-control { border-width: 0 0 1px; border-radius: 0; padding-left: 5px; }
+.w130 {
+  width: 130px !important;
+}
 </style>

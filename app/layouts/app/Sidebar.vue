@@ -17,30 +17,32 @@
     </div>
     <div class="main-menu">
       <ul class="list" v-if="isOpen">
-        <li>
-          <router-link :to="{name: 'profile'}">
+        <li @click="linkClick()">
+          <router-link   :to="{name: 'profile'}">
             <img src="~assets/img/left_menu/profile.png">
-            Профиль
+            <span>Профиль</span>
           </router-link>
         </li>
-        <li>
+        <li @click="linkClick()">
           <router-link :to="{name: 'panel', params: { param1: 'depts'}}" v-if="$auth().user.admin">
             <div class="item">
-              <img src="~assets/img/left_menu/panel.png" />Панель управления
+              <img src="~assets/img/left_menu/panel.png" />
+              <span>Панель управления</span>
             </div>
           </router-link>
         </li>
-        <li>
+        <li @click="linkClick()">
           <router-link :to="{name: 'templates'}" v-if="$auth().user.admin">
             <div class="item">
-              <img src="~assets/img/left_menu/template.png" />Шаблоны заявок
+              <img src="~assets/img/left_menu/template.png" />
+              <span>Шаблоны заявок</span>
             </div>
           </router-link>
         </li>
-        <li>
+        <li @click="linkClick()">
           <router-link :to="{name: 'logout'}">
             <img src="~assets/img/left_menu/logout.png">
-            Выход
+            <span>Выход</span>
           </router-link>
         </li>
         <hr>
@@ -95,6 +97,9 @@ export default {
     getPositionName (id) {
       const position = this.positions.find(p => p._id === id)
       return position && position.name
+    },
+    linkClick() {
+      this.$store.commit('app/toggleMobSidebar', 'close')
     }
   },
   beforeMount () {

@@ -20,14 +20,6 @@
                 <input id="field-name" v-validate="'required'" name="name" v-model="model.name" />
                 <span v-show="errors.has('name')" class="help-block">{{ errors.first('name') }}</span>
               </div>
-              <div :class="['form-group']">
-                <label for="field-description">Описание</label>
-                <ckeditor
-                  id="field-description"
-                  v-model="model.description"
-                  :config="$ckEditorConfig">
-                </ckeditor>
-              </div>
             </div>
             <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('to')}]">
@@ -47,6 +39,10 @@
                 <span v-show="errors.has('to')" class="help-block">{{ errors.first('to') }}</span>
               </div>
               <div class="sm-margin"></div>
+            </div>
+          </div>
+          <div class="flex column align-items-center">
+            <div class="form-item">
               <div :class="['form-group', {'has-error': errors.has('deadline')}]">
                 <label>Срок сдачи *</label>
                 <Datepicker
@@ -59,6 +55,8 @@
                 </Datepicker>
                 <span v-show="errors.has('deadline')" class="help-block">{{ errors.first('deadline') }}</span>
               </div>
+            </div>
+            <div class="form-item">
               <div class="flex align-end column m-center m-align">
                 <div class="select-file">
                   <file-upload
@@ -79,6 +77,16 @@
               </div>
             </div>
           </div>
+          <div class="">
+            <div :class="['form-group']">
+            <label for="field-description">Описание</label>
+            <ckeditor
+              id="field-description"
+              v-model="model.description"
+              :config="$ckEditorConfig">
+            </ckeditor>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="progress-barr" v-if="$store.getters['app/progress'] !== 100 && $store.getters['app/progress'] !== 0">
@@ -94,14 +102,14 @@
 </template>
 
 <script>
-import Modal from '@/Modal'
-import Datepicker from 'vuejs-datepicker'
-import Multiselect from 'vue-multiselect'
-import FileUpload from 'vue-upload-component'
-import Ckeditor from 'vue-ckeditor2'
+import Modal from "@/Modal";
+import Datepicker from "vuejs-datepicker";
+import Multiselect from "vue-multiselect";
+import FileUpload from "vue-upload-component";
+import Ckeditor from "vue-ckeditor2";
 
 export default {
-  name: 'modal-create-custom-bid',
+  name: "modal-create-custom-bid",
   components: {
     Modal,
     Datepicker,
@@ -109,65 +117,79 @@ export default {
     FileUpload,
     Ckeditor
   },
-  data () {
+  data() {
     return {
       datepickerState: {
         disabled: {
-          to: new Date((new Date()).setDate((new Date()).getDate() - 1))
+          to: new Date(new Date().setDate(new Date().getDate() - 1))
         },
         highlighted: {
-          dates: [ new Date() ]
+          dates: [new Date()]
         }
       }
-    }
+    };
   },
-  props: ['model', 'users', 'onSubmit', 'onClose'],
+  props: ["model", "users", "onSubmit", "onClose"],
   computed: {
-    usersForSelect () {
-      return this.$props.users.filter(user => {
-        return (!user.admin || user.login !== 'admin') && user._id !== this.$auth().user._id
-      }).map(user => {
-        return {name: user.fullname, _id: user._id}
-      })
+    usersForSelect() {
+      return this.$props.users
+        .filter(user => {
+          return (
+            (!user.admin || user.login !== "admin") &&
+            user._id !== this.$auth().user._id
+          );
+        })
+        .map(user => {
+          return { name: user.fullname, _id: user._id };
+        });
     },
     selectedUser: {
-      get: function () {
-        return {name: this.getUser(this.$props.model.to).fullname, _id: this.$props.model.to}
+      get: function() {
+        return {
+          name: this.getUser(this.$props.model.to).fullname,
+          _id: this.$props.model.to
+        };
       },
-      set: function (newValue) {
-        this.errors.items = this.$_.reject(this.errors.items, e => e.field === 'to')
-        this.$props.model.to = newValue ? newValue._id : ''
+      set: function(newValue) {
+        this.errors.items = this.$_.reject(
+          this.errors.items,
+          e => e.field === "to"
+        );
+        this.$props.model.to = newValue ? newValue._id : "";
       }
     }
   },
   methods: {
-    close () {
-      this.$emit('onClose')
+    close() {
+      this.$emit("onClose");
     },
-    getUser (_id) {
-      let user = this.$_.find(this.$props.users, u => u._id === _id)
-      return user || {}
+    getUser(_id) {
+      let user = this.$_.find(this.$props.users, u => u._id === _id);
+      return user || {};
     },
-    removeFile (index) {
-      this.model.files.splice(index, 1)
+    removeFile(index) {
+      this.model.files.splice(index, 1);
     },
-    submit () {
+    submit() {
       if (!this.model.to) {
         this.errors.items.push({
-          id: '100',
-          field: 'to',
+          id: "100",
+          field: "to",
           scope: null,
-          msg: 'Поле Кому обязательно для заполнения'
-        })
+          msg: "Поле Кому обязательно для заполнения"
+        });
       }
-      this.$validator.validateAll().then(() => {
-        if (!this.$_.size(this.errors.items)) {
-          this.$emit('onSubmit', this.model)
-        }
-      }).catch(() => {})
+      this.$validator
+        .validateAll()
+        .then(() => {
+          if (!this.$_.size(this.errors.items)) {
+            this.$emit("onSubmit", this.model);
+          }
+        })
+        .catch(() => {});
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

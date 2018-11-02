@@ -1343,17 +1343,8 @@ label.checked{
     width: 70%;
     font-size: 0.8em;
 }
-.white-menu-box{
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-}
 a.categories{
-    width: 13.4%;
     text-align: center;
-    padding-bottom: 1em;
-    margin-right: 0.5em;
 }
 .white-menu-img{
     width: 4em;
@@ -1384,11 +1375,7 @@ a.categories.active .white-menu-img{
     padding-top: 1em;
 }
 .categories-item{
-    margin-left: 7.3%;
-    width: 26%;
-    margin-bottom: 1.5em;
     border: 1px solid #b9b9b9;
-    padding: 1em;
     text-align: left;
     position: relative;
     -webkit-box-shadow: 0px 2px 5px 0px transparent;
@@ -1433,9 +1420,7 @@ a.categories.active .white-menu-img{
     background-size: 100% 100%;
     transition: background 0.5s;
 }
-.categories-item:hover .categories-item-img{
-    background-image: url("../img/file-h.png");
-}
+
 /* .categories-item:hover .button-table.edit{
     background-color: #1b8442;
 } */
@@ -2020,12 +2005,6 @@ span.date{
 .cat-box{
     font-size: 0.9em;
 }
-.margin2-helper{
-    padding: 1.5em;
-    position: relative;
-    left: -6.5%;
-    padding-right: 0;
-}
 .white-menu.top{
     padding-top: 2em;
 }
@@ -2103,9 +2082,11 @@ span.date{
     -o-transform: rotate(180deg);
     transform: rotate(180deg);
 }
-.margin-helper.margin2-helper{
-    padding: 0;
-    margin-left: 1.5%;
+.mb-1 {
+    margin-bottom: 1em;
+}
+.p-1 {
+    padding: 0.5em;
 }
 .margin-t2{
     margin-top: 2em;
@@ -2139,14 +2120,15 @@ select{
     margin-left: -2%;
 }
 .folders-item{
-  margin-left: 2%;
-  margin-bottom: 1em;
   text-align: center;
   font-size: 0.9em;
   display: flex;
   justify-content: flex-start;
+  padding: 2em;
 }
-
+.folder-border {
+    margin: 0 auto;
+}
 .folder-text {
   display: inline-block;
   width: 100px;
@@ -2212,6 +2194,7 @@ select{
 .stage2-item:hover .absolut-box{
     opacity: 1;
     display: block;
+    z-index: 55555;
 }
 .stage2-item img{
     width: 100%;
@@ -2674,4 +2657,7 @@ tr.green2{
 
 .animated.smooth-dnd-draggable-wrapper td {
   border: none;
+}
+.align-items-center{
+    align-items: center;
 }

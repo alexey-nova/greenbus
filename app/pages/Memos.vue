@@ -34,6 +34,7 @@
               </div>
               <div slot="status" slot-scope="props">
                 <span :class="['status-tag', setTag(props.row)]">{{setTagText(props.row)}}</span>
+                <!-- {{props.row.order[props.row.currentUser]}} -->
               </div>
               <div class="border-none" slot="admin" slot-scope="props" v-if="isCreator(props.row)">
                 <button class="button-table edit" @click="toggleModal('edit', $_.clone(props.row))"></button>
@@ -167,7 +168,8 @@ export default {
             }
           },
           columnsClasses: {
-            admin: 'admin'
+            admin: 'admin',
+            status: 'status'
           },
           skin: 'table table-bordered'
         }
@@ -192,7 +194,6 @@ export default {
   computed: {
     filteredData: {
       get: function () {
-	console.log('bids in filterdData', this.bids)
         let data = _.merge([], this.bids)
         _.map(data, bid => {
           let userFrom = _.find(this.users, u => u._id === bid.createdBy)
@@ -226,6 +227,7 @@ export default {
   },
   methods: {
     setTag (event) {
+      console.log('event',event)
       if (event.deadlined) return 'red'
       if (event.order[event.currentUser].position === this.$auth().user.position && event.status !== 'done') return 'yellow'
       if (event.status === 'done') return 'green'
@@ -321,8 +323,6 @@ export default {
 
       let result = []
       let tempBids = [...bids]
-
-      console.log('bids would be here', bids)
 
       tempBids = tempBids.filter(bid => {
         if (bid.currentUser >= bid.order.length) return false
@@ -441,32 +441,36 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
-.table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
-.text2 {
-  min-height: 54px;
-}
-.status-tag {
-  width: 75%;
-  text-align: center;
-  padding: 3px 0;
-  border-radius: 3px;
-  background-color: #5ba4cf;
-  display: inline-block;
-  color: #fff;
-
-  &.yellow {
-    background-color: #fdd835;
-    color: #000;
+<style lang="scss">
+  .table .tools { position: relative; padding: 0 10px 0 5px; white-space: nowrap; cursor: pointer; }
+  .table .tools .label { position: absolute; top: -8px; left: 8px; font-size: .6em; }
+  .text2 {
+    min-height: 54px;
   }
+  .status-tag {
+    text-align: center;
+    width: 100%;
+    padding: 0.5em;
+    border-radius: 3px;
+    background-color: #5ba4cf;
+    display: inline-block;
+    color: #fff;
 
-  &.red {
-    background-color: #a32a2a;
-  }
+    &.yellow {
+      background-color: #fdd835;
+      color: #000;
+    }
 
-  &.green {
-    background-color: #1b8442;
+    &.red {
+      background-color: #a32a2a;
+    }
+
+    &.green {
+      background-color: #1b8442;
+    }
   }
-}
+  .status {
+    width: 150px !important;
+    text-align: center;
+  }
 </style>

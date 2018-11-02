@@ -12,18 +12,20 @@
       <div class="profile full modal-body no-padding">
         <div class="cat-box">
           <div class="white-menu top">
-            <div class="white-menu-box">
-              <a v-if="$route.name === 'templatesByFilter'" @click="goBack()">
-                <button class="add-button auto-width back"><img src="~assets/img/left.png"><span>Назад</span></button>
-              </a>
+            <a v-if="$route.name === 'templatesByFilter'" @click="goBack()">
+              <button class="add-button auto-width back"><img src="~assets/img/left.png"><span>Назад</span></button>
+            </a>
+            <div class="menu-box-folders">  
               <a @click="openCategory(category)" class="folders-item categories" v-for="category in categories" :key="category._id">
-                <div class="folder-border">
-                  <div class="white-menu-img"></div>
-                  <span>{{category.name}}</span>
-                </div>
-                <div class="folder-buttons">
-                  <button class="button-table edit" @click.stop="toggleModal('edit', $_.clone(category))"></button>
-                  <button class="button-table remove" @click.stop="toggleModal('remove', category)"></button>
+                  <div style="margin: 0 auto; display: flex">
+                    <div class="folder-border">
+                    <div class="white-menu-img"></div>
+                    <span>{{category.name}}</span>
+                  </div>
+                  <div class="folder-buttons">
+                    <button class="button-table edit" @click.stop="toggleModal('edit', $_.clone(category))"></button>
+                    <button class="button-table remove" @click.stop="toggleModal('remove', category)"></button>
+                  </div>
                 </div>
               </a>
               <div v-for="template in templates" :key="template._id" class="folders-item fol-box" @click="toggleModal('showTemplate', template)">
@@ -234,7 +236,26 @@ export default {
   font-size: 1em;
 }
 
-a.categories {
-  width: 10%;
+.menu-box-folders {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 1200px){
+  .folders-item {
+    width: 25%;
+  }
+}
+
+@media screen and (max-width: 800px){
+  .folders-item {
+    width: 33%;
+  }
+}
+
+@media screen and (max-width: 550px){
+  .folders-item {
+    width: 50%;
+  }
 }
 </style>

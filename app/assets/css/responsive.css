@@ -12,9 +12,6 @@
     .flex.img img {
         width: 20px;
     }
-    .folders-item {
-        width: 12%;
-    }
     .folders{
         width: 86%;
     }
@@ -68,6 +65,9 @@
         -webkit-overflow-scrolling : touch !important;
         overflow: auto !important;
         height: 100% !important;
+    }
+    .main-footer {
+    display: none;
     }
     .select-img{
         width: 100%;
@@ -133,11 +133,6 @@
     .folders-box{
         margin-left: 0;
     }
-    .folders-item {
-        width: 7.9em;
-        margin: 0 1.2%;
-        margin-bottom: 1em;
-    }
     .search.m-block{
         display: block;
         width: 100%;
@@ -168,38 +163,8 @@
     .white-menu.top {
         padding-top: 1em;
     }
-    a.categories {
-        width: 85px;
-    }
-    .white-menu.top .white-menu-box{
-        justify-content: flex-start;
-        padding-right: 1em;
-    }
     .stage2{
         display: none;
-    }
-    .margin2-helper{
-        padding: 0;
-    }
-    .margin-helper.margin2-helper{
-        margin-left: 0;
-        left: 0;
-    }
-    .categories-item {
-        margin-left: 0;
-        width: 45%;
-    }
-    .margin2-helper{
-        margin-left: 0;
-        left: 0;
-    }
-    .white-menu-box {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        padding: 1em;
-        padding-right: 3.5em;
     }
     .disabled-margin{
         margin-top: 0;
@@ -446,18 +411,13 @@
         justify-content: space-between;
         align-items: center;
     }
+    .nav .info-box {
+        display: flex;
+        flex-direction: column;
+        padding: 0.5em;
+    }
     .nav .info-box button{
-        width: 20px;
-        height: 20px;
-        background-color: transparent;
-        border: none;
-        margin: 0;
-        margin-left: 5px;
-        overflow: hidden;
-        color: transparent;
-        background-image: url("../img/mob1.png");
-        background-position: center center;
-        background-size: 100% 100%;
+        padding: 0.8em 0;
     }
     .nav .info-box button:after{
         display: none;
@@ -595,17 +555,8 @@
         margin-left: 0;
         margin-top: 2px;
     }
-    .folders-item {
-        width: 22%;
-        margin: 0 5.6%;
-        margin-bottom: 1em;
-        text-align: center;
-    }
     .profile{
         font-size: 0.95em;
-    }
-    a.categories {
-        width: 75px;
     }
     .add-button{
         font-size: 0.8em;
@@ -685,9 +636,6 @@
         font-size: 1em;
         padding: 0.7em 1em;
     }
-    .categories-item {
-        width: 43%;
-    }
     .m-button{
         width: 100%;
         flex-direction: column;
@@ -701,15 +649,6 @@
 @media screen and (max-width:430px){
     .folders-box {
         margin-left: 0;
-    }
-    .folders-item {
-        width: 22%;
-        margin: 0 5.6%;
-        margin-bottom: 1em;
-        text-align: center;
-    }
-    .categories-item{
-        width: 100%;
     }
     .info-button {
         width: 32%;
@@ -736,10 +675,6 @@
     }
     .info-button img {
         display: none;
-    }
-    a.categories {
-        width: 30%;
-        margin: 0 1.6%;
     }
 
     .forum-response-box {
@@ -868,9 +803,6 @@
         margin-top:10px;
         margin-bottom: 0;
     }
-    .categories-item {
-        width: 98%;
-    }
     .categories-item-img {
         width: 35px;
         height: 40px;
@@ -939,12 +871,6 @@
     }
     .select-img-box label{
         line-height: 15px;
-    }
-    .folders-item {
-        width: 32%;
-        margin: 0 9%;
-        margin-bottom: 1em;
-        text-align: center;
     }
     .nav {
         width: 19em;
