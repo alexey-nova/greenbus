@@ -17,11 +17,17 @@
         <div class="profile full modal-body">
           <div :class="['form-group', {'has-error': errors.has('comment')}]">
             <label>Комментарий <span v-if="model.type !== 'confirm'">*</span></label>
-            <ckeditor
+            <textarea 
+              id="field-description"
+              v-model="model.comment"
+              :config="$ckEditorConfig"
+              cols="30" rows="10">
+            </textarea>
+            <!-- <ckeditor
               id="field-description"
               v-model="model.comment"
               :config="$ckEditorConfig">
-            </ckeditor>
+            </ckeditor> -->
             <span v-show="errors.has('comment')" class="help-block">{{ errors.first('comment') }}</span>
           </div>
           <div class="select-file">

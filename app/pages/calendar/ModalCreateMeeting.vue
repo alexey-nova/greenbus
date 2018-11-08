@@ -58,7 +58,7 @@
                       <div :class="['form-group', {'has-error': errors.has('endTime')}]">
                         <label for="field-endTime">Время конца встречи *</label>
                         <masked-input id="field-endTime" mask="11:11" name="endTime" v-validate="'required'"
-                                      v-model="model.endTime"></masked-input>
+                        v-model="model.endTime"></masked-input>
                         <span v-show="errors.has('endTime')" class="help-block">{{ errors.first('endTime') }}</span>
                       </div>
                     </div>
@@ -68,12 +68,12 @@
               <div class="textarea-box">
                 <div :class="['form-group', {'has-error': errors.has('description')}]">
                   <label for="field-description">Описание *</label>
-                  <ckeditor
+                  <!-- <ckeditor
                     id="field-description"
                     v-model="model.description"
                     v-validate="'required'"
                     :config="ckEditorConfig">
-                  </ckeditor>
+                  </ckeditor> -->
                   <span v-show="errors.has('description')" class="help-block">{{ errors.first('description') }}</span>
                 </div>
               </div>
@@ -89,10 +89,12 @@
                     :clear-on-select="true"
                     :multiple="true"
                     placeholder="Выберите"
+                    @input="console"
                     track-by="name"
                     label="name"
                   >
                   </Multiselect>
+                  {{selectedUsers}}
                   <span v-show="errors.has('participants')" class="help-block">{{ errors.first('participants') }}</span>
                 </div>
               </div>
@@ -184,7 +186,7 @@ import Multiselect from 'vue-multiselect'
 import ModalDelete from './ModalDeleteMeeting'
 import ModalConfirmed from './ModalConfirmedMeeting'
 import ModalReject from './ModalRejectMeeting'
-import Ckeditor from 'vue-ckeditor2'
+// import Ckeditor from 'vue-ckeditor2'
 
 export default {
   components: {
@@ -198,7 +200,7 @@ export default {
     ModalDelete,
     ModalConfirmed,
     ModalReject,
-    Ckeditor
+    // Ckeditor
   },
   data () {
     return {
@@ -337,6 +339,9 @@ export default {
     getPositionName (id) {
       const position = this.positions.find(p => p._id === id)
       return position && position.name
+    },
+    console() {
+      console.log('hoooooooooooooooooooooi')
     }
   }
 }

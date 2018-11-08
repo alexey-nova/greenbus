@@ -78,7 +78,7 @@
                       <h3>Служебная записка №{{model.id}}</h3>
                     <strong class="to-title">Исполнители:</strong>
                     <div class="templateModal">
-                      <table>
+                      <table class="performers">
                         <tr>
                           <td>Должность</td>
                           <td>ФИО</td>
@@ -96,17 +96,19 @@
                           </td>
                         </tr>
                       </table>
-                      <!-- <div v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`" class="row user">
-                        <div class="col-sm-4">
-                          <div class="to">
-                            {{getPositionName(orderItem.position)}}:
+                      <!-- <div class="mob-none" style="overflow-x: scroll">
+                        <div  v-for="(orderItem, index) in modifiedBid.order.slice(1)" :key="`user-${index}-${orderItem._id}`" class="row user">
+                          <div class="col-sm-4">
+                            <div class="to">
+                              {{getPositionName(orderItem.position)}}:
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <div class="to-name">{{orderItem.user.fullname}}</div>
-                        </div>
-                        <div class="col-sm-4">
-                          <span>{{setOrderStatus(orderItem, index + 1)}}</span>
+                          <div class="col-sm-4">
+                            <div class="to-name">{{orderItem.user.fullname}}</div>
+                          </div>
+                          <div class="col-sm-4">
+                            <span>{{setOrderStatus(orderItem, index + 1)}}</span>
+                          </div>
                         </div>
                       </div> -->
                     </div>
@@ -527,6 +529,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+ .performers td{
+   border: none;
+ }
 div {
   .row {
     display: flex;
