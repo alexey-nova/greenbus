@@ -94,7 +94,6 @@
                     label="name"
                   >
                   </Multiselect>
-                  {{selectedUsers}}
                   <span v-show="errors.has('participants')" class="help-block">{{ errors.first('participants') }}</span>
                 </div>
               </div>
