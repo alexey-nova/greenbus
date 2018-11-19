@@ -9,7 +9,9 @@ import locale from 'element-ui/lib/locale'
 import IdleVue from 'idle-vue'
 
 import JsonExcel from 'vue-json-excel'
-
+import VueCkeditor from 'vue-ckeditor2';
+Vue.use(VueCkeditor);
+ 
 Vue.component('downloadExcel', JsonExcel)
 
 locale.use(lang)

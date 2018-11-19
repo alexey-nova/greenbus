@@ -7,18 +7,18 @@ if (process.env.NODE_ENV === 'development') {
   soketUrl = 'http://localhost:3333/'
   fileUrl = 'http://localhost:3333/'
 } else {
-  apiUrl = 'http://portal.greenbus.kz:3333/api/'
-  soketUrl = 'http://portal.greenbus.kz:3333/'
-  fileUrl = 'http://portal.greenbus.kz:3333/'
+  apiUrl = 'https://portal.greenbus.kz/api/'
+  soketUrl = 'https://portal.greenbus.kz/'
+  fileUrl = 'https://portal.greenbus.kz/'
 }
 
 export default {
   // apiUrl,
   // soketUrl,
   // fileUrl,
-  apiUrl: 'http://portal.greenbus.kz:3333/api/',
-  soketUrl: 'http://portal.greenbus.kz:3333/',
-  fileUrl: 'http://portal.greenbus.kz:3333/',
+  apiUrl: 'https://portal.greenbus.kz/api/',
+  soketUrl: 'https://portal.greenbus.kz/',
+  fileUrl: 'https://portal.greenbus.kz/',
   // apiUrl: 'http://localhost:3333/api/',
   // soketUrl: 'http://localhost:3333/',
   // fileUrl: 'http://localhost:3333/',
@@ -27,8 +27,8 @@ export default {
   // soketUrl: 'http://195.93.152.79:3333/',
   // fileUrl: 'http://195.93.152.79:3333/',
   // вообще другой тестовый сервер
-  // apiUrl: 'http://192.168.0.101:3333/api/',
-  // soketUrl: 'http://192.168.0.101:3333/',
-  // fileUrl: 'http://192.168.0.101:3333/',
+  // apiUrl: 'http://192.168.88.14:3333/api/',
+  // soketUrl: 'http://192.168.88.14:3333/',
+  // fileUrl: 'http://192.168.88.14:3333/',
   mockApiUrl: path
 }
