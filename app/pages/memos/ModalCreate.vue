@@ -217,7 +217,7 @@ export default {
   }
   .white-menu-box {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, .5fr));
   }
   .white-menu-files {
     display: grid;
@@ -228,6 +228,9 @@ export default {
   @media screen and (max-width: 488px){
     .white-menu-files {
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .white-menu-box {
+      grid-template-columns: repeat(auto-fit, minmax(100px, 2fr));
     }
   }
 </style>
