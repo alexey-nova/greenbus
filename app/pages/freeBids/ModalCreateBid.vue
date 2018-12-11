@@ -129,7 +129,7 @@ export default {
       }
     };
   },
-  props: ["model", "users", "onSubmit", "onClose"],
+  props: ["model", "users", "onSubmit", "onClose", "btnDisabled"],
   computed: {
     usersForSelect() {
       return this.$props.users
@@ -185,6 +185,7 @@ export default {
           if (!this.$_.size(this.errors.items)) {
             this.$emit("onSubmit", this.model);
           }
+          this.btnDisabled = true
         })
         .catch(() => {});
     }

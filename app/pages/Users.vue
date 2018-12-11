@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <ModalCreateUser v-if="modal.createUser" :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')"></ModalCreateUser>
+    <ModalCreateUser v-if="modal.createUser" :model="modal.createUser" :users="users" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="createUser" @onClose="toggleModal('createUser')" :btnDisabled="btnDisabled"></ModalCreateUser>
     <ModalDeleteUser :model="modal.deleteUser" @onSubmit="deleteUser" @onClose="toggleModal('deleteUser')"></ModalDeleteUser>
     <ModalEditUser v-if="modal.editUser" :model="modal.editUser" :departments="group(departments)" :otdels="otdels" :positions="positions" @onSubmit="editUser" @onClose="toggleModal('editUser')"></ModalEditUser>
     <ModalShowUser v-if="modal.showUser" :model="modal.showUser" @onClose="toggleModal('showUser')"></ModalShowUser>
@@ -89,6 +89,7 @@ export default {
         createUser: false,
         deleteUser: false
       },
+      btnDisabled: false,
       tableData: {
         columns: ['id', 'fullname', 'posName', 'deptName', 'phone', 'email', 'tools', 'admin'],
         options: {
@@ -179,15 +180,20 @@ export default {
     toggleModal (name, model) {
       this.modal[name] = model === undefined ? !this.modal[name] : model
     },
-    createUser (user) {
-      this.$api('post', 'users', user).then(response => {
+    async createUser (user) {
+      try {
+        const response = await this.$api('post', 'users', user)
         this.loadUsers()
         this.modal.createUser = false
         this.notify(response.data.message)
-      }).catch(e => {
+      } catch (e) {
         this.notify('Временно нельзя создать пользователя', 'info')
         this.$log(e, 'danger')
-      })
+      } 
+      finally {
+        this.btnDisabled = false
+      }
+      
     },
     editUser (user) {
       this.$api('put', 'users/' + user._id, user).then(response => {

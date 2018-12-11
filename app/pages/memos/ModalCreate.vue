@@ -91,7 +91,7 @@
               <div class="progress-bar--status" :style="{ width: `${$store.getters['app/progress']}%` }"></div>
             </div>
             <div class="flex center">
-              <button class="add-button auto-width send">Отправить <img src="~assets/img/left.png"></button>
+              <button :disabled="btnDisabled" class="add-button auto-width send">Отправить <img src="~assets/img/left.png"></button>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default {
     Ckeditor,
     MemoChain
   },
-  props: ['model', 'onSubmit', 'onClose', 'users', 'positions'],
+  props: ['model', 'onSubmit', 'onClose', 'users', 'positions', 'btnDisabled'],
   data () {
     return {
       ckEditorConfig: {
@@ -150,6 +150,7 @@ export default {
         if (!this.$_.size(this.errors.items)) {
           let model = this.$_.clone(this.$props.model)
           this.$emit('onSubmit', model)
+          this.btnDisabled = true
         }
       }).catch(() => {
       })

@@ -48,7 +48,7 @@
         </div>
       </div>
     </div>
-    <modal-create-custom-bid v-if="modal.create" :model="modal.create" :users="users" :positions="positions" @onSubmit="createBid" @onClose="toggleModal('create')"></modal-create-custom-bid>
+    <modal-create-custom-bid v-if="modal.create" :model="modal.create" :users="users" :positions="positions" @onSubmit="createBid" @onClose="toggleModal('create')" :btnDisabled="btnDisabled"></modal-create-custom-bid>
     <modal-edit-custom-bid v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editBid" @onClose="toggleModal('edit')"></modal-edit-custom-bid>
     <modal-show-custom-bid v-if="modal.show" :model="modal.show" :tab="modal.tab" :users="users" @onSubmit="replyBid" @onClose="toggleModal('show')"></modal-show-custom-bid>
     <modal-delete-custom-bid :model="modal.delete" @onSubmit="deleteBid" @onClose="toggleModal('delete')"></modal-delete-custom-bid>
@@ -85,6 +85,7 @@ export default {
         tab: 0,
         delete: false
       },
+      btnDisabled: false,
       tableData: {
         columns: ['id', 'name', 'nameFrom', 'toUsersName', 'prettyDeadline', 'tools', 'admin'],
         options: {
@@ -171,17 +172,22 @@ export default {
         this.notify(e, 'danger')
       })
     },
-    createBid (bid) {
-      bid.files = this.$_.map(bid.files, (f) => f.file)
-      let data = this.$createFormData(bid)
-      this.$api('post', 'freebids', data).then(response => {
+    async createBid (bid) {
+      try {
+        bid.files = this.$_.map(bid.files, (f) => f.file)
+        let data = this.$createFormData(bid)
+        const response = await this.$api('post', 'freebids', data)
         this.loadBids()
         this.modal.create = false
         this.notify(response.data.message)
-      }).catch(e => {
+      }
+      catch(e) {
         this.notify('Временно нельзя создать служебную записку', 'info')
         this.$log(e, 'danger')
-      })
+      }
+      finally {
+        this.btnDisabled = false
+      }   
     },
     editBid (bid) {
       bid.files = this.$_.map(bid.files, (f) => f.file)

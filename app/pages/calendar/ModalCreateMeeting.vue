@@ -89,7 +89,6 @@
                     :clear-on-select="true"
                     :multiple="true"
                     placeholder="Выберите"
-                    @input="console"
                     track-by="name"
                     label="name"
                   >
@@ -122,7 +121,7 @@
                     </div>
                   </div>
                   <div class="sm-input">
-                    <div class="form-group">
+                    <div class="form-group">    
                       <label>Время конца встречи</label>
                       <div>{{ $dateFormat(model.endDate, 'HH:MM') }}</div>
                     </div>
@@ -157,7 +156,7 @@
                   <button v-if="type !== 'create' && model.createdBy !== this.$auth().user._id" type="button" class="save pad2 btn-danger" data-dismiss="modal" @click="toggleModal('reject', {id:model._id})">Отказать</button>
                 </span>
                 <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="button" class="save pad2 btn-danger" @click="toggleModal('delete', {id:model._id})">Удалить</button>
-                <button v-if="type === 'create'" type="submit" class="save pad2">Создать</button>
+                <button v-if="type === 'create'" type="submit" class="save pad2" :disabled="btnDisabled">Создать</button>
                 <button v-if="type !== 'create' && model.createdBy === this.$auth().user._id" type="submit" class="save pad2">Изменить</button>
             </div>
           </div>
@@ -230,7 +229,7 @@ export default {
       }
     }
   },
-  props: ['model', 'users', 'type', 'onSubmit', 'onClose', 'positions'],
+  props: ['model', 'users', 'type', 'onSubmit', 'onClose', 'positions', 'btnDisabled'],
   computed: {
     isAnswered () {
       return !this.$_.find(this.model.participants, ['user', this.$auth().user._id])
@@ -272,6 +271,7 @@ export default {
         if (!this.$_.size(this.errors.items)) {
           let model = this.$_.clone(this.$props.model)
           model.to = this.$_.map(model.to, u => u.user)
+          this.btnDisabled = true
           this.$emit('onSubmit', model)
         }
       }).catch(() => {
@@ -338,9 +338,6 @@ export default {
     getPositionName (id) {
       const position = this.positions.find(p => p._id === id)
       return position && position.name
-    },
-    console() {
-      console.log('hoooooooooooooooooooooi')
     }
   }
 }

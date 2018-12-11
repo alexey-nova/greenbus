@@ -67,7 +67,7 @@
         </div>
       </div>
     </div>
-    <ModalCreate v-if="modal.create" :model="modal.create" :users="users" :positions="positions" @onSubmit="createBid" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalCreate v-if="modal.create" :model="modal.create" :users="users" :positions="positions" @onSubmit="createBid" @onClose="toggleModal('create')" :btnDisabled="btnDisabled"></ModalCreate>
     <ModalEdit v-if="modal.edit" :model="modal.edit" :users="users" @onSubmit="editBid" @onClose="toggleModal('edit')"></ModalEdit>
     <ModalShow v-if="modal.show" :model="modal.show" :tab="modal.tab" :users="users" :getBids="loadBids" @onClose="toggleModal('show')"></ModalShow>
     <ModalDelete :model="modal.delete" @onSubmit="deleteBid" @onClose="toggleModal('delete')"></ModalDelete>
@@ -106,6 +106,7 @@ export default {
       memoModel: null,
       chosenBids: [],
       chosenRow: {},
+      btnDisabled: false,
       jsonFields: {
         'ID': 'id',
         'Тема': 'name',
@@ -259,19 +260,24 @@ export default {
         return result
       }, 0)
     },
-    createBid (bid) {
-      bid.templateId = bid.template._id
-      delete bid.template
-      bid.files = this.$_.map(bid.files, (f) => f.file)
-      let data = this.$createFormData(bid)
-      this.$api('post', 'bids', data).then(response => {
+    async createBid (bid) {
+      try {
+        bid.templateId = bid.template._id
+        delete bid.template
+        bid.files = this.$_.map(bid.files, (f) => f.file)
+        let data = this.$createFormData(bid)
+        const response = await this.$api('post', 'bids', data)
         this.loadBids()
         this.modal.create = false
         this.notify(response.data.message)
-      }).catch(e => {
+      }
+      catch(e) {
         this.notify('Временно нельзя создать служебную записку', 'info')
         this.$log(e, 'danger')
-      })
+      }
+      finally {
+        this.btnDisabled = false
+      }   
     },
     editBid (bid) {
       bid.files = this.$_.map(bid.files, (f) => f.file)

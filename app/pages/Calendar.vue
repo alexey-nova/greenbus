@@ -102,7 +102,7 @@
         </a>
       </div>
     </div>
-    <ModalCreate :model="modal.create" :users="users" :positions="positions" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')"></ModalCreate>
+    <ModalCreate :model="modal.create" :users="users" :positions="positions" :type="type" @onUpdate="updateMeeting" @onSubmit="createMeeting" @onClose="toggleModal('create')" :btnDisabled="btnDisabled"></ModalCreate>
     <ModalCreate :model="modal.edit" :users="users" :positions="positions" :type="type" @onUpdate="updateEditMeeting" @onSubmit="editMeeting" @onClose="toggleModal('edit')"></ModalCreate>
   </div>
 </template>
@@ -148,6 +148,7 @@ export default {
     return {
       positions: [],
       dateEvents: [],
+      btnDisabled: false,
       selectedDate: new Date(),
       currentMonth: this.selectedDate || new Date(), // old
       currentYear: (new Date()).getFullYear(),
@@ -276,7 +277,7 @@ export default {
       })
 
     },
-    createMeeting (meeting) {
+    async createMeeting (meeting) {
       // let newDate = new Date(meeting.startDate)
       // let endDate = new Date(meeting.startDate)
       // let startTime = meeting.startTime.split(':')
@@ -288,15 +289,19 @@ export default {
       // endDate.setMinutes(endTime[1])
 
       // let data = {name:meeting.name, participants:meeting.participants, startDate:newDate, endDate, place: meeting.place, description: meeting.description}
-      this.$api('post', 'meetings', meeting).then(response => {
+      try {
+        const response = await this.$api('post', 'meetings', meeting)
         this.modal.createMeeting = false
         this.notify(response.data.message)
         this.loadMeetings()
         this.toggleModal('create')
-      }).catch(e => {
+      } catch (e) {
         this.notify('Временно нельзя создать событие', 'info')
         this.$log(e, 'danger')
-      })
+      } 
+      finally {
+        this.btnDisabled = false
+      }
     },
     editMeeting (meeting) {
       meeting.participants = this.$_.map(meeting.participants, p => {

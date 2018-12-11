@@ -62,7 +62,7 @@
                 <span v-show="errors.has('phone')" class="help-block">{{ errors.first('phone') }}</span>
               </div>
               <div class="flex flex-end">
-                <button type="submit" class="save pad2">Сохранить</button>
+                <button :disabled="btnDisabled" type="submit" class="save pad2">Сохранить</button>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default {
     MaskedInput,
     Multiselect
   },
-  props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels'],
+  props: ['model', 'users', 'departments', 'onSubmit', 'onClose', 'otdels' , 'btnDisabled'],
   data () {
     return {
       filteredOtdels: [],
@@ -101,9 +101,10 @@ export default {
     close () {
       this.$emit('onClose')
     },
-    submit () {
-      this.model.position = this.model.position && this.model.position._id
-      this.$validator.validateAll().then(() => {
+    async submit () {
+      try {
+        this.model.position = this.model.position && this.model.position._id
+        const response = await this.$validator.validateAll()
         if (this.$_.find(this.$props.users, u => u.login === this.$props.model.login)) {
           this.errors.items.push({
             field: 'login',
@@ -124,9 +125,11 @@ export default {
         }
         if (!this.$_.size(this.errors.items)) {
           this.$emit('onSubmit', this.model)
+          this.btnDisabled = true
         }
-      }).catch(() => {
-      })
+      } catch (e) {
+
+      }
     },
     loadPositions () {
       this.$api('get', 'positions').then(response => {
